@@ -173,6 +173,13 @@ export const Dashboard = ({ user, onLogout }) => {
           </TabsContent>
         </Tabs>
       </main>
+
+      {/* Global Patient Intake Form */}
+      <PatientIntakeForm
+        isOpen={isIntakeFormOpen}
+        onClose={() => setIsIntakeFormOpen(false)}
+        onSuccess={fetchData}
+      />
     </div>
   );
 };
