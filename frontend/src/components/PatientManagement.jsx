@@ -120,7 +120,10 @@ const PatientManagement = ({ patients, onRefresh }) => {
             </div>
             <Dialog open={isDialogOpen} onOpenChange={(open) => {
               setIsDialogOpen(open);
-              if (!open) setEditingPatient(null);
+              if (!open) {
+                setEditingPatient(null);
+                setSelectedStatus('pending');
+              }
             }}>
               <DialogTrigger asChild>
                 <Button>
