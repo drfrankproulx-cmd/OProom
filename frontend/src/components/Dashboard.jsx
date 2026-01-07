@@ -148,7 +148,11 @@ export const Dashboard = ({ user, onLogout }) => {
           </TabsList>
 
           <TabsContent value="weekly" className="space-y-6">
-            <WeeklyCalendar schedules={schedules} onRefresh={fetchData} />
+            <EnhancedWeeklyCalendar 
+              schedules={schedules} 
+              conferences={conferences}
+              onRefresh={fetchData} 
+            />
             <AddOnList schedules={schedules} onRefresh={fetchData} />
           </TabsContent>
 
