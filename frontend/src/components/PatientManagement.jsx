@@ -172,7 +172,7 @@ const PatientManagement = ({ patients, onRefresh }) => {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="status">Status</Label>
-                      <Select name="status" defaultValue={editingPatient?.status || 'pending'}>
+                      <Select value={selectedStatus} onValueChange={setSelectedStatus}>
                         <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
