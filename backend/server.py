@@ -57,6 +57,7 @@ class Patient(BaseModel):
     dob: str
     diagnosis: Optional[str] = None
     procedures: Optional[str] = None
+    procedure_code: Optional[str] = None
     attending: Optional[str] = None
     status: str = "pending"
     created_by: Optional[str] = None
