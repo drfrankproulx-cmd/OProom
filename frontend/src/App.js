@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import AuthPage from './components/AuthPage';
-import Dashboard from './components/Dashboard';
+import SinglePageDashboard from './components/SinglePageDashboard';
 import { Toaster } from './components/ui/sonner';
 
 function App() {
