@@ -79,6 +79,8 @@ class Schedule(BaseModel):
     scheduled_time: Optional[str] = None
     status: str = "scheduled"
     is_addon: bool = False
+    priority: str = "medium"
+    diagnosis: Optional[str] = None
     created_by: Optional[str] = None
     created_at: Optional[datetime] = None
 
