@@ -339,7 +339,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Patient Management System"
+    - "Enhanced Weekly Calendar with Time Slots"
+    - "Patient Intake Form with Autocomplete"
+    - "Case Scheduling and Color Coding"
+    - "Add-On Cases Management"
+    - "Time Slot Click Functionality"
   stuck_tasks: []
   test_all: true
   test_priority: "high_first"
