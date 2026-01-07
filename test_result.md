@@ -294,18 +294,14 @@ metadata:
 
 test_plan:
   current_focus:
-    - "User Registration and Authentication"
-    - "Dashboard Navigation and Layout"
     - "Patient Management System"
-    - "Weekly Calendar Scheduling"
-    - "Monthly Calendar View"
-    - "Add-On Cases Management"
-    - "Task Management System"
-    - "Conference/Meeting Management"
-  stuck_tasks: []
+  stuck_tasks:
+    - "Patient Management System"
   test_all: true
-  test_priority: "sequential"
+  test_priority: "stuck_first"
 
 agent_communication:
     - agent: "testing"
       message: "Starting comprehensive OR Scheduler application testing. All services are running. Will test complete user flow from registration through all major features."
+    - agent: "testing"
+      message: "TESTING COMPLETED: ✅ Registration, Dashboard Navigation, Calendar Views, and UI components working. ❌ CRITICAL ISSUE: Patient Management form submission failing - status dropdown not working, data not persisting. Main agent should investigate Select component implementation and form submission logic."
