@@ -17,6 +17,7 @@ const PatientManagement = ({ patients, onRefresh }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingPatient, setEditingPatient] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState('pending');
 
   const getAuthHeaders = () => ({
     'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -39,7 +40,7 @@ const PatientManagement = ({ patients, onRefresh }) => {
       diagnosis: formData.get('diagnosis') || '',
       procedures: formData.get('procedures') || '',
       attending: formData.get('attending') || '',
-      status: formData.get('status') || 'pending',
+      status: selectedStatus,
     };
 
     try {
