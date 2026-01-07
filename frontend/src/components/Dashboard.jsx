@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { LogOut, Calendar, Users, CheckSquare, Video } from 'lucide-react';
-import WeeklyCalendar from './WeeklyCalendar';
+import { LogOut, Calendar, Users, CheckSquare, Video, UserPlus } from 'lucide-react';
+import EnhancedWeeklyCalendar from './EnhancedWeeklyCalendar';
 import MonthlyCalendar from './MonthlyCalendar';
 import PatientManagement from './PatientManagement';
 import TaskManager from './TaskManager';
 import ConferenceManager from './ConferenceManager';
 import AddOnList from './AddOnList';
+import PatientIntakeForm from './PatientIntakeForm';
 import { toast } from 'sonner';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
