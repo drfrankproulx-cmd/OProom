@@ -47,6 +47,80 @@ JWT_SECRET = os.environ.get('JWT_SECRET', 'your-secret-key-change-in-production'
 JWT_ALGORITHM = os.environ.get('JWT_ALGORITHM', 'HS256')
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get('ACCESS_TOKEN_EXPIRE_MINUTES', 1440))
 
+# Email Configuration
+SMTP_SERVER = os.environ.get('SMTP_SERVER', 'smtp.gmail.com')
+SMTP_PORT = int(os.environ.get('SMTP_PORT', 587))
+SMTP_USERNAME = os.environ.get('SMTP_USERNAME', '')
+SMTP_PASSWORD = os.environ.get('SMTP_PASSWORD', '')
+EMAIL_FROM = os.environ.get('EMAIL_FROM', '')
+CALENDAR_SYNC_ENABLED = os.environ.get('CALENDAR_SYNC_ENABLED', 'false').lower() == 'true'
+
+# Helper functions for email/calendar
+def create_ical_event(title, description, start_datetime, end_datetime, location="", attendees=[]):
+    """Create an iCalendar event"""
+    cal = Calendar()
+    cal.add('prodid', '-//OR Scheduler//umn.edu//')
+    cal.add('version', '2.0')
+    cal.add('method', 'REQUEST')
+    
+    event = ICalEvent()
+    event.add('summary', title)
+    event.add('description', description)
+    event.add('dtstart', start_datetime)
+    event.add('dtend', end_datetime)
+    event.add('dtstamp', datetime.now(pytz.UTC))
+    event.add('uid', f'{datetime.now().timestamp()}@orscheduler.umn.edu')
+    event.add('location', location)
+    event.add('status', 'CONFIRMED')
+    
+    # Add organizer
+    if EMAIL_FROM:
+        event.add('organizer', f'mailto:{EMAIL_FROM}')
+    
+    # Add attendees
+    for attendee in attendees:
+        event.add('attendee', f'mailto:{attendee}', parameters={'ROLE': 'REQ-PARTICIPANT', 'RSVP': 'TRUE'})
+    
+    cal.add_component(event)
+    return cal.to_ical()
+
+def send_calendar_invite(to_email, subject, body, ical_content, cc_emails=[]):
+    \"\"\"Send email with calendar invite attachment\"\"\"
+    if not CALENDAR_SYNC_ENABLED or not SMTP_USERNAME or not SMTP_PASSWORD:
+        return False
+    
+    try:
+        msg = MIMEMultipart('alternative')
+        msg['From'] = EMAIL_FROM or SMTP_USERNAME
+        msg['To'] = to_email
+        if cc_emails:
+            msg['Cc'] = ', '.join(cc_emails)
+        msg['Subject'] = subject
+        
+        # Add text body
+        msg.attach(MIMEText(body, 'plain'))
+        
+        # Attach calendar invite
+        ical_attach = MIMEBase('text', 'calendar', method='REQUEST', name='invite.ics')
+        ical_attach.set_payload(ical_content)
+        encoders.encode_base64(ical_attach)
+        ical_attach.add_header('Content-Disposition', 'attachment', filename='invite.ics')
+        msg.attach(ical_attach)
+        
+        # Send email
+        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+        server.starttls()
+        server.login(SMTP_USERNAME, SMTP_PASSWORD)
+        
+        recipients = [to_email] + cc_emails
+        server.sendmail(EMAIL_FROM or SMTP_USERNAME, recipients, msg.as_string())
+        server.quit()
+        
+        return True
+    except Exception as e:
+        print(f\"Email send error: {str(e)}\")
+        return False
+
 # Models
 class UserRegister(BaseModel):
     email: EmailStr
