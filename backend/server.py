@@ -327,6 +327,54 @@ async def create_schedule(schedule: Schedule, current_user: str = Depends(get_cu
     result = schedules_collection.insert_one(schedule_dict)
     schedule_dict["_id"] = str(result.inserted_id)
     
+    # Send calendar invite if enabled and scheduled date exists
+    if CALENDAR_SYNC_ENABLED and schedule.scheduled_date and not schedule.is_addon:
+        try:
+            # Parse date and time
+            schedule_date = datetime.fromisoformat(schedule.scheduled_date)
+            schedule_time_parts = schedule.scheduled_time.split(':') if schedule.scheduled_time else ['08', '00']
+            start_datetime = datetime(
+                schedule_date.year,
+                schedule_date.month,
+                schedule_date.day,
+                int(schedule_time_parts[0]),
+                int(schedule_time_parts[1]),
+                tzinfo=pytz.timezone('America/Chicago')
+            )
+            end_datetime = start_datetime + timedelta(hours=2)  # Default 2 hour procedure
+            
+            # Create calendar event
+            title = f"OR Case: {schedule.patient_name} - {schedule.procedure}"
+            description = f\"\"\"
+OR Surgical Case
+
+Patient: {schedule.patient_name} (MRN: {schedule.patient_mrn})
+Procedure: {schedule.procedure}
+Attending Surgeon: {schedule.staff}
+Status: {schedule.status}
+
+Scheduled by: {current_user}
+            \"\"\".strip()
+            
+            ical_content = create_ical_event(
+                title=title,
+                description=description,
+                start_datetime=start_datetime,
+                end_datetime=end_datetime,
+                location="Operating Room",
+                attendees=[current_user]
+            )
+            
+            # Send to current user (creator)
+            send_calendar_invite(
+                to_email=current_user,
+                subject=f"OR Case Scheduled: {schedule.patient_name}",
+                body=description,
+                ical_content=ical_content
+            )
+        except Exception as e:
+            print(f"Calendar invite error: {str(e)}")
+    
     return schedule_dict
 
 @app.get("/api/schedules")
