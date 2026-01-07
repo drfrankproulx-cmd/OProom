@@ -69,6 +69,7 @@ const PatientManagement = ({ patients, onRefresh }) => {
 
   const handleEdit = (patient) => {
     setEditingPatient(patient);
+    setSelectedStatus(patient.status || 'pending');
     setIsDialogOpen(true);
   };
 
