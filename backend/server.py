@@ -461,6 +461,52 @@ async def create_conference(conference: Conference, current_user: str = Depends(
     result = conferences_collection.insert_one(conference_dict)
     conference_dict["_id"] = str(result.inserted_id)
     
+    # Send calendar invites if enabled
+    if CALENDAR_SYNC_ENABLED and conference.date:
+        try:
+            # Parse date and time
+            conf_date = datetime.fromisoformat(conference.date)
+            time_parts = conference.time.split(':') if conference.time else ['08', '00']
+            start_datetime = datetime(
+                conf_date.year,
+                conf_date.month,
+                conf_date.day,
+                int(time_parts[0]),
+                int(time_parts[1]),
+                tzinfo=pytz.timezone('America/Chicago')
+            )
+            end_datetime = start_datetime + timedelta(hours=1)  # Default 1 hour meeting
+            
+            # Create calendar event
+            description = f\"\"\"
+{conference.title}
+
+{conference.notes if conference.notes else 'No additional notes'}
+
+Organizer: {current_user}
+Attendees: {', '.join(conference.attendees) if conference.attendees else 'None listed'}
+            \"\"\".strip()
+            
+            ical_content = create_ical_event(
+                title=conference.title,
+                description=description,
+                start_datetime=start_datetime,
+                end_datetime=end_datetime,
+                location="Conference Room",
+                attendees=conference.attendees if conference.attendees else []
+            )
+            
+            # Send to organizer
+            send_calendar_invite(
+                to_email=current_user,
+                subject=f"Meeting Scheduled: {conference.title}",
+                body=description,
+                ical_content=ical_content,
+                cc_emails=conference.attendees if conference.attendees else []
+            )
+        except Exception as e:
+            print(f"Calendar invite error: {str(e)}")
+    
     return conference_dict
 
 @app.get("/api/conferences")
