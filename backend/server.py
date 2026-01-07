@@ -9,6 +9,13 @@ from bson import ObjectId
 import os
 import jwt
 from passlib.context import CryptContext
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
+from icalendar import Calendar, Event as ICalEvent
+import pytz
 
 app = FastAPI()
 
