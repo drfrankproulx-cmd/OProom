@@ -94,6 +94,15 @@ export const Dashboard = ({ user, onLogout }) => {
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => setIsIntakeFormOpen(true)}
+                className="hidden sm:flex transition-smooth shadow-md"
+              >
+                <UserPlus className="h-4 w-4 mr-2" />
+                New Patient
+              </Button>
               <div className="text-right hidden sm:block">
                 <p className="text-sm font-medium text-foreground">{user?.full_name}</p>
                 <p className="text-xs text-muted-foreground capitalize">{user?.role}</p>
