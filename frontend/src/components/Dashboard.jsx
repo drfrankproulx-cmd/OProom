@@ -20,6 +20,7 @@ export const Dashboard = ({ user, onLogout }) => {
   const [tasks, setTasks] = useState([]);
   const [conferences, setConferences] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isIntakeFormOpen, setIsIntakeFormOpen] = useState(false);
 
   const getAuthHeaders = () => ({
     'Authorization': `Bearer ${localStorage.getItem('token')}`,
