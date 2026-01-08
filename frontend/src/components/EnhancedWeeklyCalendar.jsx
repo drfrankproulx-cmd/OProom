@@ -119,7 +119,11 @@ const EnhancedWeeklyCalendar = ({ schedules, conferences, onRefresh }) => {
         body: JSON.stringify(updatedSchedule),
       });
 
-      if (!response.ok) throw new Error('Failed to reschedule');
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.detail || 'Failed to reschedule');
+      }
 
       toast.success('Case rescheduled successfully!');
       onRefresh();
