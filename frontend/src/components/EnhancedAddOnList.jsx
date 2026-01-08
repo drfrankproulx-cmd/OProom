@@ -85,7 +85,11 @@ const EnhancedAddOnList = ({ schedules, onRefresh, onDragStart }) => {
         headers: getAuthHeaders(),
       });
 
-      if (!response.ok) throw new Error('Failed to delete');
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.detail || 'Failed to delete');
+      }
 
       toast.success('Patient removed from add-on list');
       onRefresh();
@@ -118,7 +122,11 @@ const EnhancedAddOnList = ({ schedules, onRefresh, onDragStart }) => {
         body: JSON.stringify(updatedSchedule),
       });
 
-      if (!response.ok) throw new Error('Failed to schedule');
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.detail || 'Failed to schedule');
+      }
 
       toast.success('Patient scheduled successfully!');
       onRefresh();
@@ -142,7 +150,11 @@ const EnhancedAddOnList = ({ schedules, onRefresh, onDragStart }) => {
         body: JSON.stringify(updatedSchedule),
       });
 
-      if (!response.ok) throw new Error('Failed to update priority');
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.detail || 'Failed to update priority');
+      }
 
       toast.success('Priority updated');
       onRefresh();
