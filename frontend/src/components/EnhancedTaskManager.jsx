@@ -86,7 +86,11 @@ const EnhancedTaskManager = ({ tasks, patients, onRefresh, currentUser }) => {
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) throw new Error('Failed to create task');
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.detail || 'Failed to create task');
+      }
 
       toast.success('Task created successfully!');
       setIsDialogOpen(false);
@@ -104,7 +108,11 @@ const EnhancedTaskManager = ({ tasks, patients, onRefresh, currentUser }) => {
         headers: getAuthHeaders(),
       });
 
-      if (!response.ok) throw new Error('Failed to update task');
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.detail || 'Failed to update task');
+      }
 
       onRefresh();
     } catch (error) {
