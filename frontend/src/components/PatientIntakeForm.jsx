@@ -140,7 +140,11 @@ export const PatientIntakeForm = ({ isOpen, onClose, onSuccess, editingPatient =
         body: JSON.stringify(patientData),
       });
 
-      if (!patientResponse.ok) throw new Error('Failed to save patient');
+      const patientResult = await patientResponse.json();
+
+      if (!patientResponse.ok) {
+        throw new Error(patientResult.detail || 'Failed to save patient');
+      }
 
       // If OR date is selected, create schedule
       if (formData.or_date) {
@@ -161,7 +165,11 @@ export const PatientIntakeForm = ({ isOpen, onClose, onSuccess, editingPatient =
           body: JSON.stringify(scheduleData),
         });
 
-        if (!scheduleResponse.ok) throw new Error('Failed to schedule case');
+        const scheduleResult = await scheduleResponse.json();
+
+        if (!scheduleResponse.ok) {
+          throw new Error(scheduleResult.detail || 'Failed to schedule case');
+        }
         toast.success('Patient saved and scheduled successfully!');
       } else {
         // Add to add-on list
@@ -181,7 +189,11 @@ export const PatientIntakeForm = ({ isOpen, onClose, onSuccess, editingPatient =
           body: JSON.stringify(addOnData),
         });
 
-        if (!addOnResponse.ok) throw new Error('Failed to add to add-on list');
+        const addOnResult = await addOnResponse.json();
+
+        if (!addOnResponse.ok) {
+          throw new Error(addOnResult.detail || 'Failed to add to add-on list');
+        }
         toast.success('Patient saved to add-on list!');
       }
 
