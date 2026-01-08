@@ -126,11 +126,17 @@ class UserRegister(BaseModel):
     email: EmailStr
     password: str
     full_name: str
-    role: str = "resident"
+    role: str = "resident"  # resident, attending, admin
 
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
+
+class PatientComment(BaseModel):
+    comment_text: str
+    patient_mrn: str
+    created_by: Optional[str] = None
+    created_at: Optional[datetime] = None
 
 class Patient(BaseModel):
     mrn: str
@@ -141,8 +147,12 @@ class Patient(BaseModel):
     procedure_code: Optional[str] = None
     attending: Optional[str] = None
     status: str = "pending"
+    comments: List[dict] = []
+    activity_log: List[dict] = []
     created_by: Optional[str] = None
     created_at: Optional[datetime] = None
+    updated_by: Optional[str] = None
+    updated_at: Optional[datetime] = None
 
 class Schedule(BaseModel):
     patient_mrn: str
