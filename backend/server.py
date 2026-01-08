@@ -283,6 +283,14 @@ async def get_current_user_info(current_user: str = Depends(get_current_user)):
         "role": db_user["role"]
     }
 
+@app.get("/api/users")
+async def get_all_users(current_user: str = Depends(get_current_user)):
+    """Get all registered users for task assignment dropdown"""
+    users = list(users_collection.find({}, {"email": 1, "full_name": 1, "role": 1}))
+    for user in users:
+        user["_id"] = str(user["_id"])
+    return users
+
 # Patient routes
 @app.post("/api/patients")
 async def create_patient(patient: Patient, current_user: str = Depends(get_current_user)):
