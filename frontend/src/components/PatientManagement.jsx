@@ -55,7 +55,11 @@ const PatientManagement = ({ patients, onRefresh }) => {
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) throw new Error(`Failed to ${editingPatient ? 'update' : 'add'} patient`);
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.detail || `Failed to ${editingPatient ? 'update' : 'add'} patient`);
+      }
 
       toast.success(`Patient ${editingPatient ? 'updated' : 'added'} successfully!`);
       setIsDialogOpen(false);
@@ -82,7 +86,11 @@ const PatientManagement = ({ patients, onRefresh }) => {
         headers: getAuthHeaders(),
       });
 
-      if (!response.ok) throw new Error('Failed to delete patient');
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.detail || 'Failed to delete patient');
+      }
 
       toast.success('Patient deleted successfully');
       onRefresh();
