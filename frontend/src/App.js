@@ -47,7 +47,7 @@ function App() {
       {!isAuthenticated ? (
         <AuthPage onLogin={handleLogin} />
       ) : (
-        <SinglePageDashboard user={user} onLogout={handleLogout} />
+        <ResponsiveDashboard user={user} onLogout={handleLogout} />
       )}
       <Toaster position="top-right" />
     </>
