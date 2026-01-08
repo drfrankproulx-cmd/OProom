@@ -60,7 +60,11 @@ const ConferenceManager = ({ conferences, onRefresh }) => {
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) throw new Error('Failed to create conference');
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.detail || 'Failed to create conference');
+      }
 
       toast.success('Conference scheduled successfully!');
       setIsDialogOpen(false);
@@ -80,7 +84,11 @@ const ConferenceManager = ({ conferences, onRefresh }) => {
         headers: getAuthHeaders(),
       });
 
-      if (!response.ok) throw new Error('Failed to delete conference');
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.detail || 'Failed to delete conference');
+      }
 
       toast.success('Conference deleted successfully');
       onRefresh();
