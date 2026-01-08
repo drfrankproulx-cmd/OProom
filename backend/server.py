@@ -297,6 +297,13 @@ async def create_patient(patient: Patient, current_user: str = Depends(get_curre
     patient_dict = patient.dict()
     patient_dict["created_by"] = current_user
     patient_dict["created_at"] = datetime.utcnow()
+    patient_dict["activity_log"] = [{
+        "action": "created",
+        "user": current_user,
+        "timestamp": datetime.utcnow().isoformat(),
+        "details": f"Patient record created"
+    }]
+    patient_dict["comments"] = []
     
     result = patients_collection.insert_one(patient_dict)
     patient_dict["_id"] = str(result.inserted_id)
@@ -320,13 +327,77 @@ async def get_patient(mrn: str, current_user: str = Depends(get_current_user)):
 
 @app.put("/api/patients/{mrn}")
 async def update_patient(mrn: str, patient: Patient, current_user: str = Depends(get_current_user)):
+    # Get current patient to compare changes
+    current_patient = patients_collection.find_one({"mrn": mrn})
+    if not current_patient:
+        raise HTTPException(status_code=404, detail="Patient not found")
+    
+    patient_dict = patient.dict()
+    patient_dict["updated_by"] = current_user
+    patient_dict["updated_at"] = datetime.utcnow()
+    
+    # Add activity log entry
+    if "activity_log" not in patient_dict:
+        patient_dict["activity_log"] = current_patient.get("activity_log", [])
+    
+    changes = []
+    for key in ["patient_name", "dob", "diagnosis", "procedures", "attending", "status"]:
+        if current_patient.get(key) != patient_dict.get(key):
+            changes.append(f"{key}: {current_patient.get(key)} → {patient_dict.get(key)}")
+    
+    if changes:
+        patient_dict["activity_log"].append({
+            "action": "updated",
+            "user": current_user,
+            "timestamp": datetime.utcnow().isoformat(),
+            "details": ", ".join(changes)
+        })
+    
     result = patients_collection.update_one(
         {"mrn": mrn},
-        {"$set": patient.dict()}
+        {"$set": patient_dict}
     )
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Patient not found")
     return {"message": "Patient updated successfully"}
+
+@app.post("/api/patients/{mrn}/comments")
+async def add_patient_comment(mrn: str, comment: PatientComment, current_user: str = Depends(get_current_user)):
+    """Add a comment to a patient's record"""
+    patient = patients_collection.find_one({"mrn": mrn})
+    if not patient:
+        raise HTTPException(status_code=404, detail="Patient not found")
+    
+    comment_dict = {
+        "comment_text": comment.comment_text,
+        "created_by": current_user,
+        "created_at": datetime.utcnow().isoformat()
+    }
+    
+    # Get user's full name
+    user = users_collection.find_one({"email": current_user})
+    if user:
+        comment_dict["created_by_name"] = user.get("full_name", current_user)
+    
+    result = patients_collection.update_one(
+        {"mrn": mrn},
+        {
+            "$push": {
+                "comments": comment_dict,
+                "activity_log": {
+                    "action": "comment_added",
+                    "user": current_user,
+                    "timestamp": datetime.utcnow().isoformat(),
+                    "details": f"Added comment: {comment.comment_text[:50]}..."
+                }
+            }
+        }
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Patient not found")
+    
+    return comment_dict
 
 @app.delete("/api/patients/{mrn}")
 async def delete_patient(mrn: str, current_user: str = Depends(get_current_user)):
