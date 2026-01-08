@@ -46,10 +46,7 @@ export const ResponsiveDashboard = ({ user, onLogout }) => {
         fetch(`${API_URL}/api/conferences`, { headers: getAuthHeaders() }),
       ]);
 
-      if (!patientsRes.ok || !schedulesRes.ok || !tasksRes.ok || !conferencesRes.ok) {
-        throw new Error('Failed to fetch data');
-      }
-
+      // Read JSON first, then check status
       const [patientsData, schedulesData, tasksData, conferencesData] = await Promise.all([
         patientsRes.json(),
         schedulesRes.json(),
@@ -57,11 +54,17 @@ export const ResponsiveDashboard = ({ user, onLogout }) => {
         conferencesRes.json(),
       ]);
 
+      // Check status after reading JSON
+      if (!patientsRes.ok || !schedulesRes.ok || !tasksRes.ok || !conferencesRes.ok) {
+        throw new Error('Failed to fetch data');
+      }
+
       setPatients(patientsData);
       setSchedules(schedulesData);
       setTasks(tasksData);
       setConferences(conferencesData);
     } catch (error) {
+      console.error('Fetch error:', error);
       toast.error('Failed to load data');
     } finally {
       setLoading(false);
