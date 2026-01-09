@@ -85,7 +85,7 @@ def create_ical_event(title, description, start_datetime, end_datetime, location
     return cal.to_ical()
 
 def send_calendar_invite(to_email, subject, body, ical_content, cc_emails=[]):
-    \"\"\"Send email with calendar invite attachment\"\"\"
+    """Send email with calendar invite attachment"""
     if not CALENDAR_SYNC_ENABLED or not SMTP_USERNAME or not SMTP_PASSWORD:
         return False
     
@@ -118,7 +118,7 @@ def send_calendar_invite(to_email, subject, body, ical_content, cc_emails=[]):
         
         return True
     except Exception as e:
-        print(f\"Email send error: {str(e)}\")
+        print(f"Email send error: {str(e)}")
         return False
 
 # Models
@@ -434,7 +434,7 @@ async def create_schedule(schedule: Schedule, current_user: str = Depends(get_cu
             
             # Create calendar event
             title = f"OR Case: {schedule.patient_name} - {schedule.procedure}"
-            description = f\"\"\"
+            description = f"""
 OR Surgical Case
 
 Patient: {schedule.patient_name} (MRN: {schedule.patient_mrn})
@@ -443,7 +443,7 @@ Attending Surgeon: {schedule.staff}
 Status: {schedule.status}
 
 Scheduled by: {current_user}
-            \"\"\".strip()
+            """.strip()
             
             ical_content = create_ical_event(
                 title=title,
@@ -567,14 +567,14 @@ async def create_conference(conference: Conference, current_user: str = Depends(
             end_datetime = start_datetime + timedelta(hours=1)  # Default 1 hour meeting
             
             # Create calendar event
-            description = f\"\"\"
+            description = f"""
 {conference.title}
 
 {conference.notes if conference.notes else 'No additional notes'}
 
 Organizer: {current_user}
 Attendees: {', '.join(conference.attendees) if conference.attendees else 'None listed'}
-            \"\"\".strip()
+            """.strip()
             
             ical_content = create_ical_event(
                 title=conference.title,
