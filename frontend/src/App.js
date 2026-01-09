@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import AuthPage from './components/AuthPage';
-import ResponsiveDashboard from './components/ResponsiveDashboard';
+import ClinicalDashboard from './components/ClinicalDashboard';
 import { Toaster } from './components/ui/sonner';
 
 function App() {
