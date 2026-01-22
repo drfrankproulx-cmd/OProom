@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import AuthPage from './components/AuthPage';
-import ClinicalDashboard from './components/ClinicalDashboard';
+import { AppleDashboard } from './components/AppleDashboard';
 import { Toaster } from './components/ui/sonner';
 
 function App() {
@@ -47,7 +47,7 @@ function App() {
       {!isAuthenticated ? (
         <AuthPage onLogin={handleLogin} />
       ) : (
-        <ClinicalDashboard user={user} onLogout={handleLogout} />
+        <AppleDashboard user={user} onLogout={handleLogout} />
       )}
       <Toaster position="top-right" />
     </>
