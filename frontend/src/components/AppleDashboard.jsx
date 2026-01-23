@@ -4,7 +4,6 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Badge } from './ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
 import { toast } from 'sonner';
 import { format, startOfWeek, addDays, parseISO, isToday, isSameDay } from 'date-fns';
 import {
@@ -18,7 +17,8 @@ import {
   Users,
   Activity,
   Bell,
-  Settings as SettingsIcon
+  Settings as SettingsIcon,
+  X
 } from 'lucide-react';
 import Settings from './Settings';
 
@@ -101,7 +101,6 @@ export const AppleDashboard = ({ user, onLogout }) => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPatient, setSelectedPatient] = useState(null);
-  const [showQuickAdd, setShowQuickAdd] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
 
@@ -385,15 +384,14 @@ export const AppleDashboard = ({ user, onLogout }) => {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-8 py-8">
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+      <main className="px-4 py-4">
+        {/* Quick Stats - More Compact */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
           <StatsCard
             title="Today's Schedule"
             value={todaySchedules}
             icon={CalendarIcon}
             gradient="from-blue-500 to-blue-600"
-            trend="+2 from yesterday"
           />
           <StatsCard
             title="This Week"
@@ -415,424 +413,337 @@ export const AppleDashboard = ({ user, onLogout }) => {
           />
         </div>
 
-        {/* Quick Access - Team Members */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          {/* Residents Dropdown */}
-          <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Residents on Service</h3>
-              <Badge className="bg-blue-100 text-blue-700 text-sm px-3 py-1 rounded-full font-medium">
-                {residents.length}
-              </Badge>
-            </div>
-            <Select>
-              <SelectTrigger className="h-12 text-base rounded-xl border-gray-300">
-                <SelectValue placeholder="Select a resident" />
-              </SelectTrigger>
-              <SelectContent>
-                {residents.length > 0 ? (
-                  residents.map((resident) => (
-                    <SelectItem key={resident._id} value={resident._id}>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
-                          {getInitials(resident.name)}
-                        </div>
-                        <div>
-                          <span className="font-medium">{resident.name}</span>
-                          <span className="text-gray-500 ml-2 text-sm">
-                            {resident.year && `(${resident.year})`} {resident.specialty && `• ${resident.specialty}`}
-                          </span>
-                        </div>
-                      </div>
-                    </SelectItem>
-                  ))
-                ) : (
-                  <SelectItem value="none" disabled>No residents added yet</SelectItem>
+        {/* Consolidated 3-Column Layout */}
+        <div className="grid grid-cols-12 gap-4">
+          {/* LEFT COLUMN: Weekly Cases + Add-on Cases */}
+          <div className="col-span-2 space-y-4">
+            {/* Weekly Cases */}
+            <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg p-4">
+              <h3 className="font-bold text-gray-900 text-sm mb-3 flex items-center justify-between">
+                <span>WEEKLY ({weeklySchedules.length})</span>
+              </h3>
+              <div className="space-y-2 max-h-[400px] overflow-y-auto">
+                {weeklySchedules.map(schedule => {
+                  const patient = patients.find(p => p.mrn === schedule.patient_mrn);
+                  return (
+                    <div
+                      key={schedule._id}
+                      className="p-2 bg-blue-50 rounded-lg hover:bg-blue-100 cursor-pointer transition-colors text-xs"
+                      onClick={() => setSelectedPatient(patient)}
+                    >
+                      <div className="font-semibold text-gray-900">{getInitials(schedule.patient_name)}</div>
+                      <div className="text-gray-600 truncate">{schedule.staff}</div>
+                      <div className="text-gray-500 text-xs">{schedule.scheduled_date && format(parseISO(schedule.scheduled_date), 'MMM d')}</div>
+                    </div>
+                  );
+                })}
+                {weeklySchedules.length === 0 && (
+                  <div className="text-center text-gray-400 text-xs py-4">No cases</div>
                 )}
-              </SelectContent>
-            </Select>
-            {residents.length === 0 && (
-              <p className="text-sm text-gray-500 mt-3">
-                Add residents in <button onClick={() => setShowSettings(true)} className="text-blue-600 hover:underline font-medium">Settings</button>
-              </p>
-            )}
-          </div>
-
-          {/* Attendings Dropdown */}
-          <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Attending Physicians</h3>
-              <Badge className="bg-purple-100 text-purple-700 text-sm px-3 py-1 rounded-full font-medium">
-                {attendings.length}
-              </Badge>
+              </div>
             </div>
-            <Select>
-              <SelectTrigger className="h-12 text-base rounded-xl border-gray-300">
-                <SelectValue placeholder="Select an attending" />
-              </SelectTrigger>
-              <SelectContent>
-                {attendings.length > 0 ? (
-                  attendings.map((attending) => (
-                    <SelectItem key={attending._id} value={attending._id}>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-8 h-8 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
-                          {getInitials(attending.name)}
-                        </div>
-                        <div>
-                          <span className="font-medium">{attending.name}</span>
-                          <span className="text-gray-500 ml-2 text-sm">
-                            {attending.specialty && `• ${attending.specialty}`}
-                          </span>
-                        </div>
-                      </div>
-                    </SelectItem>
-                  ))
-                ) : (
-                  <SelectItem value="none" disabled>No attendings added yet</SelectItem>
+
+            {/* Add-on Cases */}
+            <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg p-4">
+              <h3 className="font-bold text-gray-900 text-sm mb-3 flex items-center justify-between">
+                <span>ADD-ONS ({addOnCases.length})</span>
+              </h3>
+              <div className="space-y-2 max-h-[400px] overflow-y-auto">
+                {addOnCases.map(addOn => {
+                  const patient = patients.find(p => p.mrn === addOn.patient_mrn);
+                  return (
+                    <div
+                      key={addOn._id}
+                      className="p-2 bg-orange-50 rounded-lg hover:bg-orange-100 cursor-pointer transition-colors text-xs"
+                      onClick={() => setSelectedPatient(patient)}
+                    >
+                      <div className="font-semibold text-gray-900">{getInitials(addOn.patient_name)}</div>
+                      <div className="text-gray-600 truncate">{addOn.procedure}</div>
+                      <Badge variant="outline" className="bg-white text-xs px-2 py-0 mt-1">
+                        {addOn.priority || 'medium'}
+                      </Badge>
+                    </div>
+                  );
+                })}
+                {addOnCases.length === 0 && (
+                  <div className="text-center text-gray-400 text-xs py-4">No add-ons</div>
                 )}
-              </SelectContent>
-            </Select>
-            {attendings.length === 0 && (
-              <p className="text-sm text-gray-500 mt-3">
-                Add attendings in <button onClick={() => setShowSettings(true)} className="text-blue-600 hover:underline font-medium">Settings</button>
-              </p>
-            )}
-          </div>
-        </div>
-
-        {/* Calendar Section */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl p-8 mb-8">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">This Week</h2>
-              <p className="text-gray-600 text-base">
-                {format(weekStart, 'MMMM d')} - {format(addDays(weekStart, 6), 'MMMM d, yyyy')}
-              </p>
+              </div>
             </div>
-            <div className="flex items-center space-x-3">
-              <Button
-                onClick={() => setCurrentDate(addDays(currentDate, -7))}
-                variant="outline"
-                className="rounded-full w-12 h-12 p-0 hover:bg-gray-100 border-gray-300"
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </Button>
-              <Button
-                onClick={() => setCurrentDate(new Date())}
-                variant="outline"
-                className="rounded-full px-6 py-3 hover:bg-gray-100 border-gray-300 font-medium"
-              >
-                Today
-              </Button>
-              <Button
-                onClick={() => setCurrentDate(addDays(currentDate, 7))}
-                variant="outline"
-                className="rounded-full w-12 h-12 p-0 hover:bg-gray-100 border-gray-300"
-              >
-                <ChevronRight className="h-5 w-5" />
-              </Button>
-              <Dialog open={showQuickAdd} onOpenChange={setShowQuickAdd}>
-                <DialogTrigger asChild>
-                  <Button className="bg-blue-500 hover:bg-blue-600 text-white rounded-full px-6 py-3 font-medium ml-4 shadow-lg hover:shadow-xl transition-all">
-                    <Plus className="h-5 w-5 mr-2" />
-                    Add New
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-2xl rounded-3xl">
-                  <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold text-gray-900">Add New Patient</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-6 py-6">
-                    <div className="grid grid-cols-2 gap-6">
-                      <div>
-                        <Label className="text-base font-medium text-gray-700 mb-2 block">Patient Name</Label>
-                        <Input
-                          className="h-12 text-base rounded-xl border-gray-300"
-                          value={intakeForm.patient_name}
-                          onChange={(e) => setIntakeForm({...intakeForm, patient_name: e.target.value})}
-                          placeholder="Enter full name"
-                        />
-                      </div>
-                      <div>
-                        <Label className="text-base font-medium text-gray-700 mb-2 block">Patient ID</Label>
-                        <Input
-                          className="h-12 text-base rounded-xl border-gray-300"
-                          value={intakeForm.mrn}
-                          onChange={(e) => setIntakeForm({...intakeForm, mrn: e.target.value})}
-                          placeholder="Enter ID number"
-                        />
-                      </div>
-                    </div>
 
-                    <div className="grid grid-cols-2 gap-6">
-                      <div>
-                        <Label className="text-base font-medium text-gray-700 mb-2 block">Date of Birth</Label>
-                        <Input
-                          type="date"
-                          className="h-12 text-base rounded-xl border-gray-300"
-                          value={intakeForm.dob}
-                          onChange={(e) => setIntakeForm({...intakeForm, dob: e.target.value})}
-                        />
-                      </div>
-                      <div>
-                        <Label className="text-base font-medium text-gray-700 mb-2 block">Attending Physician</Label>
-                        <Select value={intakeForm.attending} onValueChange={(v) => setIntakeForm({...intakeForm, attending: v})}>
-                          <SelectTrigger className="h-12 text-base rounded-xl border-gray-300">
-                            <SelectValue placeholder="Select attending" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {attendings.length > 0 ? (
-                              attendings.map((attending) => (
-                                <SelectItem key={attending._id} value={attending.name}>
-                                  {attending.name} {attending.specialty && `- ${attending.specialty}`}
-                                </SelectItem>
-                              ))
-                            ) : (
-                              <SelectItem value="none" disabled>No attendings available</SelectItem>
-                            )}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-
-                    <div>
-                      <Label className="text-base font-medium text-gray-700 mb-2 block">Diagnosis</Label>
-                      <Input
-                        className="h-12 text-base rounded-xl border-gray-300"
-                        value={intakeForm.diagnosis}
-                        onChange={(e) => setIntakeForm({...intakeForm, diagnosis: e.target.value})}
-                        placeholder="Enter diagnosis"
-                      />
-                    </div>
-
-                    <div>
-                      <Label className="text-base font-medium text-gray-700 mb-2 block">Procedure</Label>
-                      <Input
-                        className="h-12 text-base rounded-xl border-gray-300"
-                        value={intakeForm.procedures}
-                        onChange={(e) => setIntakeForm({...intakeForm, procedures: e.target.value})}
-                        placeholder="Enter procedure"
-                      />
-                    </div>
-
-                    <div>
-                      <Label className="text-base font-medium text-gray-700 mb-2 block">Procedure Code (Optional)</Label>
-                      <Input
-                        className="h-12 text-base rounded-xl border-gray-300"
-                        value={intakeForm.procedure_code}
-                        onChange={(e) => setIntakeForm({...intakeForm, procedure_code: e.target.value})}
-                        placeholder="Enter code"
-                      />
-                    </div>
-
-                    <div className="flex space-x-4 pt-4">
-                      <Button
-                        onClick={handleQuickAdd}
-                        className="flex-1 bg-blue-500 hover:bg-blue-600 text-white rounded-xl py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all"
-                      >
-                        Add Patient
-                      </Button>
-                      <Button
-                        onClick={() => setShowQuickAdd(false)}
-                        variant="outline"
-                        className="flex-1 rounded-xl py-6 text-base font-medium border-gray-300"
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                  </div>
-                </DialogContent>
-              </Dialog>
-            </div>
-          </div>
-
-          {/* Calendar Grid */}
-          <div className="grid grid-cols-7 gap-4">
-            {weekDays.map((day) => {
-              const daySchedules = getSchedulesForDate(day);
-              const today = isToday(day);
-              return (
-                <div
-                  key={day.toISOString()}
-                  className={`rounded-2xl p-4 min-h-[400px] transition-all ${
-                    today
-                      ? 'bg-gradient-to-br from-blue-50 to-blue-100 ring-2 ring-blue-400'
-                      : 'bg-gray-50'
-                  }`}
-                >
-                  <div className="text-center mb-4">
-                    <div className="text-gray-600 text-sm font-medium mb-1">
-                      {format(day, 'EEE')}
-                    </div>
-                    <div className={`text-3xl font-bold ${
-                      today ? 'text-blue-600' : 'text-gray-900'
-                    }`}>
-                      {format(day, 'd')}
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    {daySchedules.map(schedule => {
-                      const patient = patients.find(p => p.mrn === schedule.patient_mrn);
-                      return (
-                        <EventCard
-                          key={schedule._id}
-                          schedule={schedule}
-                          patient={patient}
-                          onClick={() => setSelectedPatient(patient)}
-                        />
-                      );
-                    })}
-                    {daySchedules.length === 0 && (
-                      <div className="text-center text-gray-400 text-sm py-8">
-                        No events
+            {/* Urgent Tasks */}
+            <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg p-4">
+              <h3 className="font-bold text-gray-900 text-sm mb-3">URGENT ({urgentTasks.length})</h3>
+              <div className="space-y-2 max-h-[300px] overflow-y-auto">
+                {urgentTasks.map(task => (
+                  <div key={task._id} className="p-2 bg-red-50 rounded-lg text-xs">
+                    <div className="font-medium text-gray-900 leading-tight">{task.task_description}</div>
+                    {task.due_date && (
+                      <div className="text-gray-500 text-xs mt-1">
+                        {format(parseISO(task.due_date), 'MMM d')}
                       </div>
                     )}
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Bottom Section: Pending Cases and Tasks */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Pending Cases */}
-          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl p-8">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Pending Cases</h2>
-              <Badge className="bg-orange-100 text-orange-700 text-base px-4 py-1 rounded-full font-medium">
-                {addOnCases.length}
-              </Badge>
+                ))}
+                {urgentTasks.length === 0 && (
+                  <div className="text-center text-gray-400 text-xs py-4">All caught up!</div>
+                )}
+              </div>
             </div>
-            <div className="space-y-3 max-h-96 overflow-y-auto">
-              {addOnCases.slice(0, 8).map(addOn => {
-                const patient = patients.find(p => p.mrn === addOn.patient_mrn);
-                return (
-                  <div
-                    key={addOn._id}
-                    className="flex items-center justify-between p-4 bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl hover:shadow-md transition-all cursor-pointer"
-                    onClick={() => setSelectedPatient(patient)}
+          </div>
+
+          {/* CENTER COLUMN: Calendar */}
+          <div className="col-span-7">
+            <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl p-6">
+              {/* Calendar Header */}
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-1">This Week</h2>
+                  <p className="text-gray-600 text-sm">
+                    {format(weekStart, 'MMMM d')} - {format(addDays(weekStart, 6), 'MMM d, yyyy')}
+                  </p>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    onClick={() => setCurrentDate(addDays(currentDate, -7))}
+                    variant="outline"
+                    size="sm"
+                    className="rounded-full w-10 h-10 p-0"
                   >
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center font-semibold text-gray-700 shadow-sm">
-                        {getInitials(addOn.patient_name)}
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    onClick={() => setCurrentDate(new Date())}
+                    variant="outline"
+                    size="sm"
+                    className="rounded-full px-4"
+                  >
+                    Today
+                  </Button>
+                  <Button
+                    onClick={() => setCurrentDate(addDays(currentDate, 7))}
+                    variant="outline"
+                    size="sm"
+                    className="rounded-full w-10 h-10 p-0"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+
+              {/* Calendar Grid */}
+              <div className="grid grid-cols-7 gap-2">
+                {weekDays.map((day) => {
+                  const daySchedules = getSchedulesForDate(day);
+                  const today = isToday(day);
+                  return (
+                    <div
+                      key={day.toISOString()}
+                      className={`rounded-xl p-3 min-h-[450px] transition-all ${
+                        today
+                          ? 'bg-gradient-to-br from-blue-50 to-blue-100 ring-2 ring-blue-400'
+                          : 'bg-gray-50'
+                      }`}
+                    >
+                      <div className="text-center mb-3">
+                        <div className="text-gray-600 text-xs font-medium mb-1">
+                          {format(day, 'EEE')}
+                        </div>
+                        <div className={`text-2xl font-bold ${
+                          today ? 'text-blue-600' : 'text-gray-900'
+                        }`}>
+                          {format(day, 'd')}
+                        </div>
                       </div>
-                      <div>
-                        <div className="font-semibold text-gray-900 text-base">{addOn.patient_name}</div>
-                        <div className="text-gray-600 text-sm">{addOn.procedure}</div>
+
+                      <div className="space-y-2">
+                        {daySchedules.map(schedule => {
+                          const patient = patients.find(p => p.mrn === schedule.patient_mrn);
+                          return (
+                            <div
+                              key={schedule._id}
+                              onClick={() => setSelectedPatient(patient)}
+                              className="bg-white rounded-lg p-2 border-l-2 border-blue-400 hover:shadow-md transition-all cursor-pointer text-xs"
+                            >
+                              <div className="font-semibold text-gray-900 truncate">
+                                {schedule.patient_name}
+                              </div>
+                              <div className="text-gray-600 text-xs truncate">{schedule.staff}</div>
+                              {schedule.scheduled_time && (
+                                <div className="flex items-center text-gray-500 text-xs mt-1">
+                                  <Clock className="h-2.5 w-2.5 mr-1" />
+                                  {schedule.scheduled_time}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                        {daySchedules.length === 0 && (
+                          <div className="text-center text-gray-400 text-xs py-8">
+                            No events
+                          </div>
+                        )}
                       </div>
                     </div>
-                    <Badge variant="outline" className="bg-white/60 backdrop-blur-sm border-0">
-                      {addOn.priority || 'medium'}
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT COLUMN: Quick Add Form + Patient Details */}
+          <div className="col-span-3 space-y-4">
+            {/* Quick Add Form - Always Visible */}
+            <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                <Plus className="h-5 w-5 mr-2 text-blue-500" />
+                Quick Add Patient
+              </h3>
+              <div className="space-y-3">
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Patient Name</Label>
+                  <Input
+                    className="h-10 text-sm rounded-lg"
+                    value={intakeForm.patient_name}
+                    onChange={(e) => setIntakeForm({...intakeForm, patient_name: e.target.value})}
+                    placeholder="Full name"
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Patient ID</Label>
+                  <Input
+                    className="h-10 text-sm rounded-lg"
+                    value={intakeForm.mrn}
+                    onChange={(e) => setIntakeForm({...intakeForm, mrn: e.target.value})}
+                    placeholder="ID number"
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Date of Birth</Label>
+                  <Input
+                    type="date"
+                    className="h-10 text-sm rounded-lg"
+                    value={intakeForm.dob}
+                    onChange={(e) => setIntakeForm({...intakeForm, dob: e.target.value})}
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Attending</Label>
+                  <Select value={intakeForm.attending} onValueChange={(v) => setIntakeForm({...intakeForm, attending: v})}>
+                    <SelectTrigger className="h-10 text-sm rounded-lg">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {attendings.length > 0 ? (
+                        attendings.map((attending) => (
+                          <SelectItem key={attending._id} value={attending.name}>
+                            {attending.name}
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <SelectItem value="none" disabled>No attendings</SelectItem>
+                      )}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Diagnosis</Label>
+                  <Input
+                    className="h-10 text-sm rounded-lg"
+                    value={intakeForm.diagnosis}
+                    onChange={(e) => setIntakeForm({...intakeForm, diagnosis: e.target.value})}
+                    placeholder="Diagnosis"
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Procedure</Label>
+                  <Input
+                    className="h-10 text-sm rounded-lg"
+                    value={intakeForm.procedures}
+                    onChange={(e) => setIntakeForm({...intakeForm, procedures: e.target.value})}
+                    placeholder="Procedure"
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Code (Optional)</Label>
+                  <Input
+                    className="h-10 text-sm rounded-lg"
+                    value={intakeForm.procedure_code}
+                    onChange={(e) => setIntakeForm({...intakeForm, procedure_code: e.target.value})}
+                    placeholder="CPT code"
+                  />
+                </div>
+
+                <Button
+                  onClick={handleQuickAdd}
+                  className="w-full bg-blue-500 hover:bg-blue-600 text-white rounded-lg py-5 text-sm font-medium shadow-lg"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Patient
+                </Button>
+              </div>
+            </div>
+
+            {/* Patient Details - Shows when patient selected */}
+            {selectedPatient && (
+              <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-bold text-gray-900">Patient Details</h3>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setSelectedPatient(null)}
+                    className="h-8 w-8 p-0 rounded-full"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+
+                <div className="flex items-center space-x-3 mb-4 pb-4 border-b">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg">
+                    {getInitials(selectedPatient.patient_name)}
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-900">{selectedPatient.patient_name}</h4>
+                    <p className="text-gray-600 text-sm">ID: {selectedPatient.mrn}</p>
+                  </div>
+                </div>
+
+                <div className="space-y-3 text-sm">
+                  <div>
+                    <label className="text-xs font-medium text-gray-500 block mb-1">DOB</label>
+                    <p className="text-gray-900">{selectedPatient.dob || 'Not provided'}</p>
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium text-gray-500 block mb-1">Attending</label>
+                    <p className="text-gray-900">{selectedPatient.attending || 'Not assigned'}</p>
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium text-gray-500 block mb-1">Diagnosis</label>
+                    <p className="text-gray-900">{selectedPatient.diagnosis || 'Not provided'}</p>
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium text-gray-500 block mb-1">Procedure</label>
+                    <p className="text-gray-900">{selectedPatient.procedures || 'Not provided'}</p>
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium text-gray-500 block mb-1">Status</label>
+                    <Badge className="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full">
+                      {selectedPatient.status}
                     </Badge>
                   </div>
-                );
-              })}
-              {addOnCases.length === 0 && (
-                <div className="text-center text-gray-400 py-12">
-                  <p className="text-base">No pending cases</p>
                 </div>
-              )}
-            </div>
-          </div>
-
-          {/* Urgent Tasks */}
-          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl p-8">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Urgent Tasks</h2>
-              <Badge className="bg-red-100 text-red-700 text-base px-4 py-1 rounded-full font-medium">
-                {urgentTasks.length}
-              </Badge>
-            </div>
-            <div className="space-y-3 max-h-96 overflow-y-auto">
-              {urgentTasks.map(task => (
-                <div
-                  key={task._id}
-                  className="flex items-start space-x-3 p-4 bg-gradient-to-br from-red-50 to-red-100 rounded-xl hover:shadow-md transition-all"
-                >
-                  <div className="flex-shrink-0 mt-1">
-                    <div className="w-5 h-5 rounded-full border-2 border-red-400"></div>
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-medium text-gray-900 text-base mb-1">
-                      {task.task_description}
-                    </div>
-                    {task.due_date && (
-                      <div className="text-gray-600 text-sm">
-                        Due {format(parseISO(task.due_date), 'MMM d, yyyy')}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-              {urgentTasks.length === 0 && (
-                <div className="text-center text-gray-400 py-12">
-                  <CheckCircle2 className="h-12 w-12 mx-auto mb-3 text-gray-300" />
-                  <p className="text-base">All caught up!</p>
-                </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
       </main>
-
-      {/* Patient Details Modal */}
-      {selectedPatient && (
-        <Dialog open={!!selectedPatient} onOpenChange={() => setSelectedPatient(null)}>
-          <DialogContent className="max-w-2xl rounded-3xl">
-            <DialogHeader>
-              <DialogTitle className="text-2xl font-bold text-gray-900">Patient Details</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-6 py-6">
-              <div className="flex items-center space-x-4 pb-6 border-b border-gray-200">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-2xl shadow-lg">
-                  {getInitials(selectedPatient.patient_name)}
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-gray-900">{selectedPatient.patient_name}</h3>
-                  <p className="text-gray-600 text-base">ID: {selectedPatient.mrn}</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-6">
-                <div>
-                  <label className="text-sm font-medium text-gray-500 block mb-1">Date of Birth</label>
-                  <p className="text-base text-gray-900">{selectedPatient.dob || 'Not provided'}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500 block mb-1">Doctor</label>
-                  <p className="text-base text-gray-900">{selectedPatient.attending || 'Not assigned'}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500 block mb-1">Diagnosis</label>
-                  <p className="text-base text-gray-900">{selectedPatient.diagnosis || 'Not provided'}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500 block mb-1">Status</label>
-                  <Badge className="bg-blue-100 text-blue-700 text-base px-4 py-1 rounded-full font-medium">
-                    {selectedPatient.status}
-                  </Badge>
-                </div>
-              </div>
-
-              {selectedPatient.procedures && (
-                <div>
-                  <label className="text-sm font-medium text-gray-500 block mb-1">Procedures</label>
-                  <p className="text-base text-gray-900">{selectedPatient.procedures}</p>
-                </div>
-              )}
-
-              <Button
-                onClick={() => setSelectedPatient(null)}
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white rounded-xl py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all"
-              >
-                Close
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
     </div>
   );
 };
