@@ -415,6 +415,91 @@ export const AppleDashboard = ({ user, onLogout }) => {
           />
         </div>
 
+        {/* Quick Access - Team Members */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          {/* Residents Dropdown */}
+          <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Residents on Service</h3>
+              <Badge className="bg-blue-100 text-blue-700 text-sm px-3 py-1 rounded-full font-medium">
+                {residents.length}
+              </Badge>
+            </div>
+            <Select>
+              <SelectTrigger className="h-12 text-base rounded-xl border-gray-300">
+                <SelectValue placeholder="Select a resident" />
+              </SelectTrigger>
+              <SelectContent>
+                {residents.length > 0 ? (
+                  residents.map((resident) => (
+                    <SelectItem key={resident._id} value={resident._id}>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                          {getInitials(resident.name)}
+                        </div>
+                        <div>
+                          <span className="font-medium">{resident.name}</span>
+                          <span className="text-gray-500 ml-2 text-sm">
+                            {resident.year && `(${resident.year})`} {resident.specialty && `• ${resident.specialty}`}
+                          </span>
+                        </div>
+                      </div>
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem value="none" disabled>No residents added yet</SelectItem>
+                )}
+              </SelectContent>
+            </Select>
+            {residents.length === 0 && (
+              <p className="text-sm text-gray-500 mt-3">
+                Add residents in <button onClick={() => setShowSettings(true)} className="text-blue-600 hover:underline font-medium">Settings</button>
+              </p>
+            )}
+          </div>
+
+          {/* Attendings Dropdown */}
+          <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Attending Physicians</h3>
+              <Badge className="bg-purple-100 text-purple-700 text-sm px-3 py-1 rounded-full font-medium">
+                {attendings.length}
+              </Badge>
+            </div>
+            <Select>
+              <SelectTrigger className="h-12 text-base rounded-xl border-gray-300">
+                <SelectValue placeholder="Select an attending" />
+              </SelectTrigger>
+              <SelectContent>
+                {attendings.length > 0 ? (
+                  attendings.map((attending) => (
+                    <SelectItem key={attending._id} value={attending._id}>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-8 h-8 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                          {getInitials(attending.name)}
+                        </div>
+                        <div>
+                          <span className="font-medium">{attending.name}</span>
+                          <span className="text-gray-500 ml-2 text-sm">
+                            {attending.specialty && `• ${attending.specialty}`}
+                          </span>
+                        </div>
+                      </div>
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem value="none" disabled>No attendings added yet</SelectItem>
+                )}
+              </SelectContent>
+            </Select>
+            {attendings.length === 0 && (
+              <p className="text-sm text-gray-500 mt-3">
+                Add attendings in <button onClick={() => setShowSettings(true)} className="text-blue-600 hover:underline font-medium">Settings</button>
+              </p>
+            )}
+          </div>
+        </div>
+
         {/* Calendar Section */}
         <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl p-8 mb-8">
           <div className="flex items-center justify-between mb-8">
