@@ -39,6 +39,9 @@ patients_collection = db.patients
 schedules_collection = db.schedules
 tasks_collection = db.tasks
 conferences_collection = db.conferences
+residents_collection = db.residents
+attendings_collection = db.attendings
+notifications_collection = db.notifications
 
 # Security
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -88,7 +91,7 @@ def send_calendar_invite(to_email, subject, body, ical_content, cc_emails=[]):
     """Send email with calendar invite attachment"""
     if not CALENDAR_SYNC_ENABLED or not SMTP_USERNAME or not SMTP_PASSWORD:
         return False
-    
+
     try:
         msg = MIMEMultipart('alternative')
         msg['From'] = EMAIL_FROM or SMTP_USERNAME
@@ -96,30 +99,76 @@ def send_calendar_invite(to_email, subject, body, ical_content, cc_emails=[]):
         if cc_emails:
             msg['Cc'] = ', '.join(cc_emails)
         msg['Subject'] = subject
-        
+
         # Add text body
         msg.attach(MIMEText(body, 'plain'))
-        
+
         # Attach calendar invite
         ical_attach = MIMEBase('text', 'calendar', method='REQUEST', name='invite.ics')
         ical_attach.set_payload(ical_content)
         encoders.encode_base64(ical_attach)
         ical_attach.add_header('Content-Disposition', 'attachment', filename='invite.ics')
         msg.attach(ical_attach)
-        
+
         # Send email
         server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
         server.starttls()
         server.login(SMTP_USERNAME, SMTP_PASSWORD)
-        
+
         recipients = [to_email] + cc_emails
         server.sendmail(EMAIL_FROM or SMTP_USERNAME, recipients, msg.as_string())
         server.quit()
-        
+
         return True
     except Exception as e:
         print(f"Email send error: {str(e)}")
         return False
+
+def send_notification_email(to_email, subject, body):
+    """Send a simple notification email"""
+    if not SMTP_USERNAME or not SMTP_PASSWORD:
+        return False
+
+    try:
+        msg = MIMEMultipart()
+        msg['From'] = EMAIL_FROM or SMTP_USERNAME
+        msg['To'] = to_email
+        msg['Subject'] = subject
+
+        msg.attach(MIMEText(body, 'plain'))
+
+        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+        server.starttls()
+        server.login(SMTP_USERNAME, SMTP_PASSWORD)
+        server.sendmail(EMAIL_FROM or SMTP_USERNAME, to_email, msg.as_string())
+        server.quit()
+
+        return True
+    except Exception as e:
+        print(f"Email send error: {str(e)}")
+        return False
+
+def create_notification(recipient_email, recipient_name, notif_type, title, message, case_mrn=None, task_id=None):
+    """Create a notification in the database and optionally send email"""
+    notification = {
+        "recipient_email": recipient_email,
+        "recipient_name": recipient_name,
+        "type": notif_type,
+        "title": title,
+        "message": message,
+        "case_mrn": case_mrn,
+        "task_id": task_id,
+        "read": False,
+        "created_at": datetime.utcnow()
+    }
+
+    notifications_collection.insert_one(notification)
+
+    # Send email notification
+    if SMTP_USERNAME and SMTP_PASSWORD:
+        send_notification_email(recipient_email, title, message)
+
+    return notification
 
 # Models
 class UserRegister(BaseModel):
@@ -187,6 +236,36 @@ class Conference(BaseModel):
     attendees: List[str] = []
     notes: Optional[str] = None
     created_by: Optional[str] = None
+    created_at: Optional[datetime] = None
+
+class Resident(BaseModel):
+    name: str
+    email: EmailStr
+    hospital: str
+    specialty: Optional[str] = None
+    year: Optional[str] = None  # PGY-1, PGY-2, etc.
+    is_active: bool = True
+    created_by: Optional[str] = None
+    created_at: Optional[datetime] = None
+
+class Attending(BaseModel):
+    name: str
+    email: Optional[EmailStr] = None
+    hospital: str
+    specialty: Optional[str] = None
+    is_active: bool = True
+    created_by: Optional[str] = None
+    created_at: Optional[datetime] = None
+
+class Notification(BaseModel):
+    recipient_email: str
+    recipient_name: str
+    type: str  # case_added, task_assigned, case_updated
+    title: str
+    message: str
+    case_mrn: Optional[str] = None
+    task_id: Optional[str] = None
+    read: bool = False
     created_at: Optional[datetime] = None
 
 # Helper functions
@@ -412,9 +491,40 @@ async def create_schedule(schedule: Schedule, current_user: str = Depends(get_cu
     schedule_dict = schedule.dict()
     schedule_dict["created_by"] = current_user
     schedule_dict["created_at"] = datetime.utcnow()
-    
+
     result = schedules_collection.insert_one(schedule_dict)
     schedule_dict["_id"] = str(result.inserted_id)
+
+    # Get current user info
+    current_user_obj = users_collection.find_one({"email": current_user})
+    creator_name = current_user_obj.get("full_name", current_user) if current_user_obj else current_user
+
+    # Notify all active residents about the new case
+    active_residents = list(residents_collection.find({"is_active": True}))
+    for resident in active_residents:
+        # Don't notify the creator
+        if resident["email"] != current_user:
+            notification_title = f"New Case Added: {schedule.patient_name}"
+            notification_message = f"""
+A new case has been added by {creator_name}:
+
+Patient: {schedule.patient_name} (MRN: {schedule.patient_mrn})
+Procedure: {schedule.procedure}
+Attending: {schedule.staff}
+Status: {schedule.status}
+Date: {schedule.scheduled_date if schedule.scheduled_date else 'Not scheduled (Add-on list)'}
+
+Please review and complete any necessary prep tasks.
+            """.strip()
+
+            create_notification(
+                recipient_email=resident["email"],
+                recipient_name=resident["name"],
+                notif_type="case_added",
+                title=notification_title,
+                message=notification_message,
+                case_mrn=schedule.patient_mrn
+            )
     
     # Send calendar invite if enabled and scheduled date exists
     if CALENDAR_SYNC_ENABLED and schedule.scheduled_date and not schedule.is_addon:
@@ -496,10 +606,38 @@ async def create_task(task: Task, current_user: str = Depends(get_current_user))
     task_dict = task.dict()
     task_dict["created_by"] = current_user
     task_dict["created_at"] = datetime.utcnow()
-    
+
     result = tasks_collection.insert_one(task_dict)
     task_dict["_id"] = str(result.inserted_id)
-    
+
+    # Get current user info
+    current_user_obj = users_collection.find_one({"email": current_user})
+    creator_name = current_user_obj.get("full_name", current_user) if current_user_obj else current_user
+
+    # Notify the assigned resident if they're not the creator
+    if task.assigned_to_email and task.assigned_to_email != current_user:
+        notification_title = f"New Task Assigned: {task.task_description[:50]}"
+        notification_message = f"""
+You have been assigned a new task by {creator_name}:
+
+Task: {task.task_description}
+Patient MRN: {task.patient_mrn}
+Urgency: {task.urgency}
+Due Date: {task.due_date if task.due_date else 'Not specified'}
+
+Please complete this task to prepare the patient for the operating room.
+        """.strip()
+
+        create_notification(
+            recipient_email=task.assigned_to_email,
+            recipient_name=task.assigned_to,
+            notif_type="task_assigned",
+            title=notification_title,
+            message=notification_message,
+            case_mrn=task.patient_mrn,
+            task_id=str(result.inserted_id)
+        )
+
     return task_dict
 
 @app.get("/api/tasks")
@@ -621,6 +759,173 @@ async def delete_conference(conference_id: str, current_user: str = Depends(get_
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Conference not found")
     return {"message": "Conference deleted successfully"}
+
+# Resident routes
+@app.post("/api/residents")
+async def create_resident(resident: Resident, current_user: str = Depends(get_current_user)):
+    """Create a new resident"""
+    resident_dict = resident.dict()
+    resident_dict["created_by"] = current_user
+    resident_dict["created_at"] = datetime.utcnow()
+
+    # Check if resident email already exists
+    if residents_collection.find_one({"email": resident.email}):
+        raise HTTPException(status_code=400, detail="Resident with this email already exists")
+
+    result = residents_collection.insert_one(resident_dict)
+    resident_dict["_id"] = str(result.inserted_id)
+
+    return resident_dict
+
+@app.get("/api/residents")
+async def get_residents(hospital: Optional[str] = None, current_user: str = Depends(get_current_user)):
+    """Get all residents, optionally filtered by hospital"""
+    query = {}
+    if hospital:
+        query["hospital"] = hospital
+
+    residents = list(residents_collection.find(query))
+    for resident in residents:
+        resident["_id"] = str(resident["_id"])
+    return residents
+
+@app.get("/api/residents/active")
+async def get_active_residents(hospital: Optional[str] = None, current_user: str = Depends(get_current_user)):
+    """Get only active residents"""
+    query = {"is_active": True}
+    if hospital:
+        query["hospital"] = hospital
+
+    residents = list(residents_collection.find(query))
+    for resident in residents:
+        resident["_id"] = str(resident["_id"])
+    return residents
+
+@app.put("/api/residents/{resident_id}")
+async def update_resident(resident_id: str, resident: Resident, current_user: str = Depends(get_current_user)):
+    """Update a resident"""
+    result = residents_collection.update_one(
+        {"_id": ObjectId(resident_id)},
+        {"$set": resident.dict()}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Resident not found")
+    return {"message": "Resident updated successfully"}
+
+@app.delete("/api/residents/{resident_id}")
+async def delete_resident(resident_id: str, current_user: str = Depends(get_current_user)):
+    """Delete a resident"""
+    result = residents_collection.delete_one({"_id": ObjectId(resident_id)})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Resident not found")
+    return {"message": "Resident deleted successfully"}
+
+# Attending routes
+@app.post("/api/attendings")
+async def create_attending(attending: Attending, current_user: str = Depends(get_current_user)):
+    """Create a new attending physician"""
+    attending_dict = attending.dict()
+    attending_dict["created_by"] = current_user
+    attending_dict["created_at"] = datetime.utcnow()
+
+    result = attendings_collection.insert_one(attending_dict)
+    attending_dict["_id"] = str(result.inserted_id)
+
+    return attending_dict
+
+@app.get("/api/attendings")
+async def get_attendings(hospital: Optional[str] = None, current_user: str = Depends(get_current_user)):
+    """Get all attending physicians, optionally filtered by hospital"""
+    query = {}
+    if hospital:
+        query["hospital"] = hospital
+
+    attendings = list(attendings_collection.find(query))
+    for attending in attendings:
+        attending["_id"] = str(attending["_id"])
+    return attendings
+
+@app.get("/api/attendings/active")
+async def get_active_attendings(hospital: Optional[str] = None, current_user: str = Depends(get_current_user)):
+    """Get only active attending physicians"""
+    query = {"is_active": True}
+    if hospital:
+        query["hospital"] = hospital
+
+    attendings = list(attendings_collection.find(query))
+    for attending in attendings:
+        attending["_id"] = str(attending["_id"])
+    return attendings
+
+@app.put("/api/attendings/{attending_id}")
+async def update_attending(attending_id: str, attending: Attending, current_user: str = Depends(get_current_user)):
+    """Update an attending physician"""
+    result = attendings_collection.update_one(
+        {"_id": ObjectId(attending_id)},
+        {"$set": attending.dict()}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Attending not found")
+    return {"message": "Attending updated successfully"}
+
+@app.delete("/api/attendings/{attending_id}")
+async def delete_attending(attending_id: str, current_user: str = Depends(get_current_user)):
+    """Delete an attending physician"""
+    result = attendings_collection.delete_one({"_id": ObjectId(attending_id)})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Attending not found")
+    return {"message": "Attending deleted successfully"}
+
+# Notification routes
+@app.get("/api/notifications")
+async def get_notifications(current_user: str = Depends(get_current_user)):
+    """Get all notifications for current user"""
+    notifications = list(notifications_collection.find({"recipient_email": current_user}).sort("created_at", -1).limit(50))
+    for notification in notifications:
+        notification["_id"] = str(notification["_id"])
+    return notifications
+
+@app.get("/api/notifications/unread")
+async def get_unread_notifications(current_user: str = Depends(get_current_user)):
+    """Get unread notifications for current user"""
+    notifications = list(notifications_collection.find({
+        "recipient_email": current_user,
+        "read": False
+    }).sort("created_at", -1))
+    for notification in notifications:
+        notification["_id"] = str(notification["_id"])
+    return notifications
+
+@app.patch("/api/notifications/{notification_id}/read")
+async def mark_notification_read(notification_id: str, current_user: str = Depends(get_current_user)):
+    """Mark a notification as read"""
+    result = notifications_collection.update_one(
+        {"_id": ObjectId(notification_id), "recipient_email": current_user},
+        {"$set": {"read": True}}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Notification not found")
+    return {"message": "Notification marked as read"}
+
+@app.patch("/api/notifications/mark-all-read")
+async def mark_all_notifications_read(current_user: str = Depends(get_current_user)):
+    """Mark all notifications as read for current user"""
+    result = notifications_collection.update_many(
+        {"recipient_email": current_user, "read": False},
+        {"$set": {"read": True}}
+    )
+    return {"message": f"{result.modified_count} notifications marked as read"}
+
+@app.delete("/api/notifications/{notification_id}")
+async def delete_notification(notification_id: str, current_user: str = Depends(get_current_user)):
+    """Delete a notification"""
+    result = notifications_collection.delete_one({
+        "_id": ObjectId(notification_id),
+        "recipient_email": current_user
+    })
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Notification not found")
+    return {"message": "Notification deleted successfully"}
 
 if __name__ == "__main__":
     import uvicorn
