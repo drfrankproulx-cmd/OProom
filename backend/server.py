@@ -196,6 +196,12 @@ class Patient(BaseModel):
     procedure_code: Optional[str] = None
     attending: Optional[str] = None
     status: str = "pending"
+    prep_checklist: dict = {
+        "xrays": False,
+        "lab_tests": False,
+        "insurance_approval": False,
+        "medical_optimization": False
+    }
     comments: List[dict] = []
     activity_log: List[dict] = []
     created_by: Optional[str] = None
@@ -383,10 +389,19 @@ async def create_patient(patient: Patient, current_user: str = Depends(get_curre
         "details": f"Patient record created"
     }]
     patient_dict["comments"] = []
-    
+
+    # Ensure prep_checklist is initialized
+    if "prep_checklist" not in patient_dict or not patient_dict["prep_checklist"]:
+        patient_dict["prep_checklist"] = {
+            "xrays": False,
+            "lab_tests": False,
+            "insurance_approval": False,
+            "medical_optimization": False
+        }
+
     result = patients_collection.insert_one(patient_dict)
     patient_dict["_id"] = str(result.inserted_id)
-    
+
     return patient_dict
 
 @app.get("/api/patients")
@@ -484,6 +499,59 @@ async def delete_patient(mrn: str, current_user: str = Depends(get_current_user)
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Patient not found")
     return {"message": "Patient deleted successfully"}
+
+@app.patch("/api/patients/{mrn}/checklist")
+async def update_patient_checklist(mrn: str, checklist_item: str, checked: bool, current_user: str = Depends(get_current_user)):
+    """Update a specific prep checklist item for a patient"""
+    # Validate checklist item
+    valid_items = ["xrays", "lab_tests", "insurance_approval", "medical_optimization"]
+    if checklist_item not in valid_items:
+        raise HTTPException(status_code=400, detail=f"Invalid checklist item. Must be one of: {', '.join(valid_items)}")
+
+    patient = patients_collection.find_one({"mrn": mrn})
+    if not patient:
+        raise HTTPException(status_code=404, detail="Patient not found")
+
+    # Initialize prep_checklist if it doesn't exist
+    if "prep_checklist" not in patient:
+        patient["prep_checklist"] = {
+            "xrays": False,
+            "lab_tests": False,
+            "insurance_approval": False,
+            "medical_optimization": False
+        }
+
+    # Update the specific checklist item
+    patient["prep_checklist"][checklist_item] = checked
+
+    # Update in database
+    result = patients_collection.update_one(
+        {"mrn": mrn},
+        {
+            "$set": {
+                f"prep_checklist.{checklist_item}": checked,
+                "updated_by": current_user,
+                "updated_at": datetime.utcnow()
+            },
+            "$push": {
+                "activity_log": {
+                    "action": "checklist_updated",
+                    "user": current_user,
+                    "timestamp": datetime.utcnow().isoformat(),
+                    "details": f"Updated {checklist_item.replace('_', ' ').title()}: {'checked' if checked else 'unchecked'}"
+                }
+            }
+        }
+    )
+
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Patient not found")
+
+    return {
+        "message": "Checklist updated successfully",
+        "checklist_item": checklist_item,
+        "checked": checked
+    }
 
 # Schedule routes
 @app.post("/api/schedules")

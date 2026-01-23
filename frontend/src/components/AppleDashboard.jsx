@@ -4,6 +4,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Badge } from './ui/badge';
+import { Checkbox } from './ui/checkbox';
 import { toast } from 'sonner';
 import { format, startOfWeek, addDays, parseISO, isToday, isSameDay } from 'date-fns';
 import {
@@ -255,6 +256,49 @@ export const AppleDashboard = ({ user, onLogout }) => {
     }
   };
 
+  const handleChecklistUpdate = async (mrn, checklistItem, checked) => {
+    try {
+      const response = await fetch(`${API_URL}/api/patients/${mrn}/checklist?checklist_item=${checklistItem}&checked=${checked}`, {
+        method: 'PATCH',
+        headers: getAuthHeaders(),
+      });
+
+      if (response.ok) {
+        toast.success('Checklist updated');
+        // Update local state
+        setPatients(prevPatients =>
+          prevPatients.map(p => {
+            if (p.mrn === mrn) {
+              return {
+                ...p,
+                prep_checklist: {
+                  ...p.prep_checklist,
+                  [checklistItem]: checked
+                }
+              };
+            }
+            return p;
+          })
+        );
+        // Also update selectedPatient if it's the same patient
+        if (selectedPatient && selectedPatient.mrn === mrn) {
+          setSelectedPatient(prev => ({
+            ...prev,
+            prep_checklist: {
+              ...prev.prep_checklist,
+              [checklistItem]: checked
+            }
+          }));
+        }
+      } else {
+        toast.error('Failed to update checklist');
+      }
+    } catch (error) {
+      toast.error('Failed to update checklist');
+      console.error('Checklist update error:', error);
+    }
+  };
+
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return 'Good morning';
@@ -451,6 +495,10 @@ export const AppleDashboard = ({ user, onLogout }) => {
               <div className="space-y-2 max-h-[400px] overflow-y-auto">
                 {addOnCases.map(addOn => {
                   const patient = patients.find(p => p.mrn === addOn.patient_mrn);
+                  const checklist = patient?.prep_checklist || {};
+                  const completed = Object.values(checklist).filter(Boolean).length;
+                  const total = 4;
+
                   return (
                     <div
                       key={addOn._id}
@@ -459,9 +507,12 @@ export const AppleDashboard = ({ user, onLogout }) => {
                     >
                       <div className="font-semibold text-gray-900">{getInitials(addOn.patient_name)}</div>
                       <div className="text-gray-600 truncate">{addOn.procedure}</div>
-                      <Badge variant="outline" className="bg-white text-xs px-2 py-0 mt-1">
-                        {addOn.priority || 'medium'}
-                      </Badge>
+                      <div className="flex items-center justify-between mt-1">
+                        <Badge variant="outline" className="bg-white text-xs px-2 py-0">
+                          {addOn.priority || 'medium'}
+                        </Badge>
+                        <span className="text-xs text-gray-500">{completed}/4</span>
+                      </div>
                     </div>
                   );
                 })}
@@ -559,6 +610,11 @@ export const AppleDashboard = ({ user, onLogout }) => {
                       <div className="space-y-2">
                         {daySchedules.map(schedule => {
                           const patient = patients.find(p => p.mrn === schedule.patient_mrn);
+                          const checklist = patient?.prep_checklist || {};
+                          const completed = Object.values(checklist).filter(Boolean).length;
+                          const total = 4;
+                          const percentage = (completed / total) * 100;
+
                           return (
                             <div
                               key={schedule._id}
@@ -575,6 +631,23 @@ export const AppleDashboard = ({ user, onLogout }) => {
                                   {schedule.scheduled_time}
                                 </div>
                               )}
+                              {/* Mini Progress Bar */}
+                              <div className="mt-2 pt-2 border-t border-gray-100">
+                                <div className="flex items-center justify-between mb-1">
+                                  <span className="text-xs text-gray-500">Prep</span>
+                                  <span className="text-xs text-gray-600 font-medium">{completed}/4</span>
+                                </div>
+                                <div className="w-full bg-gray-200 rounded-full h-1.5">
+                                  <div
+                                    className={`h-1.5 rounded-full transition-all ${
+                                      percentage === 100 ? 'bg-green-500' :
+                                      percentage >= 50 ? 'bg-blue-500' :
+                                      'bg-orange-500'
+                                    }`}
+                                    style={{ width: `${percentage}%` }}
+                                  />
+                                </div>
+                              </div>
                             </div>
                           );
                         })}
@@ -737,6 +810,101 @@ export const AppleDashboard = ({ user, onLogout }) => {
                     <Badge className="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full">
                       {selectedPatient.status}
                     </Badge>
+                  </div>
+
+                  {/* Prep Checklist */}
+                  <div className="pt-3 border-t border-gray-200">
+                    <label className="text-xs font-medium text-gray-500 block mb-3">Prep Checklist</label>
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`xrays-${selectedPatient.mrn}`}
+                          checked={selectedPatient.prep_checklist?.xrays || false}
+                          onCheckedChange={(checked) =>
+                            handleChecklistUpdate(selectedPatient.mrn, 'xrays', checked)
+                          }
+                          className="h-4 w-4"
+                        />
+                        <label
+                          htmlFor={`xrays-${selectedPatient.mrn}`}
+                          className="text-sm text-gray-700 cursor-pointer"
+                        >
+                          X-rays
+                        </label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`lab-tests-${selectedPatient.mrn}`}
+                          checked={selectedPatient.prep_checklist?.lab_tests || false}
+                          onCheckedChange={(checked) =>
+                            handleChecklistUpdate(selectedPatient.mrn, 'lab_tests', checked)
+                          }
+                          className="h-4 w-4"
+                        />
+                        <label
+                          htmlFor={`lab-tests-${selectedPatient.mrn}`}
+                          className="text-sm text-gray-700 cursor-pointer"
+                        >
+                          Lab Tests
+                        </label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`insurance-${selectedPatient.mrn}`}
+                          checked={selectedPatient.prep_checklist?.insurance_approval || false}
+                          onCheckedChange={(checked) =>
+                            handleChecklistUpdate(selectedPatient.mrn, 'insurance_approval', checked)
+                          }
+                          className="h-4 w-4"
+                        />
+                        <label
+                          htmlFor={`insurance-${selectedPatient.mrn}`}
+                          className="text-sm text-gray-700 cursor-pointer"
+                        >
+                          Insurance Approval
+                        </label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`medical-opt-${selectedPatient.mrn}`}
+                          checked={selectedPatient.prep_checklist?.medical_optimization || false}
+                          onCheckedChange={(checked) =>
+                            handleChecklistUpdate(selectedPatient.mrn, 'medical_optimization', checked)
+                          }
+                          className="h-4 w-4"
+                        />
+                        <label
+                          htmlFor={`medical-opt-${selectedPatient.mrn}`}
+                          className="text-sm text-gray-700 cursor-pointer"
+                        >
+                          Medical Optimization
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* Progress Indicator */}
+                    <div className="mt-3 pt-3 border-t border-gray-100">
+                      {(() => {
+                        const checklist = selectedPatient.prep_checklist || {};
+                        const completed = Object.values(checklist).filter(Boolean).length;
+                        const total = 4;
+                        const percentage = (completed / total) * 100;
+                        return (
+                          <div>
+                            <div className="flex justify-between text-xs text-gray-600 mb-1">
+                              <span>Prep Progress</span>
+                              <span className="font-medium">{completed}/{total}</span>
+                            </div>
+                            <div className="w-full bg-gray-200 rounded-full h-2">
+                              <div
+                                className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                                style={{ width: `${percentage}%` }}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })()}
+                    </div>
                   </div>
                 </div>
               </div>
