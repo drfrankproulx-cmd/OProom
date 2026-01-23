@@ -16,8 +16,11 @@ import {
   Clock,
   CheckCircle2,
   Users,
-  Activity
+  Activity,
+  Bell,
+  Settings as SettingsIcon
 } from 'lucide-react';
+import Settings from './Settings';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
@@ -93,9 +96,14 @@ export const AppleDashboard = ({ user, onLogout }) => {
   const [schedules, setSchedules] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [conferences, setConferences] = useState([]);
+  const [residents, setResidents] = useState([]);
+  const [attendings, setAtttendings] = useState([]);
+  const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [showQuickAdd, setShowQuickAdd] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   const [intakeForm, setIntakeForm] = useState({
     patient_name: '',
@@ -117,24 +125,33 @@ export const AppleDashboard = ({ user, onLogout }) => {
 
   const fetchData = async () => {
     try {
-      const [patientsRes, schedulesRes, tasksRes, conferencesRes] = await Promise.all([
+      const [patientsRes, schedulesRes, tasksRes, conferencesRes, residentsRes, attendingsRes, notificationsRes] = await Promise.all([
         fetch(`${API_URL}/api/patients`, { headers: getAuthHeaders() }),
         fetch(`${API_URL}/api/schedules`, { headers: getAuthHeaders() }),
         fetch(`${API_URL}/api/tasks`, { headers: getAuthHeaders() }),
         fetch(`${API_URL}/api/conferences`, { headers: getAuthHeaders() }),
+        fetch(`${API_URL}/api/residents/active`, { headers: getAuthHeaders() }),
+        fetch(`${API_URL}/api/attendings/active`, { headers: getAuthHeaders() }),
+        fetch(`${API_URL}/api/notifications/unread`, { headers: getAuthHeaders() }),
       ]);
 
-      const [patientsData, schedulesData, tasksData, conferencesData] = await Promise.all([
+      const [patientsData, schedulesData, tasksData, conferencesData, residentsData, attendingsData, notificationsData] = await Promise.all([
         patientsRes.json(),
         schedulesRes.json(),
         tasksRes.json(),
         conferencesRes.json(),
+        residentsRes.json(),
+        attendingsRes.json(),
+        notificationsRes.json(),
       ]);
 
       if (patientsRes.ok) setPatients(patientsData);
       if (schedulesRes.ok) setSchedules(schedulesData);
       if (tasksRes.ok) setTasks(tasksData);
       if (conferencesRes.ok) setConferences(conferencesData);
+      if (residentsRes.ok) setResidents(residentsData);
+      if (attendingsRes.ok) setAtttendings(attendingsData);
+      if (notificationsRes.ok) setNotifications(notificationsData);
     } catch (error) {
       console.error('Fetch error:', error);
       toast.error('Failed to load data');
@@ -145,6 +162,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getSchedulesForDate = (date) => {
@@ -256,6 +274,10 @@ export const AppleDashboard = ({ user, onLogout }) => {
     );
   }
 
+  if (showSettings) {
+    return <Settings onClose={() => setShowSettings(false)} />;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-gray-50">
       {/* Header */}
@@ -287,6 +309,61 @@ export const AppleDashboard = ({ user, onLogout }) => {
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              {/* Notifications Bell */}
+              <div className="relative">
+                <Button
+                  variant="ghost"
+                  onClick={() => setShowNotifications(!showNotifications)}
+                  className="hover:bg-gray-100 rounded-xl relative"
+                >
+                  <Bell className="h-5 w-5" />
+                  {notifications.length > 0 && (
+                    <span className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
+                      {notifications.length}
+                    </span>
+                  )}
+                </Button>
+                {/* Notifications Dropdown */}
+                {showNotifications && (
+                  <div className="absolute right-0 mt-2 w-96 bg-white border border-gray-200 rounded-2xl shadow-xl z-50 max-h-96 overflow-y-auto">
+                    <div className="p-4 border-b border-gray-200">
+                      <h3 className="font-semibold text-gray-900 text-base">Notifications</h3>
+                    </div>
+                    {notifications.length > 0 ? (
+                      <div className="divide-y divide-gray-100">
+                        {notifications.map((notif) => (
+                          <div key={notif._id} className="p-4 hover:bg-gray-50 transition-colors">
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <p className="font-semibold text-gray-900 text-sm mb-1">{notif.title}</p>
+                                <p className="text-gray-600 text-sm mb-2">{notif.message.substring(0, 100)}...</p>
+                                <p className="text-xs text-gray-400">
+                                  {format(parseISO(notif.created_at), 'MMM d, h:mm a')}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="p-8 text-center text-gray-400">
+                        <Bell className="h-12 w-12 mx-auto mb-2 text-gray-300" />
+                        <p className="text-base">No notifications</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Settings Button */}
+              <Button
+                variant="ghost"
+                onClick={() => setShowSettings(true)}
+                className="hover:bg-gray-100 rounded-xl"
+              >
+                <SettingsIcon className="h-5 w-5" />
+              </Button>
+
               <div className="text-right mr-4">
                 <p className="text-sm text-gray-500">{getGreeting()}</p>
                 <p className="font-semibold text-gray-900">{user?.full_name}</p>
@@ -413,16 +490,21 @@ export const AppleDashboard = ({ user, onLogout }) => {
                         />
                       </div>
                       <div>
-                        <Label className="text-base font-medium text-gray-700 mb-2 block">Doctor</Label>
+                        <Label className="text-base font-medium text-gray-700 mb-2 block">Attending Physician</Label>
                         <Select value={intakeForm.attending} onValueChange={(v) => setIntakeForm({...intakeForm, attending: v})}>
                           <SelectTrigger className="h-12 text-base rounded-xl border-gray-300">
-                            <SelectValue placeholder="Select doctor" />
+                            <SelectValue placeholder="Select attending" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="Dr. Anderson">Dr. Anderson</SelectItem>
-                            <SelectItem value="Dr. Smith">Dr. Smith</SelectItem>
-                            <SelectItem value="Dr. Jones">Dr. Jones</SelectItem>
-                            <SelectItem value="Dr. Williams">Dr. Williams</SelectItem>
+                            {attendings.length > 0 ? (
+                              attendings.map((attending) => (
+                                <SelectItem key={attending._id} value={attending.name}>
+                                  {attending.name} {attending.specialty && `- ${attending.specialty}`}
+                                </SelectItem>
+                              ))
+                            ) : (
+                              <SelectItem value="none" disabled>No attendings available</SelectItem>
+                            )}
                           </SelectContent>
                         </Select>
                       </div>
