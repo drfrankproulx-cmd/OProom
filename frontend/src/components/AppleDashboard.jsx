@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Badge } from './ui/badge';
 import { Checkbox } from './ui/checkbox';
 import { toast } from 'sonner';
-import { format, startOfWeek, addDays, parseISO, isToday, isSameDay } from 'date-fns';
+import { format, startOfWeek, addDays, parseISO, isToday, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, addMonths, subMonths } from 'date-fns';
 import {
   ChevronLeft,
   ChevronRight,
@@ -93,6 +93,7 @@ const EventCard = ({ schedule, patient, onClick }) => {
 
 export const AppleDashboard = ({ user, onLogout }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [monthViewDate, setMonthViewDate] = useState(new Date());
   const [patients, setPatients] = useState([]);
   const [schedules, setSchedules] = useState([]);
   const [tasks, setTasks] = useState([]);
@@ -113,6 +114,15 @@ export const AppleDashboard = ({ user, onLogout }) => {
     diagnosis: '',
     procedures: '',
     procedure_code: ''
+  });
+
+  const [taskForm, setTaskForm] = useState({
+    task_description: '',
+    due_date: '',
+    assigned_to: '',
+    assigned_to_email: '',
+    patient_mrn: '',
+    urgency: 'medium'
   });
 
   const weekStart = startOfWeek(currentDate, { weekStartsOn: 0 });
@@ -250,6 +260,51 @@ export const AppleDashboard = ({ user, onLogout }) => {
         procedure_code: ''
       });
       setShowQuickAdd(false);
+      fetchData();
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const handleTaskCreate = async () => {
+    if (!taskForm.task_description || !taskForm.due_date) {
+      toast.error('Task description and due date required');
+      return;
+    }
+
+    try {
+      const taskData = {
+        task_description: taskForm.task_description,
+        due_date: taskForm.due_date,
+        assigned_to: taskForm.assigned_to || 'Others',
+        assigned_to_email: taskForm.assigned_to_email,
+        patient_mrn: taskForm.patient_mrn || '',
+        urgency: taskForm.urgency,
+        completed: false,
+        created_by: user?.email || '',
+      };
+
+      const response = await fetch(`${API_URL}/api/tasks`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(taskData),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.detail || 'Failed to create task');
+      }
+
+      toast.success('Task created successfully');
+      setTaskForm({
+        task_description: '',
+        due_date: '',
+        assigned_to: '',
+        assigned_to_email: '',
+        patient_mrn: '',
+        urgency: 'medium'
+      });
       fetchData();
     } catch (error) {
       toast.error(error.message);
@@ -662,6 +717,131 @@ export const AppleDashboard = ({ user, onLogout }) => {
                 })}
               </div>
             </div>
+
+            {/* Monthly Calendar */}
+            <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl p-6 mt-4">
+              {/* Month Header */}
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-1">Monthly View</h2>
+                  <p className="text-gray-600 text-sm">
+                    {format(monthViewDate, 'MMMM yyyy')}
+                  </p>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    onClick={() => setMonthViewDate(subMonths(monthViewDate, 1))}
+                    variant="outline"
+                    size="sm"
+                    className="rounded-full w-10 h-10 p-0"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    onClick={() => setMonthViewDate(new Date())}
+                    variant="outline"
+                    size="sm"
+                    className="rounded-full px-4"
+                  >
+                    This Month
+                  </Button>
+                  <Button
+                    onClick={() => setMonthViewDate(addMonths(monthViewDate, 1))}
+                    variant="outline"
+                    size="sm"
+                    className="rounded-full w-10 h-10 p-0"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+
+              {/* Month Calendar Grid */}
+              <div className="grid grid-cols-7 gap-1">
+                {/* Day Headers */}
+                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                  <div key={day} className="text-center text-xs font-semibold text-gray-600 py-2">
+                    {day}
+                  </div>
+                ))}
+
+                {/* Calendar Days */}
+                {(() => {
+                  const monthStart = startOfMonth(monthViewDate);
+                  const monthEnd = endOfMonth(monthViewDate);
+                  const startDate = startOfWeek(monthStart);
+                  const endDate = startOfWeek(monthEnd);
+                  const daysToShow = eachDayOfInterval({ start: startDate, end: addDays(endDate, 6) });
+
+                  return daysToShow.map((day) => {
+                    const daySchedules = getSchedulesForDate(day);
+                    const today = isToday(day);
+                    const currentMonth = isSameMonth(day, monthViewDate);
+
+                    return (
+                      <div
+                        key={day.toISOString()}
+                        className={`min-h-[80px] p-2 rounded-lg border transition-all ${
+                          today
+                            ? 'bg-blue-50 border-blue-400 ring-1 ring-blue-400'
+                            : currentMonth
+                            ? 'bg-white border-gray-200 hover:bg-gray-50'
+                            : 'bg-gray-50 border-gray-100 opacity-50'
+                        }`}
+                      >
+                        <div className="text-right mb-1">
+                          <span className={`text-xs font-semibold ${
+                            today
+                              ? 'text-blue-600'
+                              : currentMonth
+                              ? 'text-gray-900'
+                              : 'text-gray-400'
+                          }`}>
+                            {format(day, 'd')}
+                          </span>
+                        </div>
+
+                        {currentMonth && (
+                          <div className="space-y-1">
+                            {daySchedules.slice(0, 2).map(schedule => {
+                              const patient = patients.find(p => p.mrn === schedule.patient_mrn);
+                              const checklist = patient?.prep_checklist || {};
+                              const completed = Object.values(checklist).filter(Boolean).length;
+                              const percentage = (completed / 4) * 100;
+
+                              return (
+                                <div
+                                  key={schedule._id}
+                                  onClick={() => setSelectedPatient(patient)}
+                                  className="bg-blue-100 rounded px-1 py-0.5 cursor-pointer hover:bg-blue-200 transition-colors text-xs truncate"
+                                  title={`${schedule.patient_name} - ${schedule.procedure}`}
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <span className="font-medium text-gray-900 truncate">
+                                      {getInitials(schedule.patient_name)}
+                                    </span>
+                                    <div className={`w-1.5 h-1.5 rounded-full ${
+                                      percentage === 100 ? 'bg-green-500' :
+                                      percentage >= 50 ? 'bg-blue-500' :
+                                      'bg-orange-500'
+                                    }`} />
+                                  </div>
+                                </div>
+                              );
+                            })}
+                            {daySchedules.length > 2 && (
+                              <div className="text-xs text-gray-500 text-center">
+                                +{daySchedules.length - 2} more
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  });
+                })()}
+              </div>
+            </div>
           </div>
 
           {/* RIGHT COLUMN: Quick Add Form + Patient Details */}
@@ -759,6 +939,99 @@ export const AppleDashboard = ({ user, onLogout }) => {
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   Add Patient
+                </Button>
+              </div>
+            </div>
+
+            {/* Task Assignment Form */}
+            <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                <CheckCircle2 className="h-5 w-5 mr-2 text-green-500" />
+                Create Task
+              </h3>
+              <div className="space-y-3">
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Task Description</Label>
+                  <Input
+                    className="h-10 text-sm rounded-lg"
+                    value={taskForm.task_description}
+                    onChange={(e) => setTaskForm({...taskForm, task_description: e.target.value})}
+                    placeholder="Describe the task..."
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Due Date</Label>
+                  <Input
+                    type="date"
+                    className="h-10 text-sm rounded-lg"
+                    value={taskForm.due_date}
+                    onChange={(e) => setTaskForm({...taskForm, due_date: e.target.value})}
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Assign To</Label>
+                  <Select
+                    value={taskForm.assigned_to}
+                    onValueChange={(value) => {
+                      const selectedResident = residents.find(r => r.name === value);
+                      setTaskForm({
+                        ...taskForm,
+                        assigned_to: value,
+                        assigned_to_email: selectedResident?.email || ''
+                      });
+                    }}
+                  >
+                    <SelectTrigger className="h-10 text-sm rounded-lg">
+                      <SelectValue placeholder="Select resident" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Others">Others</SelectItem>
+                      {residents.length > 0 ? (
+                        residents.map((resident) => (
+                          <SelectItem key={resident._id} value={resident.name}>
+                            {resident.name}
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <SelectItem value="none" disabled>No active residents</SelectItem>
+                      )}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Urgency</Label>
+                  <Select value={taskForm.urgency} onValueChange={(v) => setTaskForm({...taskForm, urgency: v})}>
+                    <SelectTrigger className="h-10 text-sm rounded-lg">
+                      <SelectValue placeholder="Select urgency" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="low">Low</SelectItem>
+                      <SelectItem value="medium">Medium</SelectItem>
+                      <SelectItem value="high">High</SelectItem>
+                      <SelectItem value="urgent">Urgent</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Link to Patient (Optional)</Label>
+                  <Input
+                    className="h-10 text-sm rounded-lg"
+                    value={taskForm.patient_mrn}
+                    onChange={(e) => setTaskForm({...taskForm, patient_mrn: e.target.value})}
+                    placeholder="Patient ID"
+                  />
+                </div>
+
+                <Button
+                  onClick={handleTaskCreate}
+                  className="w-full bg-green-500 hover:bg-green-600 text-white rounded-lg py-5 text-sm font-medium shadow-lg"
+                >
+                  <CheckCircle2 className="h-4 w-4 mr-2" />
+                  Create Task
                 </Button>
               </div>
             </div>
