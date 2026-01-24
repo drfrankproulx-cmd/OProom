@@ -113,7 +113,10 @@ export const AppleDashboard = ({ user, onLogout }) => {
     attending: '',
     diagnosis: '',
     procedures: '',
-    procedure_code: ''
+    procedure_code: '',
+    scheduling_type: 'addon', // 'addon' or 'scheduled'
+    scheduled_date: '',
+    scheduled_time: ''
   });
 
   const [taskForm, setTaskForm] = useState({
@@ -209,7 +212,14 @@ export const AppleDashboard = ({ user, onLogout }) => {
       return;
     }
 
+    // Validate scheduled date if scheduling type is 'scheduled'
+    if (intakeForm.scheduling_type === 'scheduled' && !intakeForm.scheduled_date) {
+      toast.error('Please select a scheduled date');
+      return;
+    }
+
     try {
+      // Step 1: Create patient record
       const patientData = {
         mrn: intakeForm.mrn,
         patient_name: intakeForm.patient_name,
@@ -220,36 +230,47 @@ export const AppleDashboard = ({ user, onLogout }) => {
         status: 'pending',
       };
 
-      const response = await fetch(`${API_URL}/api/patients`, {
+      const patientResponse = await fetch(`${API_URL}/api/patients`, {
         method: 'POST',
         headers: getAuthHeaders(),
         body: JSON.stringify(patientData),
       });
 
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.detail || 'Failed to add patient');
+      if (!patientResponse.ok) {
+        const errorData = await patientResponse.json();
+        throw new Error(errorData.detail || 'Failed to add patient');
       }
 
-      const addOnData = {
+      // Step 2: Create schedule entry based on scheduling type
+      const scheduleData = {
         patient_mrn: intakeForm.mrn,
         patient_name: intakeForm.patient_name,
         procedure: intakeForm.procedures,
         staff: intakeForm.attending,
-        scheduled_date: '',
+        scheduled_date: intakeForm.scheduling_type === 'scheduled' ? intakeForm.scheduled_date : '',
+        scheduled_time: intakeForm.scheduling_type === 'scheduled' ? intakeForm.scheduled_time : '',
         status: 'pending',
-        is_addon: true,
+        is_addon: intakeForm.scheduling_type === 'addon',
         priority: 'medium'
       };
 
-      await fetch(`${API_URL}/api/schedules`, {
+      const scheduleResponse = await fetch(`${API_URL}/api/schedules`, {
         method: 'POST',
         headers: getAuthHeaders(),
-        body: JSON.stringify(addOnData),
+        body: JSON.stringify(scheduleData),
       });
 
-      toast.success('Patient added successfully');
+      if (!scheduleResponse.ok) {
+        const errorData = await scheduleResponse.json();
+        throw new Error(errorData.detail || 'Failed to create schedule');
+      }
+
+      toast.success(
+        intakeForm.scheduling_type === 'scheduled'
+          ? 'Patient scheduled successfully'
+          : 'Patient added to add-on list'
+      );
+
       setIntakeForm({
         patient_name: '',
         dob: '',
@@ -257,12 +278,15 @@ export const AppleDashboard = ({ user, onLogout }) => {
         attending: '',
         diagnosis: '',
         procedures: '',
-        procedure_code: ''
+        procedure_code: '',
+        scheduling_type: 'addon',
+        scheduled_date: '',
+        scheduled_time: ''
       });
-      setShowQuickAdd(false);
+
       fetchData();
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.message || 'An error occurred');
     }
   };
 
@@ -933,12 +957,55 @@ export const AppleDashboard = ({ user, onLogout }) => {
                   />
                 </div>
 
+                {/* Scheduling Type Selection */}
+                <div className="pt-3 border-t border-gray-200">
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Scheduling</Label>
+                  <Select
+                    value={intakeForm.scheduling_type}
+                    onValueChange={(v) => setIntakeForm({...intakeForm, scheduling_type: v})}
+                  >
+                    <SelectTrigger className="h-10 text-sm rounded-lg">
+                      <SelectValue placeholder="Select scheduling type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="addon">Add to Add-On List</SelectItem>
+                      <SelectItem value="scheduled">Schedule for Specific Date</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Conditional Date/Time Fields - Only show when scheduled */}
+                {intakeForm.scheduling_type === 'scheduled' && (
+                  <>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-700 mb-1 block">Scheduled Date</Label>
+                      <Input
+                        type="date"
+                        className="h-10 text-sm rounded-lg"
+                        value={intakeForm.scheduled_date}
+                        onChange={(e) => setIntakeForm({...intakeForm, scheduled_date: e.target.value})}
+                      />
+                    </div>
+
+                    <div>
+                      <Label className="text-sm font-medium text-gray-700 mb-1 block">Scheduled Time (Optional)</Label>
+                      <Input
+                        type="time"
+                        className="h-10 text-sm rounded-lg"
+                        value={intakeForm.scheduled_time}
+                        onChange={(e) => setIntakeForm({...intakeForm, scheduled_time: e.target.value})}
+                        placeholder="HH:MM"
+                      />
+                    </div>
+                  </>
+                )}
+
                 <Button
                   onClick={handleQuickAdd}
                   className="w-full bg-blue-500 hover:bg-blue-600 text-white rounded-lg py-5 text-sm font-medium shadow-lg"
                 >
                   <Plus className="h-4 w-4 mr-2" />
-                  Add Patient
+                  {intakeForm.scheduling_type === 'scheduled' ? 'Schedule Patient' : 'Add to Add-On List'}
                 </Button>
               </div>
             </div>
