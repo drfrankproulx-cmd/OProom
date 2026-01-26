@@ -22,6 +22,7 @@ import {
   X
 } from 'lucide-react';
 import Settings from './Settings';
+import Patients from './Patients';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
@@ -92,6 +93,7 @@ const EventCard = ({ schedule, patient, onClick }) => {
 };
 
 export const AppleDashboard = ({ user, onLogout }) => {
+  const [currentView, setCurrentView] = useState('dashboard'); // 'dashboard', 'patients', 'calendar', 'tasks'
   const [currentDate, setCurrentDate] = useState(new Date());
   const [monthViewDate, setMonthViewDate] = useState(new Date());
   const [patients, setPatients] = useState([]);
@@ -404,6 +406,11 @@ export const AppleDashboard = ({ user, onLogout }) => {
     return <Settings onClose={() => setShowSettings(false)} />;
   }
 
+  // Show Patients view
+  if (currentView === 'patients') {
+    return <Patients onBack={() => setCurrentView('dashboard')} />;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-gray-50">
       {/* Header */}
@@ -420,16 +427,44 @@ export const AppleDashboard = ({ user, onLogout }) => {
                 </div>
               </div>
               <div className="hidden md:flex items-center space-x-6 ml-12">
-                <button className="text-gray-900 font-semibold hover:text-blue-600 transition-colors text-base">
+                <button
+                  onClick={() => setCurrentView('dashboard')}
+                  className={`${
+                    currentView === 'dashboard'
+                      ? 'text-gray-900 font-semibold'
+                      : 'text-gray-500 hover:text-gray-900'
+                  } transition-colors text-base`}
+                >
                   Dashboard
                 </button>
-                <button className="text-gray-500 hover:text-gray-900 transition-colors text-base">
+                <button
+                  onClick={() => setCurrentView('calendar')}
+                  className={`${
+                    currentView === 'calendar'
+                      ? 'text-gray-900 font-semibold'
+                      : 'text-gray-500 hover:text-gray-900'
+                  } transition-colors text-base`}
+                >
                   Calendar
                 </button>
-                <button className="text-gray-500 hover:text-gray-900 transition-colors text-base">
+                <button
+                  onClick={() => setCurrentView('patients')}
+                  className={`${
+                    currentView === 'patients'
+                      ? 'text-gray-900 font-semibold'
+                      : 'text-gray-500 hover:text-gray-900'
+                  } transition-colors text-base`}
+                >
                   Patients
                 </button>
-                <button className="text-gray-500 hover:text-gray-900 transition-colors text-base">
+                <button
+                  onClick={() => setCurrentView('tasks')}
+                  className={`${
+                    currentView === 'tasks'
+                      ? 'text-gray-900 font-semibold'
+                      : 'text-gray-500 hover:text-gray-900'
+                  } transition-colors text-base`}
+                >
                   Tasks
                 </button>
               </div>
