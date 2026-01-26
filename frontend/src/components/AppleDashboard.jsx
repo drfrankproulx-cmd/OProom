@@ -236,9 +236,11 @@ export const AppleDashboard = ({ user, onLogout }) => {
         body: JSON.stringify(patientData),
       });
 
+      // Read the response body FIRST, before checking status
+      const patientResult = await patientResponse.json();
+
       if (!patientResponse.ok) {
-        const errorData = await patientResponse.json();
-        throw new Error(errorData.detail || 'Failed to add patient');
+        throw new Error(patientResult.detail || 'Failed to add patient');
       }
 
       // Step 2: Create schedule entry based on scheduling type
@@ -260,9 +262,11 @@ export const AppleDashboard = ({ user, onLogout }) => {
         body: JSON.stringify(scheduleData),
       });
 
+      // Read the response body FIRST, before checking status
+      const scheduleResult = await scheduleResponse.json();
+
       if (!scheduleResponse.ok) {
-        const errorData = await scheduleResponse.json();
-        throw new Error(errorData.detail || 'Failed to create schedule');
+        throw new Error(scheduleResult.detail || 'Failed to create schedule');
       }
 
       toast.success(
