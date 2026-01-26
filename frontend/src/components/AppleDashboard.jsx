@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import Settings from './Settings';
 import Patients from './Patients';
+import Tasks from './Tasks';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
@@ -409,6 +410,11 @@ export const AppleDashboard = ({ user, onLogout }) => {
   // Show Patients view
   if (currentView === 'patients') {
     return <Patients onBack={() => setCurrentView('dashboard')} />;
+  }
+
+  // Show Tasks view
+  if (currentView === 'tasks') {
+    return <Tasks onBack={() => setCurrentView('dashboard')} />;
   }
 
   return (
