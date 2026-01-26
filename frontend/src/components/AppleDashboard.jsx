@@ -24,6 +24,7 @@ import {
 import Settings from './Settings';
 import Patients from './Patients';
 import Tasks from './Tasks';
+import PatientStatusList from './patient-status/PatientStatusList';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
@@ -417,6 +418,11 @@ export const AppleDashboard = ({ user, onLogout }) => {
     return <Tasks onBack={() => setCurrentView('dashboard')} />;
   }
 
+  // Show Patient Status view
+  if (currentView === 'patient-status') {
+    return <PatientStatusList onBack={() => setCurrentView('dashboard')} />;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-gray-50">
       {/* Header */}
@@ -472,6 +478,16 @@ export const AppleDashboard = ({ user, onLogout }) => {
                   } transition-colors text-base`}
                 >
                   Tasks
+                </button>
+                <button
+                  onClick={() => setCurrentView('patient-status')}
+                  className={`${
+                    currentView === 'patient-status'
+                      ? 'text-gray-900 font-semibold'
+                      : 'text-gray-500 hover:text-gray-900'
+                  } transition-colors text-base`}
+                >
+                  Pre-Op Status
                 </button>
               </div>
             </div>
