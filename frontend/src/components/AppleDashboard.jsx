@@ -633,37 +633,67 @@ export const AppleDashboard = ({ user, onLogout }) => {
               </div>
             </div>
 
-            {/* Add-on Cases */}
-            <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg p-4">
-              <h3 className="font-bold text-gray-900 text-sm mb-3 flex items-center justify-between">
-                <span>ADD-ONS ({addOnCases.length})</span>
+            {/* Add-on Cases - Improved */}
+            <div className="bg-gradient-to-br from-orange-50 to-amber-50 backdrop-blur-xl rounded-2xl shadow-lg p-4 border border-orange-200">
+              <h3 className="font-bold text-orange-800 text-sm mb-3 flex items-center justify-between">
+                <span className="flex items-center">
+                  <Plus className="h-4 w-4 mr-1" />
+                  ADD-ONS ({addOnCases.length})
+                </span>
+                <Badge className="bg-orange-500 text-white text-xs px-2 py-0.5">{addOnCases.length} pending</Badge>
               </h3>
-              <div className="space-y-2 max-h-[400px] overflow-y-auto">
+              <div className="space-y-3 max-h-[400px] overflow-y-auto pr-1">
                 {addOnCases.map(addOn => {
                   const patient = patients.find(p => p.mrn === addOn.patient_mrn);
                   const checklist = patient?.prep_checklist || {};
                   const completed = Object.values(checklist).filter(Boolean).length;
-                  const total = 4;
 
                   return (
                     <div
                       key={addOn._id}
-                      className="p-2 bg-orange-50 rounded-lg hover:bg-orange-100 cursor-pointer transition-colors text-xs"
+                      className="p-3 bg-white rounded-xl hover:shadow-md cursor-pointer transition-all border border-orange-100 hover:border-orange-300"
                       onClick={() => setSelectedPatient(patient)}
                     >
-                      <div className="font-semibold text-gray-900">{getInitials(addOn.patient_name)}</div>
-                      <div className="text-gray-600 truncate">{addOn.procedure}</div>
-                      <div className="flex items-center justify-between mt-1">
-                        <Badge variant="outline" className="bg-white text-xs px-2 py-0">
-                          {addOn.priority || 'medium'}
-                        </Badge>
-                        <span className="text-xs text-gray-500">{completed}/4</span>
+                      <div className="flex items-start space-x-3">
+                        <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-500 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm flex-shrink-0">
+                          {getInitials(addOn.patient_name)}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-semibold text-gray-900 text-sm">{addOn.patient_name}</div>
+                          <div className="text-gray-600 text-xs truncate mt-0.5">{addOn.procedure}</div>
+                          <div className="flex items-center justify-between mt-2">
+                            <Badge 
+                              className={`text-xs px-2 py-0.5 ${
+                                addOn.priority === 'high' ? 'bg-red-100 text-red-700' :
+                                addOn.priority === 'low' ? 'bg-green-100 text-green-700' :
+                                'bg-yellow-100 text-yellow-700'
+                              }`}
+                            >
+                              {addOn.priority || 'medium'}
+                            </Badge>
+                            <div className="flex items-center space-x-1">
+                              <div className="w-16 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                                <div 
+                                  className={`h-full rounded-full ${
+                                    completed === 4 ? 'bg-green-500' : 
+                                    completed >= 2 ? 'bg-blue-500' : 'bg-orange-500'
+                                  }`}
+                                  style={{ width: `${(completed / 4) * 100}%` }}
+                                />
+                              </div>
+                              <span className="text-xs text-gray-500 font-medium">{completed}/4</span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   );
                 })}
                 {addOnCases.length === 0 && (
-                  <div className="text-center text-gray-400 text-xs py-4">No add-ons</div>
+                  <div className="text-center text-orange-400 text-sm py-6">
+                    <Plus className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                    No pending add-ons
+                  </div>
                 )}
               </div>
             </div>
