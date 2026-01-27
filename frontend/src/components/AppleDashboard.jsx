@@ -414,6 +414,11 @@ export const AppleDashboard = ({ user, onLogout }) => {
     return <Patients onBack={() => setCurrentView('dashboard')} />;
   }
 
+  // Show Calendar view
+  if (currentView === 'calendar') {
+    return <Calendar onBack={() => setCurrentView('dashboard')} />;
+  }
+
   // Show Tasks view
   if (currentView === 'tasks') {
     return <Tasks onBack={() => setCurrentView('dashboard')} />;
