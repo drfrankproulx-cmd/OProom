@@ -24,6 +24,7 @@ import {
 import Settings from './Settings';
 import Patients from './Patients';
 import Tasks from './Tasks';
+import Calendar from './Calendar';
 import PatientStatusList from './patient-status/PatientStatusList';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
