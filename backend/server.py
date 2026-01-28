@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 from pymongo import MongoClient
 from bson import ObjectId
 import os
+import json
 import jwt
 from passlib.context import CryptContext
 import smtplib
@@ -18,6 +19,13 @@ from icalendar import Calendar, Event as ICalEvent
 import pytz
 
 app = FastAPI()
+
+# Load CPT codes
+CPT_CODES = {}
+cpt_file_path = os.path.join(os.path.dirname(__file__), 'cpt_codes.json')
+if os.path.exists(cpt_file_path):
+    with open(cpt_file_path, 'r') as f:
+        CPT_CODES = json.load(f)
 
 # CORS configuration
 app.add_middleware(
