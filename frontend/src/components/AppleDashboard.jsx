@@ -110,6 +110,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [cptSuggestions, setCptSuggestions] = useState([]);
 
   const [intakeForm, setIntakeForm] = useState({
     patient_name: '',
