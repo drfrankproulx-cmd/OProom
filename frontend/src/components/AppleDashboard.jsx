@@ -1024,14 +1024,47 @@ export const AppleDashboard = ({ user, onLogout }) => {
                   />
                 </div>
 
-                <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Code (Optional)</Label>
+                <div className="relative">
+                  <Label className="text-sm font-medium text-gray-700 mb-1 block">CPT Code (Optional)</Label>
                   <Input
                     className="h-10 text-sm rounded-lg"
                     value={intakeForm.procedure_code}
-                    onChange={(e) => setIntakeForm({...intakeForm, procedure_code: e.target.value})}
-                    placeholder="CPT code"
+                    onChange={async (e) => {
+                      const value = e.target.value;
+                      setIntakeForm({...intakeForm, procedure_code: value});
+                      if (value.length >= 2) {
+                        try {
+                          const res = await fetch(`${API_URL}/api/cpt-codes/search?q=${encodeURIComponent(value)}`);
+                          const data = await res.json();
+                          setCptSuggestions(data.slice(0, 8));
+                        } catch (err) {
+                          console.error('CPT search error:', err);
+                        }
+                      } else {
+                        setCptSuggestions([]);
+                      }
+                    }}
+                    onFocus={() => intakeForm.procedure_code.length >= 2 && setCptSuggestions(cptSuggestions)}
+                    placeholder="Search CPT codes..."
                   />
+                  {cptSuggestions.length > 0 && (
+                    <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                      {cptSuggestions.map((cpt, idx) => (
+                        <div
+                          key={idx}
+                          className="px-3 py-2 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-0"
+                          onClick={() => {
+                            setIntakeForm({...intakeForm, procedure_code: cpt.code});
+                            setCptSuggestions([]);
+                          }}
+                        >
+                          <div className="font-semibold text-blue-600 text-sm">{cpt.code}</div>
+                          <div className="text-gray-600 text-xs truncate">{cpt.description}</div>
+                          <div className="text-gray-400 text-xs">{cpt.category}</div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* Scheduling Type Selection */}
