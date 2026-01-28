@@ -1003,6 +1003,53 @@ async def delete_notification(notification_id: str, current_user: str = Depends(
         raise HTTPException(status_code=404, detail="Notification not found")
     return {"message": "Notification deleted successfully"}
 
+# CPT Code Lookup Endpoints
+@app.get("/api/cpt-codes")
+async def get_all_cpt_codes():
+    """Get all CPT codes organized by category"""
+    return CPT_CODES
+
+@app.get("/api/cpt-codes/search")
+async def search_cpt_codes(q: str = ""):
+    """Search CPT codes by code or description"""
+    if not q or len(q) < 2:
+        return []
+    
+    results = []
+    q_lower = q.lower()
+    
+    for category, codes in CPT_CODES.items():
+        for code, description in codes.items():
+            if q_lower in code.lower() or q_lower in description.lower():
+                results.append({
+                    "code": code,
+                    "description": description,
+                    "category": category.replace("_", " ").title()
+                })
+    
+    # Sort by relevance (exact code match first, then by code)
+    results.sort(key=lambda x: (0 if x["code"].lower().startswith(q_lower) else 1, x["code"]))
+    
+    return results[:50]  # Limit to 50 results
+
+@app.get("/api/cpt-codes/categories")
+async def get_cpt_categories():
+    """Get list of CPT code categories"""
+    return [{"id": key, "name": key.replace("_", " ").title(), "count": len(codes)} 
+            for key, codes in CPT_CODES.items()]
+
+@app.get("/api/cpt-codes/{code}")
+async def get_cpt_code(code: str):
+    """Get a specific CPT code"""
+    for category, codes in CPT_CODES.items():
+        if code in codes:
+            return {
+                "code": code,
+                "description": codes[code],
+                "category": category.replace("_", " ").title()
+            }
+    raise HTTPException(status_code=404, detail="CPT code not found")
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8001)
