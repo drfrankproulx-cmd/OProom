@@ -25,6 +25,7 @@ import Settings from './Settings';
 import Patients from './Patients';
 import Tasks from './Tasks';
 import PatientStatusList from './patient-status/PatientStatusList';
+import SurgeryDashboard from './surgery-timeline/SurgeryDashboard';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
@@ -423,6 +424,11 @@ export const AppleDashboard = ({ user, onLogout }) => {
     return <PatientStatusList onBack={() => setCurrentView('dashboard')} />;
   }
 
+  // Show Surgery Timeline view
+  if (currentView === 'surgery-timeline') {
+    return <SurgeryDashboard onBack={() => setCurrentView('dashboard')} />;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-gray-50">
       {/* Header */}
@@ -488,6 +494,16 @@ export const AppleDashboard = ({ user, onLogout }) => {
                   } transition-colors text-base`}
                 >
                   Pre-Op Status
+                </button>
+                <button
+                  onClick={() => setCurrentView('surgery-timeline')}
+                  className={`${
+                    currentView === 'surgery-timeline'
+                      ? 'text-gray-900 font-semibold'
+                      : 'text-gray-500 hover:text-gray-900'
+                  } transition-colors text-base`}
+                >
+                  Surgery Timeline
                 </button>
               </div>
             </div>
