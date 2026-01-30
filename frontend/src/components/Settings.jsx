@@ -101,6 +101,12 @@ export const Settings = ({ onClose }) => {
       return;
     }
 
+    const token = localStorage.getItem('token');
+    if (!token) {
+      toast.error('Session expired. Please log in again.');
+      return;
+    }
+
     try {
       const response = await fetch(`${API_URL}/api/residents`, {
         method: 'POST',
@@ -108,6 +114,8 @@ export const Settings = ({ onClose }) => {
         body: JSON.stringify(residentForm)
       });
 
+      const data = await response.json();
+      
       if (response.ok) {
         toast.success('Resident added successfully');
         setShowAddResident(false);
@@ -121,11 +129,11 @@ export const Settings = ({ onClose }) => {
         });
         fetchResidents();
       } else {
-        const error = await response.json();
-        toast.error(error.detail || 'Failed to add resident');
+        toast.error(data.detail || 'Failed to add resident');
       }
     } catch (error) {
-      toast.error('Failed to add resident');
+      console.error('Error adding resident:', error);
+      toast.error('Failed to add resident. Please try again.');
     }
   };
 
