@@ -45,13 +45,24 @@ export const Settings = ({ onClose }) => {
     is_active: true
   });
 
-  const getAuthHeaders = () => ({
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    'Content-Type': 'application/json',
-  });
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('No auth token found in localStorage');
+    }
+    return {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    };
+  };
 
   const fetchResidents = async () => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.error('Session expired. Please log in again.');
+        return;
+      }
       const response = await fetch(`${API_URL}/api/residents`, {
         headers: getAuthHeaders()
       });
