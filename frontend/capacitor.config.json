@@ -1,0 +1,64 @@
+{
+  "appId": "com.oproom.residency",
+  "appName": "OProom",
+  "webDir": "build",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https",
+    "iosScheme": "https",
+    "hostname": "oproom.app",
+    "cleartext": false,
+    "allowNavigation": [
+      "oproom.preview.emergent.com",
+      "*.emergent.com",
+      "localhost"
+    ]
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "launchAutoHide": true,
+      "backgroundColor": "#eff6ff",
+      "androidSplashResourceName": "splash",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false,
+      "androidSpinnerStyle": "large",
+      "iosSpinnerStyle": "small",
+      "spinnerColor": "#3b82f6",
+      "splashFullScreen": true,
+      "splashImmersive": true
+    },
+    "StatusBar": {
+      "style": "light",
+      "backgroundColor": "#3b82f6"
+    },
+    "PushNotifications": {
+      "presentationOptions": ["badge", "sound", "alert"]
+    },
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_icon",
+      "iconColor": "#3b82f6"
+    },
+    "Camera": {
+      "iosUsePhotosLibrary": true,
+      "androidAvoidTakingPermissions": false
+    },
+    "Preferences": {
+      "group": "com.oproom.residency.prefs"
+    }
+  },
+  "ios": {
+    "contentInset": "always",
+    "allowsLinkPreview": false,
+    "limitsNavigationsToAppBoundDomains": true,
+    "preferredContentMode": "mobile",
+    "scrollEnabled": true,
+    "backgroundColor": "#eff6ff"
+  },
+  "android": {
+    "allowMixedContent": false,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": false,
+    "backgroundColor": "#eff6ff"
+  }
+}
