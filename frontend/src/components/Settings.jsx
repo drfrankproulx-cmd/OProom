@@ -19,7 +19,7 @@ import {
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
-export const Settings = ({ onClose }) => {
+export const Settings = ({ onClose, onSessionExpired }) => {
   const [activeTab, setActiveTab] = useState('residents');
   const [residents, setResidents] = useState([]);
   const [attendings, setAtttendings] = useState([]);
@@ -27,6 +27,17 @@ export const Settings = ({ onClose }) => {
   const [showAddAttending, setShowAddAttending] = useState(false);
   const [editingResident, setEditingResident] = useState(null);
   const [editingAttending, setEditingAttending] = useState(null);
+
+  const handleSessionExpired = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    toast.error('Your session has expired. Please log in again.');
+    if (onSessionExpired) {
+      onSessionExpired();
+    } else {
+      window.location.reload();
+    }
+  };
 
   const [residentForm, setResidentForm] = useState({
     name: '',
