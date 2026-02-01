@@ -19,7 +19,9 @@ import {
   Activity,
   Bell,
   Settings as SettingsIcon,
-  X
+  X,
+  Download,
+  Smartphone
 } from 'lucide-react';
 import Settings from './Settings';
 import Patients from './Patients';
