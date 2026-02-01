@@ -209,12 +209,25 @@ export const Settings = ({ onClose, onSessionExpired }) => {
       return;
     }
 
+    const token = localStorage.getItem('token');
+    if (!token) {
+      handleSessionExpired();
+      return;
+    }
+
     try {
       const response = await fetch(`${API_URL}/api/attendings`, {
         method: 'POST',
         headers: getAuthHeaders(),
         body: JSON.stringify(attendingForm)
       });
+
+      const data = await response.json();
+
+      if (response.status === 401) {
+        handleSessionExpired();
+        return;
+      }
 
       if (response.ok) {
         toast.success('Attending added successfully');
@@ -228,11 +241,11 @@ export const Settings = ({ onClose, onSessionExpired }) => {
         });
         fetchAtttendings();
       } else {
-        const error = await response.json();
-        toast.error(error.detail || 'Failed to add attending');
+        toast.error(data.detail || 'Failed to add attending');
       }
     } catch (error) {
-      toast.error('Failed to add attending');
+      console.error('Error adding attending:', error);
+      toast.error('Failed to add attending. Please try again.');
     }
   };
 
