@@ -119,10 +119,17 @@ export const Settings = ({ onClose, onSessionExpired }) => {
     }
 
     try {
+      // Clean up form data - convert empty strings to null for optional fields
+      const cleanedForm = {
+        ...residentForm,
+        specialty: residentForm.specialty?.trim() || null,
+        year: residentForm.year?.trim() || null
+      };
+
       const response = await fetch(`${API_URL}/api/residents`, {
         method: 'POST',
         headers: getAuthHeaders(),
-        body: JSON.stringify(residentForm)
+        body: JSON.stringify(cleanedForm)
       });
 
       const data = await response.json();
