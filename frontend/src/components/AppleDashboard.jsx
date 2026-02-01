@@ -478,6 +478,40 @@ export const AppleDashboard = ({ user, onLogout }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-gray-50">
+      {/* PWA Install Banner */}
+      {showInstallBanner && (
+        <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-96 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-2xl shadow-2xl z-50 animate-slide-up">
+          <div className="flex items-start space-x-3">
+            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Smartphone className="h-6 w-6" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-bold text-lg">Install OProom App</h3>
+              <p className="text-blue-100 text-sm mt-1">Add to your home screen for quick access and offline use</p>
+              <div className="flex space-x-2 mt-3">
+                <Button 
+                  onClick={handleInstallClick}
+                  className="bg-white text-blue-600 hover:bg-blue-50 text-sm px-4 py-2 rounded-lg font-semibold"
+                >
+                  <Download className="h-4 w-4 mr-1" />
+                  Install
+                </Button>
+                <Button 
+                  onClick={dismissInstallBanner}
+                  variant="ghost"
+                  className="text-white hover:bg-white/20 text-sm px-3 py-2 rounded-lg"
+                >
+                  Not now
+                </Button>
+              </div>
+            </div>
+            <button onClick={dismissInstallBanner} className="text-white/70 hover:text-white">
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-8 py-5">
