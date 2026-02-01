@@ -114,7 +114,7 @@ export const Settings = ({ onClose, onSessionExpired }) => {
 
     const token = localStorage.getItem('token');
     if (!token) {
-      toast.error('Session expired. Please log in again.');
+      handleSessionExpired();
       return;
     }
 
@@ -126,6 +126,11 @@ export const Settings = ({ onClose, onSessionExpired }) => {
       });
 
       const data = await response.json();
+      
+      if (response.status === 401) {
+        handleSessionExpired();
+        return;
+      }
       
       if (response.ok) {
         toast.success('Resident added successfully');
