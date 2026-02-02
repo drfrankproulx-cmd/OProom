@@ -19,9 +19,7 @@ import {
   Activity,
   Bell,
   Settings as SettingsIcon,
-  X,
-  Download,
-  Smartphone
+  X
 } from 'lucide-react';
 import Settings from './Settings';
 import Patients from './Patients';
@@ -63,6 +61,9 @@ const EventCard = ({ schedule, patient, onClick }) => {
     switch (status) {
       case 'confirmed': return 'from-green-50 to-green-100 border-green-400';
       case 'pending': return 'from-blue-50 to-blue-100 border-blue-400';
+      case 'deficient': return 'from-red-50 to-red-100 border-red-400';
+      case 'in_or': return 'from-blue-100 to-blue-200 border-blue-500';
+      case 'completed': return 'from-green-100 to-green-200 border-green-500';
       default: return 'from-gray-50 to-gray-100 border-gray-400';
     }
   };
@@ -112,51 +113,6 @@ export const AppleDashboard = ({ user, onLogout }) => {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [cptSuggestions, setCptSuggestions] = useState([]);
-  const [deferredPrompt, setDeferredPrompt] = useState(null);
-  const [showInstallBanner, setShowInstallBanner] = useState(false);
-
-  // PWA Install prompt handler
-  useEffect(() => {
-    const handleBeforeInstallPrompt = (e) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-      // Check if user hasn't dismissed the banner before
-      const dismissed = localStorage.getItem('pwa-install-dismissed');
-      if (!dismissed) {
-        setShowInstallBanner(true);
-      }
-    };
-
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    
-    // Check if already installed
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-      setShowInstallBanner(false);
-    }
-
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    };
-  }, []);
-
-  const handleInstallClick = async () => {
-    if (!deferredPrompt) return;
-    
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    
-    if (outcome === 'accepted') {
-      toast.success('App installed successfully!');
-    }
-    setDeferredPrompt(null);
-    setShowInstallBanner(false);
-  };
-
-  const dismissInstallBanner = () => {
-    setShowInstallBanner(false);
-    localStorage.setItem('pwa-install-dismissed', 'true');
-  };
 
   const [intakeForm, setIntakeForm] = useState({
     patient_name: '',
@@ -478,40 +434,6 @@ export const AppleDashboard = ({ user, onLogout }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-gray-50">
-      {/* PWA Install Banner */}
-      {showInstallBanner && (
-        <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-96 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-2xl shadow-2xl z-50 animate-slide-up">
-          <div className="flex items-start space-x-3">
-            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
-              <Smartphone className="h-6 w-6" />
-            </div>
-            <div className="flex-1">
-              <h3 className="font-bold text-lg">Install OProom App</h3>
-              <p className="text-blue-100 text-sm mt-1">Add to your home screen for quick access and offline use</p>
-              <div className="flex space-x-2 mt-3">
-                <Button 
-                  onClick={handleInstallClick}
-                  className="bg-white text-blue-600 hover:bg-blue-50 text-sm px-4 py-2 rounded-lg font-semibold"
-                >
-                  <Download className="h-4 w-4 mr-1" />
-                  Install
-                </Button>
-                <Button 
-                  onClick={dismissInstallBanner}
-                  variant="ghost"
-                  className="text-white hover:bg-white/20 text-sm px-3 py-2 rounded-lg"
-                >
-                  Not now
-                </Button>
-              </div>
-            </div>
-            <button onClick={dismissInstallBanner} className="text-white/70 hover:text-white">
-              <X className="h-5 w-5" />
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-8 py-5">
@@ -1095,57 +1017,24 @@ export const AppleDashboard = ({ user, onLogout }) => {
                   />
                 </div>
 
-                <div className="relative">
-                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Procedure & CPT Code</Label>
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Procedure</Label>
                   <Input
                     className="h-10 text-sm rounded-lg"
                     value={intakeForm.procedures}
-                    onChange={async (e) => {
-                      const value = e.target.value;
-                      setIntakeForm({...intakeForm, procedures: value});
-                      if (value.length >= 2) {
-                        try {
-                          const res = await fetch(`${API_URL}/api/cpt-codes/search?q=${encodeURIComponent(value)}`);
-                          const data = await res.json();
-                          setCptSuggestions(data.slice(0, 10));
-                        } catch (err) {
-                          console.error('CPT search error:', err);
-                        }
-                      } else {
-                        setCptSuggestions([]);
-                      }
-                    }}
-                    placeholder="Search procedures or CPT codes..."
+                    onChange={(e) => setIntakeForm({...intakeForm, procedures: e.target.value})}
+                    placeholder="Procedure"
                   />
-                  {cptSuggestions.length > 0 && (
-                    <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-xl max-h-72 overflow-y-auto">
-                      {cptSuggestions.map((cpt, idx) => (
-                        <div
-                          key={idx}
-                          className="px-3 py-2.5 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-0 transition-colors"
-                          onClick={() => {
-                            setIntakeForm({
-                              ...intakeForm, 
-                              procedures: cpt.description,
-                              procedure_code: cpt.code
-                            });
-                            setCptSuggestions([]);
-                          }}
-                        >
-                          <div className="flex items-center justify-between">
-                            <span className="font-bold text-blue-600 text-sm bg-blue-50 px-2 py-0.5 rounded">{cpt.code}</span>
-                            <span className="text-gray-400 text-xs">{cpt.category}</span>
-                          </div>
-                          <div className="text-gray-800 text-sm mt-1">{cpt.description}</div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  {intakeForm.procedure_code && (
-                    <div className="mt-1 flex items-center space-x-2">
-                      <Badge className="bg-blue-100 text-blue-700 text-xs">CPT: {intakeForm.procedure_code}</Badge>
-                    </div>
-                  )}
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Code (Optional)</Label>
+                  <Input
+                    className="h-10 text-sm rounded-lg"
+                    value={intakeForm.procedure_code}
+                    onChange={(e) => setIntakeForm({...intakeForm, procedure_code: e.target.value})}
+                    placeholder="CPT code"
+                  />
                 </div>
 
                 {/* Scheduling Type Selection */}
