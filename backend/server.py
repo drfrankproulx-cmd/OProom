@@ -36,6 +36,7 @@ db = client.get_database()
 # Collections
 users_collection = db.users
 patients_collection = db.patients
+archived_patients_collection = db.archived_patients
 schedules_collection = db.schedules
 tasks_collection = db.tasks
 conferences_collection = db.conferences
@@ -57,6 +58,9 @@ SMTP_USERNAME = os.environ.get('SMTP_USERNAME', '')
 SMTP_PASSWORD = os.environ.get('SMTP_PASSWORD', '')
 EMAIL_FROM = os.environ.get('EMAIL_FROM', '')
 CALENDAR_SYNC_ENABLED = os.environ.get('CALENDAR_SYNC_ENABLED', 'false').lower() == 'true'
+
+# Auto-archive configuration (hours after procedure completion)
+AUTO_ARCHIVE_DELAY_HOURS = int(os.environ.get('AUTO_ARCHIVE_DELAY_HOURS', 48))  # Default: 48 hours
 
 # Helper functions for email/calendar
 def create_ical_event(title, description, start_datetime, end_datetime, location="", attendees=[]):
@@ -188,6 +192,15 @@ class PatientComment(BaseModel):
     created_at: Optional[datetime] = None
 
 class Patient(BaseModel):
+    """
+    Patient model with status workflow:
+    - pending: Initial status, pre-op prep in progress
+    - confirmed: All pre-op requirements met, ready for surgery
+    - deficient: Missing requirements, needs attention
+    - in_or: Patient has entered the operating room
+    - completed: Procedure completed successfully
+    - archived: Patient record archived after completion (moved to archived_patients collection)
+    """
     mrn: str
     patient_name: str
     dob: str
@@ -204,6 +217,7 @@ class Patient(BaseModel):
     }
     comments: List[dict] = []
     activity_log: List[dict] = []
+    completed_at: Optional[datetime] = None  # Timestamp when procedure completed
     created_by: Optional[str] = None
     created_at: Optional[datetime] = None
     updated_by: Optional[str] = None
@@ -551,6 +565,236 @@ async def update_patient_checklist(mrn: str, checklist_item: str, checked: bool,
         "message": "Checklist updated successfully",
         "checklist_item": checklist_item,
         "checked": checked
+    }
+
+@app.post("/api/patients/{mrn}/send-to-or")
+async def send_patient_to_or(mrn: str, current_user: str = Depends(get_current_user)):
+    """Send patient to operating room - changes status to 'in_or'"""
+    patient = patients_collection.find_one({"mrn": mrn})
+    if not patient:
+        raise HTTPException(status_code=404, detail="Patient not found")
+
+    # Update patient status to in_or
+    result = patients_collection.update_one(
+        {"mrn": mrn},
+        {
+            "$set": {
+                "status": "in_or",
+                "updated_by": current_user,
+                "updated_at": datetime.utcnow()
+            },
+            "$push": {
+                "activity_log": {
+                    "action": "status_changed",
+                    "user": current_user,
+                    "timestamp": datetime.utcnow().isoformat(),
+                    "details": f"Patient sent to OR - Status changed from '{patient.get('status', 'unknown')}' to 'in_or'"
+                }
+            }
+        }
+    )
+
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Patient not found")
+
+    # Notify relevant staff
+    active_residents = list(residents_collection.find({"is_active": True}))
+    for resident in active_residents:
+        if resident["email"] != current_user:
+            create_notification(
+                recipient_email=resident["email"],
+                recipient_name=resident["name"],
+                notif_type="case_updated",
+                title=f"Patient in OR: {patient.get('patient_name')}",
+                message=f"Patient {patient.get('patient_name')} (MRN: {mrn}) has been sent to the operating room.",
+                case_mrn=mrn
+            )
+
+    return {"message": "Patient sent to OR successfully", "status": "in_or"}
+
+@app.post("/api/patients/{mrn}/mark-complete")
+async def mark_procedure_complete(mrn: str, current_user: str = Depends(get_current_user)):
+    """Mark procedure as completed - changes status to 'completed'"""
+    patient = patients_collection.find_one({"mrn": mrn})
+    if not patient:
+        raise HTTPException(status_code=404, detail="Patient not found")
+
+    completion_time = datetime.utcnow()
+
+    # Update patient status to completed
+    result = patients_collection.update_one(
+        {"mrn": mrn},
+        {
+            "$set": {
+                "status": "completed",
+                "completed_at": completion_time,
+                "updated_by": current_user,
+                "updated_at": completion_time
+            },
+            "$push": {
+                "activity_log": {
+                    "action": "procedure_completed",
+                    "user": current_user,
+                    "timestamp": completion_time.isoformat(),
+                    "details": f"Procedure completed - Status changed from '{patient.get('status', 'unknown')}' to 'completed'"
+                }
+            }
+        }
+    )
+
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Patient not found")
+
+    # Notify relevant staff
+    active_residents = list(residents_collection.find({"is_active": True}))
+    for resident in active_residents:
+        if resident["email"] != current_user:
+            create_notification(
+                recipient_email=resident["email"],
+                recipient_name=resident["name"],
+                notif_type="case_updated",
+                title=f"Procedure Completed: {patient.get('patient_name')}",
+                message=f"Procedure for {patient.get('patient_name')} (MRN: {mrn}) has been marked as completed.",
+                case_mrn=mrn
+            )
+
+    return {
+        "message": "Procedure marked as complete",
+        "status": "completed",
+        "completed_at": completion_time.isoformat(),
+        "auto_archive_in_hours": AUTO_ARCHIVE_DELAY_HOURS
+    }
+
+@app.post("/api/patients/{mrn}/archive")
+async def archive_patient(mrn: str, current_user: str = Depends(get_current_user)):
+    """Manually archive a patient record (soft delete)"""
+    patient = patients_collection.find_one({"mrn": mrn})
+    if not patient:
+        raise HTTPException(status_code=404, detail="Patient not found")
+
+    # Add archival metadata
+    patient["archived_at"] = datetime.utcnow()
+    patient["archived_by"] = current_user
+    patient["archived_reason"] = "manual_archive"
+    patient["activity_log"].append({
+        "action": "archived",
+        "user": current_user,
+        "timestamp": datetime.utcnow().isoformat(),
+        "details": "Patient record manually archived"
+    })
+
+    # Move to archived collection
+    archived_patients_collection.insert_one(patient)
+
+    # Also archive related schedules
+    schedules = list(schedules_collection.find({"patient_mrn": mrn}))
+    for schedule in schedules:
+        schedule["archived_at"] = datetime.utcnow()
+        schedule["archived_by"] = current_user
+        # Keep schedules in same collection but mark as archived
+        schedules_collection.update_one(
+            {"_id": schedule["_id"]},
+            {"$set": {"archived": True, "archived_at": datetime.utcnow()}}
+        )
+
+    # Remove from active patients collection
+    patients_collection.delete_one({"mrn": mrn})
+
+    return {
+        "message": "Patient archived successfully",
+        "mrn": mrn,
+        "archived_at": patient["archived_at"].isoformat()
+    }
+
+@app.get("/api/patients/archived")
+async def get_archived_patients(current_user: str = Depends(get_current_user)):
+    """Get all archived patients"""
+    archived = list(archived_patients_collection.find().sort("archived_at", -1))
+    for patient in archived:
+        patient["_id"] = str(patient["_id"])
+    return archived
+
+@app.post("/api/patients/{mrn}/restore")
+async def restore_patient(mrn: str, current_user: str = Depends(get_current_user)):
+    """Restore a patient from archive back to active patients"""
+    archived_patient = archived_patients_collection.find_one({"mrn": mrn})
+    if not archived_patient:
+        raise HTTPException(status_code=404, detail="Archived patient not found")
+
+    # Remove archival metadata
+    archived_patient.pop("archived_at", None)
+    archived_patient.pop("archived_by", None)
+    archived_patient.pop("archived_reason", None)
+
+    # Add restoration activity log
+    archived_patient["activity_log"].append({
+        "action": "restored",
+        "user": current_user,
+        "timestamp": datetime.utcnow().isoformat(),
+        "details": "Patient record restored from archive"
+    })
+    archived_patient["status"] = "pending"  # Reset to pending status
+    archived_patient["updated_by"] = current_user
+    archived_patient["updated_at"] = datetime.utcnow()
+
+    # Move back to active patients
+    patients_collection.insert_one(archived_patient)
+
+    # Restore associated schedules
+    schedules_collection.update_many(
+        {"patient_mrn": mrn, "archived": True},
+        {"$set": {"archived": False}, "$unset": {"archived_at": ""}}
+    )
+
+    # Remove from archive
+    archived_patients_collection.delete_one({"mrn": mrn})
+
+    return {
+        "message": "Patient restored successfully",
+        "mrn": mrn
+    }
+
+@app.post("/api/patients/auto-archive")
+async def run_auto_archive(current_user: str = Depends(get_current_user)):
+    """Run automatic archival for completed patients past the delay threshold"""
+    # Find patients that are completed and past the auto-archive delay
+    cutoff_time = datetime.utcnow() - timedelta(hours=AUTO_ARCHIVE_DELAY_HOURS)
+
+    completed_patients = list(patients_collection.find({
+        "status": "completed",
+        "completed_at": {"$lt": cutoff_time}
+    }))
+
+    archived_count = 0
+    for patient in completed_patients:
+        # Add archival metadata
+        patient["archived_at"] = datetime.utcnow()
+        patient["archived_by"] = "system_auto_archive"
+        patient["archived_reason"] = f"auto_archive_after_{AUTO_ARCHIVE_DELAY_HOURS}h"
+        patient["activity_log"].append({
+            "action": "auto_archived",
+            "user": "system",
+            "timestamp": datetime.utcnow().isoformat(),
+            "details": f"Automatically archived {AUTO_ARCHIVE_DELAY_HOURS} hours after procedure completion"
+        })
+
+        # Move to archived collection
+        archived_patients_collection.insert_one(patient)
+
+        # Archive related schedules
+        schedules_collection.update_many(
+            {"patient_mrn": patient["mrn"]},
+            {"$set": {"archived": True, "archived_at": datetime.utcnow()}}
+        )
+
+        # Remove from active patients
+        patients_collection.delete_one({"mrn": patient["mrn"]})
+        archived_count += 1
+
+    return {
+        "message": f"Auto-archive completed",
+        "archived_count": archived_count,
+        "delay_hours": AUTO_ARCHIVE_DELAY_HOURS
     }
 
 # Schedule routes

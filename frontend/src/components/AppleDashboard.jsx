@@ -61,6 +61,9 @@ const EventCard = ({ schedule, patient, onClick }) => {
     switch (status) {
       case 'confirmed': return 'from-green-50 to-green-100 border-green-400';
       case 'pending': return 'from-blue-50 to-blue-100 border-blue-400';
+      case 'deficient': return 'from-red-50 to-red-100 border-red-400';
+      case 'in_or': return 'from-blue-100 to-blue-200 border-blue-500';
+      case 'completed': return 'from-green-100 to-green-200 border-green-500';
       default: return 'from-gray-50 to-gray-100 border-gray-400';
     }
   };

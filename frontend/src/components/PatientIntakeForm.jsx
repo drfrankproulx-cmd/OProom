@@ -458,6 +458,34 @@ export const PatientIntakeForm = ({ isOpen, onClose, onSuccess, editingPatient =
             </div>
           </div>
 
+          {/* Status Section - Only show when editing */}
+          {editingPatient && (
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-foreground border-b pb-2">Patient Status</h3>
+              <div className="space-y-2">
+                <Label htmlFor="status">Current Status</Label>
+                <Select
+                  value={formData.status}
+                  onValueChange={(value) => setFormData({ ...formData, status: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="confirmed">Confirmed</SelectItem>
+                    <SelectItem value="deficient">Deficient</SelectItem>
+                    <SelectItem value="in_or">In OR</SelectItem>
+                    <SelectItem value="completed">Completed</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">
+                  Status workflow: Pending → Confirmed → In OR → Completed
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Action Buttons */}
           <div className="flex justify-end space-x-3 pt-4 border-t">
             <Button type="button" variant="outline" onClick={handleClose}>

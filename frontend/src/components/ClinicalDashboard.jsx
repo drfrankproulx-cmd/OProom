@@ -16,7 +16,9 @@ const ReadinessIndicator = ({ status }) => {
   const colors = {
     confirmed: 'text-green-500',
     pending: 'text-yellow-500',
-    deficient: 'text-red-500'
+    deficient: 'text-red-500',
+    in_or: 'text-blue-500',
+    completed: 'text-green-600'
   };
   return <Circle className={`h-1.5 w-1.5 fill-current ${colors[status] || colors.pending}`} />;
 };
