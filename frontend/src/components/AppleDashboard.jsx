@@ -127,6 +127,11 @@ export const AppleDashboard = ({ user, onLogout }) => {
     scheduled_time: ''
   });
 
+  // CPT Code Autocomplete State
+  const [cptSearchResults, setCptSearchResults] = useState([]);
+  const [showCptDropdown, setShowCptDropdown] = useState(false);
+  const [cptSearchLoading, setCptSearchLoading] = useState(false);
+
   const [taskForm, setTaskForm] = useState({
     task_description: '',
     due_date: '',
