@@ -1065,24 +1065,51 @@ export const AppleDashboard = ({ user, onLogout }) => {
                   />
                 </div>
 
-                <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Procedure</Label>
-                  <Input
-                    className="h-10 text-sm rounded-lg"
-                    value={intakeForm.procedures}
-                    onChange={(e) => setIntakeForm({...intakeForm, procedures: e.target.value})}
-                    placeholder="Procedure"
-                  />
-                </div>
-
-                <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Code (Optional)</Label>
-                  <Input
-                    className="h-10 text-sm rounded-lg"
-                    value={intakeForm.procedure_code}
-                    onChange={(e) => setIntakeForm({...intakeForm, procedure_code: e.target.value})}
-                    placeholder="CPT code"
-                  />
+                {/* Combined Procedure & CPT Code Field */}
+                <div className="relative">
+                  <Label className="text-sm font-medium text-gray-700 mb-1 block">
+                    Procedure / CPT Code
+                    {intakeForm.procedure_code && (
+                      <span className="ml-2 px-2 py-0.5 bg-teal-100 text-teal-700 rounded text-xs font-medium">
+                        {intakeForm.procedure_code}
+                      </span>
+                    )}
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      className="h-10 text-sm rounded-lg pr-10"
+                      value={intakeForm.procedures}
+                      onChange={(e) => handleProcedureChange(e.target.value)}
+                      onFocus={() => intakeForm.procedures.length >= 2 && searchCptCodes(intakeForm.procedures)}
+                      placeholder="Search procedure or enter CPT code..."
+                      data-testid="procedure-cpt-input"
+                    />
+                    {cptSearchLoading && (
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                        <div className="animate-spin h-4 w-4 border-2 border-teal-500 border-t-transparent rounded-full"></div>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* CPT Autocomplete Dropdown */}
+                  {showCptDropdown && cptSearchResults.length > 0 && (
+                    <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                      {cptSearchResults.map((cpt, idx) => (
+                        <div
+                          key={`${cpt.code}-${idx}`}
+                          className="px-3 py-2 hover:bg-teal-50 cursor-pointer border-b border-gray-100 last:border-0"
+                          onClick={() => handleCptSelect(cpt)}
+                          data-testid={`cpt-option-${cpt.code}`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className="font-medium text-teal-600 text-sm">{cpt.code}</span>
+                            <span className="text-xs text-gray-400">{cpt.category}</span>
+                          </div>
+                          <p className="text-sm text-gray-700 truncate">{cpt.description}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* Scheduling Type Selection */}
