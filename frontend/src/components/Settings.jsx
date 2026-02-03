@@ -384,7 +384,29 @@ export const Settings = ({ onClose, onSessionExpired }) => {
             <Stethoscope className="h-5 w-5" />
             <span>Attendings</span>
           </button>
+          <button
+            onClick={() => setActiveTab('google')}
+            className={`flex items-center space-x-2 px-6 py-3 rounded-full font-medium transition-all ${
+              activeTab === 'google'
+                ? 'bg-blue-500 text-white shadow-lg'
+                : 'bg-white text-gray-700 hover:bg-gray-100'
+            }`}
+          >
+            <Mail className="h-5 w-5" />
+            <span>Email & Calendar</span>
+          </button>
         </div>
+
+        {/* Google Integration Tab */}
+        {activeTab === 'google' && (
+          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl p-8">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Email & Calendar Integration</h2>
+              <p className="text-gray-600 mt-1">Connect your Google account for Gmail and Calendar sync</p>
+            </div>
+            <GoogleIntegration />
+          </div>
+        )}
 
         {/* Residents Tab */}
         {activeTab === 'residents' && (
