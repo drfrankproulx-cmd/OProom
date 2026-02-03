@@ -191,6 +191,49 @@ export const AppleDashboard = ({ user, onLogout }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // CPT Code Search Function
+  const searchCptCodes = async (query) => {
+    if (!query || query.length < 2) {
+      setCptSearchResults([]);
+      setShowCptDropdown(false);
+      return;
+    }
+    
+    setCptSearchLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/api/cpt-codes/search?query=${encodeURIComponent(query)}`, {
+        headers: getAuthHeaders()
+      });
+      if (response.ok) {
+        const results = await response.json();
+        setCptSearchResults(results);
+        setShowCptDropdown(results.length > 0);
+      }
+    } catch (error) {
+      console.error('CPT search error:', error);
+    } finally {
+      setCptSearchLoading(false);
+    }
+  };
+
+  // Handle CPT/Procedure input change with debounce
+  const handleProcedureChange = (value) => {
+    setIntakeForm({ ...intakeForm, procedures: value });
+    // Search for CPT codes
+    searchCptCodes(value);
+  };
+
+  // Handle CPT code selection
+  const handleCptSelect = (cpt) => {
+    setIntakeForm({
+      ...intakeForm,
+      procedures: cpt.description,
+      procedure_code: cpt.code
+    });
+    setShowCptDropdown(false);
+    setCptSearchResults([]);
+  };
+
   const getSchedulesForDate = (date) => {
     return schedules.filter(schedule => {
       if (!schedule.scheduled_date || schedule.is_addon) return false;
