@@ -1,9 +1,10 @@
-from fastapi import FastAPI, HTTPException, Depends, status
+from fastapi import FastAPI, HTTPException, Depends, status, Query
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional, List
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pymongo import MongoClient
 from bson import ObjectId
 import os
@@ -16,6 +17,24 @@ from email.mime.base import MIMEBase
 from email import encoders
 from icalendar import Calendar, Event as ICalEvent
 import pytz
+
+# Import Google integration
+from google_integration import (
+    get_google_auth_url,
+    exchange_code_for_tokens,
+    get_google_user_info,
+    refresh_tokens_if_needed,
+    list_calendar_events,
+    create_calendar_event,
+    update_calendar_event,
+    delete_calendar_event,
+    list_emails,
+    get_email_details,
+    search_emails_for_vsp,
+    search_emails_for_patient,
+    extract_vsp_link_from_email,
+    create_vsp_calendar_event
+)
 
 app = FastAPI()
 
