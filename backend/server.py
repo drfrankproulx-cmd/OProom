@@ -1258,6 +1258,342 @@ async def delete_notification(notification_id: str, current_user: str = Depends(
         raise HTTPException(status_code=404, detail="Notification not found")
     return {"message": "Notification deleted successfully"}
 
+
+# ============ GOOGLE OAUTH ENDPOINTS ============
+
+@app.get("/api/google/auth-url")
+async def get_google_auth_url_endpoint(current_user: str = Depends(get_current_user)):
+    """Get Google OAuth authorization URL"""
+    auth_url = get_google_auth_url(state=current_user)
+    return {"authorization_url": auth_url}
+
+
+@app.get("/api/google/callback")
+async def google_oauth_callback(code: str, state: str = None):
+    """Handle Google OAuth callback"""
+    try:
+        # Exchange code for tokens
+        tokens = exchange_code_for_tokens(code)
+        
+        # Get user info
+        google_user = get_google_user_info(tokens['access_token'])
+        
+        # Store tokens in user document
+        user_email = state or google_user.get('email')
+        
+        users_collection.update_one(
+            {"email": user_email},
+            {
+                "$set": {
+                    "google_tokens": tokens,
+                    "google_email": google_user.get('email'),
+                    "google_connected": True,
+                    "google_connected_at": datetime.now(timezone.utc).isoformat()
+                }
+            }
+        )
+        
+        # Redirect to frontend with success
+        frontend_url = os.environ.get('FRONTEND_URL', 'https://oproom.preview.emergentagent.com')
+        return RedirectResponse(f"{frontend_url}?google_connected=true")
+        
+    except Exception as e:
+        frontend_url = os.environ.get('FRONTEND_URL', 'https://oproom.preview.emergentagent.com')
+        return RedirectResponse(f"{frontend_url}?google_error={str(e)}")
+
+
+@app.get("/api/google/status")
+async def get_google_connection_status(current_user: str = Depends(get_current_user)):
+    """Check if user has connected Google account"""
+    user = users_collection.find_one({"email": current_user})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    return {
+        "connected": user.get("google_connected", False),
+        "google_email": user.get("google_email"),
+        "connected_at": user.get("google_connected_at")
+    }
+
+
+@app.post("/api/google/disconnect")
+async def disconnect_google(current_user: str = Depends(get_current_user)):
+    """Disconnect Google account"""
+    users_collection.update_one(
+        {"email": current_user},
+        {
+            "$unset": {
+                "google_tokens": "",
+                "google_email": "",
+                "google_connected": "",
+                "google_connected_at": ""
+            }
+        }
+    )
+    return {"message": "Google account disconnected"}
+
+
+# ============ GOOGLE CALENDAR ENDPOINTS ============
+
+async def get_user_google_tokens(current_user: str):
+    """Helper to get and refresh Google tokens"""
+    user = users_collection.find_one({"email": current_user})
+    if not user or not user.get("google_tokens"):
+        raise HTTPException(status_code=400, detail="Google account not connected")
+    
+    tokens = user["google_tokens"]
+    
+    # Refresh if needed
+    try:
+        updated_tokens, was_refreshed = refresh_tokens_if_needed(tokens)
+        if was_refreshed:
+            users_collection.update_one(
+                {"email": current_user},
+                {"$set": {"google_tokens": updated_tokens}}
+            )
+        return updated_tokens
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=f"Google token refresh failed: {str(e)}")
+
+
+@app.get("/api/google/calendar/events")
+async def get_calendar_events(
+    days: int = 30,
+    current_user: str = Depends(get_current_user)
+):
+    """Get calendar events from Google Calendar"""
+    tokens = await get_user_google_tokens(current_user)
+    
+    time_min = datetime.now(timezone.utc)
+    time_max = time_min + timedelta(days=days)
+    
+    try:
+        events = list_calendar_events(tokens, time_min, time_max)
+        return {"events": events}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch calendar events: {str(e)}")
+
+
+class CalendarEventCreate(BaseModel):
+    title: str
+    description: Optional[str] = ""
+    location: Optional[str] = ""
+    start: str  # ISO format datetime
+    end: str    # ISO format datetime
+    attendees: Optional[List[str]] = []
+    conference_link: Optional[str] = None
+
+
+@app.post("/api/google/calendar/events")
+async def create_google_calendar_event(
+    event: CalendarEventCreate,
+    current_user: str = Depends(get_current_user)
+):
+    """Create a new calendar event"""
+    tokens = await get_user_google_tokens(current_user)
+    
+    try:
+        created_event = create_calendar_event(tokens, event.dict())
+        return {"event": created_event, "message": "Event created successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create event: {str(e)}")
+
+
+@app.put("/api/google/calendar/events/{event_id}")
+async def update_google_calendar_event(
+    event_id: str,
+    event: CalendarEventCreate,
+    current_user: str = Depends(get_current_user)
+):
+    """Update a calendar event"""
+    tokens = await get_user_google_tokens(current_user)
+    
+    try:
+        updated_event = update_calendar_event(tokens, event_id, event.dict())
+        return {"event": updated_event, "message": "Event updated successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to update event: {str(e)}")
+
+
+@app.delete("/api/google/calendar/events/{event_id}")
+async def delete_google_calendar_event(
+    event_id: str,
+    current_user: str = Depends(get_current_user)
+):
+    """Delete a calendar event"""
+    tokens = await get_user_google_tokens(current_user)
+    
+    try:
+        delete_calendar_event(tokens, event_id)
+        return {"message": "Event deleted successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to delete event: {str(e)}")
+
+
+# ============ GMAIL ENDPOINTS ============
+
+@app.get("/api/google/gmail/messages")
+async def get_gmail_messages(
+    query: str = "",
+    max_results: int = 20,
+    current_user: str = Depends(get_current_user)
+):
+    """Get emails from Gmail"""
+    tokens = await get_user_google_tokens(current_user)
+    
+    try:
+        emails = list_emails(tokens, query=query, max_results=max_results)
+        return {"emails": emails}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch emails: {str(e)}")
+
+
+@app.get("/api/google/gmail/messages/{message_id}")
+async def get_gmail_message(
+    message_id: str,
+    current_user: str = Depends(get_current_user)
+):
+    """Get a specific email"""
+    tokens = await get_user_google_tokens(current_user)
+    
+    try:
+        email = get_email_details(tokens, message_id)
+        if not email:
+            raise HTTPException(status_code=404, detail="Email not found")
+        return {"email": email}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch email: {str(e)}")
+
+
+@app.get("/api/google/gmail/vsp-emails")
+async def get_vsp_related_emails(current_user: str = Depends(get_current_user)):
+    """Get emails related to VSP sessions"""
+    tokens = await get_user_google_tokens(current_user)
+    
+    try:
+        emails = search_emails_for_vsp(tokens)
+        
+        # Extract VSP links from emails
+        for email in emails:
+            email['vsp_links'] = extract_vsp_link_from_email(email.get('body', '') + email.get('snippet', ''))
+        
+        return {"emails": emails}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to search VSP emails: {str(e)}")
+
+
+@app.get("/api/google/gmail/patient-emails/{patient_name}")
+async def get_patient_related_emails(
+    patient_name: str,
+    mrn: Optional[str] = None,
+    current_user: str = Depends(get_current_user)
+):
+    """Get emails related to a specific patient"""
+    tokens = await get_user_google_tokens(current_user)
+    
+    try:
+        emails = search_emails_for_patient(tokens, patient_name, mrn)
+        return {"emails": emails}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to search patient emails: {str(e)}")
+
+
+# ============ VSP SESSION ENDPOINTS ============
+
+class VSPSessionCreate(BaseModel):
+    patient_name: str
+    mrn: Optional[str] = None
+    procedure: str
+    attending: Optional[str] = None
+    start: str  # ISO format
+    end: str    # ISO format
+    conference_link: Optional[str] = None
+    attendees: Optional[List[str]] = []
+    notes: Optional[str] = ""
+
+
+@app.post("/api/vsp-sessions")
+async def create_vsp_session(
+    vsp: VSPSessionCreate,
+    current_user: str = Depends(get_current_user)
+):
+    """Create a VSP session and calendar event"""
+    tokens = await get_user_google_tokens(current_user)
+    
+    # Create VSP record in database
+    vsp_record = {
+        "patient_name": vsp.patient_name,
+        "mrn": vsp.mrn,
+        "procedure": vsp.procedure,
+        "attending": vsp.attending,
+        "start": vsp.start,
+        "end": vsp.end,
+        "conference_link": vsp.conference_link,
+        "attendees": vsp.attendees,
+        "notes": vsp.notes,
+        "created_by": current_user,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "status": "scheduled"
+    }
+    
+    result = db.vsp_sessions.insert_one(vsp_record)
+    vsp_record["_id"] = str(result.inserted_id)
+    
+    # Create Google Calendar event
+    try:
+        calendar_event = create_vsp_calendar_event(tokens, vsp.dict())
+        vsp_record["google_event_id"] = calendar_event.get("id")
+        
+        # Update record with calendar event ID
+        db.vsp_sessions.update_one(
+            {"_id": result.inserted_id},
+            {"$set": {"google_event_id": calendar_event.get("id")}}
+        )
+    except Exception as e:
+        # VSP created but calendar event failed
+        vsp_record["calendar_error"] = str(e)
+    
+    return {"vsp_session": vsp_record, "message": "VSP session created"}
+
+
+@app.get("/api/vsp-sessions")
+async def list_vsp_sessions(current_user: str = Depends(get_current_user)):
+    """List all VSP sessions"""
+    sessions = list(db.vsp_sessions.find().sort("start", -1))
+    for session in sessions:
+        session["_id"] = str(session["_id"])
+    return {"sessions": sessions}
+
+
+@app.get("/api/vsp-sessions/{session_id}")
+async def get_vsp_session(session_id: str, current_user: str = Depends(get_current_user)):
+    """Get a specific VSP session"""
+    session = db.vsp_sessions.find_one({"_id": ObjectId(session_id)})
+    if not session:
+        raise HTTPException(status_code=404, detail="VSP session not found")
+    session["_id"] = str(session["_id"])
+    return {"session": session}
+
+
+@app.delete("/api/vsp-sessions/{session_id}")
+async def delete_vsp_session(session_id: str, current_user: str = Depends(get_current_user)):
+    """Delete a VSP session and its calendar event"""
+    session = db.vsp_sessions.find_one({"_id": ObjectId(session_id)})
+    if not session:
+        raise HTTPException(status_code=404, detail="VSP session not found")
+    
+    # Delete calendar event if exists
+    if session.get("google_event_id"):
+        try:
+            tokens = await get_user_google_tokens(current_user)
+            delete_calendar_event(tokens, session["google_event_id"])
+        except:
+            pass  # Continue even if calendar deletion fails
+    
+    db.vsp_sessions.delete_one({"_id": ObjectId(session_id)})
+    return {"message": "VSP session deleted"}
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8001)
