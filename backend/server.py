@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional, List
 from datetime import datetime, timedelta
@@ -16,6 +17,8 @@ from email.mime.base import MIMEBase
 from email import encoders
 from icalendar import Calendar, Event as ICalEvent
 import pytz
+import requests
+from urllib.parse import urlencode
 
 app = FastAPI()
 
@@ -61,6 +64,12 @@ CALENDAR_SYNC_ENABLED = os.environ.get('CALENDAR_SYNC_ENABLED', 'false').lower()
 
 # Auto-archive configuration (hours after procedure completion)
 AUTO_ARCHIVE_DELAY_HOURS = int(os.environ.get('AUTO_ARCHIVE_DELAY_HOURS', 48))  # Default: 48 hours
+
+# Google Calendar OAuth Configuration
+GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', '')
+GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET', '')
+GOOGLE_REDIRECT_URI = os.environ.get('GOOGLE_REDIRECT_URI', 'https://oproom.preview.emergent.com/settings')
+FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://oproom.preview.emergent.com')
 
 # Helper functions for email/calendar
 def create_ical_event(title, description, start_datetime, end_datetime, location="", attendees=[]):
@@ -1238,6 +1247,190 @@ async def delete_notification(notification_id: str, current_user: str = Depends(
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Notification not found")
     return {"message": "Notification deleted successfully"}
+
+# Google Calendar OAuth routes
+@app.get("/api/auth/google/url")
+async def get_google_auth_url(current_user: str = Depends(get_current_user)):
+    """Generate Google OAuth authorization URL"""
+    if not GOOGLE_CLIENT_ID or not GOOGLE_CLIENT_SECRET:
+        raise HTTPException(
+            status_code=500,
+            detail="Google OAuth not configured. Please set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET environment variables."
+        )
+
+    # OAuth scopes for Google Calendar
+    scopes = [
+        'https://www.googleapis.com/auth/calendar.events',
+        'https://www.googleapis.com/auth/calendar.readonly',
+        'https://www.googleapis.com/auth/userinfo.email'
+    ]
+
+    # Build authorization URL
+    params = {
+        'client_id': GOOGLE_CLIENT_ID,
+        'redirect_uri': GOOGLE_REDIRECT_URI,
+        'response_type': 'code',
+        'scope': ' '.join(scopes),
+        'access_type': 'offline',  # Request refresh token
+        'prompt': 'consent',  # Force consent screen to get refresh token
+        'state': current_user  # Pass user email to verify after callback
+    }
+
+    auth_url = f"https://accounts.google.com/o/oauth2/v2/auth?{urlencode(params)}"
+    return {"auth_url": auth_url, "redirect_uri": GOOGLE_REDIRECT_URI}
+
+@app.get("/api/auth/google/callback")
+async def google_auth_callback(code: str, state: str = None):
+    """Handle Google OAuth callback"""
+    if not code:
+        raise HTTPException(status_code=400, detail="Authorization code not provided")
+
+    try:
+        # Exchange authorization code for tokens
+        token_url = "https://oauth2.googleapis.com/token"
+        token_data = {
+            'code': code,
+            'client_id': GOOGLE_CLIENT_ID,
+            'client_secret': GOOGLE_CLIENT_SECRET,
+            'redirect_uri': GOOGLE_REDIRECT_URI,
+            'grant_type': 'authorization_code'
+        }
+
+        token_response = requests.post(token_url, data=token_data)
+        if not token_response.ok:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Failed to exchange code for tokens: {token_response.text}"
+            )
+
+        tokens = token_response.json()
+        access_token = tokens.get('access_token')
+        refresh_token = tokens.get('refresh_token')
+        expires_in = tokens.get('expires_in', 3600)
+
+        # Get user info from Google
+        userinfo_url = "https://www.googleapis.com/oauth2/v2/userinfo"
+        headers = {'Authorization': f'Bearer {access_token}'}
+        userinfo_response = requests.get(userinfo_url, headers=headers)
+
+        if not userinfo_response.ok:
+            raise HTTPException(status_code=400, detail="Failed to get user info from Google")
+
+        user_info = userinfo_response.json()
+        google_email = user_info.get('email')
+
+        # Determine which user to update
+        user_email = state if state else google_email
+
+        # Store tokens in user's record
+        users_collection.update_one(
+            {"email": user_email},
+            {
+                "$set": {
+                    "google_calendar_connected": True,
+                    "google_access_token": access_token,
+                    "google_refresh_token": refresh_token,
+                    "google_token_expires_at": datetime.utcnow() + timedelta(seconds=expires_in),
+                    "google_email": google_email,
+                    "google_connected_at": datetime.utcnow()
+                }
+            }
+        )
+
+        # Redirect back to frontend settings page with success message
+        redirect_url = f"{FRONTEND_URL}/settings?google_connected=true"
+        return RedirectResponse(url=redirect_url)
+
+    except Exception as e:
+        # Redirect to frontend with error
+        error_url = f"{FRONTEND_URL}/settings?google_error={str(e)}"
+        return RedirectResponse(url=error_url)
+
+@app.post("/api/auth/google/disconnect")
+async def disconnect_google_calendar(current_user: str = Depends(get_current_user)):
+    """Disconnect Google Calendar integration"""
+    result = users_collection.update_one(
+        {"email": current_user},
+        {
+            "$unset": {
+                "google_calendar_connected": "",
+                "google_access_token": "",
+                "google_refresh_token": "",
+                "google_token_expires_at": "",
+                "google_email": "",
+                "google_connected_at": ""
+            }
+        }
+    )
+
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    return {"message": "Google Calendar disconnected successfully"}
+
+@app.get("/api/auth/google/status")
+async def get_google_calendar_status(current_user: str = Depends(get_current_user)):
+    """Check if user has Google Calendar connected"""
+    user = users_collection.find_one({"email": current_user})
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    is_connected = user.get("google_calendar_connected", False)
+    google_email = user.get("google_email", None)
+    connected_at = user.get("google_connected_at", None)
+
+    return {
+        "connected": is_connected,
+        "google_email": google_email,
+        "connected_at": connected_at.isoformat() if connected_at else None
+    }
+
+def get_google_access_token(user_email: str) -> Optional[str]:
+    """Get valid Google access token for user, refresh if needed"""
+    user = users_collection.find_one({"email": user_email})
+
+    if not user or not user.get("google_calendar_connected"):
+        return None
+
+    # Check if token is expired
+    token_expires = user.get("google_token_expires_at")
+    if token_expires and datetime.utcnow() >= token_expires:
+        # Refresh the token
+        refresh_token = user.get("google_refresh_token")
+        if not refresh_token:
+            return None
+
+        try:
+            token_url = "https://oauth2.googleapis.com/token"
+            token_data = {
+                'client_id': GOOGLE_CLIENT_ID,
+                'client_secret': GOOGLE_CLIENT_SECRET,
+                'refresh_token': refresh_token,
+                'grant_type': 'refresh_token'
+            }
+
+            response = requests.post(token_url, data=token_data)
+            if response.ok:
+                tokens = response.json()
+                new_access_token = tokens.get('access_token')
+                expires_in = tokens.get('expires_in', 3600)
+
+                # Update user with new token
+                users_collection.update_one(
+                    {"email": user_email},
+                    {
+                        "$set": {
+                            "google_access_token": new_access_token,
+                            "google_token_expires_at": datetime.utcnow() + timedelta(seconds=expires_in)
+                        }
+                    }
+                )
+                return new_access_token
+        except:
+            return None
+
+    return user.get("google_access_token")
 
 if __name__ == "__main__":
     import uvicorn
