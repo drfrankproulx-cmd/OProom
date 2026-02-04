@@ -189,8 +189,24 @@ export const AppleDashboard = ({ user, onLogout }) => {
 
   useEffect(() => {
     fetchData();
+    loadCptFavorites();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Load CPT Favorites
+  const loadCptFavorites = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/cpt-codes/favorites`, {
+        headers: getAuthHeaders()
+      });
+      if (response.ok) {
+        const favorites = await response.json();
+        setCptFavorites(favorites);
+      }
+    } catch (error) {
+      console.error('Failed to load CPT favorites:', error);
+    }
+  };
 
   // CPT Code Search Function
   const searchCptCodes = async (query) => {
