@@ -34,7 +34,17 @@ Build a web-based operating room scheduling platform for surgical residents feat
 - [x] Surgery Timeline tracker with document age validation
 - [x] Notifications system
 - [x] CPT Code lookup with autocomplete (combined Procedure/CPT field)
+- [x] **CPT Favorites** - Common maxillofacial procedures from maxillofacial.org
 - [x] PWA setup for mobile installation
+
+### CPT Code Feature (Complete - Feb 2026)
+- [x] Backend API endpoint: `/api/cpt-codes/search`
+- [x] Backend API endpoint: `/api/cpt-codes/favorites`
+- [x] JSON database with 200+ maxillofacial CPT codes from maxillofacial.org
+- [x] Combined Procedure/CPT field with autocomplete in Quick Add Patient form
+- [x] ⭐ Favorites dropdown shows common procedures on focus
+- [x] Categories: Biopsy, Ablation, Reconstruction, Orthognathic, Cosmetic, Fractures, etc.
+- [x] Selected CPT code displayed as badge next to field label
 
 ### Google Integration (Configuration Required)
 - [x] Backend OAuth endpoints implemented (`/api/google/auth-url`, `/api/google/callback`, etc.)
@@ -43,12 +53,7 @@ Build a web-based operating room scheduling platform for surgical residents feat
 - [x] Gmail integration for VSP session detection
 - [ ] **PENDING USER ACTION**: Add redirect URI to Google Cloud Console:
   - URI: `https://orchedule.preview.emergentagent.com/api/google/callback`
-
-### CPT Code Feature (Complete - Feb 2026)
-- [x] Backend API endpoint: `/api/cpt-codes/search`
-- [x] JSON database with dental/oral surgery CPT codes
-- [x] Combined Procedure/CPT field with autocomplete in Quick Add Patient form
-- [x] Selected CPT code displayed as badge next to field label
+  - Note: Current URIs are for wrong domain (oproom vs orchedule)
 
 ## Key Pages & Components
 - `AppleDashboard.jsx` - Main dashboard/command center
@@ -66,7 +71,8 @@ Build a web-based operating room scheduling platform for surgical residents feat
 - `/api/tasks/*` - Task management
 - `/api/residents/*` - Resident management
 - `/api/attendings/*` - Attending management
-- `/api/cpt-codes/search` - CPT code autocomplete
+- `/api/cpt-codes/search` - CPT code autocomplete search
+- `/api/cpt-codes/favorites` - Common CPT codes
 - `/api/google/*` - Google OAuth and Calendar/Gmail integration
 
 ## Database Collections
@@ -80,9 +86,11 @@ Build a web-based operating room scheduling platform for surgical residents feat
 ## Known Issues
 - Intermittent `bcrypt` AttributeError on backend startup (resolves after restart)
 - PDF extraction tool non-functional (CPT codes use static JSON workaround)
+- Google OAuth redirect URI mismatch (needs correct domain in GCP Console)
 
 ## Upcoming Tasks (P1)
 - [ ] Bulk import feature for residents/attendings (CSV upload)
+- [ ] Fix Google OAuth redirect URI in Google Cloud Console
 
 ## Future/Backlog (P2)
 - [ ] Drag-and-drop from Add-On List to Calendar
@@ -93,4 +101,4 @@ Build a web-based operating room scheduling platform for surgical residents feat
 - Test User: `test@example.com` / `Test123!`
 
 ## Last Updated
-February 3, 2026
+February 4, 2026
