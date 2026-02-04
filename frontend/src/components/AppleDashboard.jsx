@@ -26,6 +26,8 @@ import Patients from './Patients';
 import Tasks from './Tasks';
 import PatientStatusList from './patient-status/PatientStatusList';
 import SurgeryDashboard from './surgery-timeline/SurgeryDashboard';
+import CPTCodeAutocomplete from './CPTCodeAutocomplete';
+import { getCPTCodeByCode } from '../data/cptCodes';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
@@ -1017,25 +1019,20 @@ export const AppleDashboard = ({ user, onLogout }) => {
                   />
                 </div>
 
-                <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Procedure</Label>
-                  <Input
-                    className="h-10 text-sm rounded-lg"
-                    value={intakeForm.procedures}
-                    onChange={(e) => setIntakeForm({...intakeForm, procedures: e.target.value})}
-                    placeholder="Procedure"
-                  />
-                </div>
-
-                <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Code (Optional)</Label>
-                  <Input
-                    className="h-10 text-sm rounded-lg"
-                    value={intakeForm.procedure_code}
-                    onChange={(e) => setIntakeForm({...intakeForm, procedure_code: e.target.value})}
-                    placeholder="CPT code"
-                  />
-                </div>
+                {/* CPT Code Autocomplete - replaces procedure and code fields */}
+                <CPTCodeAutocomplete
+                  value={intakeForm.procedure_code}
+                  onChange={(code) => {
+                    const cptData = code ? getCPTCodeByCode(code) : null;
+                    setIntakeForm({
+                      ...intakeForm,
+                      procedure_code: code,
+                      // Auto-fill procedures field with CPT description
+                      procedures: cptData ? cptData.description : ''
+                    });
+                  }}
+                  label="Procedure / CPT Code"
+                />
 
                 {/* Scheduling Type Selection */}
                 <div className="pt-3 border-t border-gray-200">
