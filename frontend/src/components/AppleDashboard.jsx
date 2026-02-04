@@ -1097,7 +1097,15 @@ export const AppleDashboard = ({ user, onLogout }) => {
                       className="h-10 text-sm rounded-lg pr-10"
                       value={intakeForm.procedures}
                       onChange={(e) => handleProcedureChange(e.target.value)}
-                      onFocus={() => intakeForm.procedures.length >= 2 && searchCptCodes(intakeForm.procedures)}
+                      onFocus={() => {
+                        if (intakeForm.procedures.length >= 2) {
+                          searchCptCodes(intakeForm.procedures);
+                        } else if (cptFavorites.length > 0) {
+                          setCptSearchResults(cptFavorites);
+                          setShowCptDropdown(true);
+                        }
+                      }}
+                      onBlur={() => setTimeout(() => setShowCptDropdown(false), 200)}
                       placeholder="Search procedure or enter CPT code..."
                       data-testid="procedure-cpt-input"
                     />
