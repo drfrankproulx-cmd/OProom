@@ -1298,6 +1298,19 @@ async def get_cpt_categories():
     """Get all CPT code categories"""
     return list(CPT_CODES_DATA.keys())
 
+@app.get("/api/cpt-codes/favorites")
+async def get_cpt_favorites():
+    """Get favorite/common CPT codes"""
+    favorites = CPT_CODES_DATA.get('favorites', {})
+    return [
+        {
+            "code": code,
+            "description": description,
+            "category": "Favorites"
+        }
+        for code, description in favorites.items()
+    ]
+
 
 # ============ GOOGLE OAUTH ENDPOINTS ============
 
