@@ -131,6 +131,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
   const [cptSearchResults, setCptSearchResults] = useState([]);
   const [showCptDropdown, setShowCptDropdown] = useState(false);
   const [cptSearchLoading, setCptSearchLoading] = useState(false);
+  const [cptFavorites, setCptFavorites] = useState([]);
 
   const [taskForm, setTaskForm] = useState({
     task_description: '',
