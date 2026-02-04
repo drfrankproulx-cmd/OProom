@@ -1032,6 +1032,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
                     });
                   }}
                   label="Procedure / CPT Code"
+                  diagnosis={intakeForm.diagnosis}
                 />
 
                 {/* Scheduling Type Selection */}

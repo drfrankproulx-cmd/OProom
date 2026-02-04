@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Star, Search } from 'lucide-react';
-import { CPT_CODES, searchCPTCodes, getFavoriteCPTCodes } from '../data/cptCodes';
+import { Star, Search, Filter } from 'lucide-react';
+import { CPT_CODES, searchCPTCodes, getFavoriteCPTCodes, getCPTCodesByCodes } from '../data/cptCodes';
+import { getCPTCodesForDiagnosis } from '../data/diagnoses';
 
 /**
  * CPT Code Autocomplete Component
- * Searchable dropdown with favorites system
+ * Searchable dropdown with favorites system and diagnosis-based filtering
  */
-export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT Code", required = false }) => {
+export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT Code", required = false, diagnosis = null }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [filteredCodes, setFilteredCodes] = useState([]);
@@ -16,14 +17,29 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    // Initialize with favorites
+    // Get diagnosis-specific CPT codes if diagnosis is provided
+    const diagnosisCodes = diagnosis ? getCPTCodesForDiagnosis(diagnosis) : null;
+
     if (!searchQuery) {
-      setFilteredCodes(getFavoriteCPTCodes());
+      // Show diagnosis-specific codes or favorites
+      if (diagnosisCodes && diagnosisCodes.length > 0) {
+        const relevantCodes = getCPTCodesByCodes(diagnosisCodes);
+        setFilteredCodes(relevantCodes);
+      } else {
+        setFilteredCodes(getFavoriteCPTCodes());
+      }
     } else {
-      const results = searchCPTCodes(searchQuery);
-      setFilteredCodes(results.slice(0, 20)); // Limit to 20 results
+      // Search within diagnosis-specific codes or all codes
+      let searchResults = searchCPTCodes(searchQuery);
+
+      // If diagnosis is provided, filter search results to only show relevant codes
+      if (diagnosisCodes && diagnosisCodes.length > 0) {
+        searchResults = searchResults.filter(cpt => diagnosisCodes.includes(cpt.code));
+      }
+
+      setFilteredCodes(searchResults.slice(0, 20)); // Limit to 20 results
     }
-  }, [searchQuery]);
+  }, [searchQuery, diagnosis]);
 
   useEffect(() => {
     // Find selected CPT if value exists
@@ -68,7 +84,13 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
   const handleFocus = () => {
     setIsOpen(true);
     if (!searchQuery) {
-      setFilteredCodes(getFavoriteCPTCodes());
+      const diagnosisCodes = diagnosis ? getCPTCodesForDiagnosis(diagnosis) : null;
+      if (diagnosisCodes && diagnosisCodes.length > 0) {
+        const relevantCodes = getCPTCodesByCodes(diagnosisCodes);
+        setFilteredCodes(relevantCodes);
+      } else {
+        setFilteredCodes(getFavoriteCPTCodes());
+      }
     }
   };
 
@@ -170,15 +192,33 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
           </div>
         )}
 
-        {/* Favorites hint */}
-        {isOpen && !searchQuery && (
-          <div className="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-t-lg border-b-0 px-4 py-2">
-            <div className="flex items-center space-x-2 text-xs text-gray-500">
-              <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />
-              <span>Showing favorite procedures - start typing to search all codes</span>
+        {/* Diagnosis or Favorites hint */}
+        {isOpen && !searchQuery && (() => {
+          const diagnosisCodes = diagnosis ? getCPTCodesForDiagnosis(diagnosis) : null;
+          const isDiagnosisFiltered = diagnosisCodes && diagnosisCodes.length > 0;
+
+          return (
+            <div className={`absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-t-lg border-b-0 px-4 py-2 ${
+              isDiagnosisFiltered ? 'bg-blue-50 border-blue-200' : ''
+            }`}>
+              <div className="flex items-center space-x-2 text-xs text-gray-500">
+                {isDiagnosisFiltered ? (
+                  <>
+                    <Filter className="h-3 w-3 text-blue-600" />
+                    <span className="text-blue-700 font-medium">
+                      Showing {filteredCodes.length} procedure(s) relevant to diagnosis - start typing to search
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />
+                    <span>Showing favorite procedures - start typing to search all codes</span>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
       </div>
     </div>
   );

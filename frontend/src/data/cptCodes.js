@@ -475,3 +475,12 @@ export const getFavoriteCPTCodes = () => {
 export const getCPTCodeByCode = (code) => {
   return CPT_CODES.find(cpt => cpt.code === code);
 };
+
+/**
+ * Filter CPT codes by a list of code numbers
+ * Used for diagnosis-specific filtering
+ */
+export const getCPTCodesByCodes = (codes) => {
+  if (!codes || codes.length === 0) return CPT_CODES;
+  return CPT_CODES.filter(cpt => codes.includes(cpt.code));
+};
