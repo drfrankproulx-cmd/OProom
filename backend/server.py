@@ -1299,8 +1299,93 @@ async def get_cpt_categories():
     return list(CPT_CODES_DATA.keys())
 
 @app.get("/api/cpt-codes/favorites")
-async def get_cpt_favorites():
-    """Get favorite/common CPT codes"""
+async def get_cpt_favorites(diagnosis: str = Query(None)):
+    """Get favorite/common CPT codes, optionally filtered by diagnosis"""
+    
+    # Diagnosis to category mapping
+    DIAGNOSIS_MAPPINGS = {
+        # Fractures
+        "mandible fracture": "mandible_fractures",
+        "mandibular fracture": "mandible_fractures",
+        "jaw fracture": "mandible_fractures",
+        "midface fracture": "midface_fractures",
+        "zmc fracture": "midface_fractures",
+        "zygomatic fracture": "midface_fractures",
+        "orbital fracture": "midface_fractures",
+        "lefort": "midface_fractures",
+        "noe fracture": "midface_fractures",
+        "nasal fracture": "midface_fractures",
+        
+        # Orthognathic
+        "malocclusion": "orthognathic",
+        "prognathism": "orthognathic",
+        "retrognathia": "orthognathic",
+        "micrognathia": "orthognathic",
+        "orthognathic": "orthognathic",
+        "bsso": "orthognathic",
+        "lefort i": "orthognathic",
+        
+        # Infections
+        "abscess": "odontogenic_infections",
+        "infection": "odontogenic_infections",
+        "osteomyelitis": "odontogenic_infections",
+        "cellulitis": "odontogenic_infections",
+        "ludwig": "odontogenic_infections",
+        
+        # Cancer/Tumors
+        "cancer": "ablation",
+        "tumor": "ablation",
+        "carcinoma": "ablation",
+        "scc": "ablation",
+        "squamous cell": "ablation",
+        "malignant": "ablation",
+        "ameloblastoma": "ablation",
+        "odontogenic tumor": "ablation",
+        
+        # Reconstruction
+        "reconstruction": "reconstruction",
+        "defect": "reconstruction",
+        "free flap": "reconstruction",
+        "fibula flap": "reconstruction",
+        
+        # Biopsy
+        "biopsy": "biopsy",
+        "lesion": "biopsy",
+        "mass": "biopsy",
+        
+        # Cosmetic
+        "rhinoplasty": "cosmetic",
+        "genioplasty": "cosmetic",
+        "chin": "cosmetic",
+        "blepharoplasty": "cosmetic",
+    }
+    
+    results = []
+    
+    if diagnosis:
+        diagnosis_lower = diagnosis.lower()
+        matched_category = None
+        
+        # Find matching category based on diagnosis
+        for keyword, category in DIAGNOSIS_MAPPINGS.items():
+            if keyword in diagnosis_lower:
+                matched_category = category
+                break
+        
+        # If we found a matching category, return those CPT codes
+        if matched_category and matched_category in CPT_CODES_DATA:
+            category_codes = CPT_CODES_DATA[matched_category]
+            results = [
+                {
+                    "code": code,
+                    "description": description,
+                    "category": matched_category.replace('_', ' ').title()
+                }
+                for code, description in category_codes.items()
+            ]
+            return results
+    
+    # Default: return general favorites
     favorites = CPT_CODES_DATA.get('favorites', {})
     return [
         {
