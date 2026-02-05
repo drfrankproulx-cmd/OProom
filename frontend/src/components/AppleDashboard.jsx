@@ -26,6 +26,8 @@ import Patients from './Patients';
 import Tasks from './Tasks';
 import PatientStatusList from './patient-status/PatientStatusList';
 import SurgeryDashboard from './surgery-timeline/SurgeryDashboard';
+import CPTCodeAutocomplete from './CPTCodeAutocomplete';
+import { getCPTCodeByCode } from '../data/cptCodes';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
@@ -1082,78 +1084,20 @@ export const AppleDashboard = ({ user, onLogout }) => {
                   />
                 </div>
 
-                {/* Combined Procedure & CPT Code Field */}
-                <div className="relative">
-                  <Label className="text-sm font-medium text-gray-700 mb-1 block">
-                    Procedure / CPT Code
-                    {intakeForm.procedure_code && (
-                      <span className="ml-2 px-2 py-0.5 bg-teal-100 text-teal-700 rounded text-xs font-medium">
-                        {intakeForm.procedure_code}
-                      </span>
-                    )}
-                  </Label>
-                  <div className="relative">
-                    <Input
-                      className="h-10 text-sm rounded-lg pr-10"
-                      value={intakeForm.procedures}
-                      onChange={(e) => handleProcedureChange(e.target.value)}
-                      onFocus={() => {
-                        if (intakeForm.procedures.length >= 2) {
-                          searchCptCodes(intakeForm.procedures);
-                        } else if (cptFavorites.length > 0) {
-                          setCptSearchResults(cptFavorites);
-                          setShowCptDropdown(true);
-                        }
-                      }}
-                      onBlur={() => setTimeout(() => setShowCptDropdown(false), 200)}
-                      placeholder="Search procedure or enter CPT code..."
-                      data-testid="procedure-cpt-input"
-                    />
-                    {cptSearchLoading && (
-                      <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                        <div className="animate-spin h-4 w-4 border-2 border-teal-500 border-t-transparent rounded-full"></div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* CPT Autocomplete Dropdown */}
-                  {showCptDropdown && cptSearchResults.length > 0 && (
-                    <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                      {/* Show Favorites header if showing favorites */}
-                      {cptSearchResults[0]?.category === 'Favorites' && (
-                        <div className="px-3 py-1.5 bg-amber-50 border-b border-amber-200 sticky top-0">
-                          <span className="text-xs font-semibold text-amber-700 flex items-center gap-1">
-                            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                            </svg>
-                            Common Procedures
-                          </span>
-                        </div>
-                      )}
-                      {cptSearchResults.map((cpt, idx) => (
-                        <div
-                          key={`${cpt.code}-${idx}`}
-                          className={`px-3 py-2 hover:bg-teal-50 cursor-pointer border-b border-gray-100 last:border-0 ${cpt.category === 'Favorites' ? 'bg-amber-50/30' : ''}`}
-                          onClick={() => handleCptSelect(cpt)}
-                          data-testid={`cpt-option-${cpt.code}`}
-                        >
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium text-teal-600 text-sm flex items-center gap-1">
-                              {cpt.category === 'Favorites' && (
-                                <svg className="w-3 h-3 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
-                                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                                </svg>
-                              )}
-                              {cpt.code}
-                            </span>
-                            <span className="text-xs text-gray-400">{cpt.category !== 'Favorites' ? cpt.category : ''}</span>
-                          </div>
-                          <p className="text-sm text-gray-700 truncate">{cpt.description}</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                {/* CPT Code Autocomplete with Diagnosis-Based Filtering */}
+                <CPTCodeAutocomplete
+                  value={intakeForm.procedure_code}
+                  onChange={(code) => {
+                    const cptData = code ? getCPTCodeByCode(code) : null;
+                    setIntakeForm({
+                      ...intakeForm,
+                      procedure_code: code,
+                      procedures: cptData ? cptData.description : ''
+                    });
+                  }}
+                  label="Procedure / CPT Code"
+                  diagnosis={intakeForm.diagnosis}
+                />
 
                 {/* Scheduling Type Selection */}
                 <div className="pt-3 border-t border-gray-200">

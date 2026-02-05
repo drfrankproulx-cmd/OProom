@@ -6,6 +6,12 @@
 export const DIAGNOSES = [
   // Mandible Fractures
   {
+    id: 'mandible_fracture_general',
+    name: 'Mandible Fracture',
+    category: 'Mandible Fractures',
+    cptCodes: ['21470', '21462', '21465', '21485', '21490', '21421', '21310', '21366']
+  },
+  {
     id: 'mandible_body',
     name: 'Mandibular Body Fracture',
     category: 'Mandible Fractures',
@@ -268,21 +274,29 @@ export const searchDiagnoses = (query) => {
 export const getCPTCodesForDiagnosis = (diagnosisText) => {
   if (!diagnosisText || diagnosisText.trim() === '') return null;
 
+  const lowerDiagnosis = diagnosisText.toLowerCase();
+
   // Try exact match first
   const exactMatch = DIAGNOSES.find(d =>
-    d.name.toLowerCase() === diagnosisText.toLowerCase()
+    d.name.toLowerCase() === lowerDiagnosis
   );
 
   if (exactMatch) return exactMatch.cptCodes;
 
-  // Try partial match
-  const lowerDiagnosis = diagnosisText.toLowerCase();
-  const partialMatch = DIAGNOSES.find(d =>
+  // Try partial match - get ALL matching diagnoses and combine their codes
+  const partialMatches = DIAGNOSES.filter(d =>
     d.name.toLowerCase().includes(lowerDiagnosis) ||
-    lowerDiagnosis.includes(d.name.toLowerCase())
+    lowerDiagnosis.includes(d.name.toLowerCase()) ||
+    d.category.toLowerCase().includes(lowerDiagnosis)
   );
 
-  return partialMatch ? partialMatch.cptCodes : null;
+  if (partialMatches.length > 0) {
+    // Combine all CPT codes from matching diagnoses and remove duplicates
+    const allCodes = partialMatches.flatMap(d => d.cptCodes);
+    return [...new Set(allCodes)];
+  }
+
+  return null;
 };
 
 /**
