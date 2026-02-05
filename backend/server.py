@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()  # Load environment variables before any other imports
+
 from fastapi import FastAPI, HTTPException, Depends, status, Query
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.middleware.cors import CORSMiddleware
@@ -1259,6 +1262,56 @@ async def delete_notification(notification_id: str, current_user: str = Depends(
     return {"message": "Notification deleted successfully"}
 
 
+# ============ CPT CODES SEARCH ============
+
+# Load CPT codes from JSON file
+import json
+CPT_CODES_FILE = os.path.join(os.path.dirname(__file__), 'cpt_codes.json')
+CPT_CODES_DATA = {}
+try:
+    with open(CPT_CODES_FILE, 'r') as f:
+        CPT_CODES_DATA = json.load(f)
+except Exception as e:
+    print(f"Warning: Could not load CPT codes: {e}")
+
+@app.get("/api/cpt-codes/search")
+async def search_cpt_codes(query: str = Query(..., min_length=2)):
+    """Search CPT codes by code or description"""
+    results = []
+    query_lower = query.lower()
+    
+    for category, codes in CPT_CODES_DATA.items():
+        for code, description in codes.items():
+            if query_lower in code.lower() or query_lower in description.lower():
+                results.append({
+                    "code": code,
+                    "description": description,
+                    "category": category.replace('_', ' ').title()
+                })
+                if len(results) >= 15:  # Limit results
+                    return results
+    
+    return results
+
+@app.get("/api/cpt-codes/categories")
+async def get_cpt_categories():
+    """Get all CPT code categories"""
+    return list(CPT_CODES_DATA.keys())
+
+@app.get("/api/cpt-codes/favorites")
+async def get_cpt_favorites():
+    """Get favorite/common CPT codes"""
+    favorites = CPT_CODES_DATA.get('favorites', {})
+    return [
+        {
+            "code": code,
+            "description": description,
+            "category": "Favorites"
+        }
+        for code, description in favorites.items()
+    ]
+
+
 # ============ GOOGLE OAUTH ENDPOINTS ============
 
 @app.get("/api/google/auth-url")
@@ -1294,11 +1347,11 @@ async def google_oauth_callback(code: str, state: str = None):
         )
         
         # Redirect to frontend with success
-        frontend_url = os.environ.get('FRONTEND_URL', 'https://oproom.preview.emergentagent.com')
+        frontend_url = os.environ.get('FRONTEND_URL', 'https://orchedule.preview.emergentagent.com')
         return RedirectResponse(f"{frontend_url}?google_connected=true")
         
     except Exception as e:
-        frontend_url = os.environ.get('FRONTEND_URL', 'https://oproom.preview.emergentagent.com')
+        frontend_url = os.environ.get('FRONTEND_URL', 'https://orchedule.preview.emergentagent.com')
         return RedirectResponse(f"{frontend_url}?google_error={str(e)}")
 
 
