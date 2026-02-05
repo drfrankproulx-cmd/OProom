@@ -1197,7 +1197,6 @@ export const AppleDashboard = ({ user, onLogout }) => {
                           </span>
                         </div>
                       )}
-                      )}
                       {cptSearchResults.map((cpt, idx) => (
                         <div
                           key={`${cpt.code}-${idx}`}
