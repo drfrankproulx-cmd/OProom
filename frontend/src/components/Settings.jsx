@@ -15,15 +15,14 @@ import {
   Trash2,
   X,
   ArrowLeft,
-  Calendar,
-  CheckCircle,
-  XCircle,
-  Link as LinkIcon
+  Mail,
+  Calendar
 } from 'lucide-react';
+import GoogleIntegration from './GoogleIntegration';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
-export const Settings = ({ onClose }) => {
+export const Settings = ({ onClose, onSessionExpired }) => {
   const [activeTab, setActiveTab] = useState('residents');
   const [residents, setResidents] = useState([]);
   const [attendings, setAtttendings] = useState([]);
@@ -31,7 +30,17 @@ export const Settings = ({ onClose }) => {
   const [showAddAttending, setShowAddAttending] = useState(false);
   const [editingResident, setEditingResident] = useState(null);
   const [editingAttending, setEditingAttending] = useState(null);
-  const [googleCalendarStatus, setGoogleCalendarStatus] = useState({ connected: false, google_email: null });
+
+  const handleSessionExpired = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    toast.error('Your session has expired. Please log in again.');
+    if (onSessionExpired) {
+      onSessionExpired();
+    } else {
+      window.location.reload();
+    }
+  };
 
   const [residentForm, setResidentForm] = useState({
     name: '',
@@ -50,13 +59,24 @@ export const Settings = ({ onClose }) => {
     is_active: true
   });
 
-  const getAuthHeaders = () => ({
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    'Content-Type': 'application/json',
-  });
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('No auth token found in localStorage');
+    }
+    return {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    };
+  };
 
   const fetchResidents = async () => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.error('Session expired. Please log in again.');
+        return;
+      }
       const response = await fetch(`${API_URL}/api/residents`, {
         headers: getAuthHeaders()
       });
@@ -83,76 +103,9 @@ export const Settings = ({ onClose }) => {
     }
   };
 
-  const fetchGoogleCalendarStatus = async () => {
-    try {
-      const response = await fetch(`${API_URL}/api/auth/google/status`, {
-        headers: getAuthHeaders()
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setGoogleCalendarStatus(data);
-      }
-    } catch (error) {
-      console.error('Failed to fetch Google Calendar status:', error);
-    }
-  };
-
-  const handleConnectGoogleCalendar = async () => {
-    try {
-      const response = await fetch(`${API_URL}/api/auth/google/url`, {
-        headers: getAuthHeaders()
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        // Redirect user to Google OAuth page
-        window.location.href = data.auth_url;
-      } else {
-        const error = await response.json();
-        toast.error(error.detail || 'Failed to get Google authorization URL');
-      }
-    } catch (error) {
-      toast.error('Failed to connect to Google Calendar');
-    }
-  };
-
-  const handleDisconnectGoogleCalendar = async () => {
-    if (!window.confirm('Are you sure you want to disconnect Google Calendar?')) return;
-
-    try {
-      const response = await fetch(`${API_URL}/api/auth/google/disconnect`, {
-        method: 'POST',
-        headers: getAuthHeaders()
-      });
-
-      if (response.ok) {
-        toast.success('Google Calendar disconnected successfully');
-        fetchGoogleCalendarStatus();
-      } else {
-        toast.error('Failed to disconnect Google Calendar');
-      }
-    } catch (error) {
-      toast.error('Failed to disconnect Google Calendar');
-    }
-  };
-
   useEffect(() => {
     fetchResidents();
     fetchAtttendings();
-    fetchGoogleCalendarStatus();
-
-    // Check for OAuth callback parameters in URL
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('google_connected') === 'true') {
-      toast.success('Google Calendar connected successfully!');
-      fetchGoogleCalendarStatus();
-      // Clean up URL
-      window.history.replaceState({}, '', '/settings');
-    } else if (params.get('google_error')) {
-      toast.error(`Failed to connect Google Calendar: ${params.get('google_error')}`);
-      // Clean up URL
-      window.history.replaceState({}, '', '/settings');
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -162,12 +115,32 @@ export const Settings = ({ onClose }) => {
       return;
     }
 
+    const token = localStorage.getItem('token');
+    if (!token) {
+      handleSessionExpired();
+      return;
+    }
+
     try {
+      // Clean up form data - convert empty strings to null for optional fields
+      const cleanedForm = {
+        ...residentForm,
+        specialty: residentForm.specialty?.trim() || null,
+        year: residentForm.year?.trim() || null
+      };
+
       const response = await fetch(`${API_URL}/api/residents`, {
         method: 'POST',
         headers: getAuthHeaders(),
-        body: JSON.stringify(residentForm)
+        body: JSON.stringify(cleanedForm)
       });
+
+      const data = await response.json();
+
+      if (response.status === 401) {
+        handleSessionExpired();
+        return;
+      }
 
       if (response.ok) {
         toast.success('Resident added successfully');
@@ -182,11 +155,11 @@ export const Settings = ({ onClose }) => {
         });
         fetchResidents();
       } else {
-        const error = await response.json();
-        toast.error(error.detail || 'Failed to add resident');
+        toast.error(data.detail || 'Failed to add resident');
       }
     } catch (error) {
-      toast.error('Failed to add resident');
+      console.error('Error adding resident:', error);
+      toast.error('Failed to add resident. Please try again.');
     }
   };
 
@@ -246,12 +219,32 @@ export const Settings = ({ onClose }) => {
       return;
     }
 
+    const token = localStorage.getItem('token');
+    if (!token) {
+      handleSessionExpired();
+      return;
+    }
+
     try {
+      // Clean up form data - convert empty strings to null for optional fields
+      const cleanedForm = {
+        ...attendingForm,
+        email: attendingForm.email?.trim() || null,
+        specialty: attendingForm.specialty?.trim() || null
+      };
+
       const response = await fetch(`${API_URL}/api/attendings`, {
         method: 'POST',
         headers: getAuthHeaders(),
-        body: JSON.stringify(attendingForm)
+        body: JSON.stringify(cleanedForm)
       });
+
+      const data = await response.json();
+
+      if (response.status === 401) {
+        handleSessionExpired();
+        return;
+      }
 
       if (response.ok) {
         toast.success('Attending added successfully');
@@ -265,11 +258,11 @@ export const Settings = ({ onClose }) => {
         });
         fetchAtttendings();
       } else {
-        const error = await response.json();
-        toast.error(error.detail || 'Failed to add attending');
+        toast.error(data.detail || 'Failed to add attending');
       }
     } catch (error) {
-      toast.error('Failed to add attending');
+      console.error('Error adding attending:', error);
+      toast.error('Failed to add attending. Please try again.');
     }
   };
 
@@ -392,17 +385,29 @@ export const Settings = ({ onClose }) => {
             <span>Attendings</span>
           </button>
           <button
-            onClick={() => setActiveTab('integrations')}
+            onClick={() => setActiveTab('google')}
             className={`flex items-center space-x-2 px-6 py-3 rounded-full font-medium transition-all ${
-              activeTab === 'integrations'
+              activeTab === 'google'
                 ? 'bg-blue-500 text-white shadow-lg'
                 : 'bg-white text-gray-700 hover:bg-gray-100'
             }`}
           >
-            <LinkIcon className="h-5 w-5" />
-            <span>Integrations</span>
+            <Mail className="h-5 w-5" />
+            <span>Email & Calendar</span>
           </button>
         </div>
+
+        {/* Google Integration Tab */}
+        {activeTab === 'google' && (
+          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl p-8">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Email & Calendar Integration</h2>
+              <p className="text-gray-600 mt-1">Connect your Google account for Gmail and Calendar sync</p>
+            </div>
+            <GoogleIntegration />
+          </div>
+        )}
+
 
         {/* Residents Tab */}
         {activeTab === 'residents' && (
@@ -553,116 +558,6 @@ export const Settings = ({ onClose }) => {
                   <p className="text-lg">No attendings added yet</p>
                 </div>
               )}
-            </div>
-          </div>
-        )}
-
-        {/* Integrations Tab */}
-        {activeTab === 'integrations' && (
-          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl p-8">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Calendar Integrations</h2>
-              <p className="text-gray-600">
-                Connect your Google Calendar to automatically sync OR case schedules
-              </p>
-            </div>
-
-            <div className="space-y-6">
-              {/* Google Calendar */}
-              <div className="p-8 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl border border-blue-200">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="p-4 bg-white rounded-2xl shadow-md">
-                      <Calendar className="h-8 w-8 text-blue-600" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">
-                        Google Calendar
-                      </h3>
-                      {googleCalendarStatus.connected ? (
-                        <div className="space-y-2">
-                          <div className="flex items-center space-x-2">
-                            <CheckCircle className="h-5 w-5 text-green-600" />
-                            <span className="text-green-700 font-medium">Connected</span>
-                          </div>
-                          <p className="text-gray-700">
-                            <span className="font-medium">Account:</span> {googleCalendarStatus.google_email}
-                          </p>
-                          {googleCalendarStatus.connected_at && (
-                            <p className="text-gray-600 text-sm">
-                              Connected on {new Date(googleCalendarStatus.connected_at).toLocaleDateString()}
-                            </p>
-                          )}
-                        </div>
-                      ) : (
-                        <div className="space-y-2">
-                          <div className="flex items-center space-x-2">
-                            <XCircle className="h-5 w-5 text-gray-400" />
-                            <span className="text-gray-600">Not connected</span>
-                          </div>
-                          <p className="text-gray-600 text-sm">
-                            Connect your Google Calendar to automatically create events for OR cases
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div>
-                    {googleCalendarStatus.connected ? (
-                      <Button
-                        onClick={handleDisconnectGoogleCalendar}
-                        variant="outline"
-                        className="rounded-full px-6 py-3 border-red-300 text-red-600 hover:bg-red-50"
-                      >
-                        Disconnect
-                      </Button>
-                    ) : (
-                      <Button
-                        onClick={handleConnectGoogleCalendar}
-                        className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6 py-3 shadow-lg"
-                      >
-                        Connect Google Calendar
-                      </Button>
-                    )}
-                  </div>
-                </div>
-
-                {googleCalendarStatus.connected && (
-                  <div className="mt-6 pt-6 border-t border-blue-200">
-                    <h4 className="font-semibold text-gray-900 mb-3">What gets synced:</h4>
-                    <ul className="space-y-2 text-gray-700">
-                      <li className="flex items-start">
-                        <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                        <span>All scheduled OR cases with dates and times</span>
-                      </li>
-                      <li className="flex items-start">
-                        <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                        <span>Conference and meeting schedules</span>
-                      </li>
-                      <li className="flex items-start">
-                        <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                        <span>Patient details and attending surgeon information</span>
-                      </li>
-                    </ul>
-                  </div>
-                )}
-              </div>
-
-              {/* Future integrations placeholder */}
-              <div className="p-8 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl border border-gray-200 opacity-60">
-                <div className="flex items-center space-x-4">
-                  <div className="p-4 bg-white rounded-2xl shadow-md">
-                    <Calendar className="h-8 w-8 text-gray-400" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-500 mb-1">
-                      Microsoft Outlook
-                    </h3>
-                    <p className="text-gray-500">Coming soon</p>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         )}
