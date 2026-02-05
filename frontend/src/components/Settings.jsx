@@ -136,12 +136,12 @@ export const Settings = ({ onClose, onSessionExpired }) => {
       });
 
       const data = await response.json();
-      
+
       if (response.status === 401) {
         handleSessionExpired();
         return;
       }
-      
+
       if (response.ok) {
         toast.success('Resident added successfully');
         setShowAddResident(false);
@@ -232,7 +232,7 @@ export const Settings = ({ onClose, onSessionExpired }) => {
         email: attendingForm.email?.trim() || null,
         specialty: attendingForm.specialty?.trim() || null
       };
-      
+
       const response = await fetch(`${API_URL}/api/attendings`, {
         method: 'POST',
         headers: getAuthHeaders(),
@@ -407,6 +407,7 @@ export const Settings = ({ onClose, onSessionExpired }) => {
             <GoogleIntegration />
           </div>
         )}
+
 
         {/* Residents Tab */}
         {activeTab === 'residents' && (
