@@ -208,6 +208,35 @@ export const AppleDashboard = ({ user, onLogout }) => {
     }
   };
 
+  // Load diagnosis-specific CPT codes
+  const loadDiagnosisCptCodes = async (diagnosis) => {
+    try {
+      const url = diagnosis 
+        ? `${API_URL}/api/cpt-codes/favorites?diagnosis=${encodeURIComponent(diagnosis)}`
+        : `${API_URL}/api/cpt-codes/favorites`;
+      
+      const response = await fetch(url, {
+        headers: getAuthHeaders()
+      });
+      if (response.ok) {
+        const results = await response.json();
+        setCptSearchResults(results);
+        setShowCptDropdown(true);
+      }
+    } catch (error) {
+      console.error('Failed to load diagnosis CPT codes:', error);
+    }
+  };
+
+  // Handle dropdown arrow click - shows diagnosis-correlated CPT codes
+  const handleCptDropdownClick = () => {
+    if (showCptDropdown) {
+      setShowCptDropdown(false);
+    } else {
+      loadDiagnosisCptCodes(intakeForm.diagnosis);
+    }
+  };
+
   // CPT Code Search Function
   const searchCptCodes = async (query) => {
     if (!query || query.length < 2) {
