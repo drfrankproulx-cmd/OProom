@@ -20,6 +20,8 @@ from email.mime.base import MIMEBase
 from email import encoders
 from icalendar import Calendar, Event as ICalEvent
 import pytz
+import requests
+from urllib.parse import urlencode
 
 # Import Google integration
 from google_integration import (
@@ -1279,7 +1281,7 @@ async def search_cpt_codes(query: str = Query(..., min_length=2)):
     """Search CPT codes by code or description"""
     results = []
     query_lower = query.lower()
-    
+
     for category, codes in CPT_CODES_DATA.items():
         for code, description in codes.items():
             if query_lower in code.lower() or query_lower in description.lower():
@@ -1290,7 +1292,7 @@ async def search_cpt_codes(query: str = Query(..., min_length=2)):
                 })
                 if len(results) >= 15:  # Limit results
                     return results
-    
+
     return results
 
 @app.get("/api/cpt-codes/categories")
@@ -1327,13 +1329,13 @@ async def google_oauth_callback(code: str, state: str = None):
     try:
         # Exchange code for tokens
         tokens = exchange_code_for_tokens(code)
-        
+
         # Get user info
         google_user = get_google_user_info(tokens['access_token'])
-        
+
         # Store tokens in user document
         user_email = state or google_user.get('email')
-        
+
         users_collection.update_one(
             {"email": user_email},
             {
@@ -1345,11 +1347,11 @@ async def google_oauth_callback(code: str, state: str = None):
                 }
             }
         )
-        
+
         # Redirect to frontend with success
         frontend_url = os.environ.get('FRONTEND_URL', 'https://orchedule.preview.emergentagent.com')
         return RedirectResponse(f"{frontend_url}?google_connected=true")
-        
+
     except Exception as e:
         frontend_url = os.environ.get('FRONTEND_URL', 'https://orchedule.preview.emergentagent.com')
         return RedirectResponse(f"{frontend_url}?google_error={str(e)}")
@@ -1361,7 +1363,7 @@ async def get_google_connection_status(current_user: str = Depends(get_current_u
     user = users_collection.find_one({"email": current_user})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    
+
     return {
         "connected": user.get("google_connected", False),
         "google_email": user.get("google_email"),

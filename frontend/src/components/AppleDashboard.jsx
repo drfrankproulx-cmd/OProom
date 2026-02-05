@@ -215,7 +215,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
       setShowCptDropdown(false);
       return;
     }
-    
+
     setCptSearchLoading(true);
     try {
       const response = await fetch(`${API_URL}/api/cpt-codes/search?query=${encodeURIComponent(query)}`, {
@@ -1115,7 +1115,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
                       </div>
                     )}
                   </div>
-                  
+
                   {/* CPT Autocomplete Dropdown */}
                   {showCptDropdown && cptSearchResults.length > 0 && (
                     <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
