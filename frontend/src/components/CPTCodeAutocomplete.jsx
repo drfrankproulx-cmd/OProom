@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Star, Search, Filter } from 'lucide-react';
+import { Star, Search, Filter, Clock } from 'lucide-react';
 import { CPT_CODES, searchCPTCodes, getFavoriteCPTCodes, getCPTCodesByCodes } from '../data/cptCodes';
 import { getCPTCodesForDiagnosis } from '../data/diagnoses';
+
+const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
 /**
  * CPT Code Autocomplete Component
@@ -14,17 +16,26 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
   const [isOpen, setIsOpen] = useState(false);
   const [filteredCodes, setFilteredCodes] = useState([]);
   const [selectedCPT, setSelectedCPT] = useState(null);
+  const [frequentlyUsed, setFrequentlyUsed] = useState([]);
   const dropdownRef = useRef(null);
+
+  // Load frequently used CPT codes on mount
+  useEffect(() => {
+    fetchFrequentlyUsed();
+  }, []);
 
   useEffect(() => {
     // Get diagnosis-specific CPT codes if diagnosis is provided
     const diagnosisCodes = diagnosis ? getCPTCodesForDiagnosis(diagnosis) : null;
 
     if (!searchQuery) {
-      // Show diagnosis-specific codes or favorites
+      // Priority: Diagnosis-specific > Frequently used > Favorites
       if (diagnosisCodes && diagnosisCodes.length > 0) {
         const relevantCodes = getCPTCodesByCodes(diagnosisCodes);
         setFilteredCodes(relevantCodes);
+      } else if (frequentlyUsed.length > 0) {
+        // Show frequently used codes
+        setFilteredCodes(frequentlyUsed);
       } else {
         setFilteredCodes(getFavoriteCPTCodes());
       }
@@ -39,7 +50,7 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
 
       setFilteredCodes(searchResults.slice(0, 20)); // Limit to 20 results
     }
-  }, [searchQuery, diagnosis]);
+  }, [searchQuery, diagnosis, frequentlyUsed]);
 
   useEffect(() => {
     // Find selected CPT if value exists
@@ -74,6 +85,28 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
     }
   };
 
+  const fetchFrequentlyUsed = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const response = await fetch(`${API_URL}/api/usage/frequently-used-cpt?limit=10`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Mark as frequently used
+        const marked = data.map(cpt => ({ ...cpt, isFrequentlyUsed: true }));
+        setFrequentlyUsed(marked);
+      }
+    } catch (error) {
+      console.error('Failed to fetch frequently used CPT codes:', error);
+    }
+  };
+
   const handleSelectCPT = (cpt) => {
     setSelectedCPT(cpt);
     setSearchQuery(cpt.code);
@@ -88,6 +121,8 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
       if (diagnosisCodes && diagnosisCodes.length > 0) {
         const relevantCodes = getCPTCodesByCodes(diagnosisCodes);
         setFilteredCodes(relevantCodes);
+      } else if (frequentlyUsed.length > 0) {
+        setFilteredCodes(frequentlyUsed);
       } else {
         setFilteredCodes(getFavoriteCPTCodes());
       }
@@ -149,6 +184,16 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
         {/* Dropdown */}
         {isOpen && filteredCodes.length > 0 && (
           <div className="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-96 overflow-y-auto">
+            {/* Header for frequently used */}
+            {!searchQuery && frequentlyUsed.length > 0 && !diagnosis && (
+              <div className="px-3 py-1.5 bg-purple-50 border-b border-purple-200 sticky top-0">
+                <span className="text-xs font-semibold text-purple-700 flex items-center gap-1">
+                  <Clock className="h-3 w-3" />
+                  Frequently Used Procedures
+                </span>
+              </div>
+            )}
+
             {filteredCodes.map((cpt, index) => (
               <button
                 key={cpt.code}
@@ -164,6 +209,9 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
                       <span className="font-mono font-semibold text-blue-600 text-lg">
                         {cpt.code}
                       </span>
+                      {cpt.isFrequentlyUsed && (
+                        <Clock className="h-4 w-4 text-purple-500" />
+                      )}
                       {cpt.isFavorite && (
                         <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
                       )}
@@ -192,21 +240,37 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
           </div>
         )}
 
-        {/* Diagnosis or Favorites hint */}
+        {/* Diagnosis, Frequently Used, or Favorites hint */}
         {isOpen && !searchQuery && (() => {
           const diagnosisCodes = diagnosis ? getCPTCodesForDiagnosis(diagnosis) : null;
           const isDiagnosisFiltered = diagnosisCodes && diagnosisCodes.length > 0;
+          const isFrequentlyUsed = !isDiagnosisFiltered && frequentlyUsed.length > 0;
+
+          let bgColor = 'bg-white';
+          let borderColor = 'border-gray-300';
+          if (isDiagnosisFiltered) {
+            bgColor = 'bg-blue-50';
+            borderColor = 'border-blue-200';
+          } else if (isFrequentlyUsed) {
+            bgColor = 'bg-purple-50';
+            borderColor = 'border-purple-200';
+          }
 
           return (
-            <div className={`absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-t-lg border-b-0 px-4 py-2 ${
-              isDiagnosisFiltered ? 'bg-blue-50 border-blue-200' : ''
-            }`}>
+            <div className={`absolute z-50 mt-1 w-full ${bgColor} border ${borderColor} rounded-t-lg border-b-0 px-4 py-2`}>
               <div className="flex items-center space-x-2 text-xs text-gray-500">
                 {isDiagnosisFiltered ? (
                   <>
                     <Filter className="h-3 w-3 text-blue-600" />
                     <span className="text-blue-700 font-medium">
                       Showing {filteredCodes.length} procedure(s) relevant to diagnosis - start typing to search
+                    </span>
+                  </>
+                ) : isFrequentlyUsed ? (
+                  <>
+                    <Clock className="h-3 w-3 text-purple-600" />
+                    <span className="text-purple-700 font-medium">
+                      Showing your {filteredCodes.length} most used procedures - start typing to search
                     </span>
                   </>
                 ) : (

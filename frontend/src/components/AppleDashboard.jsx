@@ -27,6 +27,7 @@ import Tasks from './Tasks';
 import PatientStatusList from './patient-status/PatientStatusList';
 import SurgeryDashboard from './surgery-timeline/SurgeryDashboard';
 import CPTCodeAutocomplete from './CPTCodeAutocomplete';
+import DiagnosisAutocomplete from './DiagnosisAutocomplete';
 import { getCPTCodeByCode } from '../data/cptCodes';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
@@ -1074,15 +1075,12 @@ export const AppleDashboard = ({ user, onLogout }) => {
                   </Select>
                 </div>
 
-                <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Diagnosis</Label>
-                  <Input
-                    className="h-10 text-sm rounded-lg"
-                    value={intakeForm.diagnosis}
-                    onChange={(e) => setIntakeForm({...intakeForm, diagnosis: e.target.value})}
-                    placeholder="Diagnosis"
-                  />
-                </div>
+                {/* Diagnosis Autocomplete with Frequently Used */}
+                <DiagnosisAutocomplete
+                  value={intakeForm.diagnosis}
+                  onChange={(diagnosis) => setIntakeForm({...intakeForm, diagnosis: diagnosis})}
+                  label="Diagnosis"
+                />
 
                 {/* CPT Code Autocomplete with Diagnosis-Based Filtering */}
                 <CPTCodeAutocomplete

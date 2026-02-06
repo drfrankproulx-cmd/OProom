@@ -67,6 +67,7 @@ conferences_collection = db.conferences
 residents_collection = db.residents
 attendings_collection = db.attendings
 notifications_collection = db.notifications
+usage_stats_collection = db.usage_stats  # Track frequently used diagnoses and CPT codes
 
 # Security
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -339,6 +340,55 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
     except jwt.JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
+# Usage Tracking Helper Functions
+def track_usage(user_email: str, item_type: str, item_value: str):
+    """
+    Track usage of diagnoses and CPT codes for intelligent suggestions
+    item_type: 'diagnosis' or 'cpt_code'
+    item_value: the actual diagnosis text or CPT code
+    """
+    if not item_value or not item_value.strip():
+        return
+
+    # Find or create usage record for this user and item
+    usage_record = usage_stats_collection.find_one({
+        "user_email": user_email,
+        "item_type": item_type,
+        "item_value": item_value.strip()
+    })
+
+    if usage_record:
+        # Increment usage count and update last used timestamp
+        usage_stats_collection.update_one(
+            {"_id": usage_record["_id"]},
+            {
+                "$inc": {"usage_count": 1},
+                "$set": {"last_used": datetime.utcnow()}
+            }
+        )
+    else:
+        # Create new usage record
+        usage_stats_collection.insert_one({
+            "user_email": user_email,
+            "item_type": item_type,
+            "item_value": item_value.strip(),
+            "usage_count": 1,
+            "first_used": datetime.utcnow(),
+            "last_used": datetime.utcnow()
+        })
+
+def get_frequently_used(user_email: str, item_type: str, limit: int = 10):
+    """
+    Get frequently used diagnoses or CPT codes for a user
+    Returns items sorted by usage count (descending)
+    """
+    usage_records = list(usage_stats_collection.find({
+        "user_email": user_email,
+        "item_type": item_type
+    }).sort("usage_count", -1).limit(limit))
+
+    return [record["item_value"] for record in usage_records]
+
 # Routes
 @app.get("/api/health")
 async def health_check():
@@ -440,6 +490,12 @@ async def create_patient(patient: Patient, current_user: str = Depends(get_curre
     result = patients_collection.insert_one(patient_dict)
     patient_dict["_id"] = str(result.inserted_id)
 
+    # Track usage of diagnosis and CPT code for intelligent suggestions
+    if patient_dict.get("diagnosis"):
+        track_usage(current_user, "diagnosis", patient_dict["diagnosis"])
+    if patient_dict.get("procedure_code"):
+        track_usage(current_user, "cpt_code", patient_dict["procedure_code"])
+
     return patient_dict
 
 @app.get("/api/patients")
@@ -491,6 +547,13 @@ async def update_patient(mrn: str, patient: Patient, current_user: str = Depends
     )
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Patient not found")
+
+    # Track usage if diagnosis or CPT code changed
+    if patient_dict.get("diagnosis") and current_patient.get("diagnosis") != patient_dict.get("diagnosis"):
+        track_usage(current_user, "diagnosis", patient_dict["diagnosis"])
+    if patient_dict.get("procedure_code") and current_patient.get("procedure_code") != patient_dict.get("procedure_code"):
+        track_usage(current_user, "cpt_code", patient_dict["procedure_code"])
+
     return {"message": "Patient updated successfully"}
 
 @app.post("/api/patients/{mrn}/comments")
@@ -1312,6 +1375,38 @@ async def get_cpt_favorites():
         }
         for code, description in favorites.items()
     ]
+
+@app.get("/api/usage/frequently-used-cpt")
+async def get_frequently_used_cpt_codes(current_user: str = Depends(get_current_user), limit: int = Query(10, le=50)):
+    """Get frequently used CPT codes for the current user"""
+    cpt_codes = get_frequently_used(current_user, "cpt_code", limit)
+
+    # Enrich with descriptions from CPT codes data
+    enriched_codes = []
+    for code in cpt_codes:
+        # Find the code in any category
+        description = None
+        category = None
+        for cat_name, cat_codes in CPT_CODES_DATA.items():
+            if code in cat_codes:
+                description = cat_codes[code]
+                category = cat_name.replace('_', ' ').title()
+                break
+
+        if description:
+            enriched_codes.append({
+                "code": code,
+                "description": description,
+                "category": category
+            })
+
+    return enriched_codes
+
+@app.get("/api/usage/frequently-used-diagnoses")
+async def get_frequently_used_diagnoses(current_user: str = Depends(get_current_user), limit: int = Query(10, le=50)):
+    """Get frequently used diagnoses for the current user"""
+    diagnoses = get_frequently_used(current_user, "diagnosis", limit)
+    return [{"diagnosis": diag} for diag in diagnoses]
 
 
 # ============ GOOGLE OAUTH ENDPOINTS ============
