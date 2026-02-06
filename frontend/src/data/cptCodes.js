@@ -146,6 +146,18 @@ export const CPT_CODES = [
     isFavorite: false
   },
   {
+    code: "21462",
+    description: "Open treatment of mandibular fracture with interdental fixation",
+    category: "Mandible Fractures",
+    isFavorite: true
+  },
+  {
+    code: "21465",
+    description: "Open treatment of mandibular condylar fracture",
+    category: "Mandible Fractures",
+    isFavorite: true
+  },
+  {
     code: "21480",
     description: "Simple mandible fracture (open treatment)",
     category: "Mandible Fractures",
@@ -188,6 +200,12 @@ export const CPT_CODES = [
     description: "Complex zygoma fracture (open treatment)",
     category: "Zygomatic Fractures",
     isFavorite: false
+  },
+  {
+    code: "21366",
+    description: "Open treatment of complicated zygomatic arch fracture with internal fixation",
+    category: "Zygomatic Fractures",
+    isFavorite: true
   },
   {
     code: "21385",
@@ -328,6 +346,32 @@ export const CPT_CODES = [
     isFavorite: false
   },
 
+  // Nasal Fractures
+  {
+    code: "21310",
+    description: "Closed treatment of nasal bone fracture without manipulation",
+    category: "Nasal Fractures",
+    isFavorite: true
+  },
+  {
+    code: "21315",
+    description: "Closed treatment of nasal bone fracture with stabilization",
+    category: "Nasal Fractures",
+    isFavorite: false
+  },
+  {
+    code: "21320",
+    description: "Open treatment of nasal bone fracture",
+    category: "Nasal Fractures",
+    isFavorite: false
+  },
+  {
+    code: "21325",
+    description: "Open treatment of nasal septal fracture",
+    category: "Nasal Fractures",
+    isFavorite: false
+  },
+
   // Nasal Surgery
   {
     code: "30400",
@@ -448,6 +492,7 @@ export const CPT_CATEGORIES = [
   "Mandible Fractures",
   "Zygomatic Fractures",
   "Orbital Fractures",
+  "Nasal Fractures",
   "Dental Implants",
   "TMJ",
   "Reconstructive",

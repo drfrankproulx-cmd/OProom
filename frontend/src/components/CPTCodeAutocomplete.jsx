@@ -137,9 +137,10 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
       'Mandible Fractures': 'text-blue-600 bg-blue-50 border-blue-200',
       'Zygomatic Fractures': 'text-purple-600 bg-purple-50 border-purple-200',
       'Orbital Fractures': 'text-pink-600 bg-pink-50 border-pink-200',
+      'Nasal Fractures': 'text-teal-600 bg-teal-50 border-teal-200',
       'TMJ': 'text-indigo-600 bg-indigo-50 border-indigo-200',
       'Reconstructive': 'text-orange-600 bg-orange-50 border-orange-200',
-      'Nasal': 'text-teal-600 bg-teal-50 border-teal-200',
+      'Nasal': 'text-emerald-600 bg-emerald-50 border-emerald-200',
       'Soft Tissue': 'text-cyan-600 bg-cyan-50 border-cyan-200'
     };
     return colors[category] || 'text-gray-600 bg-gray-50 border-gray-200';
