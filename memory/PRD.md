@@ -46,14 +46,13 @@ Build a web-based operating room scheduling platform for surgical residents feat
 - [x] Categories: Biopsy, Ablation, Reconstruction, Orthognathic, Cosmetic, Fractures, etc.
 - [x] Selected CPT code displayed as badge next to field label
 
-### Google Integration (Configuration Required)
+### Google Integration (Complete ✅)
 - [x] Backend OAuth endpoints implemented (`/api/google/auth-url`, `/api/google/callback`, etc.)
 - [x] Frontend UI for connecting Google account (Settings → Email & Calendar)
 - [x] Calendar event creation/update/delete functionality
 - [x] Gmail integration for VSP session detection
-- [ ] **PENDING USER ACTION**: Add redirect URI to Google Cloud Console:
-  - URI: `https://orchedule.preview.emergentagent.com/api/google/callback`
-  - Note: Current URIs are for wrong domain (oproom vs orchedule)
+- [x] Google Cloud Console configured with correct redirect URI
+- [x] User successfully connected Gmail, Calendar, and VSP Sessions (Feb 2026)
 
 ## Key Pages & Components
 - `AppleDashboard.jsx` - Main dashboard/command center
