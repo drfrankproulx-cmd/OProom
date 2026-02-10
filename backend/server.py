@@ -65,6 +65,7 @@ conferences_collection = db.conferences
 residents_collection = db.residents
 attendings_collection = db.attendings
 notifications_collection = db.notifications
+usage_stats = db.usage_stats  # For tracking frequently used diagnoses/CPT codes
 
 # Security
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
