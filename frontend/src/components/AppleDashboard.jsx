@@ -463,12 +463,40 @@ export const AppleDashboard = ({ user, onLogout }) => {
 
       {/* Main Content */}
       <main className="px-4 py-4">
-        {/* Quick Stats - Compact */}
+        {/* Quick Stats - Compact & Clickable */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-          <StatsCard title="Today's Schedule" value={todaySchedules} icon={CalendarIcon} gradient="from-blue-500 to-blue-600" />
-          <StatsCard title="This Week" value={weeklySchedules.length} icon={Clock} gradient="from-purple-500 to-purple-600" />
-          <StatsCard title="Pending Cases" value={addOnCases.length} icon={Users} gradient="from-orange-500 to-orange-600" />
-          <StatsCard title="Tasks Due" value={urgentTasks.length} icon={CheckCircle2} gradient="from-green-500 to-green-600" />
+          <StatsCard 
+            title="Today's Schedule" 
+            value={todaySchedules} 
+            icon={CalendarIcon} 
+            gradient="from-blue-500 to-blue-600" 
+            onClick={() => setCurrentView('calendar')}
+            dataTestId="stats-card-today-schedule"
+          />
+          <StatsCard 
+            title="This Week" 
+            value={weeklySchedules.length} 
+            icon={Clock} 
+            gradient="from-purple-500 to-purple-600" 
+            onClick={() => setCurrentView('calendar')}
+            dataTestId="stats-card-this-week"
+          />
+          <StatsCard 
+            title="Pending Cases" 
+            value={addOnCases.length} 
+            icon={Users} 
+            gradient="from-orange-500 to-orange-600" 
+            onClick={() => setCurrentView('patients')}
+            dataTestId="stats-card-pending-cases"
+          />
+          <StatsCard 
+            title="Tasks Due" 
+            value={urgentTasks.length} 
+            icon={CheckCircle2} 
+            gradient="from-green-500 to-green-600" 
+            onClick={() => setCurrentView('tasks')}
+            dataTestId="stats-card-tasks-due"
+          />
         </div>
 
         {/* Quick Add Patient Form - Full Width at Top */}
