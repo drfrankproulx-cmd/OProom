@@ -39,8 +39,11 @@ const getInitials = (name) => {
 };
 
 // Quick Stats Card Component
-const StatsCard = ({ title, value, icon: Icon, gradient, trend }) => (
-  <div className={`relative overflow-hidden bg-gradient-to-br ${gradient} rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105`}>
+const StatsCard = ({ title, value, icon: Icon, gradient, trend, onClick }) => (
+  <div
+    onClick={onClick}
+    className={`relative overflow-hidden bg-gradient-to-br ${gradient} rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 ${onClick ? 'cursor-pointer' : ''}`}
+  >
     <div className="relative z-10">
       <div className="flex items-center justify-between mb-4">
         <div className="p-3 bg-white/20 backdrop-blur-sm rounded-2xl">
@@ -597,24 +600,28 @@ export const AppleDashboard = ({ user, onLogout }) => {
             value={todaySchedules}
             icon={CalendarIcon}
             gradient="from-blue-500 to-blue-600"
+            onClick={() => setCurrentView('calendar')}
           />
           <StatsCard
             title="This Week"
             value={weeklySchedules.length}
             icon={Clock}
             gradient="from-purple-500 to-purple-600"
+            onClick={() => setCurrentView('calendar')}
           />
           <StatsCard
             title="Pending Cases"
             value={addOnCases.length}
             icon={Users}
             gradient="from-orange-500 to-orange-600"
+            onClick={() => setCurrentView('patient-status')}
           />
           <StatsCard
             title="Tasks Due"
             value={urgentTasks.length}
             icon={CheckCircle2}
             gradient="from-green-500 to-green-600"
+            onClick={() => setCurrentView('tasks')}
           />
         </div>
 
