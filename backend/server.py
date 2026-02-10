@@ -438,6 +438,12 @@ async def create_patient(patient: Patient, current_user: str = Depends(get_curre
 
     result = patients_collection.insert_one(patient_dict)
     patient_dict["_id"] = str(result.inserted_id)
+    
+    # Track usage for intelligent suggestions
+    if patient_dict.get("diagnosis"):
+        track_usage(current_user, "diagnosis", patient_dict["diagnosis"])
+    if patient_dict.get("procedure_code"):
+        track_usage(current_user, "cpt_code", patient_dict["procedure_code"])
 
     return patient_dict
 
