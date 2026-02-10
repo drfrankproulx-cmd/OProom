@@ -684,6 +684,159 @@ export const AppleDashboard = ({ user, onLogout }) => {
           />
         </div>
 
+        {/* Quick Add Patient Form - Full Width */}
+        <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl p-6 mb-4">
+          <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+            <Plus className="h-6 w-6 mr-2 text-blue-500" />
+            Quick Add Patient
+          </h3>
+
+          {/* Form Fields in 3-Column Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            {/* Patient Name */}
+            <div>
+              <Label className="text-sm font-medium text-gray-700 mb-1 block">Patient Name</Label>
+              <Input
+                className="h-10 text-sm rounded-lg"
+                value={intakeForm.patient_name}
+                onChange={(e) => setIntakeForm({...intakeForm, patient_name: e.target.value})}
+                placeholder="Full name"
+              />
+            </div>
+
+            {/* Patient ID */}
+            <div>
+              <Label className="text-sm font-medium text-gray-700 mb-1 block">Patient ID</Label>
+              <Input
+                className="h-10 text-sm rounded-lg"
+                value={intakeForm.mrn}
+                onChange={(e) => setIntakeForm({...intakeForm, mrn: e.target.value})}
+                placeholder="ID number"
+              />
+            </div>
+
+            {/* Date of Birth */}
+            <div>
+              <Label className="text-sm font-medium text-gray-700 mb-1 block">Date of Birth</Label>
+              <Input
+                type="date"
+                className="h-10 text-sm rounded-lg"
+                value={intakeForm.dob}
+                onChange={(e) => setIntakeForm({...intakeForm, dob: e.target.value})}
+              />
+            </div>
+          </div>
+
+          {/* Second Row: Attending, Diagnosis, Procedure */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            {/* Attending */}
+            <div>
+              <Label className="text-sm font-medium text-gray-700 mb-1 block">Attending</Label>
+              <Select value={intakeForm.attending} onValueChange={(v) => setIntakeForm({...intakeForm, attending: v})}>
+                <SelectTrigger className="h-10 text-sm rounded-lg">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent>
+                  {attendings.length > 0 ? (
+                    attendings.map((attending) => (
+                      <SelectItem key={attending._id} value={attending.name}>
+                        {attending.name}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <SelectItem value="none" disabled>No attendings</SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Diagnosis Autocomplete */}
+            <div>
+              <DiagnosisAutocomplete
+                value={intakeForm.diagnosis}
+                onChange={(diagnosis) => setIntakeForm({...intakeForm, diagnosis: diagnosis})}
+                label="Diagnosis"
+              />
+            </div>
+
+            {/* CPT Code Autocomplete */}
+            <div>
+              <CPTCodeAutocomplete
+                value={intakeForm.procedure_code}
+                onChange={(code) => {
+                  const cptData = code ? getCPTCodeByCode(code) : null;
+                  setIntakeForm({
+                    ...intakeForm,
+                    procedure_code: code,
+                    procedures: cptData ? cptData.description : ''
+                  });
+                }}
+                label="Procedure / CPT Code"
+                diagnosis={intakeForm.diagnosis}
+              />
+            </div>
+          </div>
+
+          {/* Third Row: Scheduling Options */}
+          <div className="pt-4 border-t border-gray-200">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+              {/* Scheduling Type */}
+              <div>
+                <Label className="text-sm font-medium text-gray-700 mb-1 block">Scheduling</Label>
+                <Select
+                  value={intakeForm.scheduling_type}
+                  onValueChange={(v) => setIntakeForm({...intakeForm, scheduling_type: v})}
+                >
+                  <SelectTrigger className="h-10 text-sm rounded-lg">
+                    <SelectValue placeholder="Select scheduling type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="addon">Add to Add-On List</SelectItem>
+                    <SelectItem value="scheduled">Schedule for Specific Date</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Conditional Date/Time Fields */}
+              {intakeForm.scheduling_type === 'scheduled' && (
+                <>
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700 mb-1 block">Scheduled Date</Label>
+                    <Input
+                      type="date"
+                      className="h-10 text-sm rounded-lg"
+                      value={intakeForm.scheduled_date}
+                      onChange={(e) => setIntakeForm({...intakeForm, scheduled_date: e.target.value})}
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700 mb-1 block">Scheduled Time (Optional)</Label>
+                    <Input
+                      type="time"
+                      className="h-10 text-sm rounded-lg"
+                      value={intakeForm.scheduled_time}
+                      onChange={(e) => setIntakeForm({...intakeForm, scheduled_time: e.target.value})}
+                      placeholder="HH:MM"
+                    />
+                  </div>
+                </>
+              )}
+
+              {/* Submit Button */}
+              <div className={intakeForm.scheduling_type === 'scheduled' ? '' : 'md:col-span-3'}>
+                <Button
+                  onClick={handleQuickAdd}
+                  className="w-full bg-blue-500 hover:bg-blue-600 text-white rounded-lg h-10 text-sm font-medium shadow-lg"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  {intakeForm.scheduling_type === 'scheduled' ? 'Schedule Patient' : 'Add to Add-On List'}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Consolidated 3-Column Layout */}
         <div className="grid grid-cols-12 gap-4">
           {/* LEFT COLUMN: Weekly Cases + Add-on Cases */}
@@ -1016,140 +1169,8 @@ export const AppleDashboard = ({ user, onLogout }) => {
             </div>
           </div>
 
-          {/* RIGHT COLUMN: Quick Add Form + Patient Details */}
+          {/* RIGHT COLUMN: Task Assignment + Patient Details */}
           <div className="col-span-3 space-y-4">
-            {/* Quick Add Form - Always Visible */}
-            <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                <Plus className="h-5 w-5 mr-2 text-blue-500" />
-                Quick Add Patient
-              </h3>
-              <div className="space-y-3">
-                <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Patient Name</Label>
-                  <Input
-                    className="h-10 text-sm rounded-lg"
-                    value={intakeForm.patient_name}
-                    onChange={(e) => setIntakeForm({...intakeForm, patient_name: e.target.value})}
-                    placeholder="Full name"
-                  />
-                </div>
-
-                <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Patient ID</Label>
-                  <Input
-                    className="h-10 text-sm rounded-lg"
-                    value={intakeForm.mrn}
-                    onChange={(e) => setIntakeForm({...intakeForm, mrn: e.target.value})}
-                    placeholder="ID number"
-                  />
-                </div>
-
-                <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Date of Birth</Label>
-                  <Input
-                    type="date"
-                    className="h-10 text-sm rounded-lg"
-                    value={intakeForm.dob}
-                    onChange={(e) => setIntakeForm({...intakeForm, dob: e.target.value})}
-                  />
-                </div>
-
-                <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Attending</Label>
-                  <Select value={intakeForm.attending} onValueChange={(v) => setIntakeForm({...intakeForm, attending: v})}>
-                    <SelectTrigger className="h-10 text-sm rounded-lg">
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {attendings.length > 0 ? (
-                        attendings.map((attending) => (
-                          <SelectItem key={attending._id} value={attending.name}>
-                            {attending.name}
-                          </SelectItem>
-                        ))
-                      ) : (
-                        <SelectItem value="none" disabled>No attendings</SelectItem>
-                      )}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Diagnosis Autocomplete with Frequently Used */}
-                <DiagnosisAutocomplete
-                  value={intakeForm.diagnosis}
-                  onChange={(diagnosis) => setIntakeForm({...intakeForm, diagnosis: diagnosis})}
-                  label="Diagnosis"
-                />
-
-                {/* CPT Code Autocomplete with Diagnosis-Based Filtering */}
-                <CPTCodeAutocomplete
-                  value={intakeForm.procedure_code}
-                  onChange={(code) => {
-                    const cptData = code ? getCPTCodeByCode(code) : null;
-                    setIntakeForm({
-                      ...intakeForm,
-                      procedure_code: code,
-                      procedures: cptData ? cptData.description : ''
-                    });
-                  }}
-                  label="Procedure / CPT Code"
-                  diagnosis={intakeForm.diagnosis}
-                />
-
-                {/* Scheduling Type Selection */}
-                <div className="pt-3 border-t border-gray-200">
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Scheduling</Label>
-                  <Select
-                    value={intakeForm.scheduling_type}
-                    onValueChange={(v) => setIntakeForm({...intakeForm, scheduling_type: v})}
-                  >
-                    <SelectTrigger className="h-10 text-sm rounded-lg">
-                      <SelectValue placeholder="Select scheduling type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="addon">Add to Add-On List</SelectItem>
-                      <SelectItem value="scheduled">Schedule for Specific Date</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Conditional Date/Time Fields - Only show when scheduled */}
-                {intakeForm.scheduling_type === 'scheduled' && (
-                  <>
-                    <div>
-                      <Label className="text-sm font-medium text-gray-700 mb-1 block">Scheduled Date</Label>
-                      <Input
-                        type="date"
-                        className="h-10 text-sm rounded-lg"
-                        value={intakeForm.scheduled_date}
-                        onChange={(e) => setIntakeForm({...intakeForm, scheduled_date: e.target.value})}
-                      />
-                    </div>
-
-                    <div>
-                      <Label className="text-sm font-medium text-gray-700 mb-1 block">Scheduled Time (Optional)</Label>
-                      <Input
-                        type="time"
-                        className="h-10 text-sm rounded-lg"
-                        value={intakeForm.scheduled_time}
-                        onChange={(e) => setIntakeForm({...intakeForm, scheduled_time: e.target.value})}
-                        placeholder="HH:MM"
-                      />
-                    </div>
-                  </>
-                )}
-
-                <Button
-                  onClick={handleQuickAdd}
-                  className="w-full bg-blue-500 hover:bg-blue-600 text-white rounded-lg py-5 text-sm font-medium shadow-lg"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  {intakeForm.scheduling_type === 'scheduled' ? 'Schedule Patient' : 'Add to Add-On List'}
-                </Button>
-              </div>
-            </div>
-
             {/* Task Assignment Form */}
             <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl p-6">
               <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
