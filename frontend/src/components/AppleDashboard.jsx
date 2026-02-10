@@ -24,6 +24,7 @@ import {
 import Settings from './Settings';
 import Patients from './Patients';
 import Tasks from './Tasks';
+import Calendar from './Calendar';
 import PatientStatusList from './patient-status/PatientStatusList';
 import SurgeryDashboard from './surgery-timeline/SurgeryDashboard';
 import CPTCodeAutocomplete from './CPTCodeAutocomplete';
