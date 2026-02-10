@@ -1397,6 +1397,83 @@ async def get_cpt_favorites(diagnosis: str = Query(None)):
     ]
 
 
+# ============ USAGE TRACKING ENDPOINTS ============
+
+def track_usage(user_email: str, usage_type: str, value: str):
+    """Track usage of diagnoses and CPT codes for intelligent suggestions"""
+    try:
+        usage_stats.update_one(
+            {"user_email": user_email, "type": usage_type, "value": value},
+            {
+                "$inc": {"count": 1},
+                "$set": {"last_used": datetime.now(timezone.utc).isoformat()}
+            },
+            upsert=True
+        )
+    except Exception as e:
+        print(f"Error tracking usage: {e}")
+
+@app.get("/api/usage/frequently-used-diagnoses")
+async def get_frequently_used_diagnoses(
+    limit: int = Query(10, ge=1, le=50),
+    current_user: str = Depends(get_current_user)
+):
+    """Get user's most frequently used diagnoses"""
+    try:
+        results = list(usage_stats.find(
+            {"user_email": current_user, "type": "diagnosis"},
+            {"_id": 0, "value": 1, "count": 1}
+        ).sort("count", -1).limit(limit))
+        
+        return [{"diagnosis": r["value"], "count": r["count"]} for r in results]
+    except Exception as e:
+        print(f"Error fetching frequently used diagnoses: {e}")
+        return []
+
+@app.get("/api/usage/frequently-used-cpt")
+async def get_frequently_used_cpt(
+    limit: int = Query(10, ge=1, le=50),
+    current_user: str = Depends(get_current_user)
+):
+    """Get user's most frequently used CPT codes"""
+    try:
+        results = list(usage_stats.find(
+            {"user_email": current_user, "type": "cpt_code"},
+            {"_id": 0, "value": 1, "count": 1}
+        ).sort("count", -1).limit(limit))
+        
+        # Enrich with CPT code details from our database
+        enriched = []
+        for r in results:
+            code = r["value"]
+            # Search for the code in our CPT_CODES_DATA
+            for category, codes in CPT_CODES_DATA.items():
+                if category == 'favorites':
+                    continue
+                if code in codes:
+                    enriched.append({
+                        "code": code,
+                        "description": codes[code],
+                        "category": category.replace('_', ' ').title(),
+                        "count": r["count"]
+                    })
+                    break
+            else:
+                # Check favorites
+                if code in CPT_CODES_DATA.get('favorites', {}):
+                    enriched.append({
+                        "code": code,
+                        "description": CPT_CODES_DATA['favorites'][code],
+                        "category": "Favorites",
+                        "count": r["count"]
+                    })
+        
+        return enriched
+    except Exception as e:
+        print(f"Error fetching frequently used CPT codes: {e}")
+        return []
+
+
 # ============ GOOGLE OAUTH ENDPOINTS ============
 
 @app.get("/api/google/auth-url")
