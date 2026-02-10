@@ -82,14 +82,21 @@ Build a web-based operating room scheduling platform for surgical residents feat
 - `attendings` - Attending profiles
 - `notifications` - User notifications
 
+## Recently Completed (Feb 10, 2026)
+- [x] **Clickable Dashboard Stat Cards** - All 4 stat cards (Today's Schedule, This Week, Pending Cases, Tasks Due) are now clickable and navigate to their respective pages
+  - Today's Schedule → Calendar view
+  - This Week → Calendar view  
+  - Pending Cases → Patients view
+  - Tasks Due → Tasks view
+- [x] Added `data-testid` attributes to stat cards for better testability
+- [x] Added Calendar component import and view routing in AppleDashboard
+
 ## Known Issues
 - Intermittent `bcrypt` AttributeError on backend startup (resolves after restart)
 - PDF extraction tool non-functional (CPT codes use static JSON workaround)
-- Google OAuth redirect URI mismatch (needs correct domain in GCP Console)
 
 ## Upcoming Tasks (P1)
 - [ ] Bulk import feature for residents/attendings (CSV upload)
-- [ ] Fix Google OAuth redirect URI in Google Cloud Console
 
 ## Future/Backlog (P2)
 - [ ] Drag-and-drop from Add-On List to Calendar
@@ -97,7 +104,7 @@ Build a web-based operating room scheduling platform for surgical residents feat
 - [ ] Legacy component cleanup (ClinicalDashboard.jsx, PatientManagement.jsx, etc.)
 
 ## Test Credentials
-- Test User: `test@example.com` / `Test123!`
+- Test User: `testuser@example.com` / `Test123!`
 
 ## Last Updated
-February 4, 2026
+February 10, 2026
