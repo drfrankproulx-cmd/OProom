@@ -371,6 +371,10 @@ export const AppleDashboard = ({ user, onLogout }) => {
     return <Settings onClose={() => setShowSettings(false)} />;
   }
 
+  if (currentView === 'calendar') {
+    return <Calendar onBack={() => setCurrentView('dashboard')} />;
+  }
+
   if (currentView === 'patients') {
     return <Patients onBack={() => setCurrentView('dashboard')} />;
   }
