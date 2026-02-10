@@ -40,8 +40,12 @@ const getInitials = (name) => {
 };
 
 // Quick Stats Card Component
-const StatsCard = ({ title, value, icon: Icon, gradient, trend }) => (
-  <div className={`relative overflow-hidden bg-gradient-to-br ${gradient} rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105`}>
+const StatsCard = ({ title, value, icon: Icon, gradient, trend, onClick, dataTestId }) => (
+  <div 
+    className={`relative overflow-hidden bg-gradient-to-br ${gradient} rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 ${onClick ? 'cursor-pointer' : ''}`}
+    onClick={onClick}
+    data-testid={dataTestId}
+  >
     <div className="relative z-10">
       <div className="flex items-center justify-between mb-4">
         <div className="p-3 bg-white/20 backdrop-blur-sm rounded-2xl">
