@@ -26,6 +26,8 @@ import Patients from './Patients';
 import Tasks from './Tasks';
 import PatientStatusList from './patient-status/PatientStatusList';
 import SurgeryDashboard from './surgery-timeline/SurgeryDashboard';
+import { DiagnosisAutocomplete } from './DiagnosisAutocomplete';
+import { CPTCodeAutocomplete } from './CPTCodeAutocomplete';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
