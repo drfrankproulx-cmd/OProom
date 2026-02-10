@@ -15,14 +15,14 @@
     "auth_url_generation": "WORKING - Generates valid Google OAuth URL with correct client_id, redirect_uri, and scopes",
     "status_endpoint": "WORKING - Returns correct connection status",
     "disconnect_endpoint": "WORKING - Successfully disconnects Google account",
-    "redirect_uri_mismatch": "CONFIGURATION ISSUE - Google Cloud Console needs redirect URI 'https://orchedule.preview.emergentagent.com/api/google/callback' added to authorized redirect URIs. This is NOT a code bug."
+    "redirect_uri_mismatch": "CONFIGURATION ISSUE - Google Cloud Console needs redirect URI 'https://orplanner.preview.emergentagent.com/api/google/callback' added to authorized redirect URIs. This is NOT a code bug."
   },
   "test_report_links": [
     "/app/backend/tests/test_google_oauth_and_features.py",
     "/app/test_reports/pytest/pytest_results_google.xml"
   ],
   "action_items": [
-    "GOOGLE CLOUD CONSOLE CONFIG: Add 'https://orchedule.preview.emergentagent.com/api/google/callback' to authorized redirect URIs in Google Cloud Console for the OAuth client"
+    "GOOGLE CLOUD CONSOLE CONFIG: Add 'https://orplanner.preview.emergentagent.com/api/google/callback' to authorized redirect URIs in Google Cloud Console for the OAuth client"
   ],
   "critical_code_review_comments": [
     "Settings.jsx line 28: Typo in state variable name 'setAtttendings' should be 'setAttendings' (3 t's instead of 2) - inherited from previous iteration",

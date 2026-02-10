@@ -7,7 +7,7 @@ import requests
 import os
 import time
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://orchedule.preview.emergentagent.com').rstrip('/')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://orplanner.preview.emergentagent.com').rstrip('/')
 
 # Test credentials
 TEST_EMAIL = f"test_google_oauth_{int(time.time())}@example.com"

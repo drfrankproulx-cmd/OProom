@@ -150,13 +150,13 @@ SMTP_PASSWORD=<app-password>
 EMAIL_FROM=<email>
 GOOGLE_CLIENT_ID=<id>
 GOOGLE_CLIENT_SECRET=<secret>
-GOOGLE_REDIRECT_URI=https://orchedule.preview.emergentagent.com/api/google/callback
+GOOGLE_REDIRECT_URI=https://orplanner.preview.emergentagent.com/api/google/callback
 AUTO_ARCHIVE_DELAY_HOURS=48
 ```
 
 ### Frontend
 ```
-REACT_APP_BACKEND_URL=https://orchedule.preview.emergentagent.com
+REACT_APP_BACKEND_URL=https://orplanner.preview.emergentagent.com
 ```
 
 ## API Endpoint Reference (Key Routes)

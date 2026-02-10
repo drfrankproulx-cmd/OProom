@@ -63,7 +63,7 @@ This guide will help you set up the full Google integration for OProom, enabling
 4. Name it: `OProom Web Client`
 5. Add **Authorized redirect URIs**:
    ```
-   https://orchedule.preview.emergentagent.com/api/google/callback
+   https://orplanner.preview.emergentagent.com/api/google/callback
    ```
    
 6. Click **Create**
@@ -139,7 +139,7 @@ Once configured:
 - The OAuth consent screen must be published (or in testing mode with you as tester)
 
 ### "Invalid Redirect URI"
-- Ensure the redirect URI exactly matches: `https://orchedule.preview.emergentagent.com/api/google/callback`
+- Ensure the redirect URI exactly matches: `https://orplanner.preview.emergentagent.com/api/google/callback`
 
 ### Tokens Expired
 - OProom automatically refreshes tokens
