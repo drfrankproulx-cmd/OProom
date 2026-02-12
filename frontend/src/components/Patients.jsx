@@ -89,7 +89,16 @@ export const Patients = ({ onBack, initialFilter }) => {
       (patient.diagnosis && patient.diagnosis.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (patient.procedures && patient.procedures.toLowerCase().includes(searchTerm.toLowerCase()));
 
-    const matchesFilter = filterStatus === 'all' || patient.status === filterStatus;
+    // Handle addon filter by checking schedules
+    let matchesFilter = false;
+    if (filterStatus === 'all') {
+      matchesFilter = true;
+    } else if (filterStatus === 'addon') {
+      const schedule = getScheduleForPatient(patient.mrn);
+      matchesFilter = schedule?.is_addon === true;
+    } else {
+      matchesFilter = patient.status === filterStatus;
+    }
 
     return matchesSearch && matchesFilter;
   });
