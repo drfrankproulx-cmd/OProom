@@ -269,10 +269,11 @@ export const Patients = ({ onBack, initialFilter }) => {
               <Filter className="h-5 w-5 text-gray-500" />
               <select
                 value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
+                onChange={(e) => { setFilterStatus(e.target.value); setShowFilterBanner(false); }}
                 className="h-12 px-4 rounded-xl border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="all">All Status</option>
+                <option value="addon">Add-On Cases</option>
                 <option value="pending">Pending</option>
                 <option value="confirmed">Confirmed</option>
                 <option value="completed">Completed</option>
@@ -281,6 +282,22 @@ export const Patients = ({ onBack, initialFilter }) => {
             </div>
           </div>
         </div>
+
+        {/* Filter Banner */}
+        {showFilterBanner && initialFilter?.type === 'addon' && (
+          <div className="bg-orange-50 border border-orange-200 rounded-xl p-3 mb-4 flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+              <span className="text-orange-800 font-medium">Showing Add-On Cases only</span>
+            </div>
+            <button 
+              onClick={() => { setFilterStatus('all'); setShowFilterBanner(false); }}
+              className="text-orange-600 hover:text-orange-800 text-sm font-medium flex items-center"
+            >
+              Clear filter <X className="h-4 w-4 ml-1" />
+            </button>
+          </div>
+        )}
 
         {/* Table */}
         <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden">
