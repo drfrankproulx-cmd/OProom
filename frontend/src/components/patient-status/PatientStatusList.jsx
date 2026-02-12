@@ -110,6 +110,30 @@ export const PatientStatusList = ({ onBack }) => {
     }
   };
 
+  const handleDeletePatient = async (mrn, patientName) => {
+    if (!window.confirm(`Are you sure you want to delete ${patientName}? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/api/patients/${mrn}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+      });
+
+      if (response.ok) {
+        setPatients(prevPatients => prevPatients.filter(p => p.mrn !== mrn));
+        toast.success(`Patient ${patientName} has been deleted successfully`);
+      } else {
+        const errorData = await response.json();
+        toast.error(errorData.detail || 'Failed to delete patient');
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      toast.error('Failed to delete patient');
+    }
+  };
+
   const handleAction = (actionId, patient) => {
     switch (actionId) {
       case 'mark-ready':
@@ -129,6 +153,9 @@ export const PatientStatusList = ({ onBack }) => {
         break;
       case 'flag-issue':
         toast.info('Issue flagging feature coming soon');
+        break;
+      case 'delete-patient':
+        handleDeletePatient(patient.mrn, patient.patient_name);
         break;
       default:
         break;

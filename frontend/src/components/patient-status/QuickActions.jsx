@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle, Upload, Printer, Mail, Calendar, AlertTriangle } from 'lucide-react';
+import { CheckCircle, Upload, Printer, Mail, Calendar, AlertTriangle, Trash2 } from 'lucide-react';
 
 export const QuickActions = ({ patient, onAction }) => {
   const actions = [
@@ -43,6 +43,13 @@ export const QuickActions = ({ patient, onAction }) => {
       label: 'Flag Issue',
       icon: AlertTriangle,
       className: '',
+      disabled: false
+    },
+    {
+      id: 'delete-patient',
+      label: 'Delete Patient',
+      icon: Trash2,
+      className: 'danger',
       disabled: false
     }
   ];

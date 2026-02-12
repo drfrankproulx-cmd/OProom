@@ -415,6 +415,17 @@
   border-color: #059669;
 }
 
+.quick-action-btn.danger {
+  background: #ef4444;
+  color: white;
+  border-color: #ef4444;
+}
+
+.quick-action-btn.danger:hover {
+  background: #dc2626;
+  border-color: #dc2626;
+}
+
 /* Requirement Modal */
 .requirement-modal-overlay {
   position: fixed;
