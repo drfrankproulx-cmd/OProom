@@ -86,6 +86,7 @@ const StatsCard = ({ title, value, icon: Icon, gradient, trend, onClick, dataTes
 
 export const AppleDashboard = ({ user, onLogout }) => {
   const [currentView, setCurrentView] = useState('dashboard');
+  const [viewFilter, setViewFilter] = useState(null); // For drill-down filtering
   const [currentDate, setCurrentDate] = useState(new Date());
   const [monthViewDate, setMonthViewDate] = useState(new Date());
   const [patients, setPatients] = useState([]);
@@ -99,6 +100,15 @@ export const AppleDashboard = ({ user, onLogout }) => {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+
+  // Helper to navigate with filter and toast
+  const navigateWithFilter = (view, filter, toastMessage) => {
+    setViewFilter(filter);
+    setCurrentView(view);
+    if (toastMessage) {
+      toast.success(toastMessage, { duration: 2000 });
+    }
+  };
 
   const [intakeForm, setIntakeForm] = useState({
     patient_name: '',
