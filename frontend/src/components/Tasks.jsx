@@ -3,6 +3,10 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Badge } from './ui/badge';
 import { Checkbox } from './ui/checkbox';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
+import { Label } from './ui/label';
+import { Textarea } from './ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { toast } from 'sonner';
 import { format, parseISO, isPast, isToday, differenceInDays } from 'date-fns';
 import {
@@ -21,7 +25,8 @@ import {
   User,
   ListTodo,
   Edit2,
-  Trash2
+  Trash2,
+  Plus
 } from 'lucide-react';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
@@ -34,6 +39,10 @@ export const Tasks = ({ onBack }) => {
   const [sortConfig, setSortConfig] = useState({ key: 'due_date', direction: 'asc' });
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterUrgency, setFilterUrgency] = useState('all');
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingTask, setEditingTask] = useState(null);
+  const [selectedUrgency, setSelectedUrgency] = useState('medium');
+  const [selectedPatient, setSelectedPatient] = useState('');
 
   const getAuthHeaders = () => ({
     'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -137,10 +146,9 @@ export const Tasks = ({ onBack }) => {
   // Toggle task completion
   const handleToggleComplete = async (taskId, currentStatus) => {
     try {
-      const response = await fetch(`${API_URL}/api/tasks/${taskId}`, {
+      const response = await fetch(`${API_URL}/api/tasks/${taskId}/toggle`, {
         method: 'PATCH',
         headers: getAuthHeaders(),
-        body: JSON.stringify({ completed: !currentStatus }),
       });
 
       if (response.ok) {
@@ -178,6 +186,59 @@ export const Tasks = ({ onBack }) => {
     } catch (error) {
       toast.error('Failed to delete task');
       console.error('Task delete error:', error);
+    }
+  };
+
+  // Edit task
+  const handleEditTask = (task) => {
+    setEditingTask(task);
+    setSelectedUrgency(task.urgency || 'medium');
+    setSelectedPatient(task.patient_mrn || '');
+    setIsDialogOpen(true);
+  };
+
+  // Submit task (create or update)
+  const handleSubmitTask = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+
+    const data = {
+      patient_mrn: formData.get('patient_mrn') || '',
+      task_description: formData.get('task_description'),
+      urgency: selectedUrgency,
+      assigned_to: formData.get('assigned_to'),
+      assigned_to_email: formData.get('assigned_to_email') || '',
+      due_date: formData.get('due_date') || '',
+      status: 'pending',
+      completed: false,
+    };
+
+    try {
+      const url = editingTask
+        ? `${API_URL}/api/tasks/${editingTask._id}`
+        : `${API_URL}/api/tasks`;
+      const method = editingTask ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
+        headers: getAuthHeaders(),
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        const result = await response.json();
+        throw new Error(result.detail || `Failed to ${editingTask ? 'update' : 'create'} task`);
+      }
+
+      toast.success(`Task ${editingTask ? 'updated' : 'created'} successfully!`);
+      setIsDialogOpen(false);
+      setEditingTask(null);
+      setSelectedUrgency('medium');
+      setSelectedPatient('');
+      fetchData();
+      e.target.reset();
+    } catch (error) {
+      toast.error(error.message);
     }
   };
 
@@ -331,13 +392,27 @@ export const Tasks = ({ onBack }) => {
                 </div>
               </div>
             </div>
-            <Button
-              onClick={exportToCSV}
-              className="bg-green-500 hover:bg-green-600 text-white rounded-xl"
-            >
-              <Download className="h-4 w-4 mr-2" />
-              Export to CSV
-            </Button>
+            <div className="flex items-center space-x-2">
+              <Button
+                onClick={() => {
+                  setEditingTask(null);
+                  setSelectedUrgency('medium');
+                  setSelectedPatient('');
+                  setIsDialogOpen(true);
+                }}
+                className="bg-blue-500 hover:bg-blue-600 text-white rounded-xl"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Create Task
+              </Button>
+              <Button
+                onClick={exportToCSV}
+                className="bg-green-500 hover:bg-green-600 text-white rounded-xl"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Export to CSV
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -588,8 +663,18 @@ export const Tasks = ({ onBack }) => {
                             <Button
                               variant="ghost"
                               size="sm"
+                              onClick={() => handleEditTask(task)}
+                              className="hover:bg-blue-50 hover:text-blue-600 rounded-lg"
+                              title="Edit task"
+                            >
+                              <Edit2 className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
                               onClick={() => handleDeleteTask(task._id)}
                               className="hover:bg-red-50 hover:text-red-600 rounded-lg"
+                              title="Delete task"
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
@@ -604,6 +689,114 @@ export const Tasks = ({ onBack }) => {
           </div>
         </div>
       </div>
+
+      {/* Create/Edit Task Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={(open) => {
+        setIsDialogOpen(open);
+        if (!open) {
+          setEditingTask(null);
+          setSelectedUrgency('medium');
+          setSelectedPatient('');
+        }
+      }}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold">
+              {editingTask ? 'Edit Task' : 'Create New Task'}
+            </DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmitTask} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="task_description">Task Description</Label>
+              <Textarea
+                id="task_description"
+                name="task_description"
+                placeholder="Describe the task..."
+                defaultValue={editingTask?.task_description}
+                required
+                rows={3}
+                className="resize-none"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="assigned_to">Assign To (Name)</Label>
+                <Input
+                  id="assigned_to"
+                  name="assigned_to"
+                  defaultValue={editingTask?.assigned_to}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="assigned_to_email">Email Address</Label>
+                <Input
+                  id="assigned_to_email"
+                  name="assigned_to_email"
+                  type="email"
+                  defaultValue={editingTask?.assigned_to_email}
+                  placeholder="resident@example.com"
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="due_date">Due Date</Label>
+                <Input
+                  id="due_date"
+                  name="due_date"
+                  type="date"
+                  defaultValue={editingTask?.due_date ? editingTask.due_date.split('T')[0] : ''}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="urgency">Urgency</Label>
+                <Select value={selectedUrgency} onValueChange={setSelectedUrgency}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="low">Low</SelectItem>
+                    <SelectItem value="medium">Medium</SelectItem>
+                    <SelectItem value="high">High</SelectItem>
+                    <SelectItem value="urgent">Urgent</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="patient_mrn">Attach to Patient (Optional)</Label>
+              <Select value={selectedPatient} onValueChange={setSelectedPatient}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select patient (optional)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">None</SelectItem>
+                  {patients.map(p => (
+                    <SelectItem key={p.mrn} value={p.mrn}>
+                      {p.patient_name} ({p.mrn})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <input type="hidden" name="patient_mrn" value={selectedPatient} />
+            </div>
+            <div className="flex justify-end space-x-2 pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsDialogOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white">
+                {editingTask ? 'Update Task' : 'Create Task'}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
