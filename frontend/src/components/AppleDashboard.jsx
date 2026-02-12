@@ -403,15 +403,15 @@ export const AppleDashboard = ({ user, onLogout }) => {
   }
 
   if (currentView === 'calendar') {
-    return <Calendar onBack={() => setCurrentView('dashboard')} />;
+    return <Calendar onBack={() => { setCurrentView('dashboard'); setViewFilter(null); }} initialFilter={viewFilter} />;
   }
 
   if (currentView === 'patients') {
-    return <Patients onBack={() => setCurrentView('dashboard')} />;
+    return <Patients onBack={() => { setCurrentView('dashboard'); setViewFilter(null); }} initialFilter={viewFilter} />;
   }
 
   if (currentView === 'tasks') {
-    return <Tasks onBack={() => setCurrentView('dashboard')} />;
+    return <Tasks onBack={() => { setCurrentView('dashboard'); setViewFilter(null); }} initialFilter={viewFilter} />;
   }
 
   if (currentView === 'patient-status') {
