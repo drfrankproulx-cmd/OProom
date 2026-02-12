@@ -40,28 +40,49 @@ const getInitials = (name) => {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 };
 
-// Quick Stats Card Component
-const StatsCard = ({ title, value, icon: Icon, gradient, trend, onClick, dataTestId }) => (
-  <div 
-    className={`relative overflow-hidden bg-gradient-to-br ${gradient} rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 ${onClick ? 'cursor-pointer' : ''}`}
-    onClick={onClick}
-    data-testid={dataTestId}
-  >
-    <div className="relative z-10">
-      <div className="flex items-center justify-between mb-4">
-        <div className="p-3 bg-white/20 backdrop-blur-sm rounded-2xl">
-          <Icon className="h-6 w-6 text-white" />
+// Quick Stats Card Component with click feedback
+const StatsCard = ({ title, value, icon: Icon, gradient, trend, onClick, dataTestId, subtitle }) => {
+  const [isClicked, setIsClicked] = React.useState(false);
+  
+  const handleClick = () => {
+    if (onClick) {
+      setIsClicked(true);
+      setTimeout(() => setIsClicked(false), 200);
+      onClick();
+    }
+  };
+  
+  return (
+    <div 
+      className={`relative overflow-hidden bg-gradient-to-br ${gradient} rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 ${onClick ? 'cursor-pointer' : ''} ${isClicked ? 'scale-95' : ''} group`}
+      onClick={handleClick}
+      data-testid={dataTestId}
+    >
+      <div className="relative z-10">
+        <div className="flex items-center justify-between mb-4">
+          <div className="p-3 bg-white/20 backdrop-blur-sm rounded-2xl group-hover:bg-white/30 transition-colors">
+            <Icon className="h-6 w-6 text-white" />
+          </div>
+          {trend && (
+            <span className="text-white/80 text-sm font-medium">{trend}</span>
+          )}
         </div>
-        {trend && (
-          <span className="text-white/80 text-sm font-medium">{trend}</span>
+        <div className="text-5xl font-bold text-white mb-2">{value}</div>
+        <div className="text-white/90 text-base font-medium">{title}</div>
+        {subtitle && onClick && (
+          <div className="text-white/60 text-xs mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            {subtitle}
+          </div>
         )}
       </div>
-      <div className="text-5xl font-bold text-white mb-2">{value}</div>
-      <div className="text-white/90 text-base font-medium">{title}</div>
+      <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform"></div>
+      {/* Ripple effect on click */}
+      {isClicked && (
+        <div className="absolute inset-0 bg-white/20 animate-pulse rounded-3xl"></div>
+      )}
     </div>
-    <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
-  </div>
-);
+  );
+};
 
 export const AppleDashboard = ({ user, onLogout }) => {
   const [currentView, setCurrentView] = useState('dashboard');
