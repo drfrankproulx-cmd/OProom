@@ -82,12 +82,23 @@ Build a web-based operating room scheduling platform for surgical residents feat
 - `attendings` - Attending profiles
 - `notifications` - User notifications
 
-## Recently Completed (Feb 10, 2026)
-- [x] **Clickable Dashboard Stat Cards** - All 4 stat cards (Today's Schedule, This Week, Pending Cases, Tasks Due) are now clickable and navigate to their respective pages
-  - Today's Schedule → Calendar view
-  - This Week → Calendar view  
-  - Pending Cases → Patients view
-  - Tasks Due → Tasks view
+## Recently Completed (Feb 12, 2026)
+- [x] **Enhanced Clickable Stat Cards UX**:
+  - Click animation with ripple effect for visual feedback
+  - Hover subtitles showing action hints (e.g., "Click to view add-on list →")
+  - Icon container glow effect on hover
+- [x] **Drill-Down Filters**:
+  - "Pending Cases" → Patients view with "Add-On Cases" filter pre-applied
+  - "Tasks Due" → Tasks view with "Due Soon (3 days)" filter pre-applied
+  - "Today's Schedule" / "This Week" → Calendar view with filter banner
+  - Toast notifications confirming filter action (e.g., "Showing 2 add-on cases")
+  - Filter banners with "Clear filter" option to remove drill-down
+- [x] **New Filter Options**:
+  - Added "Add-On Cases" filter to Patients page
+  - Added "Due Soon (3 days)" filter to Tasks page
+
+## Previously Completed (Feb 10, 2026)
+- [x] **Clickable Dashboard Stat Cards** - All 4 stat cards navigate to their respective pages
 - [x] Added `data-testid` attributes to stat cards for better testability
 - [x] Added Calendar component import and view routing in AppleDashboard
 
