@@ -391,10 +391,11 @@ export const Tasks = ({ onBack, initialFilter }) => {
             {/* Urgency Filter */}
             <select
               value={filterUrgency}
-              onChange={(e) => setFilterUrgency(e.target.value)}
+              onChange={(e) => { setFilterUrgency(e.target.value); setShowFilterBanner(false); }}
               className="h-12 px-4 rounded-xl border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Urgency</option>
+              <option value="urgent_due">Due Soon (3 days)</option>
               <option value="low">Low</option>
               <option value="medium">Medium</option>
               <option value="high">High</option>
@@ -402,6 +403,22 @@ export const Tasks = ({ onBack, initialFilter }) => {
             </select>
           </div>
         </div>
+
+        {/* Filter Banner */}
+        {showFilterBanner && initialFilter?.type === 'urgent' && (
+          <div className="bg-green-50 border border-green-200 rounded-xl p-3 mb-4 flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span className="text-green-800 font-medium">Showing tasks due within 3 days</span>
+            </div>
+            <button 
+              onClick={() => { setFilterStatus('all'); setFilterUrgency('all'); setShowFilterBanner(false); }}
+              className="text-green-600 hover:text-green-800 text-sm font-medium flex items-center"
+            >
+              Clear filter <X className="h-4 w-4 ml-1" />
+            </button>
+          </div>
+        )}
 
         {/* Quick Stats */}
         <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-6">
