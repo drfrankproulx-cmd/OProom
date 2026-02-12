@@ -241,6 +241,24 @@ const Calendar = ({ onBack, initialFilter }) => {
           </div>
         </div>
 
+        {/* Filter Banner */}
+        {showFilterBanner && initialFilter && (
+          <div className={`${initialFilter.type === 'today' ? 'bg-blue-50 border-blue-200' : 'bg-purple-50 border-purple-200'} border rounded-xl p-3 mb-4 flex items-center justify-between`}>
+            <div className="flex items-center space-x-2">
+              <div className={`w-2 h-2 ${initialFilter.type === 'today' ? 'bg-blue-500' : 'bg-purple-500'} rounded-full animate-pulse`}></div>
+              <span className={`${initialFilter.type === 'today' ? 'text-blue-800' : 'text-purple-800'} font-medium`}>
+                {initialFilter.type === 'today' ? "Viewing today's schedule" : "Viewing this week's cases"}
+              </span>
+            </div>
+            <button 
+              onClick={() => setShowFilterBanner(false)}
+              className={`${initialFilter.type === 'today' ? 'text-blue-600 hover:text-blue-800' : 'text-purple-600 hover:text-purple-800'} text-sm font-medium flex items-center`}
+            >
+              Dismiss <X className="h-4 w-4 ml-1" />
+            </button>
+          </div>
+        )}
+
         {/* Stats */}
         <div className="grid grid-cols-4 gap-4 mb-6">
           <div className="bg-white rounded-2xl p-4 shadow-sm">
