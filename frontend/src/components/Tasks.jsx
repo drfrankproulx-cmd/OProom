@@ -26,14 +26,15 @@ import {
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
-export const Tasks = ({ onBack }) => {
+export const Tasks = ({ onBack, initialFilter }) => {
   const [tasks, setTasks] = useState([]);
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: 'due_date', direction: 'asc' });
-  const [filterStatus, setFilterStatus] = useState('all');
-  const [filterUrgency, setFilterUrgency] = useState('all');
+  const [filterStatus, setFilterStatus] = useState(initialFilter?.type === 'urgent' ? 'active' : 'all');
+  const [filterUrgency, setFilterUrgency] = useState(initialFilter?.type === 'urgent' ? 'urgent_due' : 'all');
+  const [showFilterBanner, setShowFilterBanner] = useState(!!initialFilter);
 
   const getAuthHeaders = () => ({
     'Authorization': `Bearer ${localStorage.getItem('token')}`,
