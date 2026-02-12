@@ -20,13 +20,14 @@ import {
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
-export const Patients = ({ onBack }) => {
+export const Patients = ({ onBack, initialFilter }) => {
   const [patients, setPatients] = useState([]);
   const [schedules, setSchedules] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: 'patient_name', direction: 'asc' });
-  const [filterStatus, setFilterStatus] = useState('all');
+  const [filterStatus, setFilterStatus] = useState(initialFilter?.type === 'addon' ? 'addon' : 'all');
+  const [showFilterBanner, setShowFilterBanner] = useState(!!initialFilter);
 
   const getAuthHeaders = () => ({
     'Authorization': `Bearer ${localStorage.getItem('token')}`,
