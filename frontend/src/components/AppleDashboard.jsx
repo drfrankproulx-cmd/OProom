@@ -506,32 +506,36 @@ export const AppleDashboard = ({ user, onLogout }) => {
             value={todaySchedules} 
             icon={CalendarIcon} 
             gradient="from-blue-500 to-blue-600" 
-            onClick={() => setCurrentView('calendar')}
+            onClick={() => navigateWithFilter('calendar', { type: 'today' }, `Viewing today's ${todaySchedules} scheduled cases`)}
             dataTestId="stats-card-today-schedule"
+            subtitle="Click to view today's cases →"
           />
           <StatsCard 
             title="This Week" 
             value={weeklySchedules.length} 
             icon={Clock} 
             gradient="from-purple-500 to-purple-600" 
-            onClick={() => setCurrentView('calendar')}
+            onClick={() => navigateWithFilter('calendar', { type: 'week' }, `Viewing ${weeklySchedules.length} cases this week`)}
             dataTestId="stats-card-this-week"
+            subtitle="Click to view weekly schedule →"
           />
           <StatsCard 
             title="Pending Cases" 
             value={addOnCases.length} 
             icon={Users} 
             gradient="from-orange-500 to-orange-600" 
-            onClick={() => setCurrentView('patients')}
+            onClick={() => navigateWithFilter('patients', { type: 'addon' }, `Showing ${addOnCases.length} add-on cases`)}
             dataTestId="stats-card-pending-cases"
+            subtitle="Click to view add-on list →"
           />
           <StatsCard 
             title="Tasks Due" 
             value={urgentTasks.length} 
             icon={CheckCircle2} 
             gradient="from-green-500 to-green-600" 
-            onClick={() => setCurrentView('tasks')}
+            onClick={() => navigateWithFilter('tasks', { type: 'urgent' }, `Showing ${urgentTasks.length} urgent tasks`)}
             dataTestId="stats-card-tasks-due"
+            subtitle="Click to view urgent tasks →"
           />
         </div>
 
