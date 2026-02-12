@@ -206,7 +206,13 @@ export const Tasks = ({ onBack, initialFilter }) => {
       (filterStatus === 'overdue' && status === 'overdue') ||
       (filterStatus === 'urgent' && (status === 'urgent' || status === 'due-today'));
 
-    const matchesUrgency = filterUrgency === 'all' || task.urgency === filterUrgency;
+    // Handle special urgent_due filter for tasks due within 3 days
+    const matchesUrgency = filterUrgency === 'all' || 
+      task.urgency === filterUrgency ||
+      (filterUrgency === 'urgent_due' && !task.completed && task.due_date && (() => {
+        const days = Math.ceil((new Date(task.due_date) - new Date()) / (1000 * 60 * 60 * 24));
+        return days >= 0 && days <= 3;
+      })());
 
     return matchesSearch && matchesStatus && matchesUrgency;
   });
