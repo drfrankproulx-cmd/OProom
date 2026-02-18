@@ -15,7 +15,8 @@ import {
   FileSpreadsheet,
   Calendar as CalendarIcon,
   User,
-  FileText
+  FileText,
+  Trash2
 } from 'lucide-react';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
