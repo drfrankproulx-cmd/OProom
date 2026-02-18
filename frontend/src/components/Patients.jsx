@@ -399,12 +399,15 @@ export const Patients = ({ onBack, initialFilter }) => {
                       <SortIcon columnKey="prep_progress" />
                     </div>
                   </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {sortedPatients.length === 0 ? (
                   <tr>
-                    <td colSpan="9" className="px-6 py-12 text-center text-gray-500">
+                    <td colSpan="10" className="px-6 py-12 text-center text-gray-500">
                       <FileSpreadsheet className="h-12 w-12 mx-auto mb-3 text-gray-300" />
                       <p className="text-lg font-medium">No patients found</p>
                       <p className="text-sm">Try adjusting your search or filters</p>
