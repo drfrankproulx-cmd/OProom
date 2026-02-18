@@ -187,6 +187,31 @@ export const Patients = ({ onBack, initialFilter }) => {
     toast.success('Patient list exported to CSV');
   };
 
+  // Delete patient
+  const handleDeletePatient = async (mrn, patientName) => {
+    if (!window.confirm(`Are you sure you want to delete ${patientName}? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/api/patients/${mrn}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+      });
+
+      if (response.ok) {
+        setPatients(prevPatients => prevPatients.filter(p => p.mrn !== mrn));
+        toast.success(`${patientName} has been deleted successfully`);
+      } else {
+        const error = await response.json();
+        toast.error(error.detail || 'Failed to delete patient');
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      toast.error('Failed to delete patient');
+    }
+  };
+
   const SortIcon = ({ columnKey }) => {
     if (sortConfig.key !== columnKey) return null;
     return sortConfig.direction === 'asc' ?
