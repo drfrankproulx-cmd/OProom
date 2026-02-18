@@ -506,6 +506,16 @@ export const Patients = ({ onBack, initialFilter }) => {
                             </div>
                           </div>
                         </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <Button
+                            onClick={() => handleDeletePatient(patient.mrn, patient.patient_name)}
+                            variant="ghost"
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors"
+                            title="Delete patient (permanent)"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </td>
                       </tr>
                     );
                   })
