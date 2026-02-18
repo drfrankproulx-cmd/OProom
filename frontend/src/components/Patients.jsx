@@ -15,7 +15,8 @@ import {
   FileSpreadsheet,
   Calendar as CalendarIcon,
   User,
-  FileText
+  FileText,
+  Trash2
 } from 'lucide-react';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
@@ -174,6 +175,31 @@ export const Patients = ({ onBack }) => {
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
     toast.success('Patient list exported to CSV');
+  };
+
+  // Delete patient
+  const handleDeletePatient = async (mrn, patientName) => {
+    if (!window.confirm(`Are you sure you want to delete ${patientName}? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/api/patients/${mrn}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+      });
+
+      if (response.ok) {
+        setPatients(prevPatients => prevPatients.filter(p => p.mrn !== mrn));
+        toast.success(`${patientName} has been deleted successfully`);
+      } else {
+        const error = await response.json();
+        toast.error(error.detail || 'Failed to delete patient');
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      toast.error('Failed to delete patient');
+    }
   };
 
   const SortIcon = ({ columnKey }) => {
@@ -346,12 +372,15 @@ export const Patients = ({ onBack }) => {
                       <SortIcon columnKey="prep_progress" />
                     </div>
                   </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {sortedPatients.length === 0 ? (
                   <tr>
-                    <td colSpan="9" className="px-6 py-12 text-center text-gray-500">
+                    <td colSpan="10" className="px-6 py-12 text-center text-gray-500">
                       <FileSpreadsheet className="h-12 w-12 mx-auto mb-3 text-gray-300" />
                       <p className="text-lg font-medium">No patients found</p>
                       <p className="text-sm">Try adjusting your search or filters</p>
@@ -449,6 +478,16 @@ export const Patients = ({ onBack }) => {
                               </div>
                             </div>
                           </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <Button
+                            onClick={() => handleDeletePatient(patient.mrn, patient.patient_name)}
+                            variant="ghost"
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors"
+                            title="Delete patient (permanent)"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
                         </td>
                       </tr>
                     );
