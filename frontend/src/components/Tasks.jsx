@@ -137,22 +137,28 @@ export const Tasks = ({ onBack, initialFilter }) => {
 
   // Toggle task completion
   const handleToggleComplete = async (taskId, currentStatus) => {
+    if (!taskId) {
+      toast.error('Invalid task: missing ID');
+      return;
+    }
+    
     try {
-      const response = await fetch(`${API_URL}/api/tasks/${taskId}`, {
+      const response = await fetch(`${API_URL}/api/tasks/${taskId}/toggle`, {
         method: 'PATCH',
         headers: getAuthHeaders(),
-        body: JSON.stringify({ completed: !currentStatus }),
       });
 
       if (response.ok) {
+        const data = await response.json();
         setTasks(prevTasks =>
           prevTasks.map(task =>
-            task._id === taskId ? { ...task, completed: !currentStatus } : task
+            task._id === taskId ? { ...task, completed: data.completed } : task
           )
         );
-        toast.success(currentStatus ? 'Task marked as incomplete' : 'Task completed!');
+        toast.success(data.completed ? 'Task completed!' : 'Task marked as incomplete');
       } else {
-        toast.error('Failed to update task');
+        const error = await response.json();
+        toast.error(error.detail || 'Failed to update task');
       }
     } catch (error) {
       toast.error('Failed to update task');
