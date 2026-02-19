@@ -411,17 +411,20 @@ export const Patients = ({ onBack, initialFilter }) => {
 
                     return (
                       <tr key={patient.mrn} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-4 py-4 whitespace-nowrap">
                           <div className="flex items-center">
-                            <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm">
+                            <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm flex-shrink-0">
                               {patient.patient_name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
                             </div>
-                            <div className="ml-3">
-                              <div className="text-sm font-semibold text-gray-900">{patient.patient_name}</div>
+                            <div className="ml-3 min-w-0">
+                              <div className="text-sm font-semibold text-gray-900 truncate">{patient.patient_name}</div>
+                              <div className="text-xs text-gray-500">
+                                {patient.dob ? format(parseISO(patient.dob), 'MM/dd/yyyy') : 'No DOB'}
+                              </div>
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-4 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-900 font-medium">{patient.mrn}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
