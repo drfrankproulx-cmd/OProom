@@ -328,12 +328,12 @@ export const Patients = ({ onBack, initialFilter }) => {
         {/* Table */}
         <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full table-fixed">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
                   <th
                     onClick={() => handleSort('patient_name')}
-                    className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
+                    className="w-[20%] px-4 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
                   >
                     <div className="flex items-center space-x-1">
                       <User className="h-4 w-4" />
@@ -343,19 +343,16 @@ export const Patients = ({ onBack, initialFilter }) => {
                   </th>
                   <th
                     onClick={() => handleSort('mrn')}
-                    className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
+                    className="w-[14%] px-4 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
                   >
                     <div className="flex items-center space-x-1">
                       <span>Patient ID</span>
                       <SortIcon columnKey="mrn" />
                     </div>
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                    DOB
-                  </th>
                   <th
                     onClick={() => handleSort('diagnosis')}
-                    className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
+                    className="w-[18%] px-4 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
                   >
                     <div className="flex items-center space-x-1">
                       <FileText className="h-4 w-4" />
@@ -363,12 +360,12 @@ export const Patients = ({ onBack, initialFilter }) => {
                       <SortIcon columnKey="diagnosis" />
                     </div>
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                  <th className="w-[18%] px-4 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                     Procedure
                   </th>
                   <th
                     onClick={() => handleSort('attending')}
-                    className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
+                    className="w-[12%] px-4 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
                   >
                     <div className="flex items-center space-x-1">
                       <span>Attending</span>
@@ -377,37 +374,31 @@ export const Patients = ({ onBack, initialFilter }) => {
                   </th>
                   <th
                     onClick={() => handleSort('status')}
-                    className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
+                    className="w-[10%] px-4 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
                   >
                     <div className="flex items-center space-x-1">
                       <span>Status</span>
                       <SortIcon columnKey="status" />
                     </div>
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                    <div className="flex items-center space-x-1">
-                      <CalendarIcon className="h-4 w-4" />
-                      <span>Scheduled</span>
-                    </div>
-                  </th>
                   <th
                     onClick={() => handleSort('prep_progress')}
-                    className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
+                    className="w-[12%] px-4 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
                   >
                     <div className="flex items-center space-x-1">
-                      <span>Prep Progress</span>
+                      <span>Prep</span>
                       <SortIcon columnKey="prep_progress" />
                     </div>
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                    Actions
+                  <th className="w-[6%] px-4 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    Delete
                   </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {sortedPatients.length === 0 ? (
                   <tr>
-                    <td colSpan="10" className="px-6 py-12 text-center text-gray-500">
+                    <td colSpan="8" className="px-6 py-12 text-center text-gray-500">
                       <FileSpreadsheet className="h-12 w-12 mx-auto mb-3 text-gray-300" />
                       <p className="text-lg font-medium">No patients found</p>
                       <p className="text-sm">Try adjusting your search or filters</p>
