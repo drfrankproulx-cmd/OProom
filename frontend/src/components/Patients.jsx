@@ -427,62 +427,35 @@ export const Patients = ({ onBack, initialFilter }) => {
                         <td className="px-4 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-900 font-medium">{patient.mrn}</div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-600">
-                            {patient.dob ? format(parseISO(patient.dob), 'MM/dd/yyyy') : 'N/A'}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="text-sm text-gray-900 max-w-xs truncate" title={patient.diagnosis}>
+                        <td className="px-4 py-4">
+                          <div className="text-sm text-gray-900 truncate" title={patient.diagnosis}>
                             {patient.diagnosis || 'N/A'}
                           </div>
                         </td>
-                        <td className="px-6 py-4">
-                          <div className="text-sm text-gray-900 max-w-xs truncate" title={patient.procedures}>
+                        <td className="px-4 py-4">
+                          <div className="text-sm text-gray-900 truncate" title={patient.procedures}>
                             {patient.procedures || 'N/A'}
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">{patient.attending || 'N/A'}</div>
+                        <td className="px-4 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900 truncate">{patient.attending || 'N/A'}</div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-4 py-4 whitespace-nowrap">
                           <Badge
                             className={`
                               ${patient.status === 'confirmed' ? 'bg-green-100 text-green-700' : ''}
                               ${patient.status === 'pending' ? 'bg-blue-100 text-blue-700' : ''}
                               ${patient.status === 'completed' ? 'bg-gray-100 text-gray-700' : ''}
                               ${patient.status === 'cancelled' ? 'bg-red-100 text-red-700' : ''}
-                              px-3 py-1 text-xs font-medium rounded-full
+                              px-2 py-1 text-xs font-medium rounded-full
                             `}
                           >
                             {patient.status}
                           </Badge>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {schedule ? (
-                            <div>
-                              {schedule.is_addon ? (
-                                <Badge className="bg-orange-100 text-orange-700 px-2 py-1 text-xs rounded-full">
-                                  Add-on
-                                </Badge>
-                              ) : (
-                                <div className="text-sm">
-                                  <div className="text-gray-900 font-medium">
-                                    {schedule.scheduled_date ? format(parseISO(schedule.scheduled_date), 'MMM dd, yyyy') : 'N/A'}
-                                  </div>
-                                  {schedule.scheduled_time && (
-                                    <div className="text-gray-500 text-xs">{schedule.scheduled_time}</div>
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          ) : (
-                            <span className="text-sm text-gray-400">Not scheduled</span>
-                          )}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-4 py-4 whitespace-nowrap">
                           <div className="flex items-center space-x-2">
-                            <div className="flex-1 min-w-[80px]">
+                            <div className="flex-1 min-w-[60px]">
                               <div className="flex items-center justify-between mb-1">
                                 <span className="text-xs text-gray-600">{prep.completed}/{prep.total}</span>
                                 <span className="text-xs font-medium text-gray-700">{Math.round(prep.percentage)}%</span>
