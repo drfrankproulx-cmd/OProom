@@ -618,8 +618,17 @@ export const Tasks = ({ onBack, initialFilter }) => {
                             <Button
                               variant="ghost"
                               size="sm"
+                              className="hover:bg-blue-50 hover:text-blue-600 rounded-lg"
+                              title="Edit task"
+                            >
+                              <Edit2 className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
                               onClick={() => handleDeleteTask(task._id)}
                               className="hover:bg-red-50 hover:text-red-600 rounded-lg"
+                              title="Delete task"
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
