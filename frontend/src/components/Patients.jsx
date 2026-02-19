@@ -13,7 +13,6 @@ import {
   ChevronUp,
   ChevronDown,
   FileSpreadsheet,
-  Calendar as CalendarIcon,
   User,
   FileText,
   Trash2
@@ -300,202 +299,161 @@ export const Patients = ({ onBack }) => {
 
         {/* Table */}
         <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
+          <table className="w-full table-fixed">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th
+                  onClick={() => handleSort('patient_name')}
+                  className="px-3 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors w-[20%]"
+                >
+                  <div className="flex items-center space-x-1">
+                    <User className="h-3.5 w-3.5 flex-shrink-0" />
+                    <span>Patient Name</span>
+                    <SortIcon columnKey="patient_name" />
+                  </div>
+                </th>
+                <th
+                  onClick={() => handleSort('mrn')}
+                  className="px-3 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors w-[14%]"
+                >
+                  <div className="flex items-center space-x-1">
+                    <span>Patient ID</span>
+                    <SortIcon columnKey="mrn" />
+                  </div>
+                </th>
+                <th
+                  onClick={() => handleSort('diagnosis')}
+                  className="px-3 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors w-[18%]"
+                >
+                  <div className="flex items-center space-x-1">
+                    <FileText className="h-3.5 w-3.5 flex-shrink-0" />
+                    <span>Diagnosis</span>
+                    <SortIcon columnKey="diagnosis" />
+                  </div>
+                </th>
+                <th className="px-3 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-[18%]">
+                  Procedure
+                </th>
+                <th
+                  onClick={() => handleSort('attending')}
+                  className="px-3 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors w-[12%]"
+                >
+                  <div className="flex items-center space-x-1">
+                    <span>Attending</span>
+                    <SortIcon columnKey="attending" />
+                  </div>
+                </th>
+                <th
+                  onClick={() => handleSort('status')}
+                  className="px-3 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors w-[10%]"
+                >
+                  <div className="flex items-center space-x-1">
+                    <span>Status</span>
+                    <SortIcon columnKey="status" />
+                  </div>
+                </th>
+                <th
+                  onClick={() => handleSort('prep_progress')}
+                  className="px-3 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors w-[12%]"
+                >
+                  <div className="flex items-center space-x-1">
+                    <span>Prep</span>
+                    <SortIcon columnKey="prep_progress" />
+                  </div>
+                </th>
+                <th className="px-3 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[6%]">
+                  Del
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {sortedPatients.length === 0 ? (
                 <tr>
-                  <th
-                    onClick={() => handleSort('patient_name')}
-                    className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
-                  >
-                    <div className="flex items-center space-x-1">
-                      <User className="h-4 w-4" />
-                      <span>Patient Name</span>
-                      <SortIcon columnKey="patient_name" />
-                    </div>
-                  </th>
-                  <th
-                    onClick={() => handleSort('mrn')}
-                    className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
-                  >
-                    <div className="flex items-center space-x-1">
-                      <span>Patient ID</span>
-                      <SortIcon columnKey="mrn" />
-                    </div>
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                    DOB
-                  </th>
-                  <th
-                    onClick={() => handleSort('diagnosis')}
-                    className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
-                  >
-                    <div className="flex items-center space-x-1">
-                      <FileText className="h-4 w-4" />
-                      <span>Diagnosis</span>
-                      <SortIcon columnKey="diagnosis" />
-                    </div>
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                    Procedure
-                  </th>
-                  <th
-                    onClick={() => handleSort('attending')}
-                    className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
-                  >
-                    <div className="flex items-center space-x-1">
-                      <span>Attending</span>
-                      <SortIcon columnKey="attending" />
-                    </div>
-                  </th>
-                  <th
-                    onClick={() => handleSort('status')}
-                    className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
-                  >
-                    <div className="flex items-center space-x-1">
-                      <span>Status</span>
-                      <SortIcon columnKey="status" />
-                    </div>
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                    <div className="flex items-center space-x-1">
-                      <CalendarIcon className="h-4 w-4" />
-                      <span>Scheduled</span>
-                    </div>
-                  </th>
-                  <th
-                    onClick={() => handleSort('prep_progress')}
-                    className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
-                  >
-                    <div className="flex items-center space-x-1">
-                      <span>Prep Progress</span>
-                      <SortIcon columnKey="prep_progress" />
-                    </div>
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                    Actions
-                  </th>
+                  <td colSpan="8" className="px-3 py-12 text-center text-gray-500">
+                    <FileSpreadsheet className="h-12 w-12 mx-auto mb-3 text-gray-300" />
+                    <p className="text-lg font-medium">No patients found</p>
+                    <p className="text-sm">Try adjusting your search or filters</p>
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {sortedPatients.length === 0 ? (
-                  <tr>
-                    <td colSpan="10" className="px-6 py-12 text-center text-gray-500">
-                      <FileSpreadsheet className="h-12 w-12 mx-auto mb-3 text-gray-300" />
-                      <p className="text-lg font-medium">No patients found</p>
-                      <p className="text-sm">Try adjusting your search or filters</p>
-                    </td>
-                  </tr>
-                ) : (
-                  sortedPatients.map((patient) => {
-                    const schedule = getScheduleForPatient(patient.mrn);
-                    const prep = getPrepProgress(patient.prep_checklist);
+              ) : (
+                sortedPatients.map((patient) => {
+                  const prep = getPrepProgress(patient.prep_checklist);
 
-                    return (
-                      <tr key={patient.mrn} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm">
-                              {patient.patient_name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
-                            </div>
-                            <div className="ml-3">
-                              <div className="text-sm font-semibold text-gray-900">{patient.patient_name}</div>
-                            </div>
+                  return (
+                    <tr key={patient.mrn} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-3 py-3">
+                        <div className="flex items-center min-w-0">
+                          <div className="w-8 h-8 flex-shrink-0 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-sm">
+                            {patient.patient_name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
                           </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900 font-medium">{patient.mrn}</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-600">
-                            {patient.dob ? format(parseISO(patient.dob), 'MM/dd/yyyy') : 'N/A'}
+                          <div className="ml-2 min-w-0">
+                            <div className="text-sm font-semibold text-gray-900 truncate">{patient.patient_name}</div>
+                            <div className="text-xs text-gray-400">{patient.dob ? format(parseISO(patient.dob), 'MM/dd/yyyy') : ''}</div>
                           </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="text-sm text-gray-900 max-w-xs truncate" title={patient.diagnosis}>
-                            {patient.diagnosis || 'N/A'}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="text-sm text-gray-900 max-w-xs truncate" title={patient.procedures}>
-                            {patient.procedures || 'N/A'}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">{patient.attending || 'N/A'}</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <Badge
-                            className={`
-                              ${patient.status === 'confirmed' ? 'bg-green-100 text-green-700' : ''}
-                              ${patient.status === 'pending' ? 'bg-blue-100 text-blue-700' : ''}
-                              ${patient.status === 'completed' ? 'bg-gray-100 text-gray-700' : ''}
-                              ${patient.status === 'cancelled' ? 'bg-red-100 text-red-700' : ''}
-                              px-3 py-1 text-xs font-medium rounded-full
-                            `}
-                          >
-                            {patient.status}
-                          </Badge>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {schedule ? (
-                            <div>
-                              {schedule.is_addon ? (
-                                <Badge className="bg-orange-100 text-orange-700 px-2 py-1 text-xs rounded-full">
-                                  Add-on
-                                </Badge>
-                              ) : (
-                                <div className="text-sm">
-                                  <div className="text-gray-900 font-medium">
-                                    {schedule.scheduled_date ? format(parseISO(schedule.scheduled_date), 'MMM dd, yyyy') : 'N/A'}
-                                  </div>
-                                  {schedule.scheduled_time && (
-                                    <div className="text-gray-500 text-xs">{schedule.scheduled_time}</div>
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          ) : (
-                            <span className="text-sm text-gray-400">Not scheduled</span>
-                          )}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center space-x-2">
-                            <div className="flex-1 min-w-[80px]">
-                              <div className="flex items-center justify-between mb-1">
-                                <span className="text-xs text-gray-600">{prep.completed}/{prep.total}</span>
-                                <span className="text-xs font-medium text-gray-700">{Math.round(prep.percentage)}%</span>
-                              </div>
-                              <div className="w-full bg-gray-200 rounded-full h-2">
-                                <div
-                                  className={`h-2 rounded-full transition-all ${
-                                    prep.percentage === 100 ? 'bg-green-500' :
-                                    prep.percentage >= 50 ? 'bg-blue-500' :
-                                    'bg-orange-500'
-                                  }`}
-                                  style={{ width: `${prep.percentage}%` }}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <Button
-                            onClick={() => handleDeletePatient(patient.mrn, patient.patient_name)}
-                            variant="ghost"
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors"
-                            title="Delete patient (permanent)"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
+                        </div>
+                      </td>
+                      <td className="px-3 py-3">
+                        <div className="text-xs text-gray-900 font-medium truncate">{patient.mrn}</div>
+                      </td>
+                      <td className="px-3 py-3">
+                        <div className="text-sm text-gray-900 truncate" title={patient.diagnosis}>
+                          {patient.diagnosis || 'N/A'}
+                        </div>
+                      </td>
+                      <td className="px-3 py-3">
+                        <div className="text-sm text-gray-900 truncate" title={patient.procedures}>
+                          {patient.procedures || 'N/A'}
+                        </div>
+                      </td>
+                      <td className="px-3 py-3">
+                        <div className="text-sm text-gray-900 truncate">{patient.attending || 'N/A'}</div>
+                      </td>
+                      <td className="px-3 py-3">
+                        <Badge
+                          className={`
+                            ${patient.status === 'confirmed' ? 'bg-green-100 text-green-700' : ''}
+                            ${patient.status === 'pending' ? 'bg-blue-100 text-blue-700' : ''}
+                            ${patient.status === 'completed' ? 'bg-gray-100 text-gray-700' : ''}
+                            ${patient.status === 'cancelled' ? 'bg-red-100 text-red-700' : ''}
+                            px-2 py-0.5 text-xs font-medium rounded-full capitalize whitespace-nowrap
+                          `}
+                        >
+                          {patient.status}
+                        </Badge>
+                      </td>
+                      <td className="px-3 py-3">
+                        <div className="flex items-center justify-between mb-0.5">
+                          <span className="text-xs text-gray-500">{prep.completed}/{prep.total}</span>
+                          <span className="text-xs font-medium text-gray-700">{Math.round(prep.percentage)}%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-1.5">
+                          <div
+                            className={`h-1.5 rounded-full transition-all ${
+                              prep.percentage === 100 ? 'bg-green-500' :
+                              prep.percentage >= 50 ? 'bg-blue-500' :
+                              'bg-orange-500'
+                            }`}
+                            style={{ width: `${prep.percentage}%` }}
+                          />
+                        </div>
+                      </td>
+                      <td className="px-3 py-3 text-center">
+                        <Button
+                          onClick={() => handleDeletePatient(patient.mrn, patient.patient_name)}
+                          variant="ghost"
+                          size="sm"
+                          className="text-red-500 hover:text-red-700 hover:bg-red-50 transition-colors p-1 h-7 w-7"
+                          title="Delete patient (permanent)"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
         </div>
 
         {/* Summary Stats */}

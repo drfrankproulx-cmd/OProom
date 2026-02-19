@@ -145,6 +145,10 @@ export const Tasks = ({ onBack }) => {
 
   // Toggle task completion
   const handleToggleComplete = async (taskId, currentStatus) => {
+    if (!taskId) {
+      toast.error('Invalid task: missing ID');
+      return;
+    }
     try {
       const response = await fetch(`${API_URL}/api/tasks/${taskId}/toggle`, {
         method: 'PATCH',
@@ -159,7 +163,8 @@ export const Tasks = ({ onBack }) => {
         );
         toast.success(currentStatus ? 'Task marked as incomplete' : 'Task completed!');
       } else {
-        toast.error('Failed to update task');
+        const result = await response.json().catch(() => ({}));
+        toast.error(result.detail || 'Failed to update task');
       }
     } catch (error) {
       toast.error('Failed to update task');
@@ -501,192 +506,183 @@ export const Tasks = ({ onBack }) => {
 
         {/* Table */}
         <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
+          <table className="w-full table-fixed">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className="px-3 py-3 text-left w-[5%]">
+                  <CheckCircle2 className="h-4 w-4 text-gray-400" />
+                </th>
+                <th
+                  onClick={() => handleSort('task_description')}
+                  className="px-3 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors w-[28%]"
+                >
+                  <div className="flex items-center space-x-1">
+                    <ListTodo className="h-3.5 w-3.5 flex-shrink-0" />
+                    <span>Task</span>
+                    <SortIcon columnKey="task_description" />
+                  </div>
+                </th>
+                <th
+                  onClick={() => handleSort('assigned_to')}
+                  className="px-3 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors w-[15%]"
+                >
+                  <div className="flex items-center space-x-1">
+                    <User className="h-3.5 w-3.5 flex-shrink-0" />
+                    <span>Assigned To</span>
+                    <SortIcon columnKey="assigned_to" />
+                  </div>
+                </th>
+                <th
+                  onClick={() => handleSort('due_date')}
+                  className="px-3 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors w-[13%]"
+                >
+                  <div className="flex items-center space-x-1">
+                    <CalendarIcon className="h-3.5 w-3.5 flex-shrink-0" />
+                    <span>Due Date</span>
+                    <SortIcon columnKey="due_date" />
+                  </div>
+                </th>
+                <th
+                  onClick={() => handleSort('status')}
+                  className="px-3 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors w-[12%]"
+                >
+                  <div className="flex items-center space-x-1">
+                    <span>Status</span>
+                    <SortIcon columnKey="status" />
+                  </div>
+                </th>
+                <th
+                  onClick={() => handleSort('urgency')}
+                  className="px-3 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors w-[10%]"
+                >
+                  <div className="flex items-center space-x-1">
+                    <span>Urgency</span>
+                    <SortIcon columnKey="urgency" />
+                  </div>
+                </th>
+                <th className="px-3 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-[11%]">
+                  Patient
+                </th>
+                <th className="px-3 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider w-[6%]">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {sortedTasks.length === 0 ? (
                 <tr>
-                  <th className="px-6 py-4 text-left w-12">
-                    <div className="flex items-center">
-                      <CheckCircle2 className="h-4 w-4 text-gray-400" />
-                    </div>
-                  </th>
-                  <th
-                    onClick={() => handleSort('task_description')}
-                    className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
-                  >
-                    <div className="flex items-center space-x-1">
-                      <ListTodo className="h-4 w-4" />
-                      <span>Task</span>
-                      <SortIcon columnKey="task_description" />
-                    </div>
-                  </th>
-                  <th
-                    onClick={() => handleSort('assigned_to')}
-                    className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
-                  >
-                    <div className="flex items-center space-x-1">
-                      <User className="h-4 w-4" />
-                      <span>Assigned To</span>
-                      <SortIcon columnKey="assigned_to" />
-                    </div>
-                  </th>
-                  <th
-                    onClick={() => handleSort('due_date')}
-                    className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
-                  >
-                    <div className="flex items-center space-x-1">
-                      <CalendarIcon className="h-4 w-4" />
-                      <span>Due Date</span>
-                      <SortIcon columnKey="due_date" />
-                    </div>
-                  </th>
-                  <th
-                    onClick={() => handleSort('status')}
-                    className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
-                  >
-                    <div className="flex items-center space-x-1">
-                      <span>Status</span>
-                      <SortIcon columnKey="status" />
-                    </div>
-                  </th>
-                  <th
-                    onClick={() => handleSort('urgency')}
-                    className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
-                  >
-                    <div className="flex items-center space-x-1">
-                      <span>Urgency</span>
-                      <SortIcon columnKey="urgency" />
-                    </div>
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                    Patient
-                  </th>
-                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                    Actions
-                  </th>
+                  <td colSpan="8" className="px-3 py-12 text-center text-gray-500">
+                    <ListTodo className="h-12 w-12 mx-auto mb-3 text-gray-300" />
+                    <p className="text-lg font-medium">No tasks found</p>
+                    <p className="text-sm">Try adjusting your search or filters</p>
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {sortedTasks.length === 0 ? (
-                  <tr>
-                    <td colSpan="8" className="px-6 py-12 text-center text-gray-500">
-                      <ListTodo className="h-12 w-12 mx-auto mb-3 text-gray-300" />
-                      <p className="text-lg font-medium">No tasks found</p>
-                      <p className="text-sm">Try adjusting your search or filters</p>
-                    </td>
-                  </tr>
-                ) : (
-                  sortedTasks.map((task) => {
-                    const status = getTaskStatus(task);
-                    const statusInfo = getStatusInfo(status);
-                    const StatusIcon = statusInfo.icon;
+              ) : (
+                sortedTasks.map((task) => {
+                  const status = getTaskStatus(task);
+                  const statusInfo = getStatusInfo(status);
+                  const StatusIcon = statusInfo.icon;
 
-                    return (
-                      <tr
-                        key={task._id}
-                        className={`hover:bg-gray-50 transition-colors ${
-                          task.completed ? 'opacity-60' : ''
-                        }`}
-                      >
-                        <td className="px-6 py-4">
-                          <Checkbox
-                            checked={task.completed}
-                            onCheckedChange={() => handleToggleComplete(task._id, task.completed)}
-                            className="h-5 w-5"
-                          />
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className={`text-sm font-medium text-gray-900 max-w-md ${
-                            task.completed ? 'line-through' : ''
-                          }`}>
-                            {task.task_description}
+                  return (
+                    <tr
+                      key={task._id}
+                      className={`hover:bg-gray-50 transition-colors ${
+                        task.completed ? 'opacity-60' : ''
+                      }`}
+                    >
+                      <td className="px-3 py-3">
+                        <Checkbox
+                          checked={task.completed}
+                          onCheckedChange={() => handleToggleComplete(task._id, task.completed)}
+                          className="h-5 w-5"
+                        />
+                      </td>
+                      <td className="px-3 py-3">
+                        <div className={`text-sm font-medium text-gray-900 truncate ${
+                          task.completed ? 'line-through' : ''
+                        }`} title={task.task_description}>
+                          {task.task_description}
+                        </div>
+                        {task.created_by && (
+                          <div className="text-xs text-gray-400 truncate">
+                            {task.created_by}
                           </div>
-                          {task.created_by && (
-                            <div className="text-xs text-gray-500 mt-1">
-                              Created by {task.created_by}
-                            </div>
-                          )}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="w-8 h-8 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-sm">
-                              {task.assigned_to.substring(0, 2).toUpperCase()}
-                            </div>
-                            <div className="ml-2">
-                              <div className="text-sm text-gray-900">{task.assigned_to}</div>
-                            </div>
+                        )}
+                      </td>
+                      <td className="px-3 py-3">
+                        <div className="flex items-center min-w-0">
+                          <div className="w-7 h-7 flex-shrink-0 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-sm">
+                            {task.assigned_to.substring(0, 2).toUpperCase()}
                           </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {task.due_date ? (
-                            <div>
-                              <div className="text-sm text-gray-900">
-                                {format(parseISO(task.due_date), 'MMM dd, yyyy')}
+                          <div className="ml-1.5 min-w-0">
+                            <div className="text-sm text-gray-900 truncate">{task.assigned_to}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-3 py-3">
+                        {task.due_date ? (
+                          <div>
+                            <div className="text-sm text-gray-900 whitespace-nowrap">
+                              {format(parseISO(task.due_date), 'MMM dd, yyyy')}
+                            </div>
+                            {status === 'overdue' && (
+                              <div className="text-xs text-red-600 font-medium whitespace-nowrap">
+                                {Math.abs(differenceInDays(parseISO(task.due_date), new Date()))} days overdue
                               </div>
-                              {status === 'overdue' && (
-                                <div className="text-xs text-red-600 font-medium">
-                                  {Math.abs(differenceInDays(parseISO(task.due_date), new Date()))} days overdue
-                                </div>
-                              )}
-                              {status === 'urgent' && (
-                                <div className="text-xs text-yellow-600 font-medium">
-                                  {differenceInDays(parseISO(task.due_date), new Date())} days left
-                                </div>
-                              )}
-                            </div>
-                          ) : (
-                            <span className="text-sm text-gray-400">No due date</span>
-                          )}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <Badge className={`${statusInfo.bg} ${statusInfo.color} px-3 py-1 text-xs font-medium rounded-full flex items-center space-x-1 w-fit`}>
-                            <StatusIcon className="h-3 w-3" />
-                            <span>{statusInfo.label}</span>
-                          </Badge>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <Badge className={`${getUrgencyBadge(task.urgency)} px-3 py-1 text-xs font-medium rounded-full capitalize`}>
-                            {task.urgency}
-                          </Badge>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {task.patient_mrn ? (
-                            <div className="text-sm text-gray-900 font-medium">
-                              {task.patient_mrn}
-                            </div>
-                          ) : (
-                            <span className="text-sm text-gray-400">—</span>
-                          )}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right">
-                          <div className="flex items-center justify-end space-x-2">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleEditTask(task)}
-                              className="hover:bg-blue-50 hover:text-blue-600 rounded-lg"
-                              title="Edit task"
-                            >
-                              <Edit2 className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleDeleteTask(task._id)}
-                              className="hover:bg-red-50 hover:text-red-600 rounded-lg"
-                              title="Delete task"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
+                            )}
                           </div>
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
+                        ) : (
+                          <span className="text-sm text-gray-400">—</span>
+                        )}
+                      </td>
+                      <td className="px-3 py-3">
+                        <Badge className={`${statusInfo.bg} ${statusInfo.color} px-2 py-0.5 text-xs font-medium rounded-full flex items-center space-x-1 w-fit whitespace-nowrap`}>
+                          <StatusIcon className="h-3 w-3 flex-shrink-0" />
+                          <span>{statusInfo.label}</span>
+                        </Badge>
+                      </td>
+                      <td className="px-3 py-3">
+                        <Badge className={`${getUrgencyBadge(task.urgency)} px-2 py-0.5 text-xs font-medium rounded-full capitalize whitespace-nowrap`}>
+                          {task.urgency}
+                        </Badge>
+                      </td>
+                      <td className="px-3 py-3">
+                        {task.patient_mrn ? (
+                          <div className="text-xs text-gray-900 font-medium truncate" title={task.patient_mrn}>
+                            {task.patient_mrn}
+                          </div>
+                        ) : (
+                          <span className="text-sm text-gray-400">—</span>
+                        )}
+                      </td>
+                      <td className="px-3 py-3 text-right">
+                        <div className="flex items-center justify-end space-x-1">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleEditTask(task)}
+                            className="hover:bg-blue-50 hover:text-blue-600 rounded-lg p-1 h-7 w-7"
+                            title="Edit task"
+                          >
+                            <Edit2 className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDeleteTask(task._id)}
+                            className="hover:bg-red-50 hover:text-red-600 rounded-lg p-1 h-7 w-7"
+                            title="Delete task"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
 

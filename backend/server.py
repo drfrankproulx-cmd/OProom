@@ -970,8 +970,12 @@ async def get_tasks(current_user: str = Depends(get_current_user)):
 
 @app.put("/api/tasks/{task_id}")
 async def update_task(task_id: str, task: Task, current_user: str = Depends(get_current_user)):
+    try:
+        obj_id = ObjectId(task_id)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid task ID format")
     result = tasks_collection.update_one(
-        {"_id": ObjectId(task_id)},
+        {"_id": obj_id},
         {"$set": task.dict()}
     )
     if result.matched_count == 0:
@@ -980,23 +984,31 @@ async def update_task(task_id: str, task: Task, current_user: str = Depends(get_
 
 @app.delete("/api/tasks/{task_id}")
 async def delete_task(task_id: str, current_user: str = Depends(get_current_user)):
-    result = tasks_collection.delete_one({"_id": ObjectId(task_id)})
+    try:
+        obj_id = ObjectId(task_id)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid task ID format")
+    result = tasks_collection.delete_one({"_id": obj_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Task not found")
     return {"message": "Task deleted successfully"}
 
 @app.patch("/api/tasks/{task_id}/toggle")
 async def toggle_task(task_id: str, current_user: str = Depends(get_current_user)):
-    task = tasks_collection.find_one({"_id": ObjectId(task_id)})
+    try:
+        obj_id = ObjectId(task_id)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid task ID format")
+    task = tasks_collection.find_one({"_id": obj_id})
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
-    
+
     new_status = not task.get("completed", False)
-    result = tasks_collection.update_one(
-        {"_id": ObjectId(task_id)},
+    tasks_collection.update_one(
+        {"_id": obj_id},
         {"$set": {"completed": new_status, "status": "completed" if new_status else "pending"}}
     )
-    
+
     return {"message": "Task status updated", "completed": new_status}
 
 # Conference routes
