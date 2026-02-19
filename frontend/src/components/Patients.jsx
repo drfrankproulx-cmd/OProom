@@ -473,10 +473,11 @@ export const Patients = ({ onBack, initialFilter }) => {
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-4 py-4 whitespace-nowrap text-center">
                           <Button
                             onClick={() => handleDeletePatient(patient.mrn, patient.patient_name)}
                             variant="ghost"
+                            size="sm"
                             className="text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors"
                             title="Delete patient (permanent)"
                           >
