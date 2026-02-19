@@ -543,78 +543,78 @@ export const Tasks = ({ onBack, initialFilter }) => {
                           task.completed ? 'opacity-60' : ''
                         }`}
                       >
-                        <td className="px-6 py-4">
+                        <td className="px-4 py-4">
                           <Checkbox
                             checked={task.completed}
                             onCheckedChange={() => handleToggleComplete(task._id, task.completed)}
                             className="h-5 w-5"
                           />
                         </td>
-                        <td className="px-6 py-4">
-                          <div className={`text-sm font-medium text-gray-900 max-w-md ${
+                        <td className="px-4 py-4">
+                          <div className={`text-sm font-medium text-gray-900 truncate ${
                             task.completed ? 'line-through' : ''
                           }`}>
                             {task.task_description}
                           </div>
                           {task.created_by && (
-                            <div className="text-xs text-gray-500 mt-1">
+                            <div className="text-xs text-gray-500 mt-1 truncate">
                               Created by {task.created_by}
                             </div>
                           )}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-4 py-4 whitespace-nowrap">
                           <div className="flex items-center">
-                            <div className="w-8 h-8 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-sm">
+                            <div className="w-7 h-7 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-sm flex-shrink-0">
                               {task.assigned_to.substring(0, 2).toUpperCase()}
                             </div>
-                            <div className="ml-2">
-                              <div className="text-sm text-gray-900">{task.assigned_to}</div>
+                            <div className="ml-2 min-w-0">
+                              <div className="text-sm text-gray-900 truncate">{task.assigned_to}</div>
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-4 py-4 whitespace-nowrap">
                           {task.due_date ? (
                             <div>
                               <div className="text-sm text-gray-900">
-                                {format(parseISO(task.due_date), 'MMM dd, yyyy')}
+                                {format(parseISO(task.due_date), 'MMM dd')}
                               </div>
                               {status === 'overdue' && (
                                 <div className="text-xs text-red-600 font-medium">
-                                  {Math.abs(differenceInDays(parseISO(task.due_date), new Date()))} days overdue
+                                  {Math.abs(differenceInDays(parseISO(task.due_date), new Date()))}d overdue
                                 </div>
                               )}
                               {status === 'urgent' && (
                                 <div className="text-xs text-yellow-600 font-medium">
-                                  {differenceInDays(parseISO(task.due_date), new Date())} days left
+                                  {differenceInDays(parseISO(task.due_date), new Date())}d left
                                 </div>
                               )}
                             </div>
                           ) : (
-                            <span className="text-sm text-gray-400">No due date</span>
+                            <span className="text-sm text-gray-400">—</span>
                           )}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <Badge className={`${statusInfo.bg} ${statusInfo.color} px-3 py-1 text-xs font-medium rounded-full flex items-center space-x-1 w-fit`}>
+                        <td className="px-4 py-4 whitespace-nowrap">
+                          <Badge className={`${statusInfo.bg} ${statusInfo.color} px-2 py-1 text-xs font-medium rounded-full flex items-center space-x-1 w-fit`}>
                             <StatusIcon className="h-3 w-3" />
                             <span>{statusInfo.label}</span>
                           </Badge>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <Badge className={`${getUrgencyBadge(task.urgency)} px-3 py-1 text-xs font-medium rounded-full capitalize`}>
+                        <td className="px-4 py-4 whitespace-nowrap">
+                          <Badge className={`${getUrgencyBadge(task.urgency)} px-2 py-1 text-xs font-medium rounded-full capitalize`}>
                             {task.urgency}
                           </Badge>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-4 py-4 whitespace-nowrap">
                           {task.patient_mrn ? (
-                            <div className="text-sm text-gray-900 font-medium">
+                            <div className="text-sm text-gray-900 font-medium truncate">
                               {task.patient_mrn}
                             </div>
                           ) : (
                             <span className="text-sm text-gray-400">—</span>
                           )}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right">
-                          <div className="flex items-center justify-end space-x-2">
+                        <td className="px-4 py-4 whitespace-nowrap text-center">
+                          <div className="flex items-center justify-center space-x-1">
                             <Button
                               variant="ghost"
                               size="sm"
