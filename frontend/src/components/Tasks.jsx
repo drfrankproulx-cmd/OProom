@@ -457,17 +457,17 @@ export const Tasks = ({ onBack, initialFilter }) => {
         {/* Table */}
         <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full table-fixed">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="px-6 py-4 text-left w-12">
+                  <th className="w-[5%] px-4 py-4 text-left">
                     <div className="flex items-center">
                       <CheckCircle2 className="h-4 w-4 text-gray-400" />
                     </div>
                   </th>
                   <th
                     onClick={() => handleSort('task_description')}
-                    className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
+                    className="w-[28%] px-4 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
                   >
                     <div className="flex items-center space-x-1">
                       <ListTodo className="h-4 w-4" />
@@ -477,7 +477,7 @@ export const Tasks = ({ onBack, initialFilter }) => {
                   </th>
                   <th
                     onClick={() => handleSort('assigned_to')}
-                    className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
+                    className="w-[15%] px-4 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
                   >
                     <div className="flex items-center space-x-1">
                       <User className="h-4 w-4" />
@@ -487,7 +487,7 @@ export const Tasks = ({ onBack, initialFilter }) => {
                   </th>
                   <th
                     onClick={() => handleSort('due_date')}
-                    className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
+                    className="w-[13%] px-4 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
                   >
                     <div className="flex items-center space-x-1">
                       <CalendarIcon className="h-4 w-4" />
@@ -497,7 +497,7 @@ export const Tasks = ({ onBack, initialFilter }) => {
                   </th>
                   <th
                     onClick={() => handleSort('status')}
-                    className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
+                    className="w-[12%] px-4 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
                   >
                     <div className="flex items-center space-x-1">
                       <span>Status</span>
@@ -506,17 +506,17 @@ export const Tasks = ({ onBack, initialFilter }) => {
                   </th>
                   <th
                     onClick={() => handleSort('urgency')}
-                    className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
+                    className="w-[10%] px-4 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
                   >
                     <div className="flex items-center space-x-1">
                       <span>Urgency</span>
                       <SortIcon columnKey="urgency" />
                     </div>
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                  <th className="w-[11%] px-4 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                     Patient
                   </th>
-                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                  <th className="w-[6%] px-4 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
