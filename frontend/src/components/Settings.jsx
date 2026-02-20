@@ -23,8 +23,8 @@ import GoogleIntegration from './GoogleIntegration';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
-export const Settings = ({ onClose, onSessionExpired, onNavigate }) => {
-  const [activeTab, setActiveTab] = useState('residents');
+export const Settings = ({ onClose, onSessionExpired, onNavigate, initialTab = 'residents' }) => {
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [residents, setResidents] = useState([]);
   const [attendings, setAtttendings] = useState([]);
   const [showAddResident, setShowAddResident] = useState(false);
