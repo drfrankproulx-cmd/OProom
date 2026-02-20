@@ -399,39 +399,45 @@ export const AppleDashboard = ({ user, onLogout }) => {
   }
 
   if (showSettings) {
-    return <Settings onClose={() => setShowSettings(false)} onNavigate={setCurrentView} initialTab={settingsInitialTab} />;
+    return <Settings onClose={() => setShowSettings(false)} onNavigate={handleNavigation} initialTab={settingsInitialTab} user={user} onLogout={onLogout} />;
   }
 
   if (currentView === 'calendar') {
-    return <Calendar onBack={() => { setCurrentView('dashboard'); setViewFilter(null); }} initialFilter={viewFilter} />;
+    return <Calendar onNavigate={handleNavigation} initialFilter={viewFilter} user={user} onLogout={onLogout} />;
   }
 
   if (currentView === 'patients') {
-    return <Patients onBack={() => { setCurrentView('dashboard'); setViewFilter(null); }} initialFilter={viewFilter} />;
+    return <Patients onNavigate={handleNavigation} initialFilter={viewFilter} user={user} onLogout={onLogout} />;
   }
 
   if (currentView === 'tasks') {
-    return <Tasks onBack={() => { setCurrentView('dashboard'); setViewFilter(null); }} initialFilter={viewFilter} />;
+    return <Tasks onNavigate={handleNavigation} initialFilter={viewFilter} user={user} onLogout={onLogout} />;
   }
 
   if (currentView === 'patient-status') {
-    return <PatientStatusList onBack={() => setCurrentView('dashboard')} />;
+    return <PatientStatusList onNavigate={handleNavigation} user={user} onLogout={onLogout} />;
   }
 
   if (currentView === 'surgery-timeline') {
-    return <SurgeryDashboard onBack={() => setCurrentView('dashboard')} />;
+    return <SurgeryDashboard onNavigate={handleNavigation} user={user} onLogout={onLogout} />;
   }
 
   if (currentView === 'bulk-import') {
-    return <BulkImport onBack={() => setCurrentView('dashboard')} onNavigate={(view) => {
+    return <BulkImport onNavigate={(view) => {
       if (view === 'residents' || view === 'attendings') {
         setSettingsInitialTab(view);
         setShowSettings(true);
         setCurrentView('dashboard');
       } else {
-        setCurrentView(view);
+        handleNavigation(view);
       }
-    }} />;
+    }} user={user} onLogout={onLogout} />;
+  }
+
+  if (currentView === 'settings') {
+    setShowSettings(true);
+    setCurrentView('dashboard');
+    return null;
   }
 
   if (currentView === 'residents' || currentView === 'attendings') {
