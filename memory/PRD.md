@@ -12,6 +12,7 @@ Build a web-based operating room scheduling platform for surgical residents feat
 - Comments/notes section for each patient case and an activity log
 - Integration with Gmail for calendar event syncing
 - Responsive, information-dense UI/UX
+- Bulk CSV import for residents and attendings
 
 ## Tech Stack
 - **Frontend**: React, Tailwind CSS, shadcn/ui
@@ -24,18 +25,32 @@ Build a web-based operating room scheduling platform for surgical residents feat
 
 ### Core Features (Complete)
 - [x] User authentication (register/login/logout with JWT)
-- [x] Main dashboard (AppleDashboard.jsx) with stats cards
+- [x] Main dashboard (AppleDashboard.jsx) with clickable stats cards
 - [x] Weekly and monthly calendar views
 - [x] Patient CRUD operations with status workflow (pending → scheduled → completed → archived)
 - [x] Resident and Attending management (Settings page)
 - [x] Task management system with assignments
 - [x] Add-On List for unscheduled cases
-- [x] Pre-Op Status module with expandable checklist
+- [x] Pre-Op Status module with expandable checklist and delete functionality
 - [x] Surgery Timeline tracker with document age validation
 - [x] Notifications system
 - [x] CPT Code lookup with autocomplete (combined Procedure/CPT field)
 - [x] **CPT Favorites** - Common maxillofacial procedures from maxillofacial.org
 - [x] PWA setup for mobile installation
+- [x] **Bulk CSV Import** - Import residents and attendings from CSV files
+
+### Bulk CSV Import (Complete - Feb 2026)
+- [x] Backend API: `GET /api/import/template/{entity_type}` - Download CSV template
+- [x] Backend API: `POST /api/import/preview/{entity_type}` - Preview/validate without saving
+- [x] Backend API: `POST /api/import/{entity_type}` - Import with skip_duplicates option
+- [x] BulkImport.jsx - Multi-step wizard (Upload → Preview → Importing → Complete)
+- [x] Entity type selector (Residents/Attendings)
+- [x] Drag-and-drop file upload + click-to-browse
+- [x] Duplicate detection by email
+- [x] Error handling for invalid CSV, wrong headers, missing fields
+- [x] Skip duplicates checkbox
+- [x] "View Residents/Attendings" navigation after import
+- [x] "Import Another File" wizard reset
 
 ### CPT Code Feature (Complete - Feb 2026)
 - [x] Backend API endpoint: `/api/cpt-codes/search`
