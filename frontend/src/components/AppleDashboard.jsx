@@ -91,7 +91,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
   const [tasks, setTasks] = useState([]);
   const [conferences, setConferences] = useState([]);
   const [residents, setResidents] = useState([]);
-  const [attendings, setAtttendings] = useState([]);
+  const [attendings, setAttendings] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPatient, setSelectedPatient] = useState(null);
@@ -175,7 +175,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
       if (tasksRes.ok) setTasks(tasksData);
       if (conferencesRes.ok) setConferences(conferencesData);
       if (residentsRes.ok) setResidents(residentsData);
-      if (attendingsRes.ok) setAtttendings(attendingsData);
+      if (attendingsRes.ok) setAttendings(attendingsData);
       if (notificationsRes.ok) setNotifications(notificationsData);
     } catch (error) {
       console.error('Fetch error:', error);
