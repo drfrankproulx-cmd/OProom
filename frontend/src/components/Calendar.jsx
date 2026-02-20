@@ -497,7 +497,7 @@ const Calendar = ({ onNavigate, initialFilter, user, onLogout }) => {
               )}
               <Button
                 onClick={() => setSelectedEvent(null)}
-                className="w-full mt-6 bg-blue-500 hover:bg-blue-600 text-white rounded-xl py-3"
+                className="w-full mt-6 bg-teal-500 hover:bg-teal-600 text-white rounded-xl py-3"
               >
                 Close
               </Button>
@@ -505,7 +505,7 @@ const Calendar = ({ onNavigate, initialFilter, user, onLogout }) => {
           </div>
         )}
       </div>
-    </div>
+    </PageLayout>
   );
 };
 
