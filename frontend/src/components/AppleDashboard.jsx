@@ -401,7 +401,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
   }
 
   if (showSettings) {
-    return <Settings onClose={() => setShowSettings(false)} />;
+    return <Settings onClose={() => setShowSettings(false)} onNavigate={setCurrentView} />;
   }
 
   if (currentView === 'calendar') {
@@ -422,6 +422,10 @@ export const AppleDashboard = ({ user, onLogout }) => {
 
   if (currentView === 'surgery-timeline') {
     return <SurgeryDashboard onBack={() => setCurrentView('dashboard')} />;
+  }
+
+  if (currentView === 'bulk-import') {
+    return <BulkImport onBack={() => setCurrentView('dashboard')} onNavigate={setCurrentView} />;
   }
 
   return (
