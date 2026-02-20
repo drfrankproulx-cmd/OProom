@@ -397,17 +397,25 @@ export const AppleDashboard = ({ user, onLogout }) => {
 
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-600 text-lg">Loading your workspace...</p>
+      <PageLayout
+        currentView="dashboard"
+        onNavigate={handleNavigation}
+        user={user}
+        onLogout={onLogout}
+        title="Dashboard"
+      >
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500 mx-auto mb-4"></div>
+            <p className="text-slate-500">Loading your workspace...</p>
+          </div>
         </div>
-      </div>
+      </PageLayout>
     );
   }
 
   if (showSettings) {
-    return <Settings onClose={() => setShowSettings(false)} onNavigate={handleNavigation} initialTab={settingsInitialTab} user={user} onLogout={onLogout} />;
+    return <Settings onClose={() => { setShowSettings(false); setCurrentView('dashboard'); }} onNavigate={handleNavigation} initialTab={settingsInitialTab} user={user} onLogout={onLogout} />;
   }
 
   if (currentView === 'calendar') {
@@ -444,14 +452,12 @@ export const AppleDashboard = ({ user, onLogout }) => {
 
   if (currentView === 'settings') {
     setShowSettings(true);
-    setCurrentView('dashboard');
     return null;
   }
 
   if (currentView === 'residents' || currentView === 'attendings') {
     setSettingsInitialTab(currentView);
     setShowSettings(true);
-    setCurrentView('dashboard');
     return null;
   }
 
