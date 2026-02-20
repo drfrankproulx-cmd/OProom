@@ -476,7 +476,8 @@ class TestCleanup:
             deleted_count = 0
             for attending in attendings:
                 # Delete TEST_ prefixed attendings
-                if attending.get("name", "").startswith("TEST_") or "test_" in attending.get("email", "").lower():
+                email = attending.get("email") or ""
+                if attending.get("name", "").startswith("TEST_") or "test_" in email.lower():
                     del_response = requests.delete(
                         f"{BASE_URL}/api/attendings/{attending['_id']}",
                         headers=headers
