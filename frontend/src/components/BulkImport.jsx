@@ -99,12 +99,12 @@ export const BulkImport = ({ onBack, onNavigate }) => {
         body: formData,
       });
       
+      const data = await response.json();
+      
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Failed to preview file');
+        throw new Error(data.detail || 'Failed to preview file');
       }
       
-      const data = await response.json();
       setPreviewData(data);
       setCurrentStep('preview');
     } catch (err) {
