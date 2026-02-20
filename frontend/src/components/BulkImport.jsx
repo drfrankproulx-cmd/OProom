@@ -176,12 +176,12 @@ export const BulkImport = ({ onBack, onNavigate }) => {
         }
       );
       
+      const data = await response.json();
+      
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Import failed');
+        throw new Error(data.detail || 'Import failed');
       }
       
-      const data = await response.json();
       setImportResult(data);
       setCurrentStep('complete');
       
