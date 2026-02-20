@@ -1232,6 +1232,266 @@ async def delete_attending(attending_id: str, current_user: str = Depends(get_cu
         raise HTTPException(status_code=404, detail="Attending not found")
     return {"message": "Attending deleted successfully"}
 
+# ============================================
+# Bulk Import Endpoints for Residents & Attendings
+# ============================================
+import csv
+import io
+from fastapi import File, UploadFile
+from fastapi.responses import StreamingResponse
+
+# Field definitions for CSV import
+RESIDENT_FIELDS = {
+    "required": ["name", "email"],
+    "optional": ["pgy_level", "phone", "specialty"],
+    "all": ["name", "email", "pgy_level", "phone", "specialty"]
+}
+
+ATTENDING_FIELDS = {
+    "required": ["name", "email"],
+    "optional": ["phone", "specialty", "department"],
+    "all": ["name", "email", "phone", "specialty", "department"]
+}
+
+def normalize_header(header: str) -> str:
+    """Normalize CSV header to lowercase, stripped, underscored"""
+    return header.strip().lower().replace(" ", "_").replace("-", "_")
+
+def parse_csv_file(file_content: bytes, entity_type: str):
+    """Parse CSV file and return rows with validation"""
+    fields = RESIDENT_FIELDS if entity_type == "residents" else ATTENDING_FIELDS
+    
+    # Handle BOM for Excel files
+    try:
+        content = file_content.decode('utf-8-sig')
+    except UnicodeDecodeError:
+        content = file_content.decode('utf-8')
+    
+    reader = csv.DictReader(io.StringIO(content))
+    
+    # Normalize headers
+    if reader.fieldnames is None:
+        return [], [{"row": 0, "error": "Empty CSV file or no headers found"}], []
+    
+    normalized_headers = {normalize_header(h): h for h in reader.fieldnames}
+    
+    # Check for required headers
+    missing_headers = []
+    for req in fields["required"]:
+        if req not in normalized_headers:
+            missing_headers.append(req)
+    
+    if missing_headers:
+        return [], [{"row": 0, "error": f"Missing required headers: {', '.join(missing_headers)}"}], list(normalized_headers.keys())
+    
+    valid_rows = []
+    error_rows = []
+    
+    for row_num, row in enumerate(reader, start=2):  # Start at 2 (header is row 1)
+        # Create normalized row
+        normalized_row = {}
+        for norm_key, orig_key in normalized_headers.items():
+            if norm_key in fields["all"]:
+                value = row.get(orig_key, "").strip()
+                normalized_row[norm_key] = value
+        
+        # Skip completely empty rows
+        if all(not v for v in normalized_row.values()):
+            continue
+        
+        # Validate required fields
+        errors = []
+        for req in fields["required"]:
+            if not normalized_row.get(req):
+                errors.append(f"Missing required field '{req}'")
+        
+        # Validate email format if present
+        email = normalized_row.get("email", "")
+        if email and "@" not in email:
+            errors.append(f"Invalid email format: '{email}'")
+        
+        if errors:
+            error_rows.append({
+                "row": row_num,
+                "data": normalized_row,
+                "error": "; ".join(errors)
+            })
+        else:
+            normalized_row["_row_num"] = row_num
+            valid_rows.append(normalized_row)
+    
+    return valid_rows, error_rows, list(normalized_headers.keys())
+
+@app.get("/api/import/template/{entity_type}")
+async def get_import_template(entity_type: str, current_user: str = Depends(get_current_user)):
+    """Download CSV template for bulk import"""
+    if entity_type not in ["residents", "attendings"]:
+        raise HTTPException(status_code=400, detail="Invalid entity type. Use 'residents' or 'attendings'")
+    
+    fields = RESIDENT_FIELDS if entity_type == "residents" else ATTENDING_FIELDS
+    
+    # Create CSV content
+    output = io.StringIO()
+    writer = csv.writer(output)
+    
+    # Write header
+    writer.writerow(fields["all"])
+    
+    # Write sample row
+    if entity_type == "residents":
+        writer.writerow(["John Smith", "john.smith@hospital.org", "PGY-2", "555-123-4567", "General Surgery"])
+    else:
+        writer.writerow(["Dr. Jane Doe", "jane.doe@hospital.org", "555-987-6543", "Cardiothoracic Surgery", "Surgery"])
+    
+    # Prepare response
+    output.seek(0)
+    
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type="text/csv",
+        headers={
+            "Content-Disposition": f"attachment; filename={entity_type}_template.csv"
+        }
+    )
+
+@app.post("/api/import/preview/{entity_type}")
+async def preview_import(
+    entity_type: str,
+    file: UploadFile = File(...),
+    current_user: str = Depends(get_current_user)
+):
+    """Preview CSV import without saving - validate and return summary"""
+    if entity_type not in ["residents", "attendings"]:
+        raise HTTPException(status_code=400, detail="Invalid entity type. Use 'residents' or 'attendings'")
+    
+    # Check file type
+    if not file.filename.lower().endswith('.csv'):
+        raise HTTPException(status_code=400, detail="Only CSV files are supported")
+    
+    # Read file content
+    content = await file.read()
+    
+    if len(content) == 0:
+        raise HTTPException(status_code=400, detail="Empty file uploaded")
+    
+    # Parse CSV
+    valid_rows, error_rows, headers = parse_csv_file(content, entity_type)
+    
+    # Check for duplicates in database
+    collection = residents_collection if entity_type == "residents" else attendings_collection
+    
+    duplicate_rows = []
+    new_rows = []
+    
+    for row in valid_rows:
+        existing = collection.find_one({"email": row["email"].lower()})
+        if existing:
+            duplicate_rows.append({
+                "row": row["_row_num"],
+                "data": {k: v for k, v in row.items() if k != "_row_num"},
+                "error": f"Email '{row['email']}' already exists in database"
+            })
+        else:
+            new_rows.append({k: v for k, v in row.items() if k != "_row_num"})
+    
+    return {
+        "entity_type": entity_type,
+        "total_rows": len(valid_rows) + len(error_rows),
+        "valid_count": len(new_rows),
+        "duplicate_count": len(duplicate_rows),
+        "error_count": len(error_rows),
+        "valid_rows": new_rows,
+        "duplicate_rows": duplicate_rows,
+        "error_rows": error_rows,
+        "headers_found": headers
+    }
+
+@app.post("/api/import/{entity_type}")
+async def import_bulk(
+    entity_type: str,
+    file: UploadFile = File(...),
+    skip_duplicates: bool = Query(True, description="Skip rows with duplicate emails"),
+    current_user: str = Depends(get_current_user)
+):
+    """Import CSV data to database"""
+    if entity_type not in ["residents", "attendings"]:
+        raise HTTPException(status_code=400, detail="Invalid entity type. Use 'residents' or 'attendings'")
+    
+    # Check file type
+    if not file.filename.lower().endswith('.csv'):
+        raise HTTPException(status_code=400, detail="Only CSV files are supported")
+    
+    # Read file content
+    content = await file.read()
+    
+    if len(content) == 0:
+        raise HTTPException(status_code=400, detail="Empty file uploaded")
+    
+    # Parse CSV
+    valid_rows, error_rows, headers = parse_csv_file(content, entity_type)
+    
+    collection = residents_collection if entity_type == "residents" else attendings_collection
+    
+    imported_count = 0
+    skipped_count = 0
+    import_errors = []
+    
+    for row in valid_rows:
+        row_num = row.pop("_row_num", 0)
+        
+        # Check for duplicate
+        existing = collection.find_one({"email": row["email"].lower()})
+        if existing:
+            if skip_duplicates:
+                skipped_count += 1
+                continue
+            else:
+                import_errors.append({
+                    "row": row_num,
+                    "data": row,
+                    "error": f"Email '{row['email']}' already exists"
+                })
+                continue
+        
+        # Prepare document for insert
+        doc = {
+            "name": row["name"],
+            "email": row["email"].lower(),
+            "hospital": "Default Hospital",  # Default value
+            "specialty": row.get("specialty", ""),
+            "is_active": True,
+            "created_by": current_user,
+            "created_at": datetime.utcnow()
+        }
+        
+        # Add entity-specific fields
+        if entity_type == "residents":
+            doc["year"] = row.get("pgy_level", "")
+            doc["phone"] = row.get("phone", "")
+        else:
+            doc["phone"] = row.get("phone", "")
+            doc["department"] = row.get("department", "")
+        
+        try:
+            collection.insert_one(doc)
+            imported_count += 1
+        except Exception as e:
+            import_errors.append({
+                "row": row_num,
+                "data": row,
+                "error": str(e)
+            })
+    
+    return {
+        "success": True,
+        "entity_type": entity_type,
+        "imported_count": imported_count,
+        "skipped_count": skipped_count,
+        "error_count": len(error_rows) + len(import_errors),
+        "parse_errors": error_rows,
+        "import_errors": import_errors
+    }
+
 # Notification routes
 @app.get("/api/notifications")
 async def get_notifications(current_user: str = Depends(get_current_user)):
