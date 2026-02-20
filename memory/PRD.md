@@ -144,15 +144,16 @@ Build a web-based operating room scheduling platform for surgical residents feat
 - PDF extraction tool non-functional (CPT codes use static JSON workaround)
 
 ## Upcoming Tasks (P1)
-- [ ] Bulk import feature for residents/attendings (CSV upload)
+- [ ] Drag-and-drop from Add-On List to Calendar
 
 ## Future/Backlog (P2)
-- [ ] Drag-and-drop from Add-On List to Calendar
 - [ ] "Admin / Reference" view in dashboard dropdown
 - [ ] Legacy component cleanup (ClinicalDashboard.jsx, PatientManagement.jsx, etc.)
+- [ ] Additional patient intake fields (insurance, notes)
+- [ ] Activity log for patient cases
 
 ## Test Credentials
 - Test User: `testuser@example.com` / `Test123!`
 
 ## Last Updated
-February 12, 2026
+February 20, 2026
