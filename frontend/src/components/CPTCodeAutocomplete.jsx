@@ -25,13 +25,15 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
 
   useEffect(() => {
     // Get diagnosis-specific CPT codes if diagnosis is provided
-    const diagnosisCodes = diagnosis ? getCPTCodesForDiagnosis(diagnosis) : null;
+    const relevantCodes = diagnosis ? getRelevantCPTCodes(diagnosis) : null;
+    const hasRelevantCodes = relevantCodes && relevantCodes.length > 0;
 
     if (!searchQuery) {
       // Priority: Diagnosis-specific > Frequently used > Favorites
-      if (diagnosisCodes && diagnosisCodes.length > 0) {
-        const relevantCodes = getCPTCodesByCodes(diagnosisCodes);
-        setFilteredCodes(relevantCodes);
+      if (hasRelevantCodes) {
+        // Use searchCPTCodes with diagnosis to get sorted results
+        const sortedCodes = searchCPTCodes('', diagnosis);
+        setFilteredCodes(sortedCodes.slice(0, 20));
       } else if (frequentlyUsed.length > 0) {
         // Show frequently used codes
         setFilteredCodes(frequentlyUsed);
@@ -39,14 +41,8 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
         setFilteredCodes(getFavoriteCPTCodes());
       }
     } else {
-      // Search within diagnosis-specific codes or all codes
-      let searchResults = searchCPTCodes(searchQuery);
-
-      // If diagnosis is provided, filter search results to only show relevant codes
-      if (diagnosisCodes && diagnosisCodes.length > 0) {
-        searchResults = searchResults.filter(cpt => diagnosisCodes.includes(cpt.code));
-      }
-
+      // Search with diagnosis-based sorting
+      const searchResults = searchCPTCodes(searchQuery, diagnosis);
       setFilteredCodes(searchResults.slice(0, 20)); // Limit to 20 results
     }
   }, [searchQuery, diagnosis, frequentlyUsed]);
