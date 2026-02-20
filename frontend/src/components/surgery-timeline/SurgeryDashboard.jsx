@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Calendar, AlertCircle, Clock, CheckCircle, Download, Filter } from 'lucide-react';
+import { Calendar, AlertCircle, Clock, CheckCircle, Filter } from 'lucide-react';
 import { toast } from 'sonner';
 import { PatientTimelineRow } from './PatientTimelineRow';
 import { DateValidator } from './DateValidator';
+import PageLayout from '../PageLayout';
 import './surgery-timeline.css';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
-export const SurgeryDashboard = ({ onBack }) => {
+export const SurgeryDashboard = ({ onNavigate, user, onLogout }) => {
   const [patients, setPatients] = useState([]);
   const [schedules, setSchedules] = useState([]);
   const [loading, setLoading] = useState(true);
