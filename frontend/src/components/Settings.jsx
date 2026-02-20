@@ -409,10 +409,10 @@ export const Settings = ({ onClose, onSessionExpired, onNavigate, initialTab = '
 
         {/* Google Integration Tab */}
         {activeTab === 'google' && (
-          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl p-8">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Email & Calendar Integration</h2>
-              <p className="text-gray-600 mt-1">Connect your Google account for Gmail and Calendar sync</p>
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <div className="mb-5">
+              <h2 className="text-lg font-semibold text-slate-900">Email & Calendar Integration</h2>
+              <p className="text-slate-500 text-sm mt-1">Connect your Google account for Gmail and Calendar sync</p>
             </div>
             <GoogleIntegration />
           </div>
@@ -420,9 +420,9 @@ export const Settings = ({ onClose, onSessionExpired, onNavigate, initialTab = '
 
         {/* Residents Tab */}
         {activeTab === 'residents' && (
-          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl p-8">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Manage Residents</h2>
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-lg font-semibold text-slate-900">Manage Residents</h2>
               <Button
                 onClick={() => {
                   setShowAddResident(true);
@@ -436,49 +436,52 @@ export const Settings = ({ onClose, onSessionExpired, onNavigate, initialTab = '
                     is_active: true
                   });
                 }}
-                className="bg-blue-500 hover:bg-blue-600 text-white rounded-full px-6 py-3 font-medium shadow-lg"
+                className="bg-teal-500 hover:bg-teal-600 text-white rounded-lg px-4 py-2 text-sm font-medium"
+                data-testid="add-resident-btn"
               >
-                <Plus className="h-5 w-5 mr-2" />
+                <Plus className="h-4 w-4 mr-2" />
                 Add Resident
               </Button>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               {residents.map((resident) => (
                 <div
                   key={resident._id}
-                  className="flex items-center justify-between p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl hover:shadow-md transition-all"
+                  className="flex items-center justify-between p-4 bg-slate-50 rounded-xl hover:shadow-sm transition-all"
                 >
                   <div>
-                    <div className="flex items-center space-x-3 mb-2">
-                      <h3 className="text-lg font-semibold text-gray-900">{resident.name}</h3>
+                    <div className="flex items-center space-x-2 mb-1">
+                      <h3 className="font-medium text-slate-900">{resident.name}</h3>
                       {resident.is_active ? (
-                        <Badge className="bg-green-100 text-green-700 text-sm px-3 py-1 rounded-full">
+                        <Badge className="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">
                           Active
                         </Badge>
                       ) : (
-                        <Badge className="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-full">
+                        <Badge className="bg-slate-100 text-slate-600 text-xs px-2 py-0.5 rounded-full">
                           Inactive
                         </Badge>
                       )}
                     </div>
-                    <p className="text-gray-600 text-base">{resident.email}</p>
-                    <p className="text-gray-600 text-base">
+                    <p className="text-slate-500 text-sm">{resident.email}</p>
+                    <p className="text-slate-400 text-sm">
                       {resident.hospital} • {resident.specialty || 'No specialty'} • {resident.year || 'No year'}
                     </p>
                   </div>
-                  <div className="flex space-x-2">
+                  <div className="flex gap-2">
                     <Button
                       variant="outline"
+                      size="sm"
                       onClick={() => startEditResident(resident)}
-                      className="rounded-full"
+                      className="rounded-lg"
                     >
                       <Pencil className="h-4 w-4" />
                     </Button>
                     <Button
                       variant="outline"
+                      size="sm"
                       onClick={() => handleDeleteResident(resident._id)}
-                      className="rounded-full text-red-600 hover:bg-red-50"
+                      className="rounded-lg text-red-600 hover:bg-red-50"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -486,9 +489,9 @@ export const Settings = ({ onClose, onSessionExpired, onNavigate, initialTab = '
                 </div>
               ))}
               {residents.length === 0 && (
-                <div className="text-center py-12 text-gray-400">
-                  <Users className="h-16 w-16 mx-auto mb-4 text-gray-300" />
-                  <p className="text-lg">No residents added yet</p>
+                <div className="text-center py-10 text-slate-400">
+                  <Users className="h-12 w-12 mx-auto mb-3 text-slate-300" />
+                  <p className="text-sm">No residents added yet</p>
                 </div>
               )}
             </div>
@@ -497,9 +500,9 @@ export const Settings = ({ onClose, onSessionExpired, onNavigate, initialTab = '
 
         {/* Attendings Tab */}
         {activeTab === 'attendings' && (
-          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl p-8">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Manage Attendings</h2>
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-lg font-semibold text-slate-900">Manage Attendings</h2>
               <Button
                 onClick={() => {
                   setShowAddAttending(true);
@@ -512,49 +515,52 @@ export const Settings = ({ onClose, onSessionExpired, onNavigate, initialTab = '
                     is_active: true
                   });
                 }}
-                className="bg-blue-500 hover:bg-blue-600 text-white rounded-full px-6 py-3 font-medium shadow-lg"
+                className="bg-teal-500 hover:bg-teal-600 text-white rounded-lg px-4 py-2 text-sm font-medium"
+                data-testid="add-attending-btn"
               >
-                <Plus className="h-5 w-5 mr-2" />
+                <Plus className="h-4 w-4 mr-2" />
                 Add Attending
               </Button>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               {attendings.map((attending) => (
                 <div
                   key={attending._id}
-                  className="flex items-center justify-between p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl hover:shadow-md transition-all"
+                  className="flex items-center justify-between p-4 bg-slate-50 rounded-xl hover:shadow-sm transition-all"
                 >
                   <div>
-                    <div className="flex items-center space-x-3 mb-2">
-                      <h3 className="text-lg font-semibold text-gray-900">{attending.name}</h3>
+                    <div className="flex items-center space-x-2 mb-1">
+                      <h3 className="font-medium text-slate-900">{attending.name}</h3>
                       {attending.is_active ? (
-                        <Badge className="bg-green-100 text-green-700 text-sm px-3 py-1 rounded-full">
+                        <Badge className="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">
                           Active
                         </Badge>
                       ) : (
-                        <Badge className="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-full">
+                        <Badge className="bg-slate-100 text-slate-600 text-xs px-2 py-0.5 rounded-full">
                           Inactive
                         </Badge>
                       )}
                     </div>
-                    <p className="text-gray-600 text-base">{attending.email || 'No email'}</p>
-                    <p className="text-gray-600 text-base">
+                    <p className="text-slate-500 text-sm">{attending.email || 'No email'}</p>
+                    <p className="text-slate-400 text-sm">
                       {attending.hospital} • {attending.specialty || 'No specialty'}
                     </p>
                   </div>
-                  <div className="flex space-x-2">
+                  <div className="flex gap-2">
                     <Button
                       variant="outline"
+                      size="sm"
                       onClick={() => startEditAttending(attending)}
-                      className="rounded-full"
+                      className="rounded-lg"
                     >
                       <Pencil className="h-4 w-4" />
                     </Button>
                     <Button
                       variant="outline"
+                      size="sm"
                       onClick={() => handleDeleteAttending(attending._id)}
-                      className="rounded-full text-red-600 hover:bg-red-50"
+                      className="rounded-lg text-red-600 hover:bg-red-50"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -562,9 +568,9 @@ export const Settings = ({ onClose, onSessionExpired, onNavigate, initialTab = '
                 </div>
               ))}
               {attendings.length === 0 && (
-                <div className="text-center py-12 text-gray-400">
-                  <Stethoscope className="h-16 w-16 mx-auto mb-4 text-gray-300" />
-                  <p className="text-lg">No attendings added yet</p>
+                <div className="text-center py-10 text-slate-400">
+                  <Stethoscope className="h-12 w-12 mx-auto mb-3 text-slate-300" />
+                  <p className="text-sm">No attendings added yet</p>
                 </div>
               )}
             </div>
