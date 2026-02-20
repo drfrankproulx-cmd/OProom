@@ -205,11 +205,11 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
             )}
 
             {/* Header for diagnosis-filtered */}
-            {!searchQuery && diagnosis && getCPTCodesForDiagnosis(diagnosis)?.length > 0 && (
-              <div className="px-3 py-1.5 bg-blue-50 border-b border-blue-200 sticky top-0">
-                <span className="text-xs font-semibold text-blue-700 flex items-center gap-1">
-                  <Filter className="h-3 w-3" />
-                  Procedures for: {diagnosis}
+            {!searchQuery && diagnosis && getRelevantCPTCodes(diagnosis)?.length > 0 && (
+              <div className="px-3 py-1.5 bg-teal-50 border-b border-teal-200 sticky top-0">
+                <span className="text-xs font-semibold text-teal-700 flex items-center gap-1">
+                  <Sparkles className="h-3 w-3" />
+                  Recommended for selected diagnosis
                 </span>
               </div>
             )}
