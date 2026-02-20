@@ -782,7 +782,8 @@ export const Settings = ({ onClose, onSessionExpired, onNavigate, initialTab = '
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </PageLayout>
   );
 };
 
