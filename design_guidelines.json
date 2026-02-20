@@ -1,0 +1,168 @@
+{
+  "design_system": {
+    "identity": {
+      "name": "SurgiFlow",
+      "aesthetic": "Clinical Glass",
+      "core_values": ["Precision", "Clarity", "Speed", "Trust"],
+      "archetype": "The Performance Pro (Medical Edition)"
+    },
+    "typography": {
+      "font_family": {
+        "headings": "Manrope, sans-serif",
+        "body": "Inter, sans-serif",
+        "mono": "JetBrains Mono, monospace"
+      },
+      "scale": {
+        "h1": "text-4xl font-bold tracking-tight",
+        "h2": "text-3xl font-semibold tracking-tight",
+        "h3": "text-2xl font-semibold",
+        "h4": "text-xl font-medium",
+        "body_lg": "text-lg leading-relaxed",
+        "body_base": "text-base leading-relaxed text-slate-600",
+        "body_sm": "text-sm text-slate-500",
+        "caption": "text-xs font-medium uppercase tracking-wider text-slate-400"
+      }
+    },
+    "colors": {
+      "palette": {
+        "primary": {
+          "DEFAULT": "#0D9488",
+          "foreground": "#FFFFFF",
+          "light": "#CCFBF1",
+          "dark": "#115E59"
+        },
+        "secondary": {
+          "DEFAULT": "#64748B",
+          "foreground": "#FFFFFF",
+          "light": "#F1F5F9"
+        },
+        "background": {
+          "DEFAULT": "#F8FAFC",
+          "paper": "#FFFFFF",
+          "subtle": "#F1F5F9"
+        },
+        "status": {
+          "success": "#10B981",
+          "warning": "#F59E0B",
+          "error": "#EF4444",
+          "info": "#3B82F6"
+        },
+        "text": {
+          "primary": "#0F172A",
+          "secondary": "#475569",
+          "muted": "#94A3B8"
+        }
+      },
+      "usage": {
+        "sidebar_bg": "#FFFFFF",
+        "sidebar_active_bg": "#F0FDFA",
+        "sidebar_active_text": "#0D9488",
+        "card_bg": "#FFFFFF",
+        "border_color": "#E2E8F0"
+      }
+    },
+    "spacing": {
+      "container_padding": "p-6 md:p-8 lg:p-10",
+      "section_gap": "gap-6 md:gap-8",
+      "card_padding": "p-6",
+      "element_gap": "gap-4"
+    },
+    "shadows": {
+      "card": "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+      "float": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+      "glass": "0 4px 30px rgba(0, 0, 0, 0.1)"
+    },
+    "border_radius": {
+      "card": "rounded-xl",
+      "button": "rounded-lg",
+      "input": "rounded-lg"
+    }
+  },
+  "components": {
+    "Button": {
+      "base": "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+      "variants": {
+        "default": "bg-teal-600 text-white hover:bg-teal-700 shadow-sm",
+        "outline": "border border-slate-200 bg-white hover:bg-slate-100 hover:text-slate-900",
+        "ghost": "hover:bg-slate-100 hover:text-slate-900",
+        "link": "text-teal-600 underline-offset-4 hover:underline"
+      }
+    },
+    "Card": {
+      "wrapper": "rounded-xl border border-slate-100 bg-white text-slate-950 shadow-sm",
+      "header": "flex flex-col space-y-1.5 p-6",
+      "content": "p-6 pt-0"
+    },
+    "Input": {
+      "base": "flex h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/20 focus-visible:border-teal-500 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200"
+    },
+    "Badge": {
+      "base": "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+      "variants": {
+        "default": "border-transparent bg-teal-600 text-white hover:bg-teal-700",
+        "secondary": "border-transparent bg-slate-100 text-slate-900 hover:bg-slate-200",
+        "outline": "text-slate-950 border-slate-200"
+      }
+    }
+  },
+  "layout_strategies": {
+    "global": {
+      "structure": "flex h-screen bg-slate-50 overflow-hidden",
+      "sidebar": "hidden md:flex w-64 flex-col fixed inset-y-0 z-50 bg-white border-r border-slate-200",
+      "main_content": "flex-1 flex flex-col md:pl-64 h-full overflow-y-auto",
+      "header": "sticky top-0 z-40 flex h-16 items-center gap-4 border-b border-slate-200 bg-white/80 backdrop-blur-md px-6 shadow-sm"
+    },
+    "dashboard": {
+      "grid": "grid grid-cols-1 md:grid-cols-12 gap-6 p-6",
+      "hero_card": "col-span-1 md:col-span-8 lg:col-span-9",
+      "side_card": "col-span-1 md:col-span-4 lg:col-span-3",
+      "full_width": "col-span-full"
+    }
+  },
+  "assets": {
+    "images": {
+      "auth_background": "https://images.unsplash.com/photo-1766310550061-7cd0900f7c76?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "doctor_avatar_1": "https://images.unsplash.com/photo-1632054224659-280be3239aff?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "doctor_avatar_2": "https://images.unsplash.com/photo-1550831106-0994fe8abcfe?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "default_avatar": "https://github.com/shadcn.png"
+    },
+    "icons": {
+      "library": "lucide-react",
+      "style": "stroke-width={1.5} size={20}"
+    }
+  },
+  "page_specific_instructions": {
+    "AppleDashboard.jsx": {
+      "layout": "Bento Grid",
+      "key_features": [
+        "Welcome Header with Date",
+        "Quick Stats Row (4 cards)",
+        "Main Chart/Timeline Area (Glass effect)",
+        "Recent Patients List (Clean table)"
+      ]
+    },
+    "Calendar.jsx": {
+      "layout": "Full Screen",
+      "style": "Apple Calendar aesthetic - clean grid, subtle borders, pastel event pills"
+    },
+    "Patients.jsx": {
+      "layout": "Data Table",
+      "features": "Filter bar with pill-shaped inputs, Status badges in table, Avatar circles for patients"
+    },
+    "AuthPage.jsx": {
+      "layout": "Split Screen",
+      "style": "Left side: High quality OR image with blur overlay. Right side: Clean form centered."
+    }
+  },
+  "universal_guidelines": [
+    "ALWAYS use the Sidebar component on every authenticated page.",
+    "Ensure consistent padding (p-6 or p-8) across all main content areas.",
+    "Use 'Manrope' for all headings and 'Inter' for body text.",
+    "Avoid pure black (#000000). Use Slate-900 (#0F172A) for darkest text.",
+    "Interactive elements must have hover states (e.g., hover:bg-slate-50).",
+    "Use 'lucide-react' icons with stroke-width=1.5 for a refined look.",
+    "All cards must have 'rounded-xl', 'border', 'border-slate-100', and 'shadow-sm'.",
+    "Data tables should not have vertical borders, only horizontal 'border-b'.",
+    "Use 'data-testid' on all interactive elements."
+  ]
+}
