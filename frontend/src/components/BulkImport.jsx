@@ -169,17 +169,19 @@ export const BulkImport = ({ onBack, onNavigate }) => {
         `${API_URL}/api/import/${entityType}?skip_duplicates=${skipDuplicates}`,
         {
           method: 'POST',
-          headers: getAuthHeaders(),
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
           body: formData,
         }
       );
       
-      const data = await response.json();
-      
       if (!response.ok) {
-        throw new Error(data.detail || 'Import failed');
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Import failed');
       }
       
+      const data = await response.json();
       setImportResult(data);
       setCurrentStep('complete');
       
