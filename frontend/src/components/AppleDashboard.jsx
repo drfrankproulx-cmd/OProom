@@ -19,7 +19,8 @@ import {
   Activity,
   Bell,
   Settings as SettingsIcon,
-  X
+  X,
+  Upload
 } from 'lucide-react';
 import Settings from './Settings';
 import Patients from './Patients';
@@ -27,6 +28,7 @@ import Tasks from './Tasks';
 import Calendar from './Calendar';
 import PatientStatusList from './patient-status/PatientStatusList';
 import SurgeryDashboard from './surgery-timeline/SurgeryDashboard';
+import BulkImport from './BulkImport';
 import CPTCodeAutocomplete from './CPTCodeAutocomplete';
 import DiagnosisAutocomplete from './DiagnosisAutocomplete';
 import { getCPTCodeByCode } from '../data/cptCodes';
