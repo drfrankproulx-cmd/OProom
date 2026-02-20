@@ -409,21 +409,21 @@ export const PatientStatusList = ({ onNavigate, user, onLogout }) => {
             />
           ))
         )}
-      </div>
 
-      {/* Requirement Modal */}
-      {selectedItem && (
-        <RequirementModal
-          item={selectedItem}
-          patient={selectedPatient}
-          onClose={() => {
-            setSelectedItem(null);
-            setSelectedPatient(null);
-          }}
-          onSave={handleModalSave}
-        />
-      )}
-    </div>
+        {/* Requirement Modal */}
+        {selectedItem && (
+          <RequirementModal
+            item={selectedItem}
+            patient={selectedPatient}
+            onClose={() => {
+              setSelectedItem(null);
+              setSelectedPatient(null);
+            }}
+            onSave={handleModalSave}
+          />
+        )}
+      </div>
+    </PageLayout>
   );
 };
 
