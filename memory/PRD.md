@@ -97,7 +97,26 @@ Build a web-based operating room scheduling platform for surgical residents feat
 - `attendings` - Attending profiles
 - `notifications` - User notifications
 
-## Recently Completed (Feb 12, 2026)
+## Recently Completed (Feb 20, 2026)
+- [x] **UI/UX Refactor - Consistent Sidebar Navigation**:
+  - Created shared `PageLayout.jsx` and `Sidebar.jsx` components
+  - All 8 pages now have consistent sidebar: Dashboard, Calendar, Patients, Tasks, Pre-Op Status, Surgery Timeline, Bulk Import, Settings
+  - Navigation items with proper icons and active state highlighting
+  - User profile section at bottom of sidebar with logout
+- [x] **Calendar Toggle (Week/Month)**:
+  - Dashboard calendar: Replaced stacked weekly+monthly views with toggleable single view
+  - Calendar page: Already had toggle, added data-testid for testing
+  - Toggle buttons with visual state indicators
+- [x] **Dashboard Layout Improvements**:
+  - Cleaner 3-column layout: Left (Weekly/Add-Ons/Urgent), Center (Calendar), Right (Create Task/Patient Details)
+  - Improved spacing and reduced visual clutter
+  - Consistent teal color scheme replacing old blue gradients
+- [x] **Settings Page Refactor**:
+  - Now uses PageLayout with sidebar
+  - Cleaner tab design with proper styling
+  - Fixed typo: `setAtttendings` → `setAttendings`
+
+## Previously Completed (Feb 12, 2026)
 - [x] **Enhanced Clickable Stat Cards UX**:
   - Click animation with ripple effect for visual feedback
   - Hover subtitles showing action hints (e.g., "Click to view add-on list →")
