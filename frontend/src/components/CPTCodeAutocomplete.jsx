@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Star, Search, Filter, Clock } from 'lucide-react';
-import { CPT_CODES, searchCPTCodes, getFavoriteCPTCodes, getCPTCodesByCodes } from '../data/cptCodes';
-import { getCPTCodesForDiagnosis } from '../data/diagnoses';
+import { Star, Search, Filter, Clock, Sparkles } from 'lucide-react';
+import { CPT_CODES, searchCPTCodes, getFavoriteCPTCodes, getRelevantCPTCodes } from '../data/cptCodes';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
