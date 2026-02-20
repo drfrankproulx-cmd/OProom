@@ -263,15 +263,15 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
 
         {/* Diagnosis, Frequently Used, or Favorites hint */}
         {isOpen && !searchQuery && (() => {
-          const diagnosisCodes = diagnosis ? getCPTCodesForDiagnosis(diagnosis) : null;
-          const isDiagnosisFiltered = diagnosisCodes && diagnosisCodes.length > 0;
+          const relevantCodes = diagnosis ? getRelevantCPTCodes(diagnosis) : null;
+          const isDiagnosisFiltered = relevantCodes && relevantCodes.length > 0;
           const isFrequentlyUsedShown = !isDiagnosisFiltered && frequentlyUsed.length > 0;
 
           let bgColor = 'bg-white';
           let borderColor = 'border-gray-300';
           if (isDiagnosisFiltered) {
-            bgColor = 'bg-blue-50';
-            borderColor = 'border-blue-200';
+            bgColor = 'bg-teal-50';
+            borderColor = 'border-teal-200';
           } else if (isFrequentlyUsedShown) {
             bgColor = 'bg-purple-50';
             borderColor = 'border-purple-200';
@@ -282,9 +282,9 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
               <div className="flex items-center space-x-2 text-xs text-gray-500">
                 {isDiagnosisFiltered ? (
                   <>
-                    <Filter className="h-3 w-3 text-blue-600" />
-                    <span className="text-blue-700 font-medium">
-                      Showing {filteredCodes.length} procedure(s) relevant to diagnosis - start typing to search
+                    <Sparkles className="h-3 w-3 text-teal-600" />
+                    <span className="text-teal-700 font-medium">
+                      Smart sorted by diagnosis - most relevant procedures first
                     </span>
                   </>
                 ) : isFrequentlyUsedShown ? (
