@@ -22,7 +22,6 @@ import {
 import {
   ChevronLeft,
   ChevronRight,
-  ArrowLeft,
   Calendar as CalendarIcon,
   Clock,
   User,
@@ -30,6 +29,7 @@ import {
   Filter,
   X
 } from 'lucide-react';
+import PageLayout from './PageLayout';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
