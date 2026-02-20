@@ -14,11 +14,11 @@ import {
   Pencil,
   Trash2,
   X,
-  ArrowLeft,
   Mail,
   Calendar,
   Upload
 } from 'lucide-react';
+import PageLayout from './PageLayout';
 import GoogleIntegration from './GoogleIntegration';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
