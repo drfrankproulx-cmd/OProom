@@ -576,7 +576,6 @@ export const Settings = ({ onClose, onSessionExpired, onNavigate, initialTab = '
             </div>
           </div>
         )}
-      </main>
 
       {/* Add/Edit Resident Modal */}
       <Dialog open={showAddResident || !!editingResident} onOpenChange={(open) => {
