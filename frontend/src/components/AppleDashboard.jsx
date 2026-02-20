@@ -500,7 +500,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
                   </div>
                 )}
               </div>
-              <Button variant="ghost" onClick={() => setShowSettings(true)} className="hover:bg-gray-100 rounded-xl">
+              <Button variant="ghost" onClick={() => setShowSettings(true)} className="hover:bg-gray-100 rounded-xl" data-testid="settings-btn">
                 <SettingsIcon className="h-5 w-5" />
               </Button>
               <div className="text-right mr-4">
