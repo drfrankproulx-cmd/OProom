@@ -495,26 +495,26 @@ export const Patients = ({ onNavigate, initialFilter, user, onLogout }) => {
         </div>
 
         {/* Summary Stats */}
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-white/80 backdrop-blur-xl rounded-xl shadow-lg p-4 border-l-4 border-blue-500">
-            <div className="text-sm text-gray-600 mb-1">Total Patients</div>
-            <div className="text-2xl font-bold text-gray-900">{patients.length}</div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 border-l-4 border-l-blue-500">
+            <div className="text-sm text-slate-500 mb-1">Total Patients</div>
+            <div className="text-2xl font-bold text-slate-900">{patients.length}</div>
           </div>
-          <div className="bg-white/80 backdrop-blur-xl rounded-xl shadow-lg p-4 border-l-4 border-green-500">
-            <div className="text-sm text-gray-600 mb-1">Confirmed</div>
-            <div className="text-2xl font-bold text-gray-900">
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 border-l-4 border-l-green-500">
+            <div className="text-sm text-slate-500 mb-1">Confirmed</div>
+            <div className="text-2xl font-bold text-slate-900">
               {patients.filter(p => p.status === 'confirmed').length}
             </div>
           </div>
-          <div className="bg-white/80 backdrop-blur-xl rounded-xl shadow-lg p-4 border-l-4 border-orange-500">
-            <div className="text-sm text-gray-600 mb-1">Pending</div>
-            <div className="text-2xl font-bold text-gray-900">
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 border-l-4 border-l-orange-500">
+            <div className="text-sm text-slate-500 mb-1">Pending</div>
+            <div className="text-2xl font-bold text-slate-900">
               {patients.filter(p => p.status === 'pending').length}
             </div>
           </div>
-          <div className="bg-white/80 backdrop-blur-xl rounded-xl shadow-lg p-4 border-l-4 border-purple-500">
-            <div className="text-sm text-gray-600 mb-1">Prep Complete</div>
-            <div className="text-2xl font-bold text-gray-900">
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 border-l-4 border-l-purple-500">
+            <div className="text-sm text-slate-500 mb-1">Prep Complete</div>
+            <div className="text-2xl font-bold text-slate-900">
               {patients.filter(p => {
                 const prep = getPrepProgress(p.prep_checklist);
                 return prep.percentage === 100;
@@ -523,7 +523,7 @@ export const Patients = ({ onNavigate, initialFilter, user, onLogout }) => {
           </div>
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 };
 
