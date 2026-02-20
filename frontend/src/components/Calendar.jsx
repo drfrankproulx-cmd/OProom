@@ -40,7 +40,7 @@ const getInitials = (name) => {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 };
 
-const Calendar = ({ onBack, initialFilter }) => {
+const Calendar = ({ onNavigate, initialFilter, user, onLogout }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   // Set view mode based on filter - 'today' shows week view focused on today
   const [viewMode, setViewMode] = useState(initialFilter?.type === 'today' ? 'week' : 'week');
