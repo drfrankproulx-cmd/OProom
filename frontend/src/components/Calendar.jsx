@@ -145,69 +145,64 @@ const Calendar = ({ onNavigate, initialFilter, user, onLogout }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-600 text-lg">Loading calendar...</p>
+      <PageLayout
+        currentView="calendar"
+        onNavigate={onNavigate}
+        user={user}
+        onLogout={onLogout}
+        title="OR Calendar"
+      >
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500 mx-auto mb-4"></div>
+            <p className="text-slate-500">Loading calendar...</p>
+          </div>
         </div>
-      </div>
+      </PageLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-gray-50 p-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center space-x-4">
-            <Button
-              variant="ghost"
-              onClick={onBack}
-              className="hover:bg-gray-100 rounded-xl"
+    <PageLayout
+      currentView="calendar"
+      onNavigate={onNavigate}
+      user={user}
+      onLogout={onLogout}
+      title="OR Calendar"
+      subtitle={viewMode === 'week' 
+        ? `${format(weekStart, 'MMM d')} - ${format(addDays(weekStart, 6), 'MMM d, yyyy')}`
+        : format(currentDate, 'MMMM yyyy')
+      }
+      headerActions={
+        <div className="flex items-center gap-3">
+          {/* Filter by Attending */}
+          <Select value={filterAttending} onValueChange={setFilterAttending}>
+            <SelectTrigger className="w-48 rounded-lg border-slate-200">
+              <Filter className="h-4 w-4 mr-2" />
+              <SelectValue placeholder="Filter by Attending" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Attendings</SelectItem>
+              {uniqueAttendings.map(attending => (
+                <SelectItem key={attending} value={attending}>{attending}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {/* View Mode Toggle */}
+          <div className="flex bg-slate-100 rounded-lg p-1">
+            <button
+              onClick={() => setViewMode('week')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                viewMode === 'week' ? 'bg-white shadow text-slate-900' : 'text-slate-600 hover:text-slate-900'
+              }`}
             >
-              <ArrowLeft className="h-5 w-5 mr-2" />
-              Back to Dashboard
-            </Button>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">OR Calendar</h1>
-              <p className="text-gray-600">
-                {viewMode === 'week' 
-                  ? `${format(weekStart, 'MMM d')} - ${format(addDays(weekStart, 6), 'MMM d, yyyy')}`
-                  : format(currentDate, 'MMMM yyyy')
-                }
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center space-x-4">
-            {/* Filter by Attending */}
-            <Select value={filterAttending} onValueChange={setFilterAttending}>
-              <SelectTrigger className="w-48 rounded-xl">
-                <Filter className="h-4 w-4 mr-2" />
-                <SelectValue placeholder="Filter by Attending" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Attendings</SelectItem>
-                {uniqueAttendings.map(attending => (
-                  <SelectItem key={attending} value={attending}>{attending}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            {/* View Mode Toggle */}
-            <div className="flex bg-gray-100 rounded-xl p-1">
-              <button
-                onClick={() => setViewMode('week')}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  viewMode === 'week' ? 'bg-white shadow text-gray-900' : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                Week
-              </button>
-              <button
-                onClick={() => setViewMode('month')}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  viewMode === 'month' ? 'bg-white shadow text-gray-900' : 'text-gray-600 hover:text-gray-900'
+              Week
+            </button>
+            <button
+              onClick={() => setViewMode('month')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                viewMode === 'month' ? 'bg-white shadow text-slate-900' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 Month
