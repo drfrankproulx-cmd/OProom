@@ -6,9 +6,7 @@ import { Checkbox } from './ui/checkbox';
 import { toast } from 'sonner';
 import { format, parseISO, isPast, isToday, differenceInDays } from 'date-fns';
 import {
-  ArrowLeft,
   Search,
-  Download,
   Filter,
   X,
   ChevronUp,
@@ -23,10 +21,11 @@ import {
   Edit2,
   Trash2
 } from 'lucide-react';
+import PageLayout from './PageLayout';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
-export const Tasks = ({ onBack, initialFilter }) => {
+export const Tasks = ({ onNavigate, initialFilter, user, onLogout }) => {
   const [tasks, setTasks] = useState([]);
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(true);
