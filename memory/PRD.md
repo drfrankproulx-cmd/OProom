@@ -70,13 +70,16 @@ Build a web-based operating room scheduling platform for surgical residents feat
 - [x] User successfully connected Gmail, Calendar, and VSP Sessions (Feb 2026)
 
 ## Key Pages & Components
-- `AppleDashboard.jsx` - Main dashboard/command center
-- `Settings.jsx` - Residents, Attendings, Google Integration tabs
-- `Patients.jsx` - Excel-like patient list with search/filter
-- `Tasks.jsx` - Task management page
-- `Calendar.jsx` - Full-screen calendar view
-- `PatientStatusList.jsx` - Pre-Op Status tracking
-- `SurgeryDashboard.jsx` - Surgery Timeline view
+- `AppleDashboard.jsx` - Main dashboard/command center with PageLayout
+- `PageLayout.jsx` - Shared layout wrapper with Sidebar (NEW)
+- `Sidebar.jsx` - Navigation sidebar component (NEW)
+- `Settings.jsx` - Residents, Attendings, Google Integration tabs (uses PageLayout)
+- `Patients.jsx` - Excel-like patient list with search/filter (uses PageLayout)
+- `Tasks.jsx` - Task management page (uses PageLayout)
+- `Calendar.jsx` - Full-screen calendar view with Week/Month toggle (uses PageLayout)
+- `PatientStatusList.jsx` - Pre-Op Status tracking (uses PageLayout)
+- `SurgeryDashboard.jsx` - Surgery Timeline view (uses PageLayout)
+- `BulkImport.jsx` - CSV import wizard (uses PageLayout)
 
 ## API Endpoints
 - `/api/auth/*` - Authentication (login, register, me)
