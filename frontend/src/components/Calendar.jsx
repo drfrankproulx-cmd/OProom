@@ -203,51 +203,52 @@ const Calendar = ({ onNavigate, initialFilter, user, onLogout }) => {
               onClick={() => setViewMode('month')}
               className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                 viewMode === 'month' ? 'bg-white shadow text-slate-900' : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                Month
-              </button>
-            </div>
+              }`}
+            >
+              Month
+            </button>
+          </div>
 
-            {/* Navigation */}
-            <div className="flex items-center space-x-2">
-              <Button
-                variant="outline"
-                onClick={navigatePrev}
-                className="rounded-full w-10 h-10 p-0"
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => setCurrentDate(new Date())}
-                className="rounded-xl px-4"
-              >
-                Today
-              </Button>
-              <Button
-                variant="outline"
-                onClick={navigateNext}
-                className="rounded-full w-10 h-10 p-0"
-              >
-                <ChevronRight className="h-5 w-5" />
-              </Button>
-            </div>
+          {/* Navigation */}
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              onClick={navigatePrev}
+              className="rounded-lg w-10 h-10 p-0"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setCurrentDate(new Date())}
+              className="rounded-lg px-4"
+            >
+              Today
+            </Button>
+            <Button
+              variant="outline"
+              onClick={navigateNext}
+              className="rounded-lg w-10 h-10 p-0"
+            >
+              <ChevronRight className="h-5 w-5" />
+            </Button>
           </div>
         </div>
-
+      }
+    >
+      <div className="p-6">
         {/* Filter Banner */}
         {showFilterBanner && initialFilter && (
-          <div className={`${initialFilter.type === 'today' ? 'bg-blue-50 border-blue-200' : 'bg-purple-50 border-purple-200'} border rounded-xl p-3 mb-4 flex items-center justify-between`}>
+          <div className={`${initialFilter.type === 'today' ? 'bg-teal-50 border-teal-200' : 'bg-purple-50 border-purple-200'} border rounded-xl p-3 mb-4 flex items-center justify-between`}>
             <div className="flex items-center space-x-2">
-              <div className={`w-2 h-2 ${initialFilter.type === 'today' ? 'bg-blue-500' : 'bg-purple-500'} rounded-full animate-pulse`}></div>
-              <span className={`${initialFilter.type === 'today' ? 'text-blue-800' : 'text-purple-800'} font-medium`}>
+              <div className={`w-2 h-2 ${initialFilter.type === 'today' ? 'bg-teal-500' : 'bg-purple-500'} rounded-full animate-pulse`}></div>
+              <span className={`${initialFilter.type === 'today' ? 'text-teal-800' : 'text-purple-800'} font-medium`}>
                 {initialFilter.type === 'today' ? "Viewing today's schedule" : "Viewing this week's cases"}
               </span>
             </div>
             <button 
               onClick={() => setShowFilterBanner(false)}
-              className={`${initialFilter.type === 'today' ? 'text-blue-600 hover:text-blue-800' : 'text-purple-600 hover:text-purple-800'} text-sm font-medium flex items-center`}
+              className={`${initialFilter.type === 'today' ? 'text-teal-600 hover:text-teal-800' : 'text-purple-600 hover:text-purple-800'} text-sm font-medium flex items-center`}
             >
               Dismiss <X className="h-4 w-4 ml-1" />
             </button>
