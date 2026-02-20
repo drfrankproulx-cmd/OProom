@@ -214,14 +214,20 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
               </div>
             )}
 
-            {filteredCodes.map((cpt, index) => (
+            {filteredCodes.map((cpt, index) => {
+              const relevantCodes = diagnosis ? getRelevantCPTCodes(diagnosis) : null;
+              const isRelevant = relevantCodes && relevantCodes.includes(cpt.code);
+              
+              return (
               <button
                 key={cpt.code}
                 type="button"
                 onClick={() => handleSelectCPT(cpt)}
                 className={`w-full text-left px-4 py-3 hover:bg-blue-50 border-b border-gray-100 last:border-b-0 transition-colors ${
                   index === 0 ? 'rounded-t-lg' : ''
-                } ${index === filteredCodes.length - 1 ? 'rounded-b-lg' : ''}`}
+                } ${index === filteredCodes.length - 1 ? 'rounded-b-lg' : ''} ${
+                  isRelevant ? 'bg-teal-50/50' : ''
+                }`}
                 data-testid={`cpt-option-${cpt.code}`}
               >
                 <div className="flex items-start justify-between">
@@ -230,10 +236,13 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
                       <span className="font-mono font-semibold text-blue-600 text-lg">
                         {cpt.code}
                       </span>
+                      {isRelevant && (
+                        <Sparkles className="h-4 w-4 text-teal-500" />
+                      )}
                       {cpt.isFrequentlyUsed && (
                         <Clock className="h-4 w-4 text-purple-500" />
                       )}
-                      {cpt.isFavorite && (
+                      {cpt.isFavorite && !isRelevant && (
                         <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
                       )}
                     </div>
@@ -248,7 +257,8 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
                   </div>
                 </div>
               </button>
-            ))}
+              );
+            })}
           </div>
         )}
 
