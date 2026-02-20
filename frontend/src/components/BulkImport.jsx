@@ -1,10 +1,8 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { Button } from './ui/button';
-import { Badge } from './ui/badge';
 import { Checkbox } from './ui/checkbox';
 import { toast } from 'sonner';
 import {
-  ArrowLeft,
   Upload,
   FileSpreadsheet,
   Download,
@@ -18,6 +16,7 @@ import {
   ChevronRight,
   RefreshCw
 } from 'lucide-react';
+import PageLayout from './PageLayout';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
@@ -28,7 +27,7 @@ const STEPS = [
   { id: 'complete', label: 'Complete' }
 ];
 
-export const BulkImport = ({ onBack, onNavigate }) => {
+export const BulkImport = ({ onNavigate, user, onLogout }) => {
   const [currentStep, setCurrentStep] = useState('upload');
   const [entityType, setEntityType] = useState('residents');
   const [isDragging, setIsDragging] = useState(false);
