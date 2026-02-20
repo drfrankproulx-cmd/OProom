@@ -101,6 +101,12 @@ Build a web-based operating room scheduling platform for surgical residents feat
 - `notifications` - User notifications
 
 ## Recently Completed (Feb 20, 2026)
+- [x] **ICD-10 Diagnosis Codes Integration**:
+  - Added 80+ ICD-10 diagnosis codes to the diagnosis autocomplete
+  - Categories: Trauma, H&N Oncology, TMJ, Orthognathic, Cleft & Craniofacial, Cosmetics
+  - ICD codes displayed in dropdown with monospace badge (e.g., `S02.65xB`)
+  - Search by diagnosis name, category, or ICD code
+  - Selected diagnosis shows ICD code in parentheses
 - [x] **UI/UX Refactor - Consistent Sidebar Navigation**:
   - Created shared `PageLayout.jsx` and `Sidebar.jsx` components
   - All 8 pages now have consistent sidebar: Dashboard, Calendar, Patients, Tasks, Pre-Op Status, Surgery Timeline, Bulk Import, Settings
