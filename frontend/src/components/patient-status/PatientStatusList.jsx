@@ -244,7 +244,7 @@ export const PatientStatusList = ({ onNavigate, user, onLogout }) => {
           borderRadius: '0.75rem',
           padding: '1rem',
           marginBottom: '1.5rem',
-          border: '1px solid #e2e8f0'
+          border: '1px solid #e2e8f0',
           boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
         }}>
           <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
