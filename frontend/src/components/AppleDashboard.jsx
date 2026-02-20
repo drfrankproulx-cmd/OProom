@@ -402,7 +402,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
   }
 
   if (showSettings) {
-    return <Settings onClose={() => setShowSettings(false)} onNavigate={setCurrentView} />;
+    return <Settings onClose={() => setShowSettings(false)} onNavigate={setCurrentView} initialTab={settingsInitialTab} />;
   }
 
   if (currentView === 'calendar') {
@@ -426,7 +426,22 @@ export const AppleDashboard = ({ user, onLogout }) => {
   }
 
   if (currentView === 'bulk-import') {
-    return <BulkImport onBack={() => setCurrentView('dashboard')} onNavigate={setCurrentView} />;
+    return <BulkImport onBack={() => setCurrentView('dashboard')} onNavigate={(view) => {
+      if (view === 'residents' || view === 'attendings') {
+        setSettingsInitialTab(view);
+        setShowSettings(true);
+        setCurrentView('dashboard');
+      } else {
+        setCurrentView(view);
+      }
+    }} />;
+  }
+
+  if (currentView === 'residents' || currentView === 'attendings') {
+    setSettingsInitialTab(currentView);
+    setShowSettings(true);
+    setCurrentView('dashboard');
+    return null;
   }
 
   return (
