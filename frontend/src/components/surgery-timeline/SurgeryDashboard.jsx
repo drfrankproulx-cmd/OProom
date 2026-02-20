@@ -291,7 +291,7 @@ export const SurgeryDashboard = ({ onNavigate, user, onLogout }) => {
           )}
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 };
 
