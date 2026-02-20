@@ -26,7 +26,7 @@ const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 export const Settings = ({ onClose, onSessionExpired, onNavigate, initialTab = 'residents', user, onLogout }) => {
   const [activeTab, setActiveTab] = useState(initialTab);
   const [residents, setResidents] = useState([]);
-  const [attendings, setAtttendings] = useState([]);
+  const [attendings, setAttendings] = useState([]);
   const [showAddResident, setShowAddResident] = useState(false);
   const [showAddAttending, setShowAddAttending] = useState(false);
   const [editingResident, setEditingResident] = useState(null);
