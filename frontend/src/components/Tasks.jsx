@@ -620,7 +620,7 @@ export const Tasks = ({ onNavigate, initialFilter, user, onLogout }) => {
           </div>
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 };
 
