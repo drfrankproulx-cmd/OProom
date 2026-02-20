@@ -5,7 +5,6 @@ import { Badge } from './ui/badge';
 import { toast } from 'sonner';
 import { format, parseISO } from 'date-fns';
 import {
-  ArrowLeft,
   Search,
   Download,
   Filter,
@@ -13,15 +12,15 @@ import {
   ChevronUp,
   ChevronDown,
   FileSpreadsheet,
-  Calendar as CalendarIcon,
   User,
   FileText,
   Trash2
 } from 'lucide-react';
+import PageLayout from './PageLayout';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
-export const Patients = ({ onBack, initialFilter }) => {
+export const Patients = ({ onNavigate, initialFilter, user, onLogout }) => {
   const [patients, setPatients] = useState([]);
   const [schedules, setSchedules] = useState([]);
   const [loading, setLoading] = useState(true);
