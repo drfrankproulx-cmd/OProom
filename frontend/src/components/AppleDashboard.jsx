@@ -11,16 +11,13 @@ import {
   ChevronLeft,
   ChevronRight,
   Calendar as CalendarIcon,
-  LogOut,
   Plus,
   Clock,
   CheckCircle2,
   Users,
   Activity,
   Bell,
-  Settings as SettingsIcon,
-  X,
-  Upload
+  X
 } from 'lucide-react';
 import PageLayout from './PageLayout';
 import Settings from './Settings';
@@ -88,6 +85,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
   const [viewFilter, setViewFilter] = useState(null); // For drill-down filtering
   const [currentDate, setCurrentDate] = useState(new Date());
   const [monthViewDate, setMonthViewDate] = useState(new Date());
+  const [calendarViewMode, setCalendarViewMode] = useState('week'); // 'week' or 'month' toggle
   const [patients, setPatients] = useState([]);
   const [schedules, setSchedules] = useState([]);
   const [tasks, setTasks] = useState([]);
