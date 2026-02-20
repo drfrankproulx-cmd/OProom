@@ -340,60 +340,58 @@ export const Settings = ({ onClose, onSessionExpired, onNavigate, initialTab = '
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-gray-50">
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-8 py-5">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Button
-                variant="ghost"
-                onClick={onClose}
-                className="rounded-full hover:bg-gray-100"
-              >
-                <ArrowLeft className="h-5 w-5 mr-2" />
-                Back to Dashboard
-              </Button>
-              <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto px-8 py-8">
+    <PageLayout
+      currentView="settings"
+      onNavigate={(view) => {
+        if (view === 'dashboard') {
+          onClose();
+        } else {
+          onClose();
+          if (onNavigate) onNavigate(view);
+        }
+      }}
+      user={user}
+      onLogout={onLogout}
+      title="Settings"
+      subtitle="Manage residents, attendings, and integrations"
+    >
+      <div className="p-6">
         {/* Tabs */}
-        <div className="flex space-x-4 mb-8">
+        <div className="flex flex-wrap gap-3 mb-6">
           <button
             onClick={() => setActiveTab('residents')}
-            className={`flex items-center space-x-2 px-6 py-3 rounded-full font-medium transition-all ${
+            className={`flex items-center space-x-2 px-5 py-2.5 rounded-xl font-medium transition-all text-sm ${
               activeTab === 'residents'
-                ? 'bg-blue-500 text-white shadow-lg'
-                : 'bg-white text-gray-700 hover:bg-gray-100'
+                ? 'bg-teal-500 text-white shadow-md'
+                : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
             }`}
+            data-testid="tab-residents"
           >
-            <Users className="h-5 w-5" />
+            <Users className="h-4 w-4" />
             <span>Residents</span>
           </button>
           <button
             onClick={() => setActiveTab('attendings')}
-            className={`flex items-center space-x-2 px-6 py-3 rounded-full font-medium transition-all ${
+            className={`flex items-center space-x-2 px-5 py-2.5 rounded-xl font-medium transition-all text-sm ${
               activeTab === 'attendings'
-                ? 'bg-blue-500 text-white shadow-lg'
-                : 'bg-white text-gray-700 hover:bg-gray-100'
+                ? 'bg-teal-500 text-white shadow-md'
+                : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
             }`}
+            data-testid="tab-attendings"
           >
-            <Stethoscope className="h-5 w-5" />
+            <Stethoscope className="h-4 w-4" />
             <span>Attendings</span>
           </button>
           <button
             onClick={() => setActiveTab('google')}
-            className={`flex items-center space-x-2 px-6 py-3 rounded-full font-medium transition-all ${
+            className={`flex items-center space-x-2 px-5 py-2.5 rounded-xl font-medium transition-all text-sm ${
               activeTab === 'google'
-                ? 'bg-blue-500 text-white shadow-lg'
-                : 'bg-white text-gray-700 hover:bg-gray-100'
+                ? 'bg-teal-500 text-white shadow-md'
+                : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
             }`}
+            data-testid="tab-google"
           >
-            <Mail className="h-5 w-5" />
+            <Mail className="h-4 w-4" />
             <span>Email & Calendar</span>
           </button>
           <button
@@ -401,10 +399,10 @@ export const Settings = ({ onClose, onSessionExpired, onNavigate, initialTab = '
               onClose();
               if (onNavigate) onNavigate('bulk-import');
             }}
-            className="flex items-center space-x-2 px-6 py-3 rounded-full font-medium transition-all bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 shadow-lg"
+            className="flex items-center space-x-2 px-5 py-2.5 rounded-xl font-medium transition-all text-sm bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 shadow-md"
             data-testid="bulk-import-nav-btn"
           >
-            <Upload className="h-5 w-5" />
+            <Upload className="h-4 w-4" />
             <span>Bulk Import</span>
           </button>
         </div>
