@@ -110,6 +110,16 @@ export const AppleDashboard = ({ user, onLogout }) => {
     }
   };
 
+  // Central navigation handler
+  const handleNavigation = (view) => {
+    setViewFilter(null);
+    if (view === 'settings') {
+      setShowSettings(true);
+    } else {
+      setCurrentView(view);
+    }
+  };
+
   const [intakeForm, setIntakeForm] = useState({
     patient_name: '',
     dob: '',
