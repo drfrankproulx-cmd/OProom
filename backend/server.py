@@ -1292,8 +1292,8 @@ def parse_csv_file(file_content: bytes, entity_type: str):
         normalized_row = {}
         for norm_key, orig_key in normalized_headers.items():
             if norm_key in fields["all"]:
-                value = row.get(orig_key, "").strip()
-                normalized_row[norm_key] = value
+                value = row.get(orig_key, "") or ""
+                normalized_row[norm_key] = value.strip()
         
         # Skip completely empty rows
         if all(not v for v in normalized_row.values()):
