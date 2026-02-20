@@ -101,6 +101,12 @@ Build a web-based operating room scheduling platform for surgical residents feat
 - `notifications` - User notifications
 
 ## Recently Completed (Feb 20, 2026)
+- [x] **Smart CPT Code Sorting by Diagnosis**:
+  - When a diagnosis with ICD code is selected, CPT codes automatically re-sort by relevance
+  - Added 200+ CPT codes organized by category: Biopsy, Ablation, Reconstruction, Revision, Odontogenic Infections, Mandible Fractures, Midface Fractures, Bone Graft, Laceration, Orthognathic, Genioplasty, TMJ, Cosmetic, Nasal Fractures, Cleft
+  - ICD-to-CPT mapping ensures relevant procedures appear first
+  - Sparkle icon (✨) indicates recommended procedures for selected diagnosis
+  - Categories: Biopsy, Ablation, Reconstruction, Diagnostic, Revision, Odontogenic Infections, Mandible/Midface Fractures, Bone Graft, Laceration, Orthognathic, Genioplasty, TMJ, Cosmetic, Nasal Fractures, Cleft
 - [x] **ICD-10 Diagnosis Codes Integration**:
   - Added 80+ ICD-10 diagnosis codes to the diagnosis autocomplete
   - Categories: Trauma, H&N Oncology, TMJ, Orthognathic, Cleft & Craniofacial, Cosmetics
