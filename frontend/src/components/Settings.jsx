@@ -396,6 +396,17 @@ export const Settings = ({ onClose, onSessionExpired, onNavigate }) => {
             <Mail className="h-5 w-5" />
             <span>Email & Calendar</span>
           </button>
+          <button
+            onClick={() => {
+              onClose();
+              if (onNavigate) onNavigate('bulk-import');
+            }}
+            className="flex items-center space-x-2 px-6 py-3 rounded-full font-medium transition-all bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 shadow-lg"
+            data-testid="bulk-import-nav-btn"
+          >
+            <Upload className="h-5 w-5" />
+            <span>Bulk Import</span>
+          </button>
         </div>
 
         {/* Google Integration Tab */}
