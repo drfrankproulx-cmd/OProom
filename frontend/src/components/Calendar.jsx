@@ -190,12 +190,13 @@ const Calendar = ({ onNavigate, initialFilter, user, onLogout }) => {
           </Select>
 
           {/* View Mode Toggle */}
-          <div className="flex bg-slate-100 rounded-lg p-1">
+          <div className="flex bg-slate-100 rounded-lg p-1" data-testid="calendar-view-toggle">
             <button
               onClick={() => setViewMode('week')}
               className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                 viewMode === 'week' ? 'bg-white shadow text-slate-900' : 'text-slate-600 hover:text-slate-900'
               }`}
+              data-testid="calendar-toggle-week"
             >
               Week
             </button>
@@ -204,6 +205,7 @@ const Calendar = ({ onNavigate, initialFilter, user, onLogout }) => {
               className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                 viewMode === 'month' ? 'bg-white shadow text-slate-900' : 'text-slate-600 hover:text-slate-900'
               }`}
+              data-testid="calendar-toggle-month"
             >
               Month
             </button>
