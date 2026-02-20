@@ -93,16 +93,18 @@ export const BulkImport = ({ onBack, onNavigate }) => {
       
       const response = await fetch(`${API_URL}/api/import/preview/${entityType}`, {
         method: 'POST',
-        headers: getAuthHeaders(),
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
         body: formData,
       });
       
-      const data = await response.json();
-      
       if (!response.ok) {
-        throw new Error(data.detail || 'Failed to preview file');
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Failed to preview file');
       }
       
+      const data = await response.json();
       setPreviewData(data);
       setCurrentStep('preview');
     } catch (err) {
