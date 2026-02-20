@@ -174,6 +174,11 @@ export const DiagnosisAutocomplete = ({ value, onChange, label = "Diagnosis", re
                       <span className="font-medium text-gray-900 text-sm">
                         {diagnosis.name}
                       </span>
+                      {diagnosis.icdCode && (
+                        <span className="text-xs font-mono bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded">
+                          {diagnosis.icdCode}
+                        </span>
+                      )}
                     </div>
                     {diagnosis.category && (
                       <span
