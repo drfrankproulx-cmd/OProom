@@ -91,7 +91,10 @@ export const DiagnosisAutocomplete = ({ value, onChange, label = "Diagnosis", re
   };
 
   const handleSelectDiagnosis = (diagnosis) => {
-    const diagnosisName = diagnosis.name || diagnosis;
+    // If diagnosis has an ICD code, include it in the display
+    const diagnosisName = diagnosis.icdCode 
+      ? `${diagnosis.name} (${diagnosis.icdCode})`
+      : (diagnosis.name || diagnosis);
     setSearchQuery(diagnosisName);
     onChange(diagnosisName);
     setIsOpen(false);
