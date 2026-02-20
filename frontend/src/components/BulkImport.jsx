@@ -622,37 +622,30 @@ export const BulkImport = ({ onNavigate, user, onLogout }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-8">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center space-x-4">
-            <Button
-              onClick={onBack}
-              variant="ghost"
-              className="hover:bg-white/50"
-              data-testid="back-btn"
-            >
-              <ArrowLeft className="h-5 w-5 mr-2" />
-              Back to Dashboard
-            </Button>
+    <PageLayout
+      currentView="bulk-import"
+      onNavigate={onNavigate}
+      user={user}
+      onLogout={onLogout}
+      title="Bulk Import"
+      subtitle={entityType === 'residents' ? 'Import Residents' : 'Import Attendings'}
+    >
+      <div className="p-6">
+        <div className="max-w-4xl mx-auto">
+          {/* Main card */}
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
+            {/* Step indicator */}
+            <StepIndicator />
+
+            {/* Step content */}
+            {currentStep === 'upload' && <UploadStep />}
+            {currentStep === 'preview' && <PreviewStep />}
+            {currentStep === 'importing' && <ImportingStep />}
+            {currentStep === 'complete' && <CompleteStep />}
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Bulk Import</h1>
-        </div>
-
-        {/* Main card */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl p-8">
-          {/* Step indicator */}
-          <StepIndicator />
-
-          {/* Step content */}
-          {currentStep === 'upload' && <UploadStep />}
-          {currentStep === 'preview' && <PreviewStep />}
-          {currentStep === 'importing' && <ImportingStep />}
-          {currentStep === 'complete' && <CompleteStep />}
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 };
 
