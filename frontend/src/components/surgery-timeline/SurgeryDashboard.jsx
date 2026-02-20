@@ -143,69 +143,35 @@ export const SurgeryDashboard = ({ onNavigate, user, onLogout }) => {
 
   if (loading) {
     return (
-      <div className="surgery-timeline-container">
-        <div className="loading-overlay">
-          <div style={{ textAlign: 'center' }}>
-            <div className="loading-spinner" />
-            <p style={{ marginTop: '1rem', color: '#6b7280', fontSize: '1rem' }}>
-              Loading surgery timeline...
-            </p>
+      <PageLayout
+        currentView="surgery-timeline"
+        onNavigate={onNavigate}
+        user={user}
+        onLogout={onLogout}
+        title="Surgery Timeline"
+      >
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500 mx-auto mb-4"></div>
+            <p className="text-slate-500">Loading surgery timeline...</p>
           </div>
         </div>
-      </div>
+      </PageLayout>
     );
   }
 
   return (
-    <div className="surgery-timeline-container">
-      {/* Header */}
-      <div className="timeline-header">
-        <div style={{ maxWidth: '1600px', margin: '0 auto', padding: '1.5rem 2rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <button
-                onClick={onBack}
-                className="action-button"
-              >
-                <ArrowLeft size={20} />
-                Back to Dashboard
-              </button>
-              <div style={{ height: '32px', width: '1px', background: '#d1d5db' }} />
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <div style={{
-                  width: '40px',
-                  height: '40px',
-                  background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
-                  borderRadius: '0.75rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
-                }}>
-                  <Calendar size={24} style={{ color: 'white' }} />
-                </div>
-                <div>
-                  <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#111827', margin: 0 }}>
-                    Surgery Timeline Tracker
-                  </h1>
-                  <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>
-                    {filteredPatients.length} scheduled surgeries
-                  </p>
-                </div>
-              </div>
-            </div>
-            <button onClick={handleExport} className="action-button primary">
-              <Download size={16} />
-              Export to Excel
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="surgery-dashboard">
+    <PageLayout
+      currentView="surgery-timeline"
+      onNavigate={onNavigate}
+      user={user}
+      onLogout={onLogout}
+      title="Surgery Timeline"
+      subtitle={`${filteredPatients.length} scheduled surgeries`}
+    >
+      <div className="surgery-timeline-container" style={{ minHeight: 'auto', padding: '1.5rem' }}>
         {/* Summary Cards */}
-        <div className="timeline-summary-cards">
+        <div className="timeline-summary-cards" style={{ marginBottom: '1.5rem' }}>
           <div className="summary-card upcoming">
             <div className="summary-card-icon" style={{ background: '#dbeafe', color: '#2563eb' }}>
               <Calendar size={24} />
