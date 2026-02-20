@@ -22,6 +22,7 @@ import {
   X,
   Upload
 } from 'lucide-react';
+import PageLayout from './PageLayout';
 import Settings from './Settings';
 import Patients from './Patients';
 import Tasks from './Tasks';
@@ -42,46 +43,42 @@ const getInitials = (name) => {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 };
 
-// Quick Stats Card Component with click feedback
-const StatsCard = ({ title, value, icon: Icon, gradient, trend, onClick, dataTestId, subtitle }) => {
-  const [isClicked, setIsClicked] = React.useState(false);
+// Quick Stats Card Component - Cleaner design
+const StatsCard = ({ title, value, icon: Icon, color, onClick, dataTestId, subtitle }) => {
+  const colorClasses = {
+    teal: 'bg-teal-50 border-teal-100 text-teal-700',
+    blue: 'bg-blue-50 border-blue-100 text-blue-700',
+    orange: 'bg-orange-50 border-orange-100 text-orange-700',
+    purple: 'bg-purple-50 border-purple-100 text-purple-700',
+  };
   
-  const handleClick = () => {
-    if (onClick) {
-      setIsClicked(true);
-      setTimeout(() => setIsClicked(false), 200);
-      onClick();
-    }
+  const iconColorClasses = {
+    teal: 'bg-teal-500 text-white',
+    blue: 'bg-blue-500 text-white',
+    orange: 'bg-orange-500 text-white',
+    purple: 'bg-purple-500 text-white',
   };
   
   return (
     <div 
-      className={`relative overflow-hidden bg-gradient-to-br ${gradient} rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 ${onClick ? 'cursor-pointer' : ''} ${isClicked ? 'scale-95' : ''} group`}
-      onClick={handleClick}
+      className={`relative rounded-xl border p-5 transition-all duration-200 ${onClick ? 'cursor-pointer hover:shadow-md hover:-translate-y-0.5' : ''} ${colorClasses[color]} group`}
+      onClick={onClick}
       data-testid={dataTestId}
     >
-      <div className="relative z-10">
-        <div className="flex items-center justify-between mb-4">
-          <div className="p-3 bg-white/20 backdrop-blur-sm rounded-2xl group-hover:bg-white/30 transition-colors">
-            <Icon className="h-6 w-6 text-white" />
-          </div>
-          {trend && (
-            <span className="text-white/80 text-sm font-medium">{trend}</span>
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-sm font-medium opacity-80 mb-1">{title}</p>
+          <p className="text-3xl font-bold">{value}</p>
+          {subtitle && onClick && (
+            <p className="text-xs mt-2 opacity-0 group-hover:opacity-70 transition-opacity">
+              {subtitle}
+            </p>
           )}
         </div>
-        <div className="text-5xl font-bold text-white mb-2">{value}</div>
-        <div className="text-white/90 text-base font-medium">{title}</div>
-        {subtitle && onClick && (
-          <div className="text-white/60 text-xs mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
-            {subtitle}
-          </div>
-        )}
+        <div className={`p-2.5 rounded-xl ${iconColorClasses[color]}`}>
+          <Icon className="h-5 w-5" strokeWidth={1.5} />
+        </div>
       </div>
-      <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform"></div>
-      {/* Ripple effect on click */}
-      {isClicked && (
-        <div className="absolute inset-0 bg-white/20 animate-pulse rounded-3xl"></div>
-      )}
     </div>
   );
 };
