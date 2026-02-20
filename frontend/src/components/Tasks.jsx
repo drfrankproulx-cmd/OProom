@@ -297,12 +297,20 @@ export const Tasks = ({ onNavigate, initialFilter, user, onLogout }) => {
 
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-600 text-lg">Loading tasks...</p>
+      <PageLayout
+        currentView="tasks"
+        onNavigate={onNavigate}
+        user={user}
+        onLogout={onLogout}
+        title="All Tasks"
+      >
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500 mx-auto mb-4"></div>
+            <p className="text-slate-500">Loading tasks...</p>
+          </div>
         </div>
-      </div>
+      </PageLayout>
     );
   }
 
@@ -316,54 +324,24 @@ export const Tasks = ({ onNavigate, initialFilter, user, onLogout }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-gray-50">
-      {/* Header */}
-      <div className="bg-white/80 backdrop-blur-xl border-b border-gray-200 shadow-sm sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-8 py-5">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Button
-                onClick={onBack}
-                variant="ghost"
-                className="hover:bg-gray-100 rounded-xl"
-              >
-                <ArrowLeft className="h-5 w-5 mr-2" />
-                Back to Dashboard
-              </Button>
-              <div className="h-8 w-px bg-gray-300" />
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <ListTodo className="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-2xl font-bold text-gray-900">All Tasks</h1>
-                  <p className="text-sm text-gray-500">
-                    {stats.active} active • {stats.completed} completed
-                  </p>
-                </div>
-              </div>
-            </div>
-            <Button
-              onClick={exportToCSV}
-              className="bg-green-500 hover:bg-green-600 text-white rounded-xl"
-            >
-              <Download className="h-4 w-4 mr-2" />
-              Export to CSV
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* Filters and Search */}
-      <div className="max-w-7xl mx-auto px-8 py-6">
-        <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg p-6 mb-6">
+    <PageLayout
+      currentView="tasks"
+      onNavigate={onNavigate}
+      user={user}
+      onLogout={onLogout}
+      title="All Tasks"
+      subtitle={`${stats.active} active • ${stats.completed} completed`}
+    >
+      <div className="p-6 space-y-6">
+        {/* Filters and Search */}
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
           <div className="flex items-center justify-between gap-4 flex-wrap">
             {/* Search */}
             <div className="flex-1 min-w-[300px] relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
               <Input
                 placeholder="Search tasks, assignees, or patient IDs..."
-                className="pl-10 h-12 rounded-xl"
+                className="pl-10 h-10 rounded-lg border-slate-200"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -372,7 +350,7 @@ export const Tasks = ({ onNavigate, initialFilter, user, onLogout }) => {
                   onClick={() => setSearchTerm('')}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2"
                 >
-                  <X className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                  <X className="h-5 w-5 text-slate-400 hover:text-slate-600" />
                 </button>
               )}
             </div>
