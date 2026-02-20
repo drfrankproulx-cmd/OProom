@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Search, Filter, X, Download, FileSpreadsheet } from 'lucide-react';
+import { Search, Filter, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { PatientRow } from './PatientRow';
 import { RequirementModal } from './RequirementModal';
+import PageLayout from '../PageLayout';
 import './patient-status.css';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
-export const PatientStatusList = ({ onBack }) => {
+export const PatientStatusList = ({ onNavigate, user, onLogout }) => {
   const [patients, setPatients] = useState([]);
   const [schedules, setSchedules] = useState([]);
   const [loading, setLoading] = useState(true);
