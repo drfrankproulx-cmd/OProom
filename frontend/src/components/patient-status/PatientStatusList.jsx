@@ -211,83 +211,40 @@ export const PatientStatusList = ({ onNavigate, user, onLogout }) => {
 
   if (loading) {
     return (
-      <div className="patient-status-container" style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}>
-        <div style={{ textAlign: 'center' }}>
-          <div className="loading-spinner" style={{ margin: '0 auto 1rem' }} />
-          <p style={{ color: '#6b7280', fontSize: '1.125rem' }}>Loading patient status...</p>
+      <PageLayout
+        currentView="patient-status"
+        onNavigate={onNavigate}
+        user={user}
+        onLogout={onLogout}
+        title="Pre-Op Status"
+      >
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500 mx-auto mb-4"></div>
+            <p className="text-slate-500">Loading patient status...</p>
+          </div>
         </div>
-      </div>
+      </PageLayout>
     );
   }
 
   return (
-    <div className="patient-status-container">
-      {/* Header */}
-      <div style={{
-        background: 'rgba(255, 255, 255, 0.8)',
-        backdropFilter: 'blur(12px)',
-        borderBottom: '1px solid #e5e7eb',
-        boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 10
-      }}>
-        <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '1.5rem 2rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <button
-                onClick={onBack}
-                className="quick-action-btn"
-                style={{ padding: '0.5rem 1rem' }}
-              >
-                <ArrowLeft size={20} />
-                Back to Dashboard
-              </button>
-              <div style={{ height: '32px', width: '1px', background: '#d1d5db' }} />
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <div style={{
-                  width: '40px',
-                  height: '40px',
-                  background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
-                  borderRadius: '0.75rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
-                }}>
-                  <FileSpreadsheet size={24} style={{ color: 'white' }} />
-                </div>
-                <div>
-                  <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#111827', margin: 0 }}>
-                    Patient Pre-Op Status
-                  </h1>
-                  <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>
-                    {stats.total} total • {stats.ready} ready • {stats.pending} pending
-                  </p>
-                </div>
-              </div>
-            </div>
-            <button className="quick-action-btn primary">
-              <Download size={16} />
-              Export Report
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="patient-list">
+    <PageLayout
+      currentView="patient-status"
+      onNavigate={onNavigate}
+      user={user}
+      onLogout={onLogout}
+      title="Pre-Op Status"
+      subtitle={`${stats.total} total • ${stats.ready} ready • ${stats.pending} pending`}
+    >
+      <div className="patient-status-container" style={{ minHeight: 'auto', padding: '1.5rem' }}>
         {/* Filters */}
         <div style={{
-          background: 'rgba(255, 255, 255, 0.8)',
-          backdropFilter: 'blur(12px)',
-          borderRadius: '1rem',
-          padding: '1.5rem',
+          background: 'rgba(255, 255, 255, 0.9)',
+          borderRadius: '0.75rem',
+          padding: '1rem',
           marginBottom: '1.5rem',
+          border: '1px solid #e2e8f0'
           boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
         }}>
           <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
