@@ -101,6 +101,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
   const [loading, setLoading] = useState(true);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
+  const [settingsInitialTab, setSettingsInitialTab] = useState('residents');
   const [showNotifications, setShowNotifications] = useState(false);
 
   // Helper to navigate with filter and toast
