@@ -280,24 +280,23 @@ export const Patients = ({ onNavigate, initialFilter, user, onLogout }) => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              />
               {searchTerm && (
                 <button
                   onClick={() => setSearchTerm('')}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2"
                 >
-                  <X className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                  <X className="h-5 w-5 text-slate-400 hover:text-slate-600" />
                 </button>
               )}
             </div>
 
             {/* Status Filter */}
             <div className="flex items-center space-x-2">
-              <Filter className="h-5 w-5 text-gray-500" />
+              <Filter className="h-5 w-5 text-slate-500" />
               <select
                 value={filterStatus}
                 onChange={(e) => { setFilterStatus(e.target.value); setShowFilterBanner(false); }}
-                className="h-12 px-4 rounded-xl border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="h-10 px-4 rounded-lg border border-slate-200 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500"
               >
                 <option value="all">All Status</option>
                 <option value="addon">Add-On Cases</option>
