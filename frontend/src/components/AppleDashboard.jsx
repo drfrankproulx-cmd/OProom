@@ -462,89 +462,62 @@ export const AppleDashboard = ({ user, onLogout }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-gray-50">
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-8 py-5">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-6">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <Activity className="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-2xl font-bold text-gray-900">OProom</h1>
-                </div>
+    <PageLayout
+      currentView="dashboard"
+      onNavigate={handleNavigation}
+      user={user}
+      onLogout={onLogout}
+      title="Dashboard"
+      subtitle={`${getGreeting()}, ${user?.full_name || 'Doctor'}`}
+      headerActions={
+        <div className="relative">
+          <Button 
+            variant="ghost" 
+            onClick={() => setShowNotifications(!showNotifications)} 
+            className="hover:bg-slate-100 rounded-xl relative"
+            data-testid="notifications-btn"
+          >
+            <Bell className="h-5 w-5" />
+            {notifications.length > 0 && (
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
+                {notifications.length}
+              </span>
+            )}
+          </Button>
+          {showNotifications && (
+            <div className="absolute right-0 mt-2 w-80 bg-white border border-slate-200 rounded-xl shadow-xl z-50 max-h-80 overflow-y-auto">
+              <div className="p-3 border-b border-slate-100">
+                <h3 className="font-semibold text-slate-900 text-sm">Notifications</h3>
               </div>
-              <div className="hidden md:flex items-center space-x-6 ml-12">
-                <button onClick={() => setCurrentView('dashboard')} className={`${currentView === 'dashboard' ? 'text-gray-900 font-semibold' : 'text-gray-500 hover:text-gray-900'} transition-colors text-base`}>Dashboard</button>
-                <button onClick={() => setCurrentView('calendar')} className={`${currentView === 'calendar' ? 'text-gray-900 font-semibold' : 'text-gray-500 hover:text-gray-900'} transition-colors text-base`}>Calendar</button>
-                <button onClick={() => setCurrentView('patients')} className={`${currentView === 'patients' ? 'text-gray-900 font-semibold' : 'text-gray-500 hover:text-gray-900'} transition-colors text-base`}>Patients</button>
-                <button onClick={() => setCurrentView('tasks')} className={`${currentView === 'tasks' ? 'text-gray-900 font-semibold' : 'text-gray-500 hover:text-gray-900'} transition-colors text-base`}>Tasks</button>
-                <button onClick={() => setCurrentView('patient-status')} className={`${currentView === 'patient-status' ? 'text-gray-900 font-semibold' : 'text-gray-500 hover:text-gray-900'} transition-colors text-base`}>Pre-Op Status</button>
-                <button onClick={() => setCurrentView('surgery-timeline')} className={`${currentView === 'surgery-timeline' ? 'text-gray-900 font-semibold' : 'text-gray-500 hover:text-gray-900'} transition-colors text-base`}>Surgery Timeline</button>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="relative">
-                <Button variant="ghost" onClick={() => setShowNotifications(!showNotifications)} className="hover:bg-gray-100 rounded-xl relative">
-                  <Bell className="h-5 w-5" />
-                  {notifications.length > 0 && (
-                    <span className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">{notifications.length}</span>
-                  )}
-                </Button>
-                {showNotifications && (
-                  <div className="absolute right-0 mt-2 w-96 bg-white border border-gray-200 rounded-2xl shadow-xl z-50 max-h-96 overflow-y-auto">
-                    <div className="p-4 border-b border-gray-200">
-                      <h3 className="font-semibold text-gray-900 text-base">Notifications</h3>
+              {notifications.length > 0 ? (
+                <div className="divide-y divide-slate-100">
+                  {notifications.map((notif) => (
+                    <div key={notif._id} className="p-3 hover:bg-slate-50 transition-colors">
+                      <p className="font-medium text-slate-900 text-sm mb-1">{notif.title}</p>
+                      <p className="text-slate-500 text-xs mb-1">{notif.message.substring(0, 80)}...</p>
+                      <p className="text-xs text-slate-400">{format(parseISO(notif.created_at), 'MMM d, h:mm a')}</p>
                     </div>
-                    {notifications.length > 0 ? (
-                      <div className="divide-y divide-gray-100">
-                        {notifications.map((notif) => (
-                          <div key={notif._id} className="p-4 hover:bg-gray-50 transition-colors">
-                            <p className="font-semibold text-gray-900 text-sm mb-1">{notif.title}</p>
-                            <p className="text-gray-600 text-sm mb-2">{notif.message.substring(0, 100)}...</p>
-                            <p className="text-xs text-gray-400">{format(parseISO(notif.created_at), 'MMM d, h:mm a')}</p>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="p-8 text-center text-gray-400">
-                        <Bell className="h-12 w-12 mx-auto mb-2 text-gray-300" />
-                        <p className="text-base">No notifications</p>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-              <Button variant="ghost" onClick={() => setShowSettings(true)} className="hover:bg-gray-100 rounded-xl" data-testid="settings-btn">
-                <SettingsIcon className="h-5 w-5" />
-              </Button>
-              <div className="text-right mr-4">
-                <p className="text-sm text-gray-500">{getGreeting()}</p>
-                <p className="font-semibold text-gray-900">{user?.full_name}</p>
-              </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
-                {user?.full_name ? getInitials(user.full_name) : 'U'}
-              </div>
-              <Button variant="ghost" onClick={onLogout} className="hover:bg-gray-100 rounded-xl px-4 py-2">
-                <LogOut className="h-4 w-4 mr-2" />
-                <span className="text-base">Logout</span>
-              </Button>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-6 text-center text-slate-400">
+                  <Bell className="h-8 w-8 mx-auto mb-2 text-slate-300" />
+                  <p className="text-sm">No notifications</p>
+                </div>
+              )}
             </div>
-          </div>
+          )}
         </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="px-4 py-4">
+      }
+    >
+      <div className="p-6 space-y-6" data-testid="dashboard-content">
         {/* Quick Stats - Compact & Clickable */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatsCard 
             title="Today's Schedule" 
             value={todaySchedules} 
             icon={CalendarIcon} 
-            gradient="from-blue-500 to-blue-600" 
+            color="teal"
             onClick={() => navigateWithFilter('calendar', { type: 'today' }, `Viewing today's ${todaySchedules} scheduled cases`)}
             dataTestId="stats-card-today-schedule"
             subtitle="Click to view today's cases →"
@@ -553,7 +526,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
             title="This Week" 
             value={weeklySchedules.length} 
             icon={Clock} 
-            gradient="from-purple-500 to-purple-600" 
+            color="blue"
             onClick={() => navigateWithFilter('calendar', { type: 'week' }, `Viewing ${weeklySchedules.length} cases this week`)}
             dataTestId="stats-card-this-week"
             subtitle="Click to view weekly schedule →"
@@ -562,7 +535,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
             title="Pending Cases" 
             value={addOnCases.length} 
             icon={Users} 
-            gradient="from-orange-500 to-orange-600" 
+            color="orange"
             onClick={() => navigateWithFilter('patients', { type: 'addon' }, `Showing ${addOnCases.length} add-on cases`)}
             dataTestId="stats-card-pending-cases"
             subtitle="Click to view add-on list →"
@@ -571,24 +544,24 @@ export const AppleDashboard = ({ user, onLogout }) => {
             title="Tasks Due" 
             value={urgentTasks.length} 
             icon={CheckCircle2} 
-            gradient="from-green-500 to-green-600" 
+            color="purple"
             onClick={() => navigateWithFilter('tasks', { type: 'urgent' }, `Showing ${urgentTasks.length} urgent tasks`)}
             dataTestId="stats-card-tasks-due"
             subtitle="Click to view urgent tasks →"
           />
         </div>
 
-        {/* Quick Add Patient Form - Full Width at Top */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl p-6 mb-4">
-          <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-            <Plus className="h-6 w-6 mr-2 text-blue-500" />
+        {/* Quick Add Patient Form */}
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+          <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center">
+            <Plus className="h-5 w-5 mr-2 text-teal-500" />
             Quick Add Patient
           </h3>
 
           {/* Row 1: Patient Name, Patient ID, DOB */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div>
-              <Label className="text-sm font-medium text-gray-700 mb-1 block">Patient Name</Label>
+              <Label className="text-sm font-medium text-slate-700 mb-1 block">Patient Name</Label>
               <Input
                 className="h-10 text-sm rounded-lg"
                 value={intakeForm.patient_name}
@@ -597,7 +570,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
               />
             </div>
             <div>
-              <Label className="text-sm font-medium text-gray-700 mb-1 block">Patient ID</Label>
+              <Label className="text-sm font-medium text-slate-700 mb-1 block">Patient ID</Label>
               <Input
                 className="h-10 text-sm rounded-lg"
                 value={intakeForm.mrn}
@@ -606,7 +579,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
               />
             </div>
             <div>
-              <Label className="text-sm font-medium text-gray-700 mb-1 block">Date of Birth</Label>
+              <Label className="text-sm font-medium text-slate-700 mb-1 block">Date of Birth</Label>
               <Input
                 type="date"
                 className="h-10 text-sm rounded-lg"
@@ -619,7 +592,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
           {/* Row 2: Attending, Diagnosis, Procedure/CPT */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div>
-              <Label className="text-sm font-medium text-gray-700 mb-1 block">Attending</Label>
+              <Label className="text-sm font-medium text-slate-700 mb-1 block">Attending</Label>
               <Select value={intakeForm.attending} onValueChange={(v) => setIntakeForm({...intakeForm, attending: v})}>
                 <SelectTrigger className="h-10 text-sm rounded-lg">
                   <SelectValue placeholder="Select" />
@@ -655,10 +628,10 @@ export const AppleDashboard = ({ user, onLogout }) => {
           </div>
 
           {/* Row 3: Scheduling Options */}
-          <div className="pt-4 border-t border-gray-200">
+          <div className="pt-4 border-t border-slate-200">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
               <div>
-                <Label className="text-sm font-medium text-gray-700 mb-1 block">Scheduling</Label>
+                <Label className="text-sm font-medium text-slate-700 mb-1 block">Scheduling</Label>
                 <Select value={intakeForm.scheduling_type} onValueChange={(v) => setIntakeForm({...intakeForm, scheduling_type: v})}>
                   <SelectTrigger className="h-10 text-sm rounded-lg">
                     <SelectValue placeholder="Select scheduling type" />
@@ -673,18 +646,18 @@ export const AppleDashboard = ({ user, onLogout }) => {
               {intakeForm.scheduling_type === 'scheduled' && (
                 <>
                   <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-1 block">Scheduled Date</Label>
+                    <Label className="text-sm font-medium text-slate-700 mb-1 block">Scheduled Date</Label>
                     <Input type="date" className="h-10 text-sm rounded-lg" value={intakeForm.scheduled_date} onChange={(e) => setIntakeForm({...intakeForm, scheduled_date: e.target.value})} />
                   </div>
                   <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-1 block">Scheduled Time (Optional)</Label>
-                    <Input type="time" className="h-10 text-sm rounded-lg" value={intakeForm.scheduled_time} onChange={(e) => setIntakeForm({...intakeForm, scheduled_time: e.target.value})} placeholder="HH:MM" />
+                    <Label className="text-sm font-medium text-slate-700 mb-1 block">Scheduled Time</Label>
+                    <Input type="time" className="h-10 text-sm rounded-lg" value={intakeForm.scheduled_time} onChange={(e) => setIntakeForm({...intakeForm, scheduled_time: e.target.value})} />
                   </div>
                 </>
               )}
 
               <div className={intakeForm.scheduling_type === 'scheduled' ? '' : 'md:col-span-3'}>
-                <Button onClick={handleQuickAdd} className="w-full bg-blue-500 hover:bg-blue-600 text-white rounded-lg h-10 text-sm font-medium shadow-lg">
+                <Button onClick={handleQuickAdd} className="w-full bg-teal-500 hover:bg-teal-600 text-white rounded-lg h-10 text-sm font-medium" data-testid="add-patient-btn">
                   <Plus className="h-4 w-4 mr-2" />
                   {intakeForm.scheduling_type === 'scheduled' ? 'Schedule Patient' : 'Add to Add-On List'}
                 </Button>
@@ -693,206 +666,253 @@ export const AppleDashboard = ({ user, onLogout }) => {
           </div>
         </div>
 
-        {/* 3-Column Layout: Left Sidebar | Calendar | Right Sidebar */}
-        <div className="grid grid-cols-12 gap-4">
+        {/* 3-Column Layout */}
+        <div className="grid grid-cols-12 gap-5">
           {/* LEFT COLUMN: Weekly Cases + Add-on Cases + Urgent Tasks */}
-          <div className="col-span-2 space-y-4">
+          <div className="col-span-12 lg:col-span-2 space-y-4">
             {/* Weekly Cases */}
-            <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg p-4">
-              <h3 className="font-bold text-gray-900 text-sm mb-3">WEEKLY ({weeklySchedules.length})</h3>
-              <div className="space-y-2 max-h-[400px] overflow-y-auto">
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+              <h3 className="font-semibold text-slate-900 text-sm mb-3">WEEKLY ({weeklySchedules.length})</h3>
+              <div className="space-y-2 max-h-[280px] overflow-y-auto">
                 {weeklySchedules.map(schedule => {
                   const patient = patients.find(p => p.mrn === schedule.patient_mrn);
                   return (
-                    <div key={schedule._id} className="p-2 bg-blue-50 rounded-lg hover:bg-blue-100 cursor-pointer transition-colors text-xs" onClick={() => setSelectedPatient(patient)}>
-                      <div className="font-semibold text-gray-900">{getInitials(schedule.patient_name)}</div>
-                      <div className="text-gray-600 truncate">{schedule.staff}</div>
-                      <div className="text-gray-500 text-xs">{schedule.scheduled_date && format(parseISO(schedule.scheduled_date), 'MMM d')}</div>
+                    <div key={schedule._id} className="p-2 bg-teal-50 rounded-lg hover:bg-teal-100 cursor-pointer transition-colors text-xs" onClick={() => setSelectedPatient(patient)}>
+                      <div className="font-semibold text-slate-900">{getInitials(schedule.patient_name)}</div>
+                      <div className="text-slate-600 truncate">{schedule.staff}</div>
+                      <div className="text-slate-500 text-xs">{schedule.scheduled_date && format(parseISO(schedule.scheduled_date), 'MMM d')}</div>
                     </div>
                   );
                 })}
-                {weeklySchedules.length === 0 && <div className="text-center text-gray-400 text-xs py-4">No cases</div>}
+                {weeklySchedules.length === 0 && <div className="text-center text-slate-400 text-xs py-4">No cases</div>}
               </div>
             </div>
 
             {/* Add-on Cases */}
-            <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg p-4">
-              <h3 className="font-bold text-gray-900 text-sm mb-3">ADD-ONS ({addOnCases.length})</h3>
-              <div className="space-y-2 max-h-[400px] overflow-y-auto">
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+              <h3 className="font-semibold text-slate-900 text-sm mb-3">ADD-ONS ({addOnCases.length})</h3>
+              <div className="space-y-2 max-h-[280px] overflow-y-auto">
                 {addOnCases.map(addOn => {
                   const patient = patients.find(p => p.mrn === addOn.patient_mrn);
                   const checklist = patient?.prep_checklist || {};
                   const completed = Object.values(checklist).filter(Boolean).length;
                   return (
                     <div key={addOn._id} className="p-2 bg-orange-50 rounded-lg hover:bg-orange-100 cursor-pointer transition-colors text-xs" onClick={() => setSelectedPatient(patient)}>
-                      <div className="font-semibold text-gray-900">{getInitials(addOn.patient_name)}</div>
-                      <div className="text-gray-600 truncate">{addOn.procedure}</div>
+                      <div className="font-semibold text-slate-900">{getInitials(addOn.patient_name)}</div>
+                      <div className="text-slate-600 truncate">{addOn.procedure}</div>
                       <div className="flex items-center justify-between mt-1">
                         <Badge variant="outline" className="bg-white text-xs px-2 py-0">{addOn.priority || 'medium'}</Badge>
-                        <span className="text-xs text-gray-500">{completed}/4</span>
+                        <span className="text-xs text-slate-500">{completed}/4</span>
                       </div>
                     </div>
                   );
                 })}
-                {addOnCases.length === 0 && <div className="text-center text-gray-400 text-xs py-4">No add-ons</div>}
+                {addOnCases.length === 0 && <div className="text-center text-slate-400 text-xs py-4">No add-ons</div>}
               </div>
             </div>
 
             {/* Urgent Tasks */}
-            <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg p-4">
-              <h3 className="font-bold text-gray-900 text-sm mb-3">URGENT ({urgentTasks.length})</h3>
-              <div className="space-y-2 max-h-[300px] overflow-y-auto">
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+              <h3 className="font-semibold text-slate-900 text-sm mb-3">URGENT ({urgentTasks.length})</h3>
+              <div className="space-y-2 max-h-[200px] overflow-y-auto">
                 {urgentTasks.map(task => (
                   <div key={task._id} className="p-2 bg-red-50 rounded-lg text-xs">
-                    <div className="font-medium text-gray-900 leading-tight">{task.task_description}</div>
-                    {task.due_date && <div className="text-gray-500 text-xs mt-1">{format(parseISO(task.due_date), 'MMM d')}</div>}
+                    <div className="font-medium text-slate-900 leading-tight">{task.task_description}</div>
+                    {task.due_date && <div className="text-slate-500 text-xs mt-1">{format(parseISO(task.due_date), 'MMM d')}</div>}
                   </div>
                 ))}
-                {urgentTasks.length === 0 && <div className="text-center text-gray-400 text-xs py-4">All caught up!</div>}
+                {urgentTasks.length === 0 && <div className="text-center text-slate-400 text-xs py-4">All caught up!</div>}
               </div>
             </div>
           </div>
 
-          {/* CENTER COLUMN: Calendar */}
-          <div className="col-span-7">
-            <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl p-6">
-              <div className="flex items-center justify-between mb-6">
+          {/* CENTER COLUMN: Calendar with Toggle */}
+          <div className="col-span-12 lg:col-span-7">
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+              <div className="flex items-center justify-between mb-5">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-1">This Week</h2>
-                  <p className="text-gray-600 text-sm">{format(weekStart, 'MMMM d')} - {format(addDays(weekStart, 6), 'MMM d, yyyy')}</p>
+                  <h2 className="text-lg font-semibold text-slate-900">
+                    {calendarViewMode === 'week' ? 'This Week' : 'Monthly View'}
+                  </h2>
+                  <p className="text-slate-500 text-sm">
+                    {calendarViewMode === 'week' 
+                      ? `${format(weekStart, 'MMMM d')} - ${format(addDays(weekStart, 6), 'MMM d, yyyy')}`
+                      : format(monthViewDate, 'MMMM yyyy')
+                    }
+                  </p>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Button onClick={() => setCurrentDate(addDays(currentDate, -7))} variant="outline" size="sm" className="rounded-full w-10 h-10 p-0"><ChevronLeft className="h-4 w-4" /></Button>
-                  <Button onClick={() => setCurrentDate(new Date())} variant="outline" size="sm" className="rounded-full px-4">Today</Button>
-                  <Button onClick={() => setCurrentDate(addDays(currentDate, 7))} variant="outline" size="sm" className="rounded-full w-10 h-10 p-0"><ChevronRight className="h-4 w-4" /></Button>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-7 gap-2">
-                {weekDays.map((day) => {
-                  const daySchedules = getSchedulesForDate(day);
-                  const today = isToday(day);
-                  return (
-                    <div key={day.toISOString()} className={`rounded-xl p-3 min-h-[450px] transition-all ${today ? 'bg-gradient-to-br from-blue-50 to-blue-100 ring-2 ring-blue-400' : 'bg-gray-50'}`}>
-                      <div className="text-center mb-3">
-                        <div className="text-gray-600 text-xs font-medium mb-1">{format(day, 'EEE')}</div>
-                        <div className={`text-2xl font-bold ${today ? 'text-blue-600' : 'text-gray-900'}`}>{format(day, 'd')}</div>
-                      </div>
-                      <div className="space-y-2">
-                        {daySchedules.map(schedule => {
-                          const patient = patients.find(p => p.mrn === schedule.patient_mrn);
-                          const checklist = patient?.prep_checklist || {};
-                          const completed = Object.values(checklist).filter(Boolean).length;
-                          const percentage = (completed / 4) * 100;
-                          return (
-                            <div key={schedule._id} onClick={() => setSelectedPatient(patient)} className="bg-white rounded-lg p-2 border-l-2 border-blue-400 hover:shadow-md transition-all cursor-pointer text-xs">
-                              <div className="font-semibold text-gray-900 truncate">{schedule.patient_name}</div>
-                              <div className="text-gray-600 text-xs truncate">{schedule.staff}</div>
-                              {schedule.scheduled_time && <div className="flex items-center text-gray-500 text-xs mt-1"><Clock className="h-2.5 w-2.5 mr-1" />{schedule.scheduled_time}</div>}
-                              <div className="mt-2 pt-2 border-t border-gray-100">
-                                <div className="flex items-center justify-between mb-1">
-                                  <span className="text-xs text-gray-500">Prep</span>
-                                  <span className="text-xs text-gray-600 font-medium">{completed}/4</span>
-                                </div>
-                                <div className="w-full bg-gray-200 rounded-full h-1.5">
-                                  <div className={`h-1.5 rounded-full transition-all ${percentage === 100 ? 'bg-green-500' : percentage >= 50 ? 'bg-blue-500' : 'bg-orange-500'}`} style={{ width: `${percentage}%` }} />
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })}
-                        {daySchedules.length === 0 && <div className="text-center text-gray-400 text-xs py-8">No events</div>}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Monthly Calendar */}
-            <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl p-6 mt-4">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-1">Monthly View</h2>
-                  <p className="text-gray-600 text-sm">{format(monthViewDate, 'MMMM yyyy')}</p>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Button onClick={() => setMonthViewDate(subMonths(monthViewDate, 1))} variant="outline" size="sm" className="rounded-full w-10 h-10 p-0"><ChevronLeft className="h-4 w-4" /></Button>
-                  <Button onClick={() => setMonthViewDate(new Date())} variant="outline" size="sm" className="rounded-full px-4">This Month</Button>
-                  <Button onClick={() => setMonthViewDate(addMonths(monthViewDate, 1))} variant="outline" size="sm" className="rounded-full w-10 h-10 p-0"><ChevronRight className="h-4 w-4" /></Button>
+                <div className="flex items-center gap-3">
+                  {/* View Toggle */}
+                  <div className="flex bg-slate-100 rounded-lg p-1" data-testid="calendar-view-toggle">
+                    <button
+                      onClick={() => setCalendarViewMode('week')}
+                      className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                        calendarViewMode === 'week' ? 'bg-white shadow text-slate-900' : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                      data-testid="toggle-week-view"
+                    >
+                      Week
+                    </button>
+                    <button
+                      onClick={() => setCalendarViewMode('month')}
+                      className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                        calendarViewMode === 'month' ? 'bg-white shadow text-slate-900' : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                      data-testid="toggle-month-view"
+                    >
+                      Month
+                    </button>
+                  </div>
+                  
+                  {/* Navigation */}
+                  <div className="flex items-center gap-1">
+                    <Button 
+                      onClick={() => calendarViewMode === 'week' ? setCurrentDate(addDays(currentDate, -7)) : setMonthViewDate(subMonths(monthViewDate, 1))} 
+                      variant="outline" 
+                      size="sm" 
+                      className="rounded-lg w-8 h-8 p-0"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      onClick={() => calendarViewMode === 'week' ? setCurrentDate(new Date()) : setMonthViewDate(new Date())} 
+                      variant="outline" 
+                      size="sm" 
+                      className="rounded-lg px-3 text-xs"
+                    >
+                      Today
+                    </Button>
+                    <Button 
+                      onClick={() => calendarViewMode === 'week' ? setCurrentDate(addDays(currentDate, 7)) : setMonthViewDate(addMonths(monthViewDate, 1))} 
+                      variant="outline" 
+                      size="sm" 
+                      className="rounded-lg w-8 h-8 p-0"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-7 gap-1">
-                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                  <div key={day} className="text-center text-xs font-semibold text-gray-600 py-2">{day}</div>
-                ))}
-
-                {(() => {
-                  const monthStart = startOfMonth(monthViewDate);
-                  const monthEnd = endOfMonth(monthViewDate);
-                  const startDate = startOfWeek(monthStart);
-                  const endDate = startOfWeek(monthEnd);
-                  const daysToShow = eachDayOfInterval({ start: startDate, end: addDays(endDate, 6) });
-
-                  return daysToShow.map((day) => {
+              {/* Week View */}
+              {calendarViewMode === 'week' && (
+                <div className="grid grid-cols-7 gap-2">
+                  {weekDays.map((day) => {
                     const daySchedules = getSchedulesForDate(day);
                     const today = isToday(day);
-                    const currentMonth = isSameMonth(day, monthViewDate);
-
                     return (
-                      <div key={day.toISOString()} className={`min-h-[80px] p-2 rounded-lg border transition-all ${today ? 'bg-blue-50 border-blue-400 ring-1 ring-blue-400' : currentMonth ? 'bg-white border-gray-200 hover:bg-gray-50' : 'bg-gray-50 border-gray-100 opacity-50'}`}>
-                        <div className="text-right mb-1">
-                          <span className={`text-xs font-semibold ${today ? 'text-blue-600' : currentMonth ? 'text-gray-900' : 'text-gray-400'}`}>{format(day, 'd')}</span>
+                      <div key={day.toISOString()} className={`rounded-xl p-2 min-h-[400px] transition-all ${today ? 'bg-gradient-to-br from-teal-50 to-teal-100 ring-2 ring-teal-400' : 'bg-slate-50'}`}>
+                        <div className="text-center mb-2">
+                          <div className="text-slate-500 text-xs font-medium mb-1">{format(day, 'EEE')}</div>
+                          <div className={`text-xl font-bold ${today ? 'text-teal-600' : 'text-slate-900'}`}>{format(day, 'd')}</div>
                         </div>
-                        {currentMonth && (
-                          <div className="space-y-1">
-                            {daySchedules.slice(0, 2).map(schedule => {
-                              const patient = patients.find(p => p.mrn === schedule.patient_mrn);
-                              const checklist = patient?.prep_checklist || {};
-                              const completed = Object.values(checklist).filter(Boolean).length;
-                              const percentage = (completed / 4) * 100;
-                              return (
-                                <div key={schedule._id} onClick={() => setSelectedPatient(patient)} className="bg-blue-100 rounded px-1 py-0.5 cursor-pointer hover:bg-blue-200 transition-colors text-xs truncate" title={`${schedule.patient_name} - ${schedule.procedure}`}>
-                                  <div className="flex items-center justify-between">
-                                    <span className="font-medium text-gray-900 truncate">{getInitials(schedule.patient_name)}</span>
-                                    <div className={`w-1.5 h-1.5 rounded-full ${percentage === 100 ? 'bg-green-500' : percentage >= 50 ? 'bg-blue-500' : 'bg-orange-500'}`} />
+                        <div className="space-y-1.5">
+                          {daySchedules.map(schedule => {
+                            const patient = patients.find(p => p.mrn === schedule.patient_mrn);
+                            const checklist = patient?.prep_checklist || {};
+                            const completed = Object.values(checklist).filter(Boolean).length;
+                            const percentage = (completed / 4) * 100;
+                            return (
+                              <div key={schedule._id} onClick={() => setSelectedPatient(patient)} className="bg-white rounded-lg p-2 border-l-2 border-teal-400 hover:shadow-md transition-all cursor-pointer text-xs">
+                                <div className="font-semibold text-slate-900 truncate">{schedule.patient_name}</div>
+                                <div className="text-slate-500 text-xs truncate">{schedule.staff}</div>
+                                {schedule.scheduled_time && <div className="flex items-center text-slate-400 text-xs mt-1"><Clock className="h-2.5 w-2.5 mr-1" />{schedule.scheduled_time}</div>}
+                                <div className="mt-1.5 pt-1.5 border-t border-slate-100">
+                                  <div className="flex items-center justify-between mb-1">
+                                    <span className="text-xs text-slate-400">Prep</span>
+                                    <span className="text-xs text-slate-500 font-medium">{completed}/4</span>
+                                  </div>
+                                  <div className="w-full bg-slate-200 rounded-full h-1">
+                                    <div className={`h-1 rounded-full transition-all ${percentage === 100 ? 'bg-green-500' : percentage >= 50 ? 'bg-teal-500' : 'bg-orange-500'}`} style={{ width: `${percentage}%` }} />
                                   </div>
                                 </div>
-                              );
-                            })}
-                            {daySchedules.length > 2 && <div className="text-xs text-gray-500 text-center">+{daySchedules.length - 2} more</div>}
-                          </div>
-                        )}
+                              </div>
+                            );
+                          })}
+                          {daySchedules.length === 0 && <div className="text-center text-slate-400 text-xs py-6">No events</div>}
+                        </div>
                       </div>
                     );
-                  });
-                })()}
-              </div>
+                  })}
+                </div>
+              )}
+
+              {/* Month View */}
+              {calendarViewMode === 'month' && (
+                <div>
+                  <div className="grid grid-cols-7 gap-1 mb-1">
+                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                      <div key={day} className="text-center text-xs font-semibold text-slate-500 py-2">{day}</div>
+                    ))}
+                  </div>
+                  <div className="grid grid-cols-7 gap-1">
+                    {(() => {
+                      const monthStart = startOfMonth(monthViewDate);
+                      const monthEnd = endOfMonth(monthViewDate);
+                      const startDate = startOfWeek(monthStart);
+                      const endDate = startOfWeek(monthEnd);
+                      const daysToShow = eachDayOfInterval({ start: startDate, end: addDays(endDate, 6) });
+
+                      return daysToShow.map((day) => {
+                        const daySchedules = getSchedulesForDate(day);
+                        const today = isToday(day);
+                        const currentMonth = isSameMonth(day, monthViewDate);
+
+                        return (
+                          <div key={day.toISOString()} className={`min-h-[70px] p-1.5 rounded-lg border transition-all ${today ? 'bg-teal-50 border-teal-400 ring-1 ring-teal-400' : currentMonth ? 'bg-white border-slate-200 hover:bg-slate-50' : 'bg-slate-50 border-slate-100 opacity-50'}`}>
+                            <div className="text-right mb-1">
+                              <span className={`text-xs font-semibold ${today ? 'text-teal-600' : currentMonth ? 'text-slate-900' : 'text-slate-400'}`}>{format(day, 'd')}</span>
+                            </div>
+                            {currentMonth && (
+                              <div className="space-y-0.5">
+                                {daySchedules.slice(0, 2).map(schedule => {
+                                  const patient = patients.find(p => p.mrn === schedule.patient_mrn);
+                                  const checklist = patient?.prep_checklist || {};
+                                  const completed = Object.values(checklist).filter(Boolean).length;
+                                  const percentage = (completed / 4) * 100;
+                                  return (
+                                    <div key={schedule._id} onClick={() => setSelectedPatient(patient)} className="bg-teal-100 rounded px-1 py-0.5 cursor-pointer hover:bg-teal-200 transition-colors text-xs truncate" title={`${schedule.patient_name} - ${schedule.procedure}`}>
+                                      <div className="flex items-center justify-between">
+                                        <span className="font-medium text-slate-900 truncate">{getInitials(schedule.patient_name)}</span>
+                                        <div className={`w-1.5 h-1.5 rounded-full ${percentage === 100 ? 'bg-green-500' : percentage >= 50 ? 'bg-teal-500' : 'bg-orange-500'}`} />
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                                {daySchedules.length > 2 && <div className="text-xs text-slate-500 text-center">+{daySchedules.length - 2}</div>}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      });
+                    })()}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
           {/* RIGHT COLUMN: Task Assignment + Patient Details */}
-          <div className="col-span-3 space-y-4">
+          <div className="col-span-12 lg:col-span-3 space-y-4">
             {/* Task Assignment Form */}
-            <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+              <h3 className="text-base font-semibold text-slate-900 mb-4 flex items-center">
                 <CheckCircle2 className="h-5 w-5 mr-2 text-green-500" />
                 Create Task
               </h3>
               <div className="space-y-3">
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Task Description</Label>
-                  <Input className="h-10 text-sm rounded-lg" value={taskForm.task_description} onChange={(e) => setTaskForm({...taskForm, task_description: e.target.value})} placeholder="Describe the task..." />
+                  <Label className="text-sm font-medium text-slate-700 mb-1 block">Task Description</Label>
+                  <Input className="h-9 text-sm rounded-lg" value={taskForm.task_description} onChange={(e) => setTaskForm({...taskForm, task_description: e.target.value})} placeholder="Describe the task..." />
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Due Date</Label>
-                  <Input type="date" className="h-10 text-sm rounded-lg" value={taskForm.due_date} onChange={(e) => setTaskForm({...taskForm, due_date: e.target.value})} />
+                  <Label className="text-sm font-medium text-slate-700 mb-1 block">Due Date</Label>
+                  <Input type="date" className="h-9 text-sm rounded-lg" value={taskForm.due_date} onChange={(e) => setTaskForm({...taskForm, due_date: e.target.value})} />
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Assign To</Label>
+                  <Label className="text-sm font-medium text-slate-700 mb-1 block">Assign To</Label>
                   <Select value={taskForm.assigned_to} onValueChange={(value) => { const selectedResident = residents.find(r => r.name === value); setTaskForm({...taskForm, assigned_to: value, assigned_to_email: selectedResident?.email || ''}); }}>
-                    <SelectTrigger className="h-10 text-sm rounded-lg"><SelectValue placeholder="Select resident" /></SelectTrigger>
+                    <SelectTrigger className="h-9 text-sm rounded-lg"><SelectValue placeholder="Select resident" /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="Others">Others</SelectItem>
                       {residents.length > 0 ? residents.map((resident) => (<SelectItem key={resident._id} value={resident.name}>{resident.name}</SelectItem>)) : <SelectItem value="none" disabled>No active residents</SelectItem>}
@@ -900,9 +920,9 @@ export const AppleDashboard = ({ user, onLogout }) => {
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Urgency</Label>
+                  <Label className="text-sm font-medium text-slate-700 mb-1 block">Urgency</Label>
                   <Select value={taskForm.urgency} onValueChange={(v) => setTaskForm({...taskForm, urgency: v})}>
-                    <SelectTrigger className="h-10 text-sm rounded-lg"><SelectValue placeholder="Select urgency" /></SelectTrigger>
+                    <SelectTrigger className="h-9 text-sm rounded-lg"><SelectValue placeholder="Select urgency" /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="low">Low</SelectItem>
                       <SelectItem value="medium">Medium</SelectItem>
@@ -912,10 +932,10 @@ export const AppleDashboard = ({ user, onLogout }) => {
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-1 block">Link to Patient (Optional)</Label>
-                  <Input className="h-10 text-sm rounded-lg" value={taskForm.patient_mrn} onChange={(e) => setTaskForm({...taskForm, patient_mrn: e.target.value})} placeholder="Patient ID" />
+                  <Label className="text-sm font-medium text-slate-700 mb-1 block">Link to Patient</Label>
+                  <Input className="h-9 text-sm rounded-lg" value={taskForm.patient_mrn} onChange={(e) => setTaskForm({...taskForm, patient_mrn: e.target.value})} placeholder="Patient ID (optional)" />
                 </div>
-                <Button onClick={handleTaskCreate} className="w-full bg-green-500 hover:bg-green-600 text-white rounded-lg py-5 text-sm font-medium shadow-lg">
+                <Button onClick={handleTaskCreate} className="w-full bg-green-500 hover:bg-green-600 text-white rounded-lg h-10 text-sm font-medium" data-testid="create-task-btn">
                   <CheckCircle2 className="h-4 w-4 mr-2" />
                   Create Task
                 </Button>
@@ -924,48 +944,48 @@ export const AppleDashboard = ({ user, onLogout }) => {
 
             {/* Patient Details */}
             {selectedPatient && (
-              <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl p-6">
+              <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-bold text-gray-900">Patient Details</h3>
+                  <h3 className="text-base font-semibold text-slate-900">Patient Details</h3>
                   <Button variant="ghost" size="sm" onClick={() => setSelectedPatient(null)} className="h-8 w-8 p-0 rounded-full"><X className="h-4 w-4" /></Button>
                 </div>
 
-                <div className="flex items-center space-x-3 mb-4 pb-4 border-b">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg">{getInitials(selectedPatient.patient_name)}</div>
+                <div className="flex items-center space-x-3 mb-4 pb-4 border-b border-slate-100">
+                  <div className="w-11 h-11 bg-gradient-to-br from-teal-400 to-teal-600 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm">{getInitials(selectedPatient.patient_name)}</div>
                   <div>
-                    <h4 className="font-bold text-gray-900">{selectedPatient.patient_name}</h4>
-                    <p className="text-gray-600 text-sm">ID: {selectedPatient.mrn}</p>
+                    <h4 className="font-semibold text-slate-900">{selectedPatient.patient_name}</h4>
+                    <p className="text-slate-500 text-sm">ID: {selectedPatient.mrn}</p>
                   </div>
                 </div>
 
                 <div className="space-y-3 text-sm">
-                  <div><label className="text-xs font-medium text-gray-500 block mb-1">DOB</label><p className="text-gray-900">{selectedPatient.dob || 'Not provided'}</p></div>
-                  <div><label className="text-xs font-medium text-gray-500 block mb-1">Attending</label><p className="text-gray-900">{selectedPatient.attending || 'Not assigned'}</p></div>
-                  <div><label className="text-xs font-medium text-gray-500 block mb-1">Diagnosis</label><p className="text-gray-900">{selectedPatient.diagnosis || 'Not provided'}</p></div>
-                  <div><label className="text-xs font-medium text-gray-500 block mb-1">Procedure</label><p className="text-gray-900">{selectedPatient.procedures || 'Not provided'}</p></div>
-                  <div><label className="text-xs font-medium text-gray-500 block mb-1">Status</label><Badge className="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full">{selectedPatient.status}</Badge></div>
+                  <div><label className="text-xs font-medium text-slate-400 block mb-0.5">DOB</label><p className="text-slate-900">{selectedPatient.dob || 'Not provided'}</p></div>
+                  <div><label className="text-xs font-medium text-slate-400 block mb-0.5">Attending</label><p className="text-slate-900">{selectedPatient.attending || 'Not assigned'}</p></div>
+                  <div><label className="text-xs font-medium text-slate-400 block mb-0.5">Diagnosis</label><p className="text-slate-900">{selectedPatient.diagnosis || 'Not provided'}</p></div>
+                  <div><label className="text-xs font-medium text-slate-400 block mb-0.5">Procedure</label><p className="text-slate-900">{selectedPatient.procedures || 'Not provided'}</p></div>
+                  <div><label className="text-xs font-medium text-slate-400 block mb-0.5">Status</label><Badge className="bg-teal-100 text-teal-700 text-xs px-2 py-0.5 rounded-full">{selectedPatient.status}</Badge></div>
 
                   {/* Prep Checklist */}
-                  <div className="pt-3 border-t border-gray-200">
-                    <label className="text-xs font-medium text-gray-500 block mb-3">Prep Checklist</label>
+                  <div className="pt-3 border-t border-slate-100">
+                    <label className="text-xs font-medium text-slate-400 block mb-2">Prep Checklist</label>
                     <div className="space-y-2">
                       {['xrays', 'lab_tests', 'insurance_approval', 'medical_optimization'].map(item => (
                         <div key={item} className="flex items-center space-x-2">
                           <Checkbox id={`${item}-${selectedPatient.mrn}`} checked={selectedPatient.prep_checklist?.[item] || false} onCheckedChange={(checked) => handleChecklistUpdate(selectedPatient.mrn, item, checked)} className="h-4 w-4" />
-                          <label htmlFor={`${item}-${selectedPatient.mrn}`} className="text-sm text-gray-700 cursor-pointer capitalize">{item.replace('_', ' ')}</label>
+                          <label htmlFor={`${item}-${selectedPatient.mrn}`} className="text-sm text-slate-700 cursor-pointer capitalize">{item.replace('_', ' ')}</label>
                         </div>
                       ))}
                     </div>
 
-                    <div className="mt-3 pt-3 border-t border-gray-100">
+                    <div className="mt-3 pt-3 border-t border-slate-100">
                       {(() => {
                         const checklist = selectedPatient.prep_checklist || {};
                         const completed = Object.values(checklist).filter(Boolean).length;
                         const percentage = (completed / 4) * 100;
                         return (
                           <div>
-                            <div className="flex justify-between text-xs text-gray-600 mb-1"><span>Prep Progress</span><span className="font-medium">{completed}/4</span></div>
-                            <div className="w-full bg-gray-200 rounded-full h-2"><div className="bg-blue-500 h-2 rounded-full transition-all duration-300" style={{ width: `${percentage}%` }} /></div>
+                            <div className="flex justify-between text-xs text-slate-500 mb-1"><span>Prep Progress</span><span className="font-medium">{completed}/4</span></div>
+                            <div className="w-full bg-slate-200 rounded-full h-2"><div className="bg-teal-500 h-2 rounded-full transition-all duration-300" style={{ width: `${percentage}%` }} /></div>
                           </div>
                         );
                       })()}
@@ -976,8 +996,8 @@ export const AppleDashboard = ({ user, onLogout }) => {
             )}
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </PageLayout>
   );
 };
 
