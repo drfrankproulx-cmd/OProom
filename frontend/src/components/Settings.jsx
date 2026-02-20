@@ -97,7 +97,7 @@ export const Settings = ({ onClose, onSessionExpired, onNavigate, initialTab = '
       });
       if (response.ok) {
         const data = await response.json();
-        setAtttendings(data);
+        setAttendings(data);
       }
     } catch (error) {
       console.error('Failed to fetch attendings:', error);
