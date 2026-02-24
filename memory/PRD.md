@@ -101,6 +101,14 @@ Build a web-based operating room scheduling platform for surgical residents feat
 - `notifications` - User notifications
 
 ## Recently Completed (Feb 20, 2026)
+- [x] **Backend bcrypt AttributeError Fix**:
+  - Fixed recurring passlib/bcrypt version compatibility issue
+  - Added stderr suppression during passlib initialization
+  - Patched bcrypt module to provide __about__ attribute
+  - Backend logs now clean - no more error messages on startup
+- [x] **Code Cleanup - Settings.jsx Typo**:
+  - Fixed all instances of `fetchAtttendings` → `fetchAttendings`
+  - Fixed `setAtttendings` → `setAttendings` (completed earlier)
 - [x] **Smart CPT Code Sorting by Diagnosis**:
   - When a diagnosis with ICD code is selected, CPT codes automatically re-sort by relevance
   - Added 200+ CPT codes organized by category: Biopsy, Ablation, Reconstruction, Revision, Odontogenic Infections, Mandible Fractures, Midface Fractures, Bone Graft, Laceration, Orthognathic, Genioplasty, TMJ, Cosmetic, Nasal Fractures, Cleft
@@ -129,7 +137,6 @@ Build a web-based operating room scheduling platform for surgical residents feat
 - [x] **Settings Page Refactor**:
   - Now uses PageLayout with sidebar
   - Cleaner tab design with proper styling
-  - Fixed typo: `setAtttendings` → `setAttendings`
 
 ## Previously Completed (Feb 12, 2026)
 - [x] **Enhanced Clickable Stat Cards UX**:
