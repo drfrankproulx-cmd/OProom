@@ -12,6 +12,11 @@ from pymongo import MongoClient
 from bson import ObjectId
 import os
 import jwt
+import warnings
+
+# Suppress passlib bcrypt version warning (compatibility issue with newer bcrypt)
+warnings.filterwarnings("ignore", message=".*error reading bcrypt version.*")
+
 from passlib.context import CryptContext
 import smtplib
 from email.mime.multipart import MIMEMultipart
