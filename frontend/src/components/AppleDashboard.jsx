@@ -906,11 +906,28 @@ export const AppleDashboard = ({ user, onLogout }) => {
                   {weekDays.map((day) => {
                     const daySchedules = getSchedulesForDate(day);
                     const today = isToday(day);
+                    const isDropTarget = dragOverDate === day.toISOString();
                     return (
-                      <div key={day.toISOString()} className={`rounded-xl p-2 min-h-[400px] transition-all ${today ? 'bg-gradient-to-br from-teal-50 to-teal-100 ring-2 ring-teal-400' : 'bg-slate-50'}`}>
+                      <div 
+                        key={day.toISOString()} 
+                        onDragOver={(e) => handleDragOver(e, day)}
+                        onDragLeave={handleDragLeave}
+                        onDrop={(e) => handleDrop(e, day)}
+                        className={`rounded-xl p-2 min-h-[400px] transition-all ${
+                          today ? 'bg-gradient-to-br from-teal-50 to-teal-100 ring-2 ring-teal-400' : 'bg-slate-50'
+                        } ${isDropTarget ? 'ring-2 ring-orange-400 bg-orange-50 scale-[1.02]' : ''} ${
+                          draggedAddOn ? 'hover:ring-2 hover:ring-orange-300' : ''
+                        }`}
+                        data-testid={`calendar-day-drop-${format(day, 'yyyy-MM-dd')}`}
+                      >
                         <div className="text-center mb-2">
                           <div className="text-slate-500 text-xs font-medium mb-1">{format(day, 'EEE')}</div>
                           <div className={`text-xl font-bold ${today ? 'text-teal-600' : 'text-slate-900'}`}>{format(day, 'd')}</div>
+                          {isDropTarget && (
+                            <div className="text-xs text-orange-600 font-medium mt-1 animate-pulse">
+                              Drop here
+                            </div>
+                          )}
                         </div>
                         <div className="space-y-1.5">
                           {daySchedules.map(schedule => {
