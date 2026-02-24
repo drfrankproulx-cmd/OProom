@@ -99,6 +99,10 @@ export const AppleDashboard = ({ user, onLogout }) => {
   const [showSettings, setShowSettings] = useState(false);
   const [settingsInitialTab, setSettingsInitialTab] = useState('residents');
   const [showNotifications, setShowNotifications] = useState(false);
+  
+  // Drag and drop state
+  const [draggedAddOn, setDraggedAddOn] = useState(null);
+  const [dragOverDate, setDragOverDate] = useState(null);
 
   // Helper to navigate with filter and toast
   const navigateWithFilter = (view, filter, toastMessage) => {
