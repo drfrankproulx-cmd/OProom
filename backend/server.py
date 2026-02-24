@@ -3,11 +3,23 @@ load_dotenv()  # Load environment variables before any other imports
 
 import warnings
 import logging
+import sys
 
 # Suppress passlib bcrypt version warning (compatibility issue with newer bcrypt)
 # This must be set before importing passlib
-warnings.filterwarnings("ignore", message=".*error reading bcrypt version.*")
-logging.getLogger("passlib").setLevel(logging.ERROR)
+warnings.filterwarnings("ignore", message=".*bcrypt.*")
+warnings.filterwarnings("ignore", category=UserWarning)
+logging.getLogger("passlib").setLevel(logging.CRITICAL)
+
+# Redirect stderr temporarily to suppress bcrypt version error message
+class SuppressBcryptWarning:
+    def __enter__(self):
+        self._stderr = sys.stderr
+        sys.stderr = open('/dev/null', 'w')
+        return self
+    def __exit__(self, *args):
+        sys.stderr.close()
+        sys.stderr = self._stderr
 
 # Patch bcrypt to avoid passlib version detection error
 try:
@@ -18,6 +30,13 @@ try:
         bcrypt.__about__ = About()
 except Exception:
     pass
+
+# Import passlib with stderr suppressed
+with SuppressBcryptWarning():
+    from passlib.context import CryptContext
+    # Force load bcrypt backend
+    _ctx = CryptContext(schemes=["bcrypt"], deprecated="auto")
+    _ctx.hash("test")
 
 from fastapi import FastAPI, HTTPException, Depends, status, Query
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -31,7 +50,6 @@ from bson import ObjectId
 import os
 import jwt
 
-from passlib.context import CryptContext
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
