@@ -980,11 +980,28 @@ export const AppleDashboard = ({ user, onLogout }) => {
                         const daySchedules = getSchedulesForDate(day);
                         const today = isToday(day);
                         const currentMonth = isSameMonth(day, monthViewDate);
+                        const isDropTarget = dragOverDate === day.toISOString();
 
                         return (
-                          <div key={day.toISOString()} className={`min-h-[70px] p-1.5 rounded-lg border transition-all ${today ? 'bg-teal-50 border-teal-400 ring-1 ring-teal-400' : currentMonth ? 'bg-white border-slate-200 hover:bg-slate-50' : 'bg-slate-50 border-slate-100 opacity-50'}`}>
+                          <div 
+                            key={day.toISOString()} 
+                            onDragOver={(e) => currentMonth && handleDragOver(e, day)}
+                            onDragLeave={handleDragLeave}
+                            onDrop={(e) => currentMonth && handleDrop(e, day)}
+                            className={`min-h-[70px] p-1.5 rounded-lg border transition-all ${
+                              today ? 'bg-teal-50 border-teal-400 ring-1 ring-teal-400' 
+                              : currentMonth ? 'bg-white border-slate-200 hover:bg-slate-50' 
+                              : 'bg-slate-50 border-slate-100 opacity-50'
+                            } ${isDropTarget && currentMonth ? 'ring-2 ring-orange-400 bg-orange-50 scale-105' : ''} ${
+                              draggedAddOn && currentMonth ? 'hover:ring-2 hover:ring-orange-300' : ''
+                            }`}
+                            data-testid={`calendar-month-day-${format(day, 'yyyy-MM-dd')}`}
+                          >
                             <div className="text-right mb-1">
                               <span className={`text-xs font-semibold ${today ? 'text-teal-600' : currentMonth ? 'text-slate-900' : 'text-slate-400'}`}>{format(day, 'd')}</span>
+                              {isDropTarget && currentMonth && (
+                                <div className="text-xs text-orange-600 font-medium animate-pulse text-left">Drop</div>
+                              )}
                             </div>
                             {currentMonth && (
                               <div className="space-y-0.5">
