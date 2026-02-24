@@ -1,0 +1,67 @@
+{
+  "summary": "Tested drag-and-drop functionality from Add-On List to Calendar. Fixed backend PUT /api/schedules/{id} endpoint to support partial updates (was returning 422 due to required fields). All 6 drag-and-drop features now working correctly.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/test_reports/iteration_6.json"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/server.py"
+  ],
+  "success_rate": {
+    "backend": "100%",
+    "frontend": "100%"
+  },
+  "test_credentials": {
+    "test_user": "testuser@example.com / Test123!"
+  },
+  "seed_data_creation": "Used existing add-on patients (Emily Chen, Francois, Test Patient 562337, Test Add-On Patient) for drag-and-drop testing",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Drag-and-drop from Add-On List to Calendar is fully functional. Backend was fixed to support partial updates via PUT /api/schedules/{id}. All 6 features tested and passing.",
+  "features_tested": {
+    "addon_items_draggable": {
+      "status": "PASS",
+      "details": "Add-on items have cursor-grab class, active:cursor-grabbing class, and GripVertical drag handle icon"
+    },
+    "week_view_drop_targets": {
+      "status": "PASS",
+      "details": "7 calendar day drop targets found with data-testid='calendar-day-drop-{date}'"
+    },
+    "month_view_drop_targets": {
+      "status": "PASS",
+      "details": "28 calendar day drop targets found with data-testid='calendar-month-day-{date}'"
+    },
+    "drag_drop_schedules_patient": {
+      "status": "PASS",
+      "details": "Successfully dragged Emily Chen to Feb 22 (week view) and Francois to Feb 25 (month view). Patients removed from add-on list and appeared on calendar."
+    },
+    "toast_notification": {
+      "status": "PASS",
+      "details": "Toast notifications appeared: 'Emily Chen scheduled for February 22, 2026' and 'Francois scheduled for February 25, 2026'"
+    },
+    "visual_feedback_during_drag": {
+      "status": "PASS",
+      "details": "Code implements: opacity-50/scale-95/ring-2 for dragged item, ring-2/bg-orange-50/scale-[1.02] for drop target, 'Drop here' text on active target"
+    }
+  },
+  "bug_fix_applied": {
+    "issue": "PUT /api/schedules/{id} was returning 422 Unprocessable Entity because it required all Schedule fields",
+    "fix": "Created SchedulePartialUpdate model with all optional fields and updated PUT endpoint to only update provided fields",
+    "file": "/app/backend/server.py",
+    "lines_changed": "286-310 (added SchedulePartialUpdate class), 964-980 (updated update_schedule function)"
+  },
+  "mocked_apis": {
+    "has_mocked_apis": false,
+    "mocked_apis_list": []
+  }
+}
