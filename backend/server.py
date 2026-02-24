@@ -297,6 +297,19 @@ class Schedule(BaseModel):
     created_by: Optional[str] = None
     created_at: Optional[datetime] = None
 
+class SchedulePartialUpdate(BaseModel):
+    """Partial update model for Schedule - used for drag-and-drop scheduling"""
+    patient_mrn: Optional[str] = None
+    patient_name: Optional[str] = None
+    procedure: Optional[str] = None
+    staff: Optional[str] = None
+    scheduled_date: Optional[str] = None
+    scheduled_time: Optional[str] = None
+    status: Optional[str] = None
+    is_addon: Optional[bool] = None
+    priority: Optional[str] = None
+    diagnosis: Optional[str] = None
+
 class Task(BaseModel):
     patient_mrn: str
     task_description: str
