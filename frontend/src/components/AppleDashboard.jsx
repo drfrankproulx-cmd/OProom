@@ -17,7 +17,8 @@ import {
   Users,
   Activity,
   Bell,
-  X
+  X,
+  GripVertical
 } from 'lucide-react';
 import PageLayout from './PageLayout';
 import Settings from './Settings';
