@@ -1,6 +1,24 @@
 from dotenv import load_dotenv
 load_dotenv()  # Load environment variables before any other imports
 
+import warnings
+import logging
+
+# Suppress passlib bcrypt version warning (compatibility issue with newer bcrypt)
+# This must be set before importing passlib
+warnings.filterwarnings("ignore", message=".*error reading bcrypt version.*")
+logging.getLogger("passlib").setLevel(logging.ERROR)
+
+# Patch bcrypt to avoid passlib version detection error
+try:
+    import bcrypt
+    if not hasattr(bcrypt, '__about__'):
+        class About:
+            __version__ = bcrypt.__version__
+        bcrypt.__about__ = About()
+except Exception:
+    pass
+
 from fastapi import FastAPI, HTTPException, Depends, status, Query
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,10 +30,6 @@ from pymongo import MongoClient
 from bson import ObjectId
 import os
 import jwt
-import warnings
-
-# Suppress passlib bcrypt version warning (compatibility issue with newer bcrypt)
-warnings.filterwarnings("ignore", message=".*error reading bcrypt version.*")
 
 from passlib.context import CryptContext
 import smtplib
