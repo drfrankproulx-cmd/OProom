@@ -975,14 +975,25 @@ async def get_schedules(current_user: str = Depends(get_current_user)):
     return schedules
 
 @app.put("/api/schedules/{schedule_id}")
-async def update_schedule(schedule_id: str, schedule: Schedule, current_user: str = Depends(get_current_user)):
+async def update_schedule(schedule_id: str, schedule: SchedulePartialUpdate, current_user: str = Depends(get_current_user)):
+    # Only update fields that are provided (not None)
+    update_data = {k: v for k, v in schedule.dict().items() if v is not None}
+    
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No fields to update")
+    
     result = schedules_collection.update_one(
         {"_id": ObjectId(schedule_id)},
-        {"$set": schedule.dict()}
+        {"$set": update_data}
     )
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Schedule not found")
-    return {"message": "Schedule updated successfully"}
+    
+    # Return the updated schedule
+    updated_schedule = schedules_collection.find_one({"_id": ObjectId(schedule_id)})
+    if updated_schedule:
+        updated_schedule["_id"] = str(updated_schedule["_id"])
+    return updated_schedule
 
 @app.delete("/api/schedules/{schedule_id}")
 async def delete_schedule(schedule_id: str, current_user: str = Depends(get_current_user)):
