@@ -90,7 +90,7 @@ export const Settings = ({ onClose, onSessionExpired, onNavigate, initialTab = '
     }
   };
 
-  const fetchAtttendings = async () => {
+  const fetchAttendings = async () => {
     try {
       const response = await fetch(`${API_URL}/api/attendings`, {
         headers: getAuthHeaders()
