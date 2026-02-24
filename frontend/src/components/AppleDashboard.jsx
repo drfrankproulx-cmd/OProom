@@ -769,21 +769,46 @@ export const AppleDashboard = ({ user, onLogout }) => {
               </div>
             </div>
 
-            {/* Add-on Cases */}
+            {/* Add-on Cases - Draggable */}
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-              <h3 className="font-semibold text-slate-900 text-sm mb-3">ADD-ONS ({addOnCases.length})</h3>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-slate-900 text-sm">ADD-ONS ({addOnCases.length})</h3>
+                {addOnCases.length > 0 && (
+                  <span className="text-xs text-slate-400 flex items-center gap-1">
+                    <GripVertical className="h-3 w-3" />
+                    Drag to calendar
+                  </span>
+                )}
+              </div>
               <div className="space-y-2 max-h-[280px] overflow-y-auto">
                 {addOnCases.map(addOn => {
                   const patient = patients.find(p => p.mrn === addOn.patient_mrn);
                   const checklist = patient?.prep_checklist || {};
                   const completed = Object.values(checklist).filter(Boolean).length;
+                  const isDragging = draggedAddOn?._id === addOn._id;
                   return (
-                    <div key={addOn._id} className="p-2 bg-orange-50 rounded-lg hover:bg-orange-100 cursor-pointer transition-colors text-xs" onClick={() => setSelectedPatient(patient)}>
-                      <div className="font-semibold text-slate-900">{getInitials(addOn.patient_name)}</div>
-                      <div className="text-slate-600 truncate">{addOn.procedure}</div>
-                      <div className="flex items-center justify-between mt-1">
-                        <Badge variant="outline" className="bg-white text-xs px-2 py-0">{addOn.priority || 'medium'}</Badge>
-                        <span className="text-xs text-slate-500">{completed}/4</span>
+                    <div 
+                      key={addOn._id} 
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, addOn)}
+                      onDragEnd={handleDragEnd}
+                      className={`p-2 bg-orange-50 rounded-lg hover:bg-orange-100 cursor-grab active:cursor-grabbing transition-all text-xs group ${
+                        isDragging ? 'opacity-50 scale-95 ring-2 ring-orange-400' : ''
+                      }`}
+                      data-testid={`addon-drag-item-${addOn._id}`}
+                    >
+                      <div className="flex items-start gap-2">
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity pt-0.5">
+                          <GripVertical className="h-3 w-3 text-slate-400" />
+                        </div>
+                        <div className="flex-1 min-w-0" onClick={() => setSelectedPatient(patient)}>
+                          <div className="font-semibold text-slate-900">{addOn.patient_name}</div>
+                          <div className="text-slate-600 truncate">{addOn.procedure}</div>
+                          <div className="flex items-center justify-between mt-1">
+                            <Badge variant="outline" className="bg-white text-xs px-2 py-0">{addOn.priority || 'medium'}</Badge>
+                            <span className="text-xs text-slate-500">{completed}/4</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   );
