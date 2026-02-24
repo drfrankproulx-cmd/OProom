@@ -101,6 +101,14 @@ Build a web-based operating room scheduling platform for surgical residents feat
 - `notifications` - User notifications
 
 ## Recently Completed (Feb 20, 2026)
+- [x] **Drag-and-Drop from Add-On List to Calendar**:
+  - Add-On items are now draggable with visual drag handle (GripVertical icon)
+  - Calendar days (both week and month view) are valid drop targets
+  - Visual feedback during drag: item opacity reduces, drop target highlights orange
+  - "Drop here" text appears on active drop target
+  - Successfully dropping schedules the patient for that date
+  - Toast notification confirms scheduling: "{Patient Name} scheduled for {Date}"
+  - Backend `PUT /api/schedules/{id}` updated to support partial updates
 - [x] **Backend bcrypt AttributeError Fix**:
   - Fixed recurring passlib/bcrypt version compatibility issue
   - Added stderr suppression during passlib initialization
@@ -111,32 +119,21 @@ Build a web-based operating room scheduling platform for surgical residents feat
   - Fixed `setAtttendings` → `setAttendings` (completed earlier)
 - [x] **Smart CPT Code Sorting by Diagnosis**:
   - When a diagnosis with ICD code is selected, CPT codes automatically re-sort by relevance
-  - Added 200+ CPT codes organized by category: Biopsy, Ablation, Reconstruction, Revision, Odontogenic Infections, Mandible Fractures, Midface Fractures, Bone Graft, Laceration, Orthognathic, Genioplasty, TMJ, Cosmetic, Nasal Fractures, Cleft
+  - Added 200+ CPT codes organized by category
   - ICD-to-CPT mapping ensures relevant procedures appear first
   - Sparkle icon (✨) indicates recommended procedures for selected diagnosis
-  - Categories: Biopsy, Ablation, Reconstruction, Diagnostic, Revision, Odontogenic Infections, Mandible/Midface Fractures, Bone Graft, Laceration, Orthognathic, Genioplasty, TMJ, Cosmetic, Nasal Fractures, Cleft
 - [x] **ICD-10 Diagnosis Codes Integration**:
   - Added 80+ ICD-10 diagnosis codes to the diagnosis autocomplete
   - Categories: Trauma, H&N Oncology, TMJ, Orthognathic, Cleft & Craniofacial, Cosmetics
-  - ICD codes displayed in dropdown with monospace badge (e.g., `S02.65xB`)
-  - Search by diagnosis name, category, or ICD code
-  - Selected diagnosis shows ICD code in parentheses
+  - ICD codes displayed in dropdown with monospace badge
 - [x] **UI/UX Refactor - Consistent Sidebar Navigation**:
   - Created shared `PageLayout.jsx` and `Sidebar.jsx` components
-  - All 8 pages now have consistent sidebar: Dashboard, Calendar, Patients, Tasks, Pre-Op Status, Surgery Timeline, Bulk Import, Settings
-  - Navigation items with proper icons and active state highlighting
-  - User profile section at bottom of sidebar with logout
+  - All 8 pages now have consistent sidebar
 - [x] **Calendar Toggle (Week/Month)**:
   - Dashboard calendar: Replaced stacked weekly+monthly views with toggleable single view
-  - Calendar page: Already had toggle, added data-testid for testing
-  - Toggle buttons with visual state indicators
 - [x] **Dashboard Layout Improvements**:
-  - Cleaner 3-column layout: Left (Weekly/Add-Ons/Urgent), Center (Calendar), Right (Create Task/Patient Details)
-  - Improved spacing and reduced visual clutter
-  - Consistent teal color scheme replacing old blue gradients
-- [x] **Settings Page Refactor**:
-  - Now uses PageLayout with sidebar
-  - Cleaner tab design with proper styling
+  - Cleaner 3-column layout
+  - Consistent teal color scheme
 
 ## Previously Completed (Feb 12, 2026)
 - [x] **Enhanced Clickable Stat Cards UX**:
