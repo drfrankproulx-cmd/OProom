@@ -106,7 +106,7 @@ export const Settings = ({ onClose, onSessionExpired, onNavigate, initialTab = '
 
   useEffect(() => {
     fetchResidents();
-    fetchAtttendings();
+    fetchAttendings();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -257,7 +257,7 @@ export const Settings = ({ onClose, onSessionExpired, onNavigate, initialTab = '
           specialty: '',
           is_active: true
         });
-        fetchAtttendings();
+        fetchAttendings();
       } else {
         toast.error(data.detail || 'Failed to add attending');
       }
@@ -287,7 +287,7 @@ export const Settings = ({ onClose, onSessionExpired, onNavigate, initialTab = '
           specialty: '',
           is_active: true
         });
-        fetchAtttendings();
+        fetchAttendings();
       } else {
         toast.error('Failed to update attending');
       }
@@ -307,7 +307,7 @@ export const Settings = ({ onClose, onSessionExpired, onNavigate, initialTab = '
 
       if (response.ok) {
         toast.success('Attending deleted successfully');
-        fetchAtttendings();
+        fetchAttendings();
       } else {
         toast.error('Failed to delete attending');
       }
