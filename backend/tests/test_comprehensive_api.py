@@ -606,71 +606,80 @@ class TestAttendingsAPI:
 
 
 class TestBulkImportAPI:
-    """Bulk Import API tests"""
+    """Bulk Import API tests - for residents/attendings import"""
     
-    def test_get_import_template(self, auth_headers):
-        """Test downloading import template"""
-        response = requests.get(f"{BASE_URL}/api/bulk-import/template", headers=auth_headers)
+    def test_get_residents_import_template(self, auth_headers):
+        """Test downloading residents import template"""
+        response = requests.get(f"{BASE_URL}/api/import/template/residents", headers=auth_headers)
         
-        assert response.status_code == 200, f"Get template failed: {response.text}"
+        assert response.status_code == 200, f"Get residents template failed: {response.text}"
         # Check content type is CSV
         assert "text/csv" in response.headers.get("content-type", "")
         
         # Verify CSV has expected headers
         csv_content = response.text
-        assert "mrn" in csv_content.lower() or "patient" in csv_content.lower()
+        assert "name" in csv_content.lower() or "email" in csv_content.lower()
         
-        print("✓ Get import template passed")
+        print("✓ Get residents import template passed")
     
-    def test_preview_import(self, auth_headers):
-        """Test previewing import data"""
-        # Create a simple CSV content
-        csv_content = """mrn,patient_name,dob,diagnosis,procedures,attending,scheduled_date
-TEST_BULK_001,Test Bulk Patient 1,1990-01-01,Test Diagnosis,Test Procedure,Dr. Test,2026-02-15
-TEST_BULK_002,Test Bulk Patient 2,1985-05-15,Test Diagnosis 2,Test Procedure 2,Dr. Test,2026-02-16"""
+    def test_get_attendings_import_template(self, auth_headers):
+        """Test downloading attendings import template"""
+        response = requests.get(f"{BASE_URL}/api/import/template/attendings", headers=auth_headers)
+        
+        assert response.status_code == 200, f"Get attendings template failed: {response.text}"
+        # Check content type is CSV
+        assert "text/csv" in response.headers.get("content-type", "")
+        
+        print("✓ Get attendings import template passed")
+    
+    def test_preview_residents_import(self, auth_headers):
+        """Test previewing residents import data"""
+        # Create a simple CSV content for residents
+        csv_content = f"""name,email,year,phone,specialty
+Test Resident Import 1,test_import_{TEST_TIMESTAMP}_1@hospital.com,PGY-2,555-111-1111,General Surgery
+Test Resident Import 2,test_import_{TEST_TIMESTAMP}_2@hospital.com,PGY-3,555-222-2222,Orthopedics"""
         
         files = {
-            'file': ('test_import.csv', csv_content, 'text/csv')
+            'file': ('test_residents.csv', csv_content, 'text/csv')
         }
         
         # Remove Content-Type from headers for multipart
         headers = {"Authorization": auth_headers["Authorization"]}
         
-        response = requests.post(f"{BASE_URL}/api/bulk-import/preview", 
+        response = requests.post(f"{BASE_URL}/api/import/preview/residents", 
             headers=headers,
             files=files
         )
         
-        assert response.status_code == 200, f"Preview import failed: {response.text}"
+        assert response.status_code == 200, f"Preview residents import failed: {response.text}"
         data = response.json()
         
-        assert "preview" in data or "patients" in data or "records" in data or isinstance(data, list)
-        print("✓ Preview import passed")
+        assert "valid_count" in data or "valid_rows" in data
+        print(f"✓ Preview residents import passed - valid: {data.get('valid_count', 'N/A')}")
     
-    def test_execute_import(self, auth_headers):
-        """Test executing bulk import"""
-        # Create a simple CSV content with unique MRNs
-        csv_content = f"""mrn,patient_name,dob,diagnosis,procedures,attending,scheduled_date
-TEST_IMPORT_{TEST_TIMESTAMP}_1,Test Import Patient 1,1990-01-01,Test Diagnosis,Test Procedure,Dr. Test,2026-02-15
-TEST_IMPORT_{TEST_TIMESTAMP}_2,Test Import Patient 2,1985-05-15,Test Diagnosis 2,Test Procedure 2,Dr. Test,2026-02-16"""
+    def test_execute_residents_import(self, auth_headers):
+        """Test executing residents bulk import"""
+        # Create a simple CSV content with unique emails
+        csv_content = f"""name,email,year,phone,specialty
+Test Import Resident {TEST_TIMESTAMP},import_resident_{TEST_TIMESTAMP}@hospital.com,PGY-4,555-333-3333,Cardiology"""
         
         files = {
-            'file': ('test_import.csv', csv_content, 'text/csv')
+            'file': ('test_residents.csv', csv_content, 'text/csv')
         }
         
         headers = {"Authorization": auth_headers["Authorization"]}
         
-        response = requests.post(f"{BASE_URL}/api/bulk-import/execute", 
+        response = requests.post(f"{BASE_URL}/api/import/residents", 
             headers=headers,
             files=files
         )
         
-        assert response.status_code == 200, f"Execute import failed: {response.text}"
+        assert response.status_code == 200, f"Execute residents import failed: {response.text}"
         data = response.json()
         
         # Verify import results
-        assert "imported" in data or "success" in data or "count" in data or "patients" in data
-        print(f"✓ Execute import passed - response: {data}")
+        assert "imported_count" in data or "success" in data or "imported" in data
+        print(f"✓ Execute residents import passed - response: {data}")
 
 
 class TestUsageTracking:
