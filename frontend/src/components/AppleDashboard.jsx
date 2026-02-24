@@ -393,6 +393,82 @@ export const AppleDashboard = ({ user, onLogout }) => {
     }
   };
 
+  // Drag and Drop handlers for Add-On to Calendar
+  const handleDragStart = (e, addOn) => {
+    setDraggedAddOn(addOn);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', addOn._id);
+    // Add a slight delay to show drag effect
+    setTimeout(() => {
+      e.target.style.opacity = '0.5';
+    }, 0);
+  };
+
+  const handleDragEnd = (e) => {
+    e.target.style.opacity = '1';
+    setDraggedAddOn(null);
+    setDragOverDate(null);
+  };
+
+  const handleDragOver = (e, date) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDragOverDate(date.toISOString());
+  };
+
+  const handleDragLeave = (e) => {
+    // Only clear if we're actually leaving the drop zone
+    if (!e.currentTarget.contains(e.relatedTarget)) {
+      setDragOverDate(null);
+    }
+  };
+
+  const handleDrop = async (e, date) => {
+    e.preventDefault();
+    setDragOverDate(null);
+    
+    if (!draggedAddOn) return;
+    
+    try {
+      const token = localStorage.getItem('token');
+      const formattedDate = format(date, 'yyyy-MM-dd');
+      
+      // Update the schedule to remove add-on status and set the scheduled date
+      const response = await fetch(`${API_URL}/api/schedules/${draggedAddOn._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          is_addon: false,
+          scheduled_date: formattedDate,
+          scheduled_time: '08:00' // Default time, can be adjusted later
+        })
+      });
+
+      if (response.ok) {
+        const updatedSchedule = await response.json();
+        // Update local state
+        setSchedules(prev => prev.map(s => 
+          s._id === draggedAddOn._id 
+            ? { ...s, is_addon: false, scheduled_date: formattedDate, scheduled_time: '08:00' }
+            : s
+        ));
+        toast.success(`${draggedAddOn.patient_name} scheduled for ${format(date, 'MMMM d, yyyy')}`, {
+          duration: 3000
+        });
+      } else {
+        toast.error('Failed to schedule patient');
+      }
+    } catch (error) {
+      console.error('Drop error:', error);
+      toast.error('Failed to schedule patient');
+    }
+    
+    setDraggedAddOn(null);
+  };
+
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return 'Good morning';
