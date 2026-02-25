@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Sidebar } from './Sidebar';
+import { MobileNav } from './MobileNav';
 
 export const PageLayout = ({ 
   children, 
@@ -15,7 +16,7 @@ export const PageLayout = ({
 
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden">
-      {/* Sidebar */}
+      {/* Desktop Sidebar */}
       <Sidebar
         currentView={currentView}
         onNavigate={(view) => {
@@ -32,32 +33,41 @@ export const PageLayout = ({
       <main className="flex-1 flex flex-col md:pl-64 h-full overflow-hidden">
         {/* Header */}
         {(title || headerActions) && (
-          <header className="sticky top-0 z-30 flex items-center justify-between h-16 px-6 bg-white/80 backdrop-blur-md border-b border-slate-200 shadow-sm">
-            <div className="flex items-center gap-4 pl-12 md:pl-0">
+          <header className="sticky top-0 z-30 flex items-center justify-between h-14 md:h-16 px-4 md:px-6 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
+            <div className="flex items-center gap-3 pl-10 md:pl-0">
               <div>
                 {title && (
-                  <h1 className="text-xl font-semibold text-slate-900 tracking-tight">
+                  <h1 className="text-lg md:text-xl font-semibold text-slate-900 tracking-tight">
                     {title}
                   </h1>
                 )}
                 {subtitle && (
-                  <p className="text-sm text-slate-500">{subtitle}</p>
+                  <p className="text-xs md:text-sm text-slate-500 hidden md:block">{subtitle}</p>
                 )}
               </div>
             </div>
             {headerActions && (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 md:gap-3">
                 {headerActions}
               </div>
             )}
           </header>
         )}
 
-        {/* Page Content */}
-        <div className="flex-1 overflow-y-auto">
+        {/* Page Content - Add bottom padding for mobile nav */}
+        <div className="flex-1 overflow-y-auto pb-20 md:pb-0">
           {children}
         </div>
       </main>
+
+      {/* Mobile Bottom Navigation */}
+      <MobileNav 
+        currentView={currentView}
+        onNavigate={(view) => {
+          onNavigate(view);
+          setSidebarOpen(false);
+        }}
+      />
     </div>
   );
 };
