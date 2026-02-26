@@ -101,6 +101,22 @@ Build a web-based operating room scheduling platform for surgical residents feat
 - `notifications` - User notifications
 
 ## Recently Completed (Feb 26, 2026)
+- [x] **Persistent Login & Biometric Authentication (COMPLETE)**:
+  - **Persistent Login (Remember Me)**:
+    - JWT token expiration extended to 30 days (ACCESS_TOKEN_EXPIRE_MINUTES=43200)
+    - "Remember me on this device" checkbox on login (checked by default)
+    - Token stored in localStorage (persistent) or sessionStorage (session-only)
+    - App validates token on startup - no flash of login screen
+    - Logout clears all auth data from both storages
+  - **Biometric Authentication (WebAuthn)**:
+    - Backend endpoints: `/api/auth/webauthn/register-options`, `/api/auth/webauthn/register`, `/api/auth/webauthn/login-options`, `/api/auth/webauthn/login`, `/api/auth/webauthn/check/{email}`
+    - New MongoDB collections: `webauthn_credentials`, `webauthn_challenges`
+    - Frontend shows "Sign in with Face ID" button when biometrics registered
+    - "Use password instead" fallback always available
+    - Prompt to enable biometrics after first password login
+  - **Files Updated**: `/app/backend/server.py`, `/app/frontend/src/App.js`, `/app/frontend/src/components/AuthPage.jsx`
+  - **Dependencies Added**: `webauthn==2.7.1`
+
 - [x] **Mobile UI/UX Overhaul (COMPLETE)**:
   - Created `MobileNav.jsx` - Bottom tab bar navigation for mobile devices
   - Updated `PageLayout.jsx` - Switches between desktop sidebar and mobile nav
