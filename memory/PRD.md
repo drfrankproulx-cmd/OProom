@@ -183,7 +183,7 @@ Build a web-based operating room scheduling platform for surgical residents feat
 - [x] Added Calendar component import and view routing in AppleDashboard
 
 ## Known Issues
-- Intermittent `bcrypt` AttributeError on backend startup (resolves after restart)
+- LOW: "Made with Emergent" badge can overlay mobile nav buttons (navigation still works)
 - PDF extraction tool non-functional (CPT codes use static JSON workaround)
 
 ## Upcoming Tasks (P1)
@@ -196,6 +196,7 @@ Build a web-based operating room scheduling platform for surgical residents feat
 
 ## Test Credentials
 - Test User: `testuser@example.com` / `Test123!`
+- Admin User: `proul076@umn.edu` / `59K63i75%(`
 
 ## Last Updated
-February 20, 2026
+February 26, 2026
