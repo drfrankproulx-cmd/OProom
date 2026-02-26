@@ -58,6 +58,83 @@ const getInitials = (name) => {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 };
 
+// Draggable Add-On Patient Component
+const DraggableAddOn = ({ addOn, patient, onTap, isDragging }) => {
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id: `addon-${addOn._id}`,
+    data: { addOn, patient }
+  });
+
+  const checklist = patient?.prep_checklist || {};
+  const completed = Object.values(checklist).filter(Boolean).length;
+
+  const style = transform ? {
+    transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+    zIndex: 1000,
+  } : undefined;
+
+  // Detect if touch device
+  const isTouchDevice = 'ontouchstart' in window;
+
+  return (
+    <div 
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...(isTouchDevice ? {} : listeners)}
+      className={`p-2 bg-orange-50 rounded-lg hover:bg-orange-100 transition-all text-xs group ${
+        isDragging ? 'opacity-50 scale-95 ring-2 ring-orange-400 shadow-lg' : 'cursor-grab active:cursor-grabbing'
+      }`}
+      data-testid={`addon-drag-item-${addOn._id}`}
+    >
+      <div className="flex items-start gap-2">
+        {!isTouchDevice && (
+          <div className="opacity-0 group-hover:opacity-100 transition-opacity pt-0.5">
+            <GripVertical className="h-3 w-3 text-slate-400" />
+          </div>
+        )}
+        <div className="flex-1 min-w-0" onClick={() => onTap(addOn, patient)}>
+          <div className="font-semibold text-slate-900">{addOn.patient_name}</div>
+          <div className="text-slate-600 truncate">{addOn.procedure}</div>
+          <div className="flex items-center justify-between mt-1">
+            <Badge variant="outline" className="bg-white text-xs px-2 py-0">{addOn.priority || 'medium'}</Badge>
+            <span className="text-xs text-slate-500">{completed}/4</span>
+          </div>
+          {/* Mobile: Show tap hint */}
+          {isTouchDevice && (
+            <div className="mt-1.5 text-[10px] text-orange-600 flex items-center gap-1">
+              <Smartphone className="h-3 w-3" />
+              Tap to schedule
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Droppable Calendar Day Component
+const DroppableDay = ({ day, children, isOver, hasSchedules }) => {
+  const { setNodeRef, isOver: dropIsOver } = useDroppable({
+    id: `day-${format(day, 'yyyy-MM-dd')}`,
+    data: { date: day }
+  });
+
+  const today = isToday(day);
+
+  return (
+    <div 
+      ref={setNodeRef}
+      className={`rounded-xl p-2 min-h-[200px] md:min-h-[400px] transition-all ${
+        today ? 'bg-gradient-to-br from-teal-50 to-teal-100 ring-2 ring-teal-400' : 'bg-slate-50'
+      } ${dropIsOver ? 'ring-2 ring-orange-400 bg-orange-50 scale-[1.02]' : ''}`}
+      data-testid={`calendar-day-drop-${format(day, 'yyyy-MM-dd')}`}
+    >
+      {children}
+    </div>
+  );
+};
+
 // Quick Stats Card Component - Mobile optimized
 const StatsCard = ({ title, value, icon: Icon, color, onClick, dataTestId, subtitle }) => {
   const colorClasses = {
