@@ -673,9 +673,9 @@ export const AppleDashboard = ({ user, onLogout }) => {
           {/* Row 2: Attending, Diagnosis, Procedure/CPT - Stack on mobile */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-3 md:mb-4">
             <div>
-              <Label className="text-sm font-medium text-slate-700 mb-1 block">Attending</Label>
+              <Label className="text-xs md:text-sm font-medium text-slate-700 mb-1 block">Attending</Label>
               <Select value={intakeForm.attending} onValueChange={(v) => setIntakeForm({...intakeForm, attending: v})}>
-                <SelectTrigger className="h-10 text-sm rounded-lg">
+                <SelectTrigger className="h-11 md:h-10 text-base md:text-sm rounded-lg">
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
                 <SelectContent>
