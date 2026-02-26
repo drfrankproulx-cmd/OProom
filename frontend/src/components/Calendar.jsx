@@ -174,12 +174,12 @@ const Calendar = ({ onNavigate, initialFilter, user, onLogout }) => {
         : format(currentDate, 'MMMM yyyy')
       }
       headerActions={
-        <div className="flex items-center gap-3">
-          {/* Filter by Attending */}
+        <div className="flex items-center gap-2 md:gap-3 flex-wrap">
+          {/* Filter by Attending - Hidden on small mobile */}
           <Select value={filterAttending} onValueChange={setFilterAttending}>
-            <SelectTrigger className="w-48 rounded-lg border-slate-200">
-              <Filter className="h-4 w-4 mr-2" />
-              <SelectValue placeholder="Filter by Attending" />
+            <SelectTrigger className="w-full sm:w-48 h-10 rounded-lg border-slate-200 text-sm">
+              <Filter className="h-4 w-4 mr-2 hidden sm:inline" />
+              <SelectValue placeholder="Filter" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Attendings</SelectItem>
@@ -193,7 +193,7 @@ const Calendar = ({ onNavigate, initialFilter, user, onLogout }) => {
           <div className="flex bg-slate-100 rounded-lg p-1" data-testid="calendar-view-toggle">
             <button
               onClick={() => setViewMode('week')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`px-2 md:px-4 py-1.5 md:py-2 rounded-md text-xs md:text-sm font-medium transition-colors ${
                 viewMode === 'week' ? 'bg-white shadow text-slate-900' : 'text-slate-600 hover:text-slate-900'
               }`}
               data-testid="calendar-toggle-week"
@@ -202,7 +202,7 @@ const Calendar = ({ onNavigate, initialFilter, user, onLogout }) => {
             </button>
             <button
               onClick={() => setViewMode('month')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`px-2 md:px-4 py-1.5 md:py-2 rounded-md text-xs md:text-sm font-medium transition-colors ${
                 viewMode === 'month' ? 'bg-white shadow text-slate-900' : 'text-slate-600 hover:text-slate-900'
               }`}
               data-testid="calendar-toggle-month"
@@ -212,25 +212,25 @@ const Calendar = ({ onNavigate, initialFilter, user, onLogout }) => {
           </div>
 
           {/* Navigation */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 md:gap-2">
             <Button
               variant="outline"
               onClick={navigatePrev}
-              className="rounded-lg w-10 h-10 p-0"
+              className="rounded-lg w-9 h-9 md:w-10 md:h-10 p-0"
             >
-              <ChevronLeft className="h-5 w-5" />
+              <ChevronLeft className="h-4 w-4 md:h-5 md:w-5" />
             </Button>
             <Button
               variant="outline"
               onClick={() => setCurrentDate(new Date())}
-              className="rounded-lg px-4"
+              className="rounded-lg px-2 md:px-4 h-9 md:h-10 text-xs md:text-sm hidden sm:flex"
             >
               Today
             </Button>
             <Button
               variant="outline"
               onClick={navigateNext}
-              className="rounded-lg w-10 h-10 p-0"
+              className="rounded-lg w-9 h-9 md:w-10 md:h-10 p-0"
             >
               <ChevronRight className="h-5 w-5" />
             </Button>
