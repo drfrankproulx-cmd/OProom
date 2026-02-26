@@ -747,10 +747,10 @@ export const AppleDashboard = ({ user, onLogout }) => {
           </div>
         </div>
 
-        {/* 3-Column Layout */}
-        <div className="grid grid-cols-12 gap-5">
-          {/* LEFT COLUMN: Weekly Cases + Add-on Cases + Urgent Tasks */}
-          <div className="col-span-12 lg:col-span-2 space-y-4">
+        {/* 3-Column Layout - Stack on mobile */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-5">
+          {/* LEFT COLUMN: Weekly Cases + Add-on Cases + Urgent Tasks - Hidden on mobile, shown as cards */}
+          <div className="lg:col-span-2 space-y-4 hidden lg:block">
             {/* Weekly Cases */}
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
               <h3 className="font-semibold text-slate-900 text-sm mb-3">WEEKLY ({weeklySchedules.length})</h3>
