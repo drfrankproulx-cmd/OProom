@@ -150,8 +150,8 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
   };
 
   return (
-    <div className="space-y-2" ref={dropdownRef}>
-      <Label htmlFor="cpt-code">
+    <div className="space-y-1 md:space-y-2" ref={dropdownRef}>
+      <Label htmlFor="cpt-code" className="text-xs md:text-sm">
         {label} {required && <span className="text-red-500">*</span>}
         {selectedCPT && (
           <span className="ml-2 px-2 py-0.5 bg-teal-100 text-teal-700 rounded text-xs font-medium">
@@ -167,8 +167,8 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
             value={searchQuery}
             onChange={handleInputChange}
             onFocus={handleFocus}
-            placeholder="Search CPT code or procedure (e.g., 'lefort', '21141')"
-            className="pl-9"
+            placeholder="Search CPT code or procedure..."
+            className="pl-9 h-11 md:h-10 text-base md:text-sm"
             autoComplete="off"
             data-testid="cpt-autocomplete-input"
           />
@@ -176,16 +176,16 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
 
         {/* Selected CPT Display */}
         {selectedCPT && !isOpen && (
-          <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="mt-2 p-2 md:p-3 bg-blue-50 border border-blue-200 rounded-lg">
             <div className="flex items-start justify-between">
-              <div>
+              <div className="min-w-0">
                 <div className="flex items-center space-x-2 mb-1">
-                  <span className="font-mono font-semibold text-blue-700">{selectedCPT.code}</span>
+                  <span className="font-mono font-semibold text-blue-700 text-sm">{selectedCPT.code}</span>
                   {selectedCPT.isFavorite && (
-                    <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                    <Star className="h-3 w-3 md:h-4 md:w-4 text-yellow-500 fill-yellow-500 flex-shrink-0" />
                   )}
                 </div>
-                <p className="text-sm text-gray-700">{selectedCPT.description}</p>
+                <p className="text-xs md:text-sm text-gray-700 line-clamp-2">{selectedCPT.description}</p>
               </div>
             </div>
           </div>
@@ -193,7 +193,7 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
 
         {/* Dropdown */}
         {isOpen && filteredCodes.length > 0 && (
-          <div className="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-96 overflow-y-auto">
+          <div className="absolute z-[9999] mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-[50vh] md:max-h-96 overflow-y-auto">
             {/* Header for frequently used */}
             {!searchQuery && frequentlyUsed.length > 0 && !diagnosis && (
               <div className="px-3 py-1.5 bg-purple-50 border-b border-purple-200 sticky top-0">
@@ -209,7 +209,7 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
               <div className="px-3 py-1.5 bg-teal-50 border-b border-teal-200 sticky top-0">
                 <span className="text-xs font-semibold text-teal-700 flex items-center gap-1">
                   <Sparkles className="h-3 w-3" />
-                  Recommended for selected diagnosis
+                  Recommended for diagnosis
                 </span>
               </div>
             )}
@@ -223,7 +223,7 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
                 key={cpt.code}
                 type="button"
                 onClick={() => handleSelectCPT(cpt)}
-                className={`w-full text-left px-4 py-3 hover:bg-blue-50 border-b border-gray-100 last:border-b-0 transition-colors ${
+                className={`w-full text-left px-3 md:px-4 py-3 hover:bg-blue-50 active:bg-blue-100 border-b border-gray-100 last:border-b-0 transition-colors ${
                   index === 0 ? 'rounded-t-lg' : ''
                 } ${index === filteredCodes.length - 1 ? 'rounded-b-lg' : ''} ${
                   isRelevant ? 'bg-teal-50/50' : ''
@@ -231,24 +231,24 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
                 data-testid={`cpt-option-${cpt.code}`}
               >
                 <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-2 mb-1">
-                      <span className="font-mono font-semibold text-blue-600 text-lg">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center space-x-2 mb-1 flex-wrap">
+                      <span className="font-mono font-semibold text-blue-600 text-base md:text-lg">
                         {cpt.code}
                       </span>
                       {isRelevant && (
-                        <Sparkles className="h-4 w-4 text-teal-500" />
+                        <Sparkles className="h-3 w-3 md:h-4 md:w-4 text-teal-500 flex-shrink-0" />
                       )}
                       {cpt.isFrequentlyUsed && (
-                        <Clock className="h-4 w-4 text-purple-500" />
+                        <Clock className="h-3 w-3 md:h-4 md:w-4 text-purple-500 flex-shrink-0" />
                       )}
                       {cpt.isFavorite && !isRelevant && (
-                        <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                        <Star className="h-3 w-3 md:h-4 md:w-4 text-yellow-500 fill-yellow-500 flex-shrink-0" />
                       )}
                     </div>
-                    <p className="text-sm text-gray-700 mb-2">{cpt.description}</p>
+                    <p className="text-xs md:text-sm text-gray-700 mb-1 md:mb-2 line-clamp-2">{cpt.description}</p>
                     <span
-                      className={`inline-block text-xs px-2 py-1 rounded-full border ${getCategoryColor(
+                      className={`inline-block text-[10px] md:text-xs px-2 py-0.5 md:py-1 rounded-full border ${getCategoryColor(
                         cpt.category
                       )}`}
                     >
@@ -264,8 +264,8 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
 
         {/* No results message */}
         {isOpen && searchQuery && filteredCodes.length === 0 && (
-          <div className="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg p-4">
-            <p className="text-gray-500 text-center">
+          <div className="absolute z-[9999] mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg p-4">
+            <p className="text-gray-500 text-center text-sm">
               No CPT codes found for "{searchQuery}"
             </p>
           </div>
@@ -288,26 +288,26 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
           }
 
           return (
-            <div className={`absolute z-40 mt-1 w-full ${bgColor} border ${borderColor} rounded-t-lg border-b-0 px-4 py-2`}>
+            <div className={`absolute z-[9998] mt-1 w-full ${bgColor} border ${borderColor} rounded-t-lg border-b-0 px-3 md:px-4 py-2`}>
               <div className="flex items-center space-x-2 text-xs text-gray-500">
                 {isDiagnosisFiltered ? (
                   <>
-                    <Sparkles className="h-3 w-3 text-teal-600" />
+                    <Sparkles className="h-3 w-3 text-teal-600 flex-shrink-0" />
                     <span className="text-teal-700 font-medium">
-                      Smart sorted by diagnosis - most relevant procedures first
+                      Smart sorted by diagnosis
                     </span>
                   </>
                 ) : isFrequentlyUsedShown ? (
                   <>
-                    <Clock className="h-3 w-3 text-purple-600" />
+                    <Clock className="h-3 w-3 text-purple-600 flex-shrink-0" />
                     <span className="text-purple-700 font-medium">
-                      Showing your {filteredCodes.length} most used procedures - start typing to search
+                      Most used - start typing to search
                     </span>
                   </>
                 ) : (
                   <>
-                    <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />
-                    <span>Showing favorite procedures - start typing to search all codes</span>
+                    <Star className="h-3 w-3 text-yellow-500 fill-yellow-500 flex-shrink-0" />
+                    <span>Favorites - start typing to search</span>
                   </>
                 )}
               </div>
