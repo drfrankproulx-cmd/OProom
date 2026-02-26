@@ -62,6 +62,12 @@ export const Patients = ({ onNavigate, initialFilter, user, onLogout }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Pull to refresh handler
+  const handleRefresh = useCallback(async () => {
+    await fetchData();
+    toast.success('Patients refreshed', { duration: 1500 });
+  }, []);
+
   const getScheduleForPatient = (mrn) => {
     return schedules.find(s => s.patient_mrn === mrn);
   };
