@@ -332,16 +332,16 @@ export const Tasks = ({ onNavigate, initialFilter, user, onLogout }) => {
       title="All Tasks"
       subtitle={`${stats.active} active • ${stats.completed} completed`}
     >
-      <div className="p-6 space-y-6">
+      <div className="p-4 md:p-6 space-y-4 md:space-y-6">
         {/* Filters and Search */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-          <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-3 md:p-4">
+          <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
             {/* Search */}
-            <div className="flex-1 min-w-[300px] relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-slate-400" />
               <Input
-                placeholder="Search tasks, assignees, or patient IDs..."
-                className="pl-10 h-10 rounded-lg border-slate-200"
+                placeholder="Search tasks..."
+                className="pl-9 md:pl-10 h-11 md:h-10 text-base md:text-sm rounded-lg border-slate-200"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -350,89 +350,171 @@ export const Tasks = ({ onNavigate, initialFilter, user, onLogout }) => {
                   onClick={() => setSearchTerm('')}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2"
                 >
-                  <X className="h-5 w-5 text-slate-400 hover:text-slate-600" />
+                  <X className="h-4 w-4 md:h-5 md:w-5 text-slate-400 hover:text-slate-600" />
                 </button>
               )}
             </div>
 
-            {/* Status Filter */}
-            <div className="flex items-center space-x-2">
-              <Filter className="h-5 w-5 text-gray-500" />
+            {/* Filters row */}
+            <div className="flex items-center gap-2 md:gap-3">
+              {/* Status Filter */}
+              <div className="flex items-center space-x-2 flex-1 md:flex-none">
+                <Filter className="h-4 w-4 md:h-5 md:w-5 text-gray-500 hidden md:block" />
+                <select
+                  value={filterStatus}
+                  onChange={(e) => setFilterStatus(e.target.value)}
+                  className="flex-1 md:flex-none h-11 md:h-10 px-3 md:px-4 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="all">All Tasks</option>
+                  <option value="active">Active</option>
+                  <option value="completed">Completed</option>
+                  <option value="overdue">Overdue</option>
+                  <option value="urgent">Urgent</option>
+                </select>
+              </div>
+
+              {/* Urgency Filter */}
               <select
-                value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
-                className="h-12 px-4 rounded-xl border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={filterUrgency}
+                onChange={(e) => { setFilterUrgency(e.target.value); setShowFilterBanner(false); }}
+                className="flex-1 md:flex-none h-11 md:h-10 px-3 md:px-4 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="all">All Tasks</option>
-                <option value="active">Active</option>
-                <option value="completed">Completed</option>
-                <option value="overdue">Overdue</option>
+                <option value="all">All Urgency</option>
+                <option value="urgent_due">Due Soon</option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
                 <option value="urgent">Urgent</option>
               </select>
             </div>
-
-            {/* Urgency Filter */}
-            <select
-              value={filterUrgency}
-              onChange={(e) => { setFilterUrgency(e.target.value); setShowFilterBanner(false); }}
-              className="h-12 px-4 rounded-xl border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="all">All Urgency</option>
-              <option value="urgent_due">Due Soon (3 days)</option>
-              <option value="low">Low</option>
-              <option value="medium">Medium</option>
-              <option value="high">High</option>
-              <option value="urgent">Urgent</option>
-            </select>
           </div>
         </div>
 
         {/* Filter Banner */}
         {showFilterBanner && initialFilter?.type === 'urgent' && (
-          <div className="bg-green-50 border border-green-200 rounded-xl p-3 mb-4 flex items-center justify-between">
+          <div className="bg-green-50 border border-green-200 rounded-xl p-3 flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-green-800 font-medium">Showing tasks due within 3 days</span>
+              <span className="text-green-800 font-medium text-sm">Tasks due within 3 days</span>
             </div>
             <button 
               onClick={() => { setFilterStatus('all'); setFilterUrgency('all'); setShowFilterBanner(false); }}
-              className="text-green-600 hover:text-green-800 text-sm font-medium flex items-center"
+              className="text-green-600 hover:text-green-800 text-xs font-medium flex items-center"
             >
-              Clear filter <X className="h-4 w-4 ml-1" />
+              Clear <X className="h-3 w-3 ml-1" />
             </button>
           </div>
         )}
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-6">
-          <div className="bg-white/80 backdrop-blur-xl rounded-xl shadow-lg p-4 border-l-4 border-blue-500">
-            <div className="text-xs text-gray-600 mb-1">Total</div>
-            <div className="text-2xl font-bold text-gray-900">{stats.total}</div>
+        {/* Quick Stats - 3x2 grid on mobile, 6-col on desktop */}
+        <div className="grid grid-cols-3 md:grid-cols-6 gap-2 md:gap-4 mb-4 md:mb-6">
+          <div className="bg-white/80 backdrop-blur-xl rounded-xl shadow-sm md:shadow-lg p-2.5 md:p-4 border-l-4 border-blue-500">
+            <div className="text-[10px] md:text-xs text-gray-600 mb-0.5 md:mb-1">Total</div>
+            <div className="text-lg md:text-2xl font-bold text-gray-900">{stats.total}</div>
           </div>
-          <div className="bg-white/80 backdrop-blur-xl rounded-xl shadow-lg p-4 border-l-4 border-green-500">
-            <div className="text-xs text-gray-600 mb-1">Completed</div>
-            <div className="text-2xl font-bold text-gray-900">{stats.completed}</div>
+          <div className="bg-white/80 backdrop-blur-xl rounded-xl shadow-sm md:shadow-lg p-2.5 md:p-4 border-l-4 border-green-500">
+            <div className="text-[10px] md:text-xs text-gray-600 mb-0.5 md:mb-1">Done</div>
+            <div className="text-lg md:text-2xl font-bold text-gray-900">{stats.completed}</div>
           </div>
-          <div className="bg-white/80 backdrop-blur-xl rounded-xl shadow-lg p-4 border-l-4 border-purple-500">
-            <div className="text-xs text-gray-600 mb-1">Active</div>
-            <div className="text-2xl font-bold text-gray-900">{stats.active}</div>
+          <div className="bg-white/80 backdrop-blur-xl rounded-xl shadow-sm md:shadow-lg p-2.5 md:p-4 border-l-4 border-purple-500">
+            <div className="text-[10px] md:text-xs text-gray-600 mb-0.5 md:mb-1">Active</div>
+            <div className="text-lg md:text-2xl font-bold text-gray-900">{stats.active}</div>
           </div>
-          <div className="bg-white/80 backdrop-blur-xl rounded-xl shadow-lg p-4 border-l-4 border-red-500">
-            <div className="text-xs text-gray-600 mb-1">Overdue</div>
-            <div className="text-2xl font-bold text-gray-900">{stats.overdue}</div>
+          <div className="bg-white/80 backdrop-blur-xl rounded-xl shadow-sm md:shadow-lg p-2.5 md:p-4 border-l-4 border-red-500">
+            <div className="text-[10px] md:text-xs text-gray-600 mb-0.5 md:mb-1">Overdue</div>
+            <div className="text-lg md:text-2xl font-bold text-gray-900">{stats.overdue}</div>
           </div>
-          <div className="bg-white/80 backdrop-blur-xl rounded-xl shadow-lg p-4 border-l-4 border-orange-500">
-            <div className="text-xs text-gray-600 mb-1">Due Today</div>
-            <div className="text-2xl font-bold text-gray-900">{stats.dueToday}</div>
+          <div className="bg-white/80 backdrop-blur-xl rounded-xl shadow-sm md:shadow-lg p-2.5 md:p-4 border-l-4 border-orange-500">
+            <div className="text-[10px] md:text-xs text-gray-600 mb-0.5 md:mb-1">Today</div>
+            <div className="text-lg md:text-2xl font-bold text-gray-900">{stats.dueToday}</div>
           </div>
-          <div className="bg-white/80 backdrop-blur-xl rounded-xl shadow-lg p-4 border-l-4 border-yellow-500">
-            <div className="text-xs text-gray-600 mb-1">Urgent</div>
-            <div className="text-2xl font-bold text-gray-900">{stats.urgent}</div>
+          <div className="bg-white/80 backdrop-blur-xl rounded-xl shadow-sm md:shadow-lg p-2.5 md:p-4 border-l-4 border-yellow-500">
+            <div className="text-[10px] md:text-xs text-gray-600 mb-0.5 md:mb-1">Urgent</div>
+            <div className="text-lg md:text-2xl font-bold text-gray-900">{stats.urgent}</div>
           </div>
         </div>
 
-        {/* Table */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden">
+        {/* Mobile Card View */}
+        <div className="md:hidden space-y-3">
+          {sortedTasks.length === 0 ? (
+            <div className="bg-white rounded-xl p-8 text-center">
+              <ListTodo className="h-12 w-12 mx-auto mb-3 text-gray-300" />
+              <p className="text-lg font-medium text-gray-500">No tasks found</p>
+              <p className="text-sm text-gray-400">Try adjusting your search or filters</p>
+            </div>
+          ) : (
+            sortedTasks.map((task) => {
+              const status = getTaskStatus(task);
+              const statusInfo = getStatusInfo(status);
+              const StatusIcon = statusInfo.icon;
+
+              return (
+                <div 
+                  key={task._id} 
+                  className={`bg-white rounded-xl shadow-sm border border-slate-200 p-4 ${task.completed ? 'opacity-60' : ''}`}
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex items-start space-x-3 flex-1 min-w-0">
+                      <Checkbox
+                        checked={task.completed}
+                        onCheckedChange={() => handleToggleComplete(task._id, task.completed)}
+                        className="h-5 w-5 mt-0.5"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <div className={`text-sm font-medium text-gray-900 ${task.completed ? 'line-through' : ''}`}>
+                          {task.task_description}
+                        </div>
+                        {task.created_by && (
+                          <div className="text-xs text-gray-500 mt-0.5">
+                            by {task.created_by}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDeleteTask(task._id)}
+                      className="hover:bg-red-50 hover:text-red-600 h-8 w-8 p-0 flex-shrink-0"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Badge className={`${statusInfo.bg} ${statusInfo.color} px-2 py-0.5 text-[10px] font-medium rounded-full flex items-center space-x-1`}>
+                      <StatusIcon className="h-3 w-3" />
+                      <span>{statusInfo.label}</span>
+                    </Badge>
+                    <Badge className={`${getUrgencyBadge(task.urgency)} px-2 py-0.5 text-[10px] font-medium rounded-full capitalize`}>
+                      {task.urgency}
+                    </Badge>
+                    {task.due_date && (
+                      <span className="text-xs text-gray-500">
+                        Due: {format(parseISO(task.due_date), 'MMM dd')}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100 text-xs">
+                    <div className="flex items-center text-gray-600">
+                      <div className="w-5 h-5 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-[9px] mr-1.5">
+                        {task.assigned_to.substring(0, 2).toUpperCase()}
+                      </div>
+                      <span className="truncate max-w-[100px]">{task.assigned_to}</span>
+                    </div>
+                    {task.patient_mrn && (
+                      <span className="text-gray-500">Patient: {task.patient_mrn}</span>
+                    )}
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        {/* Desktop Table View */}
+        <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden hidden md:block">
           <div className="overflow-x-auto">
             <table className="w-full table-fixed">
               <thead className="bg-gray-50 border-b border-gray-200">
