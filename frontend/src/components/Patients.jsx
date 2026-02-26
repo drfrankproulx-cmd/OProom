@@ -622,6 +622,7 @@ export const Patients = ({ onNavigate, initialFilter, user, onLogout }) => {
           </div>
         </div>
       </div>
+      </PullToRefresh>
     </PageLayout>
   );
 };
