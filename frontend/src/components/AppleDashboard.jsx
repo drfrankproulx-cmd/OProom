@@ -477,6 +477,12 @@ export const AppleDashboard = ({ user, onLogout }) => {
     return 'Good evening';
   };
 
+  // Pull to refresh handler
+  const handleRefresh = useCallback(async () => {
+    await fetchData();
+    toast.success('Data refreshed', { duration: 1500 });
+  }, []);
+
   if (loading) {
     return (
       <PageLayout
