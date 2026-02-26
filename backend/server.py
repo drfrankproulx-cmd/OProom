@@ -476,11 +476,244 @@ async def get_current_user_info(current_user: str = Depends(get_current_user)):
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
     
+    # Check if user has WebAuthn credentials registered
+    has_webauthn = webauthn_credentials.find_one({"user_email": current_user}) is not None
+    
     return {
         "email": db_user["email"],
         "full_name": db_user["full_name"],
-        "role": db_user["role"]
+        "role": db_user["role"],
+        "has_webauthn": has_webauthn
     }
+
+# ============== WebAuthn Biometric Authentication Endpoints ==============
+
+class WebAuthnRegisterRequest(BaseModel):
+    credential: str  # Base64 encoded credential response
+
+class WebAuthnLoginRequest(BaseModel):
+    credential: str  # Base64 encoded credential response
+    email: str
+
+@app.post("/api/auth/webauthn/register-options")
+async def webauthn_register_options(current_user: str = Depends(get_current_user)):
+    """Generate registration options for WebAuthn credential creation"""
+    db_user = users_collection.find_one({"email": current_user})
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Get existing credentials for this user (to exclude them)
+    existing_creds = list(webauthn_credentials.find({"user_email": current_user}))
+    exclude_credentials = [
+        PublicKeyCredentialDescriptor(id=base64.urlsafe_b64decode(cred["credential_id"] + "=="))
+        for cred in existing_creds
+    ]
+    
+    # Generate a unique user ID (use email hash for consistency)
+    user_id = base64.urlsafe_b64encode(current_user.encode()).decode().rstrip("=")
+    
+    options = generate_registration_options(
+        rp_id=RP_ID,
+        rp_name=RP_NAME,
+        user_id=user_id.encode(),
+        user_name=current_user,
+        user_display_name=db_user.get("full_name", current_user),
+        exclude_credentials=exclude_credentials,
+        authenticator_selection=AuthenticatorSelectionCriteria(
+            authenticator_attachment=AuthenticatorAttachment.PLATFORM,
+            resident_key=ResidentKeyRequirement.PREFERRED,
+            user_verification=UserVerificationRequirement.REQUIRED,
+        ),
+        supported_pub_key_algs=[
+            COSEAlgorithmIdentifier.ECDSA_SHA_256,
+            COSEAlgorithmIdentifier.RSASSA_PKCS1_v1_5_SHA_256,
+        ],
+    )
+    
+    # Store challenge temporarily (expires in 5 minutes)
+    challenge_b64 = base64.urlsafe_b64encode(options.challenge).decode().rstrip("=")
+    webauthn_challenges.delete_many({"user_email": current_user})  # Clean old challenges
+    webauthn_challenges.insert_one({
+        "user_email": current_user,
+        "challenge": challenge_b64,
+        "type": "registration",
+        "created_at": datetime.utcnow()
+    })
+    
+    # Create TTL index for auto-cleanup (if not exists)
+    try:
+        webauthn_challenges.create_index("created_at", expireAfterSeconds=300)
+    except:
+        pass
+    
+    return {"options": options_to_json(options)}
+
+@app.post("/api/auth/webauthn/register")
+async def webauthn_register(request: WebAuthnRegisterRequest, current_user: str = Depends(get_current_user)):
+    """Verify and store WebAuthn credential after registration"""
+    import json
+    
+    # Get stored challenge
+    challenge_doc = webauthn_challenges.find_one({"user_email": current_user, "type": "registration"})
+    if not challenge_doc:
+        raise HTTPException(status_code=400, detail="No registration challenge found. Please restart the process.")
+    
+    challenge = base64.urlsafe_b64decode(challenge_doc["challenge"] + "==")
+    
+    try:
+        # Parse the credential response
+        credential_data = json.loads(request.credential)
+        
+        # Verify registration response
+        verification = verify_registration_response(
+            credential=credential_data,
+            expected_challenge=challenge,
+            expected_rp_id=RP_ID,
+            expected_origin=RP_ORIGIN,
+            require_user_verification=True,
+        )
+        
+        # Store credential
+        credential_id_b64 = base64.urlsafe_b64encode(verification.credential_id).decode().rstrip("=")
+        public_key_b64 = base64.urlsafe_b64encode(verification.credential_public_key).decode().rstrip("=")
+        
+        webauthn_credentials.insert_one({
+            "user_email": current_user,
+            "credential_id": credential_id_b64,
+            "public_key": public_key_b64,
+            "sign_count": verification.sign_count,
+            "transports": credential_data.get("response", {}).get("transports", []),
+            "created_at": datetime.utcnow()
+        })
+        
+        # Clean up challenge
+        webauthn_challenges.delete_one({"_id": challenge_doc["_id"]})
+        
+        return {"success": True, "message": "Biometric authentication enabled successfully"}
+        
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Registration failed: {str(e)}")
+
+@app.post("/api/auth/webauthn/login-options")
+async def webauthn_login_options(email: str):
+    """Generate authentication options for WebAuthn login"""
+    # Check if user exists and has credentials
+    db_user = users_collection.find_one({"email": email})
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    user_creds = list(webauthn_credentials.find({"user_email": email}))
+    if not user_creds:
+        raise HTTPException(status_code=404, detail="No biometric credentials registered for this user")
+    
+    # Build list of allowed credentials
+    allow_credentials = [
+        PublicKeyCredentialDescriptor(
+            id=base64.urlsafe_b64decode(cred["credential_id"] + "=="),
+            transports=cred.get("transports", [])
+        )
+        for cred in user_creds
+    ]
+    
+    options = generate_authentication_options(
+        rp_id=RP_ID,
+        allow_credentials=allow_credentials,
+        user_verification=UserVerificationRequirement.REQUIRED,
+    )
+    
+    # Store challenge
+    challenge_b64 = base64.urlsafe_b64encode(options.challenge).decode().rstrip("=")
+    webauthn_challenges.delete_many({"user_email": email, "type": "authentication"})
+    webauthn_challenges.insert_one({
+        "user_email": email,
+        "challenge": challenge_b64,
+        "type": "authentication",
+        "created_at": datetime.utcnow()
+    })
+    
+    return {"options": options_to_json(options)}
+
+@app.post("/api/auth/webauthn/login")
+async def webauthn_login(request: WebAuthnLoginRequest):
+    """Verify WebAuthn authentication and issue JWT"""
+    import json
+    
+    # Get stored challenge
+    challenge_doc = webauthn_challenges.find_one({"user_email": request.email, "type": "authentication"})
+    if not challenge_doc:
+        raise HTTPException(status_code=400, detail="No authentication challenge found. Please restart the process.")
+    
+    challenge = base64.urlsafe_b64decode(challenge_doc["challenge"] + "==")
+    
+    try:
+        # Parse the credential response
+        credential_data = json.loads(request.credential)
+        
+        # Find the matching credential
+        credential_id_from_response = credential_data.get("id", "")
+        stored_cred = webauthn_credentials.find_one({
+            "user_email": request.email,
+            "credential_id": credential_id_from_response
+        })
+        
+        if not stored_cred:
+            # Try with padding variations
+            stored_cred = webauthn_credentials.find_one({"user_email": request.email})
+        
+        if not stored_cred:
+            raise HTTPException(status_code=400, detail="Credential not found")
+        
+        # Verify authentication response
+        verification = verify_authentication_response(
+            credential=credential_data,
+            expected_challenge=challenge,
+            expected_rp_id=RP_ID,
+            expected_origin=RP_ORIGIN,
+            credential_public_key=base64.urlsafe_b64decode(stored_cred["public_key"] + "=="),
+            credential_current_sign_count=stored_cred.get("sign_count", 0),
+            require_user_verification=True,
+        )
+        
+        # Update sign count
+        webauthn_credentials.update_one(
+            {"_id": stored_cred["_id"]},
+            {"$set": {"sign_count": verification.new_sign_count}}
+        )
+        
+        # Clean up challenge
+        webauthn_challenges.delete_one({"_id": challenge_doc["_id"]})
+        
+        # Get user info and create JWT
+        db_user = users_collection.find_one({"email": request.email})
+        if not db_user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        access_token = create_access_token(data={"sub": request.email})
+        
+        return {
+            "access_token": access_token,
+            "token_type": "bearer",
+            "user": {
+                "email": db_user["email"],
+                "full_name": db_user["full_name"],
+                "role": db_user["role"]
+            }
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Authentication failed: {str(e)}")
+
+@app.get("/api/auth/webauthn/check/{email}")
+async def check_webauthn_available(email: str):
+    """Check if user has WebAuthn credentials registered"""
+    has_credentials = webauthn_credentials.find_one({"user_email": email}) is not None
+    return {"has_webauthn": has_credentials}
+
+@app.delete("/api/auth/webauthn/credential")
+async def delete_webauthn_credential(current_user: str = Depends(get_current_user)):
+    """Delete all WebAuthn credentials for current user"""
+    result = webauthn_credentials.delete_many({"user_email": current_user})
+    return {"success": True, "deleted_count": result.deleted_count}
 
 @app.get("/api/users")
 async def get_all_users(current_user: str = Depends(get_current_user)):
