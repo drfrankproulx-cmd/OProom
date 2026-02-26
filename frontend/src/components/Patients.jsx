@@ -274,10 +274,11 @@ export const Patients = ({ onNavigate, initialFilter, user, onLogout }) => {
         </Button>
       }
     >
-      <div className="p-4 md:p-6 space-y-4 md:space-y-6">
-        {/* Filters and Search */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-3 md:p-4">
-          <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
+      <PullToRefresh onRefresh={handleRefresh}>
+        <div className="p-4 md:p-6 space-y-4 md:space-y-6">
+          {/* Filters and Search */}
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-3 md:p-4">
+            <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
             {/* Search */}
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-slate-400" />
