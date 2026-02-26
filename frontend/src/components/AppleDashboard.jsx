@@ -247,11 +247,15 @@ export const AppleDashboard = ({ user, onLogout }) => {
 
   const [taskForm, setTaskForm] = useState({
     task_description: '',
+    task_category: '',
+    task_type: '',
+    custom_task_text: '',
     due_date: '',
     assigned_to: '',
     assigned_to_email: '',
     patient_mrn: '',
-    urgency: 'medium'
+    urgency: 'medium',
+    notes: ''
   });
 
   const weekStart = startOfWeek(currentDate, { weekStartsOn: 0 });
