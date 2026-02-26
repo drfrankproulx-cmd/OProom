@@ -282,8 +282,9 @@ const Calendar = ({ onNavigate, initialFilter, user, onLogout }) => {
         {/* Calendar Grid */}
         <div className="bg-white rounded-2xl md:rounded-3xl shadow-xl p-3 md:p-6">
           {viewMode === 'week' ? (
-            /* Weekly View */
-            <div className="grid grid-cols-7 gap-4">
+            /* Weekly View - Horizontal scroll on mobile */
+            <div className="overflow-x-auto -mx-3 md:mx-0 px-3 md:px-0">
+              <div className="grid grid-cols-7 gap-2 md:gap-4 min-w-[600px] md:min-w-0">
               {weekDays.map((day) => {
                 const daySchedules = getSchedulesForDate(day);
                 const dayConferences = getConferencesForDate(day);
@@ -292,37 +293,37 @@ const Calendar = ({ onNavigate, initialFilter, user, onLogout }) => {
                 return (
                   <div
                     key={day.toISOString()}
-                    className={`rounded-2xl p-4 min-h-[500px] transition-all ${
+                    className={`rounded-xl md:rounded-2xl p-2 md:p-4 min-h-[200px] md:min-h-[500px] transition-all ${
                       today
                         ? 'bg-gradient-to-br from-blue-50 to-blue-100 ring-2 ring-blue-400'
                         : 'bg-gray-50 hover:bg-gray-100'
                     }`}
                   >
-                    <div className="text-center mb-4 pb-3 border-b border-gray-200">
-                      <div className="text-gray-500 text-sm font-medium">
+                    <div className="text-center mb-2 md:mb-4 pb-2 md:pb-3 border-b border-gray-200">
+                      <div className="text-gray-500 text-[10px] md:text-sm font-medium">
                         {format(day, 'EEE')}
                       </div>
-                      <div className={`text-2xl font-bold ${today ? 'text-blue-600' : 'text-gray-900'}`}>
+                      <div className={`text-lg md:text-2xl font-bold ${today ? 'text-blue-600' : 'text-gray-900'}`}>
                         {format(day, 'd')}
                       </div>
                       {daySchedules.length > 0 && (
-                        <Badge className="mt-1 bg-blue-100 text-blue-700 text-xs">
+                        <Badge className="mt-1 bg-blue-100 text-blue-700 text-[10px] md:text-xs">
                           {daySchedules.length} case{daySchedules.length > 1 ? 's' : ''}
                         </Badge>
                       )}
                     </div>
 
-                    <div className="space-y-2 overflow-y-auto max-h-[400px]">
+                    <div className="space-y-1 md:space-y-2 overflow-y-auto max-h-[150px] md:max-h-[400px]">
                       {/* Conferences */}
                       {dayConferences.map(conf => (
                         <div
                           key={conf._id}
-                          className="p-3 bg-purple-100 border-l-4 border-purple-500 rounded-lg cursor-pointer hover:shadow-md transition-shadow"
+                          className="p-2 md:p-3 bg-purple-100 border-l-4 border-purple-500 rounded-lg cursor-pointer hover:shadow-md transition-shadow"
                           onClick={() => setSelectedEvent({ type: 'conference', data: conf })}
                         >
-                          <div className="font-semibold text-purple-900 text-sm">{conf.title}</div>
-                          <div className="text-purple-700 text-xs flex items-center mt-1">
-                            <Clock className="h-3 w-3 mr-1" />
+                          <div className="font-semibold text-purple-900 text-[10px] md:text-sm">{conf.title}</div>
+                          <div className="text-purple-700 text-[9px] md:text-xs flex items-center mt-1">
+                            <Clock className="h-2.5 w-2.5 md:h-3 md:w-3 mr-1" />
                             {conf.start_time} - {conf.end_time}
                           </div>
                         </div>
@@ -334,24 +335,24 @@ const Calendar = ({ onNavigate, initialFilter, user, onLogout }) => {
                         return (
                           <div
                             key={schedule._id}
-                            className={`p-3 border-l-4 rounded-lg cursor-pointer hover:shadow-md transition-shadow ${getPriorityColor(schedule.priority)}`}
+                            className={`p-2 md:p-3 border-l-4 rounded-lg cursor-pointer hover:shadow-md transition-shadow ${getPriorityColor(schedule.priority)}`}
                             onClick={() => setSelectedEvent({ type: 'surgery', data: schedule, patient })}
                           >
-                            <div className="flex items-center space-x-2 mb-1">
-                              <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-xs font-bold shadow-sm">
+                            <div className="flex items-center space-x-1 md:space-x-2 mb-1">
+                              <div className="w-6 h-6 md:w-8 md:h-8 bg-white rounded-full flex items-center justify-center text-[9px] md:text-xs font-bold shadow-sm">
                                 {getInitials(schedule.patient_name)}
                               </div>
-                              <div className="font-semibold text-sm truncate">{schedule.patient_name}</div>
+                              <div className="font-semibold text-[10px] md:text-sm truncate">{schedule.patient_name}</div>
                             </div>
-                            <div className="text-xs opacity-80 truncate">{schedule.procedure}</div>
+                            <div className="text-[9px] md:text-xs opacity-80 truncate hidden md:block">{schedule.procedure}</div>
                             {schedule.scheduled_time && (
-                              <div className="text-xs opacity-70 flex items-center mt-1">
-                                <Clock className="h-3 w-3 mr-1" />
+                              <div className="text-[9px] md:text-xs opacity-70 flex items-center mt-1">
+                                <Clock className="h-2.5 w-2.5 md:h-3 md:w-3 mr-1" />
                                 {schedule.scheduled_time}
                               </div>
                             )}
-                            <div className="text-xs opacity-70 flex items-center mt-1">
-                              <User className="h-3 w-3 mr-1" />
+                            <div className="text-[9px] md:text-xs opacity-70 flex items-center mt-1 hidden md:flex">
+                              <User className="h-2.5 w-2.5 md:h-3 md:w-3 mr-1" />
                               {schedule.staff || 'Unassigned'}
                             </div>
                           </div>
@@ -359,7 +360,7 @@ const Calendar = ({ onNavigate, initialFilter, user, onLogout }) => {
                       })}
 
                       {daySchedules.length === 0 && dayConferences.length === 0 && (
-                        <div className="text-center text-gray-400 text-sm py-8">
+                        <div className="text-center text-gray-400 text-[10px] md:text-sm py-4 md:py-8">
                           No events
                         </div>
                       )}
@@ -367,6 +368,7 @@ const Calendar = ({ onNavigate, initialFilter, user, onLogout }) => {
                   </div>
                 );
               })}
+              </div>
             </div>
           ) : (
             /* Monthly View */
