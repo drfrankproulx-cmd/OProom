@@ -633,45 +633,45 @@ export const AppleDashboard = ({ user, onLogout }) => {
         </div>
 
         {/* Quick Add Patient Form */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center">
-            <Plus className="h-5 w-5 mr-2 text-teal-500" />
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-5">
+          <h3 className="text-base md:text-lg font-semibold text-slate-900 mb-3 md:mb-4 flex items-center">
+            <Plus className="h-4 w-4 md:h-5 md:w-5 mr-2 text-teal-500" />
             Quick Add Patient
           </h3>
 
-          {/* Row 1: Patient Name, Patient ID, DOB */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          {/* Row 1: Patient Name, Patient ID, DOB - Stack on mobile */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-3 md:mb-4">
             <div>
-              <Label className="text-sm font-medium text-slate-700 mb-1 block">Patient Name</Label>
+              <Label className="text-xs md:text-sm font-medium text-slate-700 mb-1 block">Patient Name</Label>
               <Input
-                className="h-10 text-sm rounded-lg"
+                className="h-11 md:h-10 text-base md:text-sm rounded-lg"
                 value={intakeForm.patient_name}
                 onChange={(e) => setIntakeForm({...intakeForm, patient_name: e.target.value})}
                 placeholder="Full name"
               />
             </div>
             <div>
-              <Label className="text-sm font-medium text-slate-700 mb-1 block">Patient ID</Label>
+              <Label className="text-xs md:text-sm font-medium text-slate-700 mb-1 block">Patient ID</Label>
               <Input
-                className="h-10 text-sm rounded-lg"
+                className="h-11 md:h-10 text-base md:text-sm rounded-lg"
                 value={intakeForm.mrn}
                 onChange={(e) => setIntakeForm({...intakeForm, mrn: e.target.value})}
                 placeholder="ID number"
               />
             </div>
             <div>
-              <Label className="text-sm font-medium text-slate-700 mb-1 block">Date of Birth</Label>
+              <Label className="text-xs md:text-sm font-medium text-slate-700 mb-1 block">Date of Birth</Label>
               <Input
                 type="date"
-                className="h-10 text-sm rounded-lg"
+                className="h-11 md:h-10 text-base md:text-sm rounded-lg"
                 value={intakeForm.dob}
                 onChange={(e) => setIntakeForm({...intakeForm, dob: e.target.value})}
               />
             </div>
           </div>
 
-          {/* Row 2: Attending, Diagnosis, Procedure/CPT */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          {/* Row 2: Attending, Diagnosis, Procedure/CPT - Stack on mobile */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-3 md:mb-4">
             <div>
               <Label className="text-sm font-medium text-slate-700 mb-1 block">Attending</Label>
               <Select value={intakeForm.attending} onValueChange={(v) => setIntakeForm({...intakeForm, attending: v})}>
