@@ -23,6 +23,8 @@ import {
 } from 'lucide-react';
 import PageLayout from './PageLayout';
 import PullToRefresh from './PullToRefresh';
+import { TaskCategoryBadge } from './TaskCategorySelect';
+import { getCategoryByTaskType } from '../data/taskCategories';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
