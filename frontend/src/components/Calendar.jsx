@@ -238,49 +238,49 @@ const Calendar = ({ onNavigate, initialFilter, user, onLogout }) => {
         </div>
       }
     >
-      <div className="p-6">
+      <div className="p-4 md:p-6">
         {/* Filter Banner */}
         {showFilterBanner && initialFilter && (
           <div className={`${initialFilter.type === 'today' ? 'bg-teal-50 border-teal-200' : 'bg-purple-50 border-purple-200'} border rounded-xl p-3 mb-4 flex items-center justify-between`}>
             <div className="flex items-center space-x-2">
               <div className={`w-2 h-2 ${initialFilter.type === 'today' ? 'bg-teal-500' : 'bg-purple-500'} rounded-full animate-pulse`}></div>
-              <span className={`${initialFilter.type === 'today' ? 'text-teal-800' : 'text-purple-800'} font-medium`}>
-                {initialFilter.type === 'today' ? "Viewing today's schedule" : "Viewing this week's cases"}
+              <span className={`${initialFilter.type === 'today' ? 'text-teal-800' : 'text-purple-800'} font-medium text-sm`}>
+                {initialFilter.type === 'today' ? "Today's schedule" : "This week's cases"}
               </span>
             </div>
             <button 
               onClick={() => setShowFilterBanner(false)}
-              className={`${initialFilter.type === 'today' ? 'text-teal-600 hover:text-teal-800' : 'text-purple-600 hover:text-purple-800'} text-sm font-medium flex items-center`}
+              className={`${initialFilter.type === 'today' ? 'text-teal-600 hover:text-teal-800' : 'text-purple-600 hover:text-purple-800'} text-xs font-medium flex items-center`}
             >
-              Dismiss <X className="h-4 w-4 ml-1" />
+              Dismiss <X className="h-3 w-3 ml-1" />
             </button>
           </div>
         )}
 
-        {/* Stats */}
-        <div className="grid grid-cols-4 gap-4 mb-6">
-          <div className="bg-white rounded-2xl p-4 shadow-sm">
-            <div className="text-3xl font-bold text-blue-600">{schedules.filter(s => !s.is_addon).length}</div>
-            <div className="text-gray-600 text-sm">Total Scheduled</div>
+        {/* Stats - 2x2 on mobile, 4-col on desktop */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 mb-4 md:mb-6">
+          <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 shadow-sm">
+            <div className="text-xl md:text-3xl font-bold text-blue-600">{schedules.filter(s => !s.is_addon).length}</div>
+            <div className="text-gray-600 text-xs md:text-sm">Total Scheduled</div>
           </div>
-          <div className="bg-white rounded-2xl p-4 shadow-sm">
-            <div className="text-3xl font-bold text-green-600">
+          <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 shadow-sm">
+            <div className="text-xl md:text-3xl font-bold text-green-600">
               {getSchedulesForDate(new Date()).length}
             </div>
-            <div className="text-gray-600 text-sm">Today's Cases</div>
+            <div className="text-gray-600 text-xs md:text-sm">Today's Cases</div>
           </div>
-          <div className="bg-white rounded-2xl p-4 shadow-sm">
-            <div className="text-3xl font-bold text-purple-600">{conferences.length}</div>
-            <div className="text-gray-600 text-sm">Conferences</div>
+          <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 shadow-sm">
+            <div className="text-xl md:text-3xl font-bold text-purple-600">{conferences.length}</div>
+            <div className="text-gray-600 text-xs md:text-sm">Conferences</div>
           </div>
-          <div className="bg-white rounded-2xl p-4 shadow-sm">
-            <div className="text-3xl font-bold text-orange-600">{schedules.filter(s => s.is_addon).length}</div>
-            <div className="text-gray-600 text-sm">Pending Add-Ons</div>
+          <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 shadow-sm">
+            <div className="text-xl md:text-3xl font-bold text-orange-600">{schedules.filter(s => s.is_addon).length}</div>
+            <div className="text-gray-600 text-xs md:text-sm">Pending Add-Ons</div>
           </div>
         </div>
 
         {/* Calendar Grid */}
-        <div className="bg-white rounded-3xl shadow-xl p-6">
+        <div className="bg-white rounded-2xl md:rounded-3xl shadow-xl p-3 md:p-6">
           {viewMode === 'week' ? (
             /* Weekly View */
             <div className="grid grid-cols-7 gap-4">
