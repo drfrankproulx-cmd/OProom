@@ -339,30 +339,31 @@ export const Tasks = ({ onNavigate, initialFilter, user, onLogout }) => {
       title="All Tasks"
       subtitle={`${stats.active} active • ${stats.completed} completed`}
     >
-      <div className="p-4 md:p-6 space-y-4 md:space-y-6">
-        {/* Filters and Search */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-3 md:p-4">
-          <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
-            {/* Search */}
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-slate-400" />
-              <Input
-                placeholder="Search tasks..."
-                className="pl-9 md:pl-10 h-11 md:h-10 text-base md:text-sm rounded-lg border-slate-200"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              {searchTerm && (
-                <button
-                  onClick={() => setSearchTerm('')}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2"
-                >
-                  <X className="h-4 w-4 md:h-5 md:w-5 text-slate-400 hover:text-slate-600" />
-                </button>
-              )}
-            </div>
+      <PullToRefresh onRefresh={handleRefresh}>
+        <div className="p-4 md:p-6 space-y-4 md:space-y-6">
+          {/* Filters and Search */}
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-3 md:p-4">
+            <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
+              {/* Search */}
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-slate-400" />
+                <Input
+                  placeholder="Search tasks..."
+                  className="pl-9 md:pl-10 h-11 md:h-10 text-base md:text-sm rounded-lg border-slate-200"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                {searchTerm && (
+                  <button
+                    onClick={() => setSearchTerm('')}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                  >
+                    <X className="h-4 w-4 md:h-5 md:w-5 text-slate-400 hover:text-slate-600" />
+                  </button>
+                )}
+              </div>
 
-            {/* Filters row */}
+              {/* Filters row */}
             <div className="flex items-center gap-2 md:gap-3">
               {/* Status Filter */}
               <div className="flex items-center space-x-2 flex-1 md:flex-none">
