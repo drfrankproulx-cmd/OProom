@@ -900,9 +900,10 @@ export const AppleDashboard = ({ user, onLogout }) => {
                 </div>
               </div>
 
-              {/* Week View */}
+              {/* Week View - Horizontal scroll on mobile */}
               {calendarViewMode === 'week' && (
-                <div className="grid grid-cols-7 gap-2">
+                <div className="overflow-x-auto -mx-3 md:mx-0 px-3 md:px-0">
+                  <div className="grid grid-cols-7 gap-1 md:gap-2 min-w-[600px] md:min-w-0">
                   {weekDays.map((day) => {
                     const daySchedules = getSchedulesForDate(day);
                     const today = isToday(day);
@@ -913,7 +914,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
                         onDragOver={(e) => handleDragOver(e, day)}
                         onDragLeave={handleDragLeave}
                         onDrop={(e) => handleDrop(e, day)}
-                        className={`rounded-xl p-2 min-h-[400px] transition-all ${
+                        className={`rounded-xl p-2 min-h-[200px] md:min-h-[400px] transition-all ${
                           today ? 'bg-gradient-to-br from-teal-50 to-teal-100 ring-2 ring-teal-400' : 'bg-slate-50'
                         } ${isDropTarget ? 'ring-2 ring-orange-400 bg-orange-50 scale-[1.02]' : ''} ${
                           draggedAddOn ? 'hover:ring-2 hover:ring-orange-300' : ''
@@ -921,29 +922,29 @@ export const AppleDashboard = ({ user, onLogout }) => {
                         data-testid={`calendar-day-drop-${format(day, 'yyyy-MM-dd')}`}
                       >
                         <div className="text-center mb-2">
-                          <div className="text-slate-500 text-xs font-medium mb-1">{format(day, 'EEE')}</div>
-                          <div className={`text-xl font-bold ${today ? 'text-teal-600' : 'text-slate-900'}`}>{format(day, 'd')}</div>
+                          <div className="text-slate-500 text-[10px] md:text-xs font-medium mb-1">{format(day, 'EEE')}</div>
+                          <div className={`text-base md:text-xl font-bold ${today ? 'text-teal-600' : 'text-slate-900'}`}>{format(day, 'd')}</div>
                           {isDropTarget && (
-                            <div className="text-xs text-orange-600 font-medium mt-1 animate-pulse">
+                            <div className="text-[10px] md:text-xs text-orange-600 font-medium mt-1 animate-pulse">
                               Drop here
                             </div>
                           )}
                         </div>
-                        <div className="space-y-1.5">
+                        <div className="space-y-1 md:space-y-1.5">
                           {daySchedules.map(schedule => {
                             const patient = patients.find(p => p.mrn === schedule.patient_mrn);
                             const checklist = patient?.prep_checklist || {};
                             const completed = Object.values(checklist).filter(Boolean).length;
                             const percentage = (completed / 4) * 100;
                             return (
-                              <div key={schedule._id} onClick={() => setSelectedPatient(patient)} className="bg-white rounded-lg p-2 border-l-2 border-teal-400 hover:shadow-md transition-all cursor-pointer text-xs">
+                              <div key={schedule._id} onClick={() => setSelectedPatient(patient)} className="bg-white rounded-lg p-1.5 md:p-2 border-l-2 border-teal-400 hover:shadow-md transition-all cursor-pointer text-[10px] md:text-xs">
                                 <div className="font-semibold text-slate-900 truncate">{schedule.patient_name}</div>
-                                <div className="text-slate-500 text-xs truncate">{schedule.staff}</div>
-                                {schedule.scheduled_time && <div className="flex items-center text-slate-400 text-xs mt-1"><Clock className="h-2.5 w-2.5 mr-1" />{schedule.scheduled_time}</div>}
-                                <div className="mt-1.5 pt-1.5 border-t border-slate-100">
+                                <div className="text-slate-500 text-[9px] md:text-xs truncate hidden md:block">{schedule.staff}</div>
+                                {schedule.scheduled_time && <div className="flex items-center text-slate-400 text-[9px] md:text-xs mt-1"><Clock className="h-2 w-2 md:h-2.5 md:w-2.5 mr-1" />{schedule.scheduled_time}</div>}
+                                <div className="mt-1 md:mt-1.5 pt-1 md:pt-1.5 border-t border-slate-100 hidden md:block">
                                   <div className="flex items-center justify-between mb-1">
-                                    <span className="text-xs text-slate-400">Prep</span>
-                                    <span className="text-xs text-slate-500 font-medium">{completed}/4</span>
+                                    <span className="text-[9px] md:text-xs text-slate-400">Prep</span>
+                                    <span className="text-[9px] md:text-xs text-slate-500 font-medium">{completed}/4</span>
                                   </div>
                                   <div className="w-full bg-slate-200 rounded-full h-1">
                                     <div className={`h-1 rounded-full transition-all ${percentage === 100 ? 'bg-green-500' : percentage >= 50 ? 'bg-teal-500' : 'bg-orange-500'}`} style={{ width: `${percentage}%` }} />
@@ -952,11 +953,12 @@ export const AppleDashboard = ({ user, onLogout }) => {
                               </div>
                             );
                           })}
-                          {daySchedules.length === 0 && <div className="text-center text-slate-400 text-xs py-6">No events</div>}
+                          {daySchedules.length === 0 && <div className="text-center text-slate-400 text-[10px] md:text-xs py-3 md:py-6">No events</div>}
                         </div>
                       </div>
                     );
                   })}
+                  </div>
                 </div>
               )}
 
