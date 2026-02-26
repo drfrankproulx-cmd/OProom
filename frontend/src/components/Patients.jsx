@@ -267,16 +267,16 @@ export const Patients = ({ onNavigate, initialFilter, user, onLogout }) => {
         </Button>
       }
     >
-      <div className="p-6 space-y-6">
+      <div className="p-4 md:p-6 space-y-4 md:space-y-6">
         {/* Filters and Search */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-          <div className="flex items-center justify-between gap-4">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-3 md:p-4">
+          <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
             {/* Search */}
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-slate-400" />
               <Input
-                placeholder="Search by name, ID, diagnosis, or procedure..."
-                className="pl-10 h-10 rounded-lg border-slate-200"
+                placeholder="Search patients..."
+                className="pl-9 md:pl-10 h-11 md:h-10 text-base md:text-sm rounded-lg border-slate-200"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -285,18 +285,18 @@ export const Patients = ({ onNavigate, initialFilter, user, onLogout }) => {
                   onClick={() => setSearchTerm('')}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2"
                 >
-                  <X className="h-5 w-5 text-slate-400 hover:text-slate-600" />
+                  <X className="h-4 w-4 md:h-5 md:w-5 text-slate-400 hover:text-slate-600" />
                 </button>
               )}
             </div>
 
             {/* Status Filter */}
             <div className="flex items-center space-x-2">
-              <Filter className="h-5 w-5 text-slate-500" />
+              <Filter className="h-4 w-4 md:h-5 md:w-5 text-slate-500" />
               <select
                 value={filterStatus}
                 onChange={(e) => { setFilterStatus(e.target.value); setShowFilterBanner(false); }}
-                className="h-10 px-4 rounded-lg border border-slate-200 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="flex-1 md:flex-none h-11 md:h-10 px-3 md:px-4 rounded-lg border border-slate-200 bg-white text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
               >
                 <option value="all">All Status</option>
                 <option value="addon">Add-On Cases</option>
@@ -311,22 +311,114 @@ export const Patients = ({ onNavigate, initialFilter, user, onLogout }) => {
 
         {/* Filter Banner */}
         {showFilterBanner && initialFilter?.type === 'addon' && (
-          <div className="bg-orange-50 border border-orange-200 rounded-xl p-3 mb-4 flex items-center justify-between">
+          <div className="bg-orange-50 border border-orange-200 rounded-xl p-3 flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
-              <span className="text-orange-800 font-medium">Showing Add-On Cases only</span>
+              <span className="text-orange-800 font-medium text-sm">Showing Add-On Cases</span>
             </div>
             <button 
               onClick={() => { setFilterStatus('all'); setShowFilterBanner(false); }}
-              className="text-orange-600 hover:text-orange-800 text-sm font-medium flex items-center"
+              className="text-orange-600 hover:text-orange-800 text-xs font-medium flex items-center"
             >
-              Clear filter <X className="h-4 w-4 ml-1" />
+              Clear <X className="h-3 w-3 ml-1" />
             </button>
           </div>
         )}
 
-        {/* Table */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden">
+        {/* Mobile Card View */}
+        <div className="md:hidden space-y-3">
+          {sortedPatients.length === 0 ? (
+            <div className="bg-white rounded-xl p-8 text-center">
+              <FileSpreadsheet className="h-12 w-12 mx-auto mb-3 text-gray-300" />
+              <p className="text-lg font-medium text-gray-500">No patients found</p>
+              <p className="text-sm text-gray-400">Try adjusting your search or filters</p>
+            </div>
+          ) : (
+            sortedPatients.map((patient) => {
+              const schedule = getScheduleForPatient(patient.mrn);
+              const prep = getPrepProgress(patient.prep_checklist);
+
+              return (
+                <div key={patient.mrn} className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm flex-shrink-0">
+                        {patient.patient_name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-sm font-semibold text-gray-900 truncate">{patient.patient_name}</div>
+                        <div className="text-xs text-gray-500">ID: {patient.mrn}</div>
+                      </div>
+                    </div>
+                    <Badge
+                      className={`
+                        ${patient.status === 'confirmed' ? 'bg-green-100 text-green-700' : ''}
+                        ${patient.status === 'pending' ? 'bg-blue-100 text-blue-700' : ''}
+                        ${patient.status === 'completed' ? 'bg-gray-100 text-gray-700' : ''}
+                        ${patient.status === 'cancelled' ? 'bg-red-100 text-red-700' : ''}
+                        px-2 py-0.5 text-xs font-medium rounded-full
+                      `}
+                    >
+                      {patient.status}
+                    </Badge>
+                  </div>
+                  
+                  <div className="space-y-2 text-xs">
+                    {patient.diagnosis && (
+                      <div>
+                        <span className="text-gray-500">Diagnosis:</span>
+                        <span className="ml-1 text-gray-900 truncate">{patient.diagnosis}</span>
+                      </div>
+                    )}
+                    {patient.procedures && (
+                      <div>
+                        <span className="text-gray-500">Procedure:</span>
+                        <span className="ml-1 text-gray-900 truncate">{patient.procedures}</span>
+                      </div>
+                    )}
+                    {patient.attending && (
+                      <div>
+                        <span className="text-gray-500">Attending:</span>
+                        <span className="ml-1 text-gray-900">{patient.attending}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
+                    <div className="flex-1 mr-3">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xs text-gray-500">Prep Progress</span>
+                        <span className="text-xs font-medium text-gray-700">{prep.completed}/{prep.total}</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-1.5">
+                        <div
+                          className={`h-1.5 rounded-full transition-all ${
+                            prep.percentage === 100 ? 'bg-green-500' :
+                            prep.percentage >= 50 ? 'bg-blue-500' :
+                            'bg-orange-500'
+                          }`}
+                          style={{ width: `${prep.percentage}%` }}
+                        />
+                      </div>
+                    </div>
+                    <Button
+                      onClick={() => handleDeletePatient(patient.mrn, patient.patient_name)}
+                      variant="ghost"
+                      size="sm"
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50 h-8 w-8 p-0"
+                      title="Delete patient"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        {/* Desktop Table View */}
+        <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden hidden md:block">
           <div className="overflow-x-auto">
             <table className="w-full table-fixed">
               <thead className="bg-gray-50 border-b border-gray-200">
