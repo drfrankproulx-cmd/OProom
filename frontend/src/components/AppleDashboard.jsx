@@ -833,26 +833,26 @@ export const AppleDashboard = ({ user, onLogout }) => {
           </div>
 
           {/* CENTER COLUMN: Calendar with Toggle */}
-          <div className="col-span-12 lg:col-span-7">
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-              <div className="flex items-center justify-between mb-5">
+          <div className="lg:col-span-7">
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-3 md:p-5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 md:mb-5">
                 <div>
-                  <h2 className="text-lg font-semibold text-slate-900">
+                  <h2 className="text-base md:text-lg font-semibold text-slate-900">
                     {calendarViewMode === 'week' ? 'This Week' : 'Monthly View'}
                   </h2>
-                  <p className="text-slate-500 text-sm">
+                  <p className="text-slate-500 text-xs md:text-sm">
                     {calendarViewMode === 'week' 
-                      ? `${format(weekStart, 'MMMM d')} - ${format(addDays(weekStart, 6), 'MMM d, yyyy')}`
+                      ? `${format(weekStart, 'MMM d')} - ${format(addDays(weekStart, 6), 'MMM d, yyyy')}`
                       : format(monthViewDate, 'MMMM yyyy')
                     }
                   </p>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 md:gap-3">
                   {/* View Toggle */}
                   <div className="flex bg-slate-100 rounded-lg p-1" data-testid="calendar-view-toggle">
                     <button
                       onClick={() => setCalendarViewMode('week')}
-                      className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                      className={`px-2 md:px-3 py-1 md:py-1.5 rounded-md text-xs md:text-sm font-medium transition-colors ${
                         calendarViewMode === 'week' ? 'bg-white shadow text-slate-900' : 'text-slate-600 hover:text-slate-900'
                       }`}
                       data-testid="toggle-week-view"
@@ -861,7 +861,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
                     </button>
                     <button
                       onClick={() => setCalendarViewMode('month')}
-                      className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                      className={`px-2 md:px-3 py-1 md:py-1.5 rounded-md text-xs md:text-sm font-medium transition-colors ${
                         calendarViewMode === 'month' ? 'bg-white shadow text-slate-900' : 'text-slate-600 hover:text-slate-900'
                       }`}
                       data-testid="toggle-month-view"
@@ -884,7 +884,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
                       onClick={() => calendarViewMode === 'week' ? setCurrentDate(new Date()) : setMonthViewDate(new Date())} 
                       variant="outline" 
                       size="sm" 
-                      className="rounded-lg px-3 text-xs"
+                      className="rounded-lg px-2 md:px-3 text-xs hidden sm:flex"
                     >
                       Today
                     </Button>
