@@ -1147,6 +1147,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
           </div>
         </div>
       </div>
+      </PullToRefresh>
     </PageLayout>
   );
 };
