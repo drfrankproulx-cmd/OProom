@@ -421,19 +421,27 @@ export const AppleDashboard = ({ user, onLogout }) => {
   };
 
   const handleTaskCreate = async () => {
-    if (!taskForm.task_description || !taskForm.due_date) {
-      toast.error('Task description and due date required');
+    // Determine task description from category selection or free text
+    const taskDescription = taskForm.task_type === 'Custom Task (free text)' 
+      ? taskForm.custom_task_text 
+      : taskForm.task_type || taskForm.task_description;
+
+    if (!taskDescription || !taskForm.due_date) {
+      toast.error('Task type and due date required');
       return;
     }
 
     try {
       const taskData = {
-        task_description: taskForm.task_description,
+        task_description: taskDescription,
+        task_category: taskForm.task_category || null,
+        task_type: taskForm.task_type || null,
         due_date: taskForm.due_date,
         assigned_to: taskForm.assigned_to || 'Others',
         assigned_to_email: taskForm.assigned_to_email,
         patient_mrn: taskForm.patient_mrn || '',
         urgency: taskForm.urgency,
+        notes: taskForm.notes || '',
         completed: false,
         created_by: user?.email || '',
       };
@@ -453,11 +461,15 @@ export const AppleDashboard = ({ user, onLogout }) => {
       toast.success('Task created successfully');
       setTaskForm({
         task_description: '',
+        task_category: '',
+        task_type: '',
+        custom_task_text: '',
         due_date: '',
         assigned_to: '',
         assigned_to_email: '',
         patient_mrn: '',
-        urgency: 'medium'
+        urgency: 'medium',
+        notes: ''
       });
       fetchData();
     } catch (error) {
