@@ -598,16 +598,17 @@ export const AppleDashboard = ({ user, onLogout }) => {
         </div>
       }
     >
-      <div className="p-4 md:p-6 space-y-4 md:space-y-6" data-testid="dashboard-content">
-        {/* Quick Stats - 2-col on mobile, 4-col on desktop */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4">
-          <StatsCard 
-            title="Today's Schedule" 
-            value={todaySchedules} 
-            icon={CalendarIcon} 
-            color="teal"
-            onClick={() => navigateWithFilter('calendar', { type: 'today' }, `Viewing today's ${todaySchedules} scheduled cases`)}
-            dataTestId="stats-card-today-schedule"
+      <PullToRefresh onRefresh={handleRefresh}>
+        <div className="p-4 md:p-6 space-y-4 md:space-y-6" data-testid="dashboard-content">
+          {/* Quick Stats - 2-col on mobile, 4-col on desktop */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4">
+            <StatsCard 
+              title="Today's Schedule" 
+              value={todaySchedules} 
+              icon={CalendarIcon} 
+              color="teal"
+              onClick={() => navigateWithFilter('calendar', { type: 'today' }, `Viewing today's ${todaySchedules} scheduled cases`)}
+              dataTestId="stats-card-today-schedule"
             subtitle="Click to view today's cases →"
           />
           <StatsCard 
