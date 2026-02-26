@@ -415,7 +415,9 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
         return email
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Token has expired")
-    except jwt.JWTError:
+    except jwt.exceptions.PyJWTError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    except Exception as e:
         raise HTTPException(status_code=401, detail="Invalid token")
 
 # Routes
