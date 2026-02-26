@@ -18,7 +18,8 @@ import {
   Activity,
   Bell,
   X,
-  GripVertical
+  GripVertical,
+  Smartphone
 } from 'lucide-react';
 import PageLayout from './PageLayout';
 import Settings from './Settings';
@@ -31,7 +32,22 @@ import BulkImport from './BulkImport';
 import CPTCodeAutocomplete from './CPTCodeAutocomplete';
 import DiagnosisAutocomplete from './DiagnosisAutocomplete';
 import PullToRefresh from './PullToRefresh';
+import SchedulePatientModal from './SchedulePatientModal';
+import PatientDetailPanel from './PatientDetailPanel';
+import { TaskCategorySelect, TaskCategoryBadge } from './TaskCategorySelect';
 import { getCPTCodeByCode } from '../data/cptCodes';
+
+// DnD Kit imports
+import {
+  DndContext,
+  DragOverlay,
+  useSensor,
+  useSensors,
+  PointerSensor,
+  TouchSensor,
+  closestCenter,
+} from '@dnd-kit/core';
+import { useDraggable, useDroppable } from '@dnd-kit/core';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
