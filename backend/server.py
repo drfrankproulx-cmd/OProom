@@ -343,14 +343,18 @@ class SchedulePartialUpdate(BaseModel):
 class Task(BaseModel):
     patient_mrn: str
     task_description: str
+    task_category: Optional[str] = None  # imaging, insurance, surgical_planning, etc.
+    task_type: Optional[str] = None  # Specific task within category
     urgency: str = "medium"
     assigned_to: str
     assigned_to_email: Optional[str] = None
     due_date: Optional[str] = None
     status: str = "pending"
     completed: bool = False
+    completed_at: Optional[datetime] = None
     created_by: Optional[str] = None
     created_at: Optional[datetime] = None
+    notes: Optional[str] = None
 
 class Conference(BaseModel):
     title: str
