@@ -126,6 +126,12 @@ Build a web-based operating room scheduling platform for surgical residents feat
     - Card-based layout on mobile (md:hidden) instead of broken table
     - Cards show checkbox, task description, status badge, urgency badge, due date, assigned to
     - Stats display in 3-column grid on mobile
+- [x] **Pull to Refresh Gesture (COMPLETE)**:
+  - Created reusable `PullToRefresh.jsx` component with native-like gesture handling
+  - Integrated into Dashboard, Patients, Tasks, and Calendar pages
+  - Features: Visual indicator with rotation progress, "Release to refresh" text, spinning animation during refresh
+  - Toast notification confirms data refresh
+  - Only activates on mobile viewports (md:hidden for desktop)
 
 ## Recently Completed (Feb 20, 2026)
 - [x] **Drag-and-Drop from Add-On List to Calendar**:
