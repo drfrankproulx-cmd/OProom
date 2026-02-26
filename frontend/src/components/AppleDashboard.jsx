@@ -591,9 +591,9 @@ export const AppleDashboard = ({ user, onLogout }) => {
         </div>
       }
     >
-      <div className="p-6 space-y-6" data-testid="dashboard-content">
-        {/* Quick Stats - Compact & Clickable */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="p-4 md:p-6 space-y-4 md:space-y-6" data-testid="dashboard-content">
+        {/* Quick Stats - 2-col on mobile, 4-col on desktop */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4">
           <StatsCard 
             title="Today's Schedule" 
             value={todaySchedules} 
