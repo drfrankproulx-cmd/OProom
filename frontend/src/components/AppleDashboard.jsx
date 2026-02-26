@@ -1271,8 +1271,15 @@ export const AppleDashboard = ({ user, onLogout }) => {
               </h3>
               <div className="space-y-3">
                 <div>
-                  <Label className="text-xs md:text-sm font-medium text-slate-700 mb-1 block">Task Description</Label>
-                  <Input className="h-11 md:h-9 text-base md:text-sm rounded-lg" value={taskForm.task_description} onChange={(e) => setTaskForm({...taskForm, task_description: e.target.value})} placeholder="Describe the task..." />
+                  <Label className="text-xs md:text-sm font-medium text-slate-700 mb-1 block">Task Type</Label>
+                  <TaskCategorySelect
+                    value={taskForm.task_category}
+                    onChange={(category) => setTaskForm({...taskForm, task_category: category})}
+                    onTaskTypeChange={(taskType) => setTaskForm({...taskForm, task_type: taskType, task_description: taskType})}
+                    selectedTaskType={taskForm.task_type}
+                    customTaskText={taskForm.custom_task_text}
+                    onCustomTaskTextChange={(text) => setTaskForm({...taskForm, custom_task_text: text, task_description: text})}
+                  />
                 </div>
                 <div>
                   <Label className="text-xs md:text-sm font-medium text-slate-700 mb-1 block">Due Date</Label>
