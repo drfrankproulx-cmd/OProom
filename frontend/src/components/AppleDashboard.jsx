@@ -518,12 +518,123 @@ export const AppleDashboard = ({ user, onLogout }) => {
     }
   };
 
-  // Drag and Drop handlers for Add-On to Calendar
+  // DnD Kit handlers for Add-On to Calendar
+  const handleDndDragStart = (event) => {
+    setActiveId(event.active.id);
+    const { addOn, patient } = event.active.data.current || {};
+    if (addOn) {
+      setDraggedAddOn(addOn);
+    }
+  };
+
+  const handleDndDragEnd = async (event) => {
+    const { active, over } = event;
+    setActiveId(null);
+    setDraggedAddOn(null);
+    
+    if (!over || !active.data.current?.addOn) return;
+    
+    const addOn = active.data.current.addOn;
+    const patient = active.data.current.patient;
+    const dropDate = over.data.current?.date;
+    
+    if (dropDate) {
+      // Open scheduling modal with pre-filled data
+      setScheduleModalData({
+        addOn,
+        patient,
+        initialDate: dropDate
+      });
+    }
+  };
+
+  const handleDndDragCancel = () => {
+    setActiveId(null);
+    setDraggedAddOn(null);
+  };
+
+  // Handle mobile tap on add-on (alternative to drag)
+  const handleAddOnTap = (addOn, patient) => {
+    setScheduleModalData({ addOn, patient, initialDate: new Date() });
+  };
+
+  // Handle scheduling from modal
+  const handleSchedulePatient = async (scheduleDetails) => {
+    if (!scheduleModalData?.addOn) return;
+    
+    const { addOn } = scheduleModalData;
+    
+    try {
+      const response = await fetch(`${API_URL}/api/schedules/${addOn._id}`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({
+          is_addon: false,
+          scheduled_date: scheduleDetails.scheduled_date,
+          scheduled_time: scheduleDetails.scheduled_time,
+          or_room: scheduleDetails.or_room,
+          staff: scheduleDetails.staff,
+          notes: scheduleDetails.notes
+        })
+      });
+
+      if (response.ok) {
+        toast.success(`${addOn.patient_name} scheduled for ${format(parseISO(scheduleDetails.scheduled_date), 'MMMM d, yyyy')} at ${scheduleDetails.scheduled_time}`, {
+          duration: 3000
+        });
+        fetchData();
+      } else {
+        const error = await response.json();
+        throw new Error(error.detail || 'Failed to schedule patient');
+      }
+    } catch (error) {
+      console.error('Schedule error:', error);
+      toast.error(error.message);
+    }
+  };
+
+  // Handle clicking on a scheduled patient in the calendar
+  const handleCalendarEventClick = (schedule) => {
+    const patient = patients.find(p => p.mrn === schedule.patient_mrn);
+    setPatientDetailData({ schedule, patient });
+  };
+
+  // Handle canceling a case (return to add-on list)
+  const handleCancelCase = async (scheduleId) => {
+    try {
+      const response = await fetch(`${API_URL}/api/schedules/${scheduleId}`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({
+          is_addon: true,
+          scheduled_date: '',
+          scheduled_time: ''
+        })
+      });
+
+      if (response.ok) {
+        fetchData();
+        return true;
+      } else {
+        throw new Error('Failed to cancel case');
+      }
+    } catch (error) {
+      toast.error(error.message);
+      throw error;
+    }
+  };
+
+  // Handle view full patient record
+  const handleViewFullRecord = (patient) => {
+    setPatientDetailData(null);
+    setSelectedPatient(patient);
+  };
+
+  // Legacy drag handlers (keeping for backward compatibility)
   const handleDragStart = (e, addOn) => {
     setDraggedAddOn(addOn);
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('text/plain', addOn._id);
-    // Add a slight delay to show drag effect
     setTimeout(() => {
       e.target.style.opacity = '0.5';
     }, 0);
@@ -542,7 +653,6 @@ export const AppleDashboard = ({ user, onLogout }) => {
   };
 
   const handleDragLeave = (e) => {
-    // Only clear if we're actually leaving the drop zone
     if (!e.currentTarget.contains(e.relatedTarget)) {
       setDragOverDate(null);
     }
@@ -554,42 +664,13 @@ export const AppleDashboard = ({ user, onLogout }) => {
     
     if (!draggedAddOn) return;
     
-    try {
-      const token = localStorage.getItem('token');
-      const formattedDate = format(date, 'yyyy-MM-dd');
-      
-      // Update the schedule to remove add-on status and set the scheduled date
-      const response = await fetch(`${API_URL}/api/schedules/${draggedAddOn._id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          is_addon: false,
-          scheduled_date: formattedDate,
-          scheduled_time: '08:00' // Default time, can be adjusted later
-        })
-      });
-
-      if (response.ok) {
-        const updatedSchedule = await response.json();
-        // Update local state
-        setSchedules(prev => prev.map(s => 
-          s._id === draggedAddOn._id 
-            ? { ...s, is_addon: false, scheduled_date: formattedDate, scheduled_time: '08:00' }
-            : s
-        ));
-        toast.success(`${draggedAddOn.patient_name} scheduled for ${format(date, 'MMMM d, yyyy')}`, {
-          duration: 3000
-        });
-      } else {
-        toast.error('Failed to schedule patient');
-      }
-    } catch (error) {
-      console.error('Drop error:', error);
-      toast.error('Failed to schedule patient');
-    }
+    // Open the scheduling modal instead of directly scheduling
+    const patient = patients.find(p => p.mrn === draggedAddOn.patient_mrn);
+    setScheduleModalData({
+      addOn: draggedAddOn,
+      patient,
+      initialDate: date
+    });
     
     setDraggedAddOn(null);
   };
