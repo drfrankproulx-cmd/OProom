@@ -518,6 +518,7 @@ const Calendar = ({ onNavigate, initialFilter, user, onLogout }) => {
           </div>
         )}
       </div>
+      </PullToRefresh>
     </PageLayout>
   );
 };
