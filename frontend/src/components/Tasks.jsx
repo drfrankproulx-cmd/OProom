@@ -587,6 +587,9 @@ export const Tasks = ({ onNavigate, initialFilter, user, onLogout }) => {
                       <SortIcon columnKey="urgency" />
                     </div>
                   </th>
+                  <th className="w-[10%] px-4 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    Category
+                  </th>
                   <th className="w-[11%] px-4 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                     Patient
                   </th>
@@ -598,7 +601,7 @@ export const Tasks = ({ onNavigate, initialFilter, user, onLogout }) => {
               <tbody className="bg-white divide-y divide-gray-200">
                 {sortedTasks.length === 0 ? (
                   <tr>
-                    <td colSpan="8" className="px-6 py-12 text-center text-gray-500">
+                    <td colSpan="9" className="px-6 py-12 text-center text-gray-500">
                       <ListTodo className="h-12 w-12 mx-auto mb-3 text-gray-300" />
                       <p className="text-lg font-medium">No tasks found</p>
                       <p className="text-sm">Try adjusting your search or filters</p>
