@@ -100,6 +100,33 @@ Build a web-based operating room scheduling platform for surgical residents feat
 - `attendings` - Attending profiles
 - `notifications` - User notifications
 
+## Recently Completed (Feb 26, 2026)
+- [x] **Mobile UI/UX Overhaul (COMPLETE)**:
+  - Created `MobileNav.jsx` - Bottom tab bar navigation for mobile devices
+  - Updated `PageLayout.jsx` - Switches between desktop sidebar and mobile nav
+  - Added comprehensive mobile styles in `index.css` (safe areas, touch targets, z-index)
+  - **Dashboard Mobile Fixes**:
+    - Stat cards now display in 2-column grid on mobile (`grid-cols-2`)
+    - Quick Add Patient form fields stack vertically on mobile
+    - All inputs have 44px minimum touch targets
+    - Calendar view is horizontally scrollable on mobile
+  - **Autocomplete Mobile Fixes**:
+    - `DiagnosisAutocomplete.jsx` - z-index 9999, proper sizing, touch-friendly items
+    - `CPTCodeAutocomplete.jsx` - z-index 9999, proper sizing, touch-friendly items
+  - **Calendar Page Mobile Fixes**:
+    - Stats display in 2-column grid on mobile
+    - Week view is horizontally scrollable (min-w-[600px])
+    - Week/Month toggle buttons are mobile-friendly
+    - Event cards have responsive sizing
+  - **Patients Page Mobile Fixes**:
+    - Card-based layout on mobile (md:hidden) instead of broken table
+    - Cards show patient avatar, name, ID, status, diagnosis, procedure, attending, prep progress
+    - Summary stats in 2-column grid
+  - **Tasks Page Mobile Fixes**:
+    - Card-based layout on mobile (md:hidden) instead of broken table
+    - Cards show checkbox, task description, status badge, urgency badge, due date, assigned to
+    - Stats display in 3-column grid on mobile
+
 ## Recently Completed (Feb 20, 2026)
 - [x] **Drag-and-Drop from Add-On List to Calendar**:
   - Add-On items are now draggable with visual drag handle (GripVertical icon)
