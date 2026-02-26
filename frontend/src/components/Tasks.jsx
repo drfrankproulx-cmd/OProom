@@ -710,6 +710,7 @@ export const Tasks = ({ onNavigate, initialFilter, user, onLogout }) => {
           </div>
         </div>
       </div>
+      </PullToRefresh>
     </PageLayout>
   );
 };
