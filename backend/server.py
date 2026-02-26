@@ -122,13 +122,21 @@ residents_collection = db.residents
 attendings_collection = db.attendings
 notifications_collection = db.notifications
 usage_stats = db.usage_stats  # For tracking frequently used diagnoses/CPT codes
+webauthn_credentials = db.webauthn_credentials  # For biometric auth credentials
+webauthn_challenges = db.webauthn_challenges  # For temporary challenge storage
 
 # Security
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 security = HTTPBearer()
 JWT_SECRET = os.environ.get('JWT_SECRET', 'your-secret-key-change-in-production')
 JWT_ALGORITHM = os.environ.get('JWT_ALGORITHM', 'HS256')
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get('ACCESS_TOKEN_EXPIRE_MINUTES', 1440))
+# Extended to 30 days for persistent login (was 1440 minutes = 24 hours)
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get('ACCESS_TOKEN_EXPIRE_MINUTES', 43200))  # 30 days
+
+# WebAuthn Configuration
+RP_ID = os.environ.get('WEBAUTHN_RP_ID', 'surgery-command.preview.emergentagent.com')
+RP_NAME = os.environ.get('WEBAUTHN_RP_NAME', 'OR Scheduler')
+RP_ORIGIN = os.environ.get('WEBAUTHN_RP_ORIGIN', 'https://surgery-command.preview.emergentagent.com')
 
 # Email Configuration
 SMTP_SERVER = os.environ.get('SMTP_SERVER', 'smtp.gmail.com')
