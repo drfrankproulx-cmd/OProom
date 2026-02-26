@@ -41,7 +41,7 @@ const getInitials = (name) => {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 };
 
-// Quick Stats Card Component - Cleaner design
+// Quick Stats Card Component - Mobile optimized
 const StatsCard = ({ title, value, icon: Icon, color, onClick, dataTestId, subtitle }) => {
   const colorClasses = {
     teal: 'bg-teal-50 border-teal-100 text-teal-700',
@@ -59,22 +59,22 @@ const StatsCard = ({ title, value, icon: Icon, color, onClick, dataTestId, subti
   
   return (
     <div 
-      className={`relative rounded-xl border p-5 transition-all duration-200 ${onClick ? 'cursor-pointer hover:shadow-md hover:-translate-y-0.5' : ''} ${colorClasses[color]} group`}
+      className={`relative rounded-xl border p-3 md:p-5 transition-all duration-200 ${onClick ? 'cursor-pointer hover:shadow-md active:scale-[0.98]' : ''} ${colorClasses[color]} group`}
       onClick={onClick}
       data-testid={dataTestId}
     >
       <div className="flex items-start justify-between">
-        <div>
-          <p className="text-sm font-medium opacity-80 mb-1">{title}</p>
-          <p className="text-3xl font-bold">{value}</p>
+        <div className="min-w-0 flex-1">
+          <p className="text-xs md:text-sm font-medium opacity-80 mb-0.5 md:mb-1 truncate">{title}</p>
+          <p className="text-2xl md:text-3xl font-bold">{value}</p>
           {subtitle && onClick && (
-            <p className="text-xs mt-2 opacity-0 group-hover:opacity-70 transition-opacity">
+            <p className="text-[10px] md:text-xs mt-1 md:mt-2 opacity-0 group-hover:opacity-70 transition-opacity hidden md:block">
               {subtitle}
             </p>
           )}
         </div>
-        <div className={`p-2.5 rounded-xl ${iconColorClasses[color]}`}>
-          <Icon className="h-5 w-5" strokeWidth={1.5} />
+        <div className={`p-1.5 md:p-2.5 rounded-lg md:rounded-xl ${iconColorClasses[color]} flex-shrink-0`}>
+          <Icon className="h-4 w-4 md:h-5 md:w-5" strokeWidth={1.5} />
         </div>
       </div>
     </div>
