@@ -499,6 +499,11 @@ export const Tasks = ({ onNavigate, initialFilter, user, onLogout }) => {
                     <Badge className={`${getUrgencyBadge(task.urgency)} px-2 py-0.5 text-[10px] font-medium rounded-full capitalize`}>
                       {task.urgency}
                     </Badge>
+                    {/* Task Category Badge */}
+                    <TaskCategoryBadge 
+                      category={task.task_category} 
+                      taskType={task.task_type || task.task_description}
+                    />
                     {task.due_date && (
                       <span className="text-xs text-gray-500">
                         Due: {format(parseISO(task.due_date), 'MMM dd')}
