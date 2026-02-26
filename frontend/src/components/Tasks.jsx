@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Badge } from './ui/badge';
@@ -22,6 +22,7 @@ import {
   Trash2
 } from 'lucide-react';
 import PageLayout from './PageLayout';
+import PullToRefresh from './PullToRefresh';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
