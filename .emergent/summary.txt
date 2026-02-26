@@ -1,147 +1,156 @@
 <analysis>**original_problem_statement:**
-The user wants to build a web-based operating room scheduling platform for surgical residents. The project has evolved to incorporate features from the user's external GitHub repository. The most recent requests were to build a bulk CSV import feature for residents and attendings, and then to perform a comprehensive UI/UX overhaul to standardize the layout and navigation across all pages.
+The user, a surgical resident, wants a web-based operating room scheduling platform. The initial goal has expanded significantly. The most recent set of tasks included a major desktop UI overhaul, adding extensive lists of ICD-10 and CPT codes with smart CPT code sorting, fixing backend stability issues, implementing drag-and-drop scheduling, and migrating the entire database to a cloud-hosted MongoDB Atlas instance for mobile accessibility. The current and sole priority is to perform a comprehensive mobile UI/UX overhaul to make the existing application perfectly functional and readable on cellphone viewports (~390px wide).
 
 **PRODUCT REQUIREMENTS:**
 - A central, EMR-style clinical command center.
 - A dominant calendar view for scheduling.
-- A patient intake form with intelligent autocomplete for diagnoses and CPT codes.
-- An Add-On List for unscheduled patients.
+- A patient intake form with intelligent autocomplete for diagnoses (ICD-10) and CPT codes.
+- An Add-On List for unscheduled patients with drag-and-drop scheduling.
 - A task management system.
-- Multi-user login.
+- Multi-user login with an admin role.
 - A bulk CSV import feature for residents and attendings.
-- A consistent UI/UX with a persistent navigation menu (sidebar) available on all pages.
+- A consistent UI/UX on desktop.
+- A fully responsive and functional UI on mobile devices.
 
 **User's preferred language**: English
 
 **what currently exists?**
-The application is a full-stack scheduling platform (React/FastAPI/MongoDB) with features for patient management, scheduling, and task tracking. It includes Google Calendar integration and intelligent autocomplete fields. A fully functional bulk CSV import wizard for residents and attendings was recently completed. The agent has begun a major UI/UX refactor, creating shared  and  components to standardize the application's look and feel, but this refactor is currently in a broken, non-functional state.
+The application is a full-stack platform (React/FastAPI) connected to a cloud-based MongoDB Atlas database. It includes user authentication, patient and schedule management, task tracking, bulk CSV import, and intelligent autocomplete fields populated with extensive medical codes. The desktop UI is stable and consistent. The agent has just begun a major refactor for mobile responsiveness by creating a  component for a bottom tab bar, updating the main , and adding global CSS rules in  to address common mobile issues. The application is currently **not** functional on mobile devices.
 
 **Last working item**:
-- **Last item agent was working:** A comprehensive UI/UX refactor to introduce a consistent sidebar and page layout across the entire application. The agent created shared layout components (, ) and began modifying individual pages (, , , etc.) to use them.
+- **Last item agent was working:** A complete mobile UI/UX overhaul to fix all layout and functionality issues on small screens, as detailed by the user. The agent started by creating the foundational pieces for a mobile-first navigation system.
 - **Status:** IN PROGRESS
 - **Agent Testing Done:** N
-- **Which testing method agent to use?** Frontend testing agent
+- **Which testing method agent to use?** Frontend testing agent, configured to simulate a mobile viewport (e.g., 390x844).
 - **User Testing Done:** N
 
 **All Pending/In progress Issue list**:
-- **Issue 1: UI/UX Refactor is incomplete and not rendering correctly (P0)**
-    - **Description**: The agent was tasked with a major UI/UX overhaul to introduce a consistent sidebar and page layout. While shared components (, ) were created and several pages were modified, the application is not rendering the new layout. The final screenshot shows the old dashboard, and navigation tests failed, indicating the refactor is in a broken state.
-    - **Next debug checklist**:
-        1.  Review . The conditional rendering logic needs to correctly wrap child components (, , etc.) with the new .
-        2.  Inspect  and  to ensure they are correctly structured and accept the necessary props.
-        3.  Ensure the  component has the correct  attributes for navigation and is being rendered correctly by .
-        4.  Systematically test navigation to each page to ensure the new layout appears correctly everywhere.
-    - **Why fix this issue and what will be achieved with the fix?**: This is the user's top priority. Fixing this will provide a consistent user experience, standardized navigation, and a cleaner UI, addressing the user's explicit request for a full menu on every page.
+- **Issue 1: Mobile UI/UX is Broken Across the Entire Application (P0)**
+    - **Description**: The application is unusable on mobile viewports (~390px). Key problems include overlapping content, non-functional dropdowns (autocomplete, select menus), an inaccessible calendar page, overflowing data tables, and unreliable touch targets for buttons and links.
+    - **Attempted fixes**: The agent has begun the fix by creating a  bottom tab bar, updating  to use it on small screens, and adding global mobile-centric CSS to .
+    - **Next debug checklist**: Systematically audit and fix each page for mobile, following the user's explicit instructions:
+        1.  Verify the new  component renders correctly at the bottom of the screen.
+        2.  Fix the **Dashboard**: Implement a 2-column grid for stat cards and ensure the Quick Add form fields stack vertically.
+        3.  Fix all **Dropdowns**: Ensure  and  render correctly with a high  and are not clipped by parent containers.
+        4.  Fix the **Calendar Page**: Make it render and be interactive on mobile, potentially switching to a simpler list view.
+        5.  Fix **Patients & Tasks Pages**: Address table overflow by using a horizontally scrollable container () or converting to a card-based layout for mobile.
+        6.  Fix **Modals & Dialogs**: Ensure they are full-screen or bottom-sheet style on mobile.
+    - **Why fix this issue and what will be achieved with the fix?**: This is the user's sole priority. The goal is to make the application fully usable on their cellphone.
     - **Status**: IN PROGRESS
     - **Is recurring issue?**: N
     - **Should Test frontend/backend/both after fix?**: frontend
 
 **In progress Task List**:
-- **Task 1: Complete UI/UX Refactor (P0)**
-    - **Description**: Implement a consistent sidebar and page layout across all application pages (, , , , , , , ).
-    - **Where to resume**: Debugging the rendering logic in . The new  is not being displayed for the child views.
-    - **What will be achieved with this?**: A unified and professional user interface with consistent navigation.
+- **Task 1: Complete Mobile UI/UX Overhaul (P0)**
+    - **Where to resume**: The foundational components (, ) and global CSS are in place. The next step is to begin applying responsive Tailwind CSS classes (e.g., , ) to the content of each page, starting with , to fix the layout, stacking, and spacing issues.
+    - **What will be achieved with this?**: A fully responsive application that offers a seamless, high-quality experience on both desktop and mobile devices.
     - **Status**: IN PROGRESS
     - **Should Test frontend/backend/both after fix?**: frontend
-    - **Blocked on something**: Blocked on resolving Issue 1.
+    - **Blocked on something**: No.
 
 **Upcoming and Future Tasks**
 *   **Upcoming Tasks:**
-    *   (P1) Implement drag-and-drop functionality to move patients from the Add-On List directly onto the calendar.
-    *   (P2) Build out the Admin / Reference view.
+    *   (P1) Build out the Admin / Reference view.
 *   **Future Tasks:**
-    *   (P2) Audit and remove legacy/redundant frontend components to reduce codebase clutter.
+    - (P2) Audit and remove legacy/redundant frontend components (, , etc.) to reduce codebase clutter.
 
 **Completed work in this session**
-- **Bulk CSV Import Feature**:
-    - **Backend**: Implemented API endpoints for CSV template download, validation preview, and import for residents and attendings.
-    - **Frontend**: Created a multi-step  wizard with drag-and-drop, preview tables for valid/error rows, and duplicate skipping.
-    - **Integration**: Added a navigation link from the Settings page and thoroughly tested the end-to-end flow.
-- **GitHub Commits Integration**:
-    - **Patient Deletion**: Added delete functionality to the Pre-Op Status and All Patients pages.
-    - **Table Layouts & Error Handling**: Refactored  and  with  layouts for consistency and improved backend error handling for invalid Task IDs.
-- **Stat Card Enhancements**:
-    - Made dashboard stat cards clickable.
-    - Implemented drill-down filters (e.g., clicking Pending Cases navigates to a pre-filtered view of Add-On patients).
-    - Added UX feedback like hover subtitles and toast notifications.
+- **Database Migration to MongoDB Atlas**: Migrated the backend from a local MongoDB instance to a user-provided cloud-hosted Atlas cluster, enabling mobile access.
+- **User & Data Seeding**: Created an admin account for the user and populated the new Atlas database with comprehensive sample data (patients, residents, schedules, etc.).
+- **Drag-and-Drop Scheduling**: Implemented functionality on the dashboard to drag patients from the Add-On List and drop them onto the calendar to schedule them.
+- **Medical Code Integration**:
+    - Added ~80 ICD-10 diagnosis codes.
+    - Added ~200 CPT codes.
+    - Implemented smart sorting for the CPT autocomplete to recommend relevant procedures based on the selected diagnosis.
+- **Backend Stability Fix**: Resolved a recurring  AttributeError in  by patching the  library at startup.
+- **Desktop UI/UX Refactor**: Completed a major refactor to provide a consistent sidebar and page layout across all pages on desktop.
 
 **Earlier issues found/mentioned but not fixed**
-- **Issue 1: Intermittent  AttributeError**
-    - **Debug checklist:** A recurring backend startup error () likely related to hot reloading. It is low priority as it self-resolves.
-    - **Why to solve this issue and what will be achieved with this?**: Improves backend stability.
-    - **Should Test frontend/backend/both after fix**: backend
-    - **Is recurring issue?**: Y
-- **Issue 2: PDF Extraction Failure**
-    - **Debug checklist:** The  tool fails to parse PDFs. A workaround is in place.
+- **Issue 1: PDF Extraction Failure**
+    - **Debug checklist:** The  tool fails to parse PDFs. This is a known, low-priority issue.
     - **Why to solve this issue and what will be achieved with this?**: Would enable future document-parsing features.
     - **Should Test frontend/backend/both after fix**: N/A
     - **Is recurring issue?**: Y
 
 **Known issue recurrence from previous fork**
-- **Intermittent  AttributeError**: This was noted in the previous handoff and occurred again, confirming it as a recurring stability concern.
+- The intermittent  AttributeError was present at the start of the session but has been **RESOLVED**.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
-- **Frontend**: React, Tailwind CSS, shadcn/ui. The app uses state-based routing controlled by the main  component.
-- **Backend**: Python FastAPI.
-- **Database**: MongoDB.
-- **Development Workflow**: A hybrid model where the agent implements features directly and also integrates larger updates from the user's external GitHub branch.
+- **Frontend**: React, Tailwind CSS (heavy use of responsive prefixes like  will be required), shadcn/ui.
+- **Backend**: Python FastAPI, PyMongo.
+- **Database**: **MongoDB Atlas (Cloud)**. This is a critical infrastructure change from the previous local instance.
 
 **key DB schema**
+- **users**: 
+- **patients**: 
+- **schedules**: 
 - **residents**: 
 - **attendings**: 
 
 **changes in tech stack**
-- None.
+- **Database**: The application has been migrated from a local MongoDB instance to a cloud-hosted **MongoDB Atlas** cluster. All data persistence now relies on this cloud service.
 
 **All files of reference**
-*   : The core component for managing views and navigation. This is the primary file to debug for the UI refactor.
-*   : New shared layout component (part of the broken refactor).
-*   : New shared navigation component (part of the broken refactor).
-*   : New, fully functional component for the CSV import wizard.
-*   : Contains all backend logic, including the new endpoints for bulk import.
-*   : One of the pages being refactored.
-*   : One of the pages being refactored.
+- : (Updated) Now contains logic to switch between the desktop sidebar and mobile bottom navigation.
+- : (New) The component for the mobile bottom tab bar.
+- : (Updated) Contains new global CSS rules for mobile-friendliness.
+- : Primary component needing mobile layout fixes.
+- : Its dropdown functionality is broken on mobile.
+- : Its dropdown functionality is broken on mobile.
+- : Now contains the MongoDB Atlas connection string.
 
 **Areas that need refactoring**:
-- The entire frontend is undergoing a refactor to use a shared . This work is currently incomplete and has broken the UI.
+- The entire frontend requires a mobile responsiveness refactor, which is the current in-progress task. All pages and components must be audited and fixed for small viewports.
 
 **key api endpoints**
-- 
-- 
-- 
+- All CRUD endpoints (, , etc.) are now served from the MongoDB Atlas cloud database.
 
 **Critical Info for New Agent**
-- **UI Refactor is BROKEN**: Your immediate priority is to fix the ongoing UI/UX refactor. The new  and  are not rendering correctly. The investigation should start in , which controls which view is displayed.
-- **State-Based Routing**: The application does not use a standard routing library (like React Router). Navigation is handled by state changes within  (e.g., ). The refactor must be completed within this existing architecture.
+- **Your ONLY Priority is the Mobile UI Fix**: The user has been explicit that this is the sole task. Do not add new features. Systematically follow the user's page-by-page audit plan to fix all layout and interaction issues.
+- **Test in Mobile Viewport**: All frontend work MUST be viewed and tested in a narrow viewport (~390px wide) using browser developer tools.
+- **Database is on Atlas**: The application is now connected to a cloud MongoDB Atlas instance. The credentials are in . The data is fresh from a recent seeding.
+- **Resume the Refactor**: The basic structure for mobile navigation (, updated , global CSS) is in place. Your job is to continue this work by applying responsive Tailwind CSS classes (, , etc.) to fix the content within each page, starting with .
 
 **documents and test reports created in this job**
-*   
-*   
+- 
+- 
+- 
+- 
 
 **Last 10 User Messages and any pending HUMAN messages**
-- **User**: Summarize what we have built. (COMPLETE)
-- **User**: Gave detailed requirements to build a bulk CSV import feature. (COMPLETE)
-- **User**: i need you to look through every page of this platform that we are building and i want you to clean it up. spacing needs work. UI needs work, UX needs work. please prioritize the user experience and make sure that we have a good and consistent flow. one specific item i also need is the full menu on every page. (PENDING)
+1.  **User**: Fix the mobile UI... Your ONLY job right now is to fix every mobile layout, functionality, and interaction issue. (PENDING - This is the current, highest-priority task).
+2.  **User**: Requested a test of the bulk CSV import feature. (Agent confirmed the feature already exists and is working).
+3.  **User**: Asked various questions about setting up MongoDB Atlas. (Agent guided the user through the process).
+4.  **User**: yes please, I will be using this platform on our cellphone. (This message initiated the database migration to MongoDB Atlas).
+5.  **User**: Asked where the database is stored. (This question started the migration conversation).
+6.  **User**: Implement drag-and-drop from Add-On List to Calendar. (COMPLETED).
+7.  **User**: Please proceed with the remaining issues in the backend and code. (COMPLETED - Agent fixed the bcrypt error).
+8.  **User**: Provided a massive list of CPT codes and requested smart sorting. (COMPLETED).
+9.  **User**: Provided a massive list of ICD-10 diagnosis codes. (COMPLETED).
+10. **User**: on the dashboard... combine [monthly and weekly calendars] into a toggle able option. (COMPLETED).
 
 **Project Health Check:**
-- **Broken**: The entire frontend UI is in a broken state due to the incomplete UI/UX refactor. The new page layout and sidebar are not rendering.
+- **Broken**: The frontend UI is non-functional and visually broken on **mobile viewports**.
 - **Mocked**: None.
 
 **3rd Party Integrations**
-- **Google (Gmail & Calendar)**: Integrated via OAuth 2.0.
+- **MongoDB Atlas**: The application's primary database, hosted in the cloud.
+- **Google (Gmail & Calendar)**: Integrated via OAuth for calendar features.
 - **GitHub**: Used as a mechanism for the user to provide code updates.
 
 **Testing status**
-- **Testing agent used after significant changes**: YES, successfully used for the Bulk CSV Import feature.
+- **Testing agent used after significant changes**: YES. Successfully used for desktop UI refactor, backend fixes, and new features. It will be needed again for the mobile UI fix.
 - **Troubleshoot agent used after agent stuck in loop**: NO
 - **Test files created**: None.
-- **Known regressions**: The entire UI navigation and layout is currently regressed due to the in-progress refactor.
+- **Known regressions**: The entire application UI is currently regressed on mobile viewports.
 
 **Credentials to test flow:**
-- **Application Login**: Register a new user via the UI or use  / .
+- **Admin Email**: 
+- **Admin Password**: 
+- **Note**: The password contains special characters.
 
 **What agent forgot to execute**
-- The agent is in the middle of a large task (UI/UX refactor) that was left in an incomplete and broken state. The immediate next step is to debug and complete this refactor.</analysis>
+- The agent is in the middle of a critical, user-requested task (mobile UI overhaul). It has not forgotten the task but has only just begun the implementation. The next steps must focus on completing this overhaul.</analysis>

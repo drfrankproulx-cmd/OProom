@@ -1852,11 +1852,11 @@ async def google_oauth_callback(code: str, state: str = None):
         )
         
         # Redirect to frontend with success
-        frontend_url = os.environ.get('FRONTEND_URL', 'https://surgery-command.preview.emergentagent.com')
+        frontend_url = os.environ.get('FRONTEND_URL', 'https://surgery-planner-3.preview.emergentagent.com')
         return RedirectResponse(f"{frontend_url}?google_connected=true")
         
     except Exception as e:
-        frontend_url = os.environ.get('FRONTEND_URL', 'https://surgery-command.preview.emergentagent.com')
+        frontend_url = os.environ.get('FRONTEND_URL', 'https://surgery-planner-3.preview.emergentagent.com')
         return RedirectResponse(f"{frontend_url}?google_error={str(e)}")
 
 
