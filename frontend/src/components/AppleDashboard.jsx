@@ -1150,7 +1150,12 @@ export const AppleDashboard = ({ user, onLogout }) => {
                             const completed = Object.values(checklist).filter(Boolean).length;
                             const percentage = (completed / 4) * 100;
                             return (
-                              <div key={schedule._id} onClick={() => setSelectedPatient(patient)} className="bg-white rounded-lg p-1.5 md:p-2 border-l-2 border-teal-400 hover:shadow-md transition-all cursor-pointer text-[10px] md:text-xs">
+                              <div 
+                                key={schedule._id} 
+                                onClick={() => handleCalendarEventClick(schedule)} 
+                                className="bg-white rounded-lg p-1.5 md:p-2 border-l-2 border-teal-400 hover:shadow-md transition-all cursor-pointer text-[10px] md:text-xs"
+                                data-testid={`calendar-event-${schedule._id}`}
+                              >
                                 <div className="font-semibold text-slate-900 truncate">{schedule.patient_name}</div>
                                 <div className="text-slate-500 text-[9px] md:text-xs truncate hidden md:block">{schedule.staff}</div>
                                 {schedule.scheduled_time && <div className="flex items-center text-slate-400 text-[9px] md:text-xs mt-1"><Clock className="h-2 w-2 md:h-2.5 md:w-2.5 mr-1" />{schedule.scheduled_time}</div>}
