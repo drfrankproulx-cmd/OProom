@@ -679,6 +679,12 @@ export const Tasks = ({ onNavigate, initialFilter, user, onLogout }) => {
                           </Badge>
                         </td>
                         <td className="px-4 py-4 whitespace-nowrap">
+                          <TaskCategoryBadge 
+                            category={task.task_category} 
+                            taskType={task.task_type || task.task_description}
+                          />
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap">
                           {task.patient_mrn ? (
                             <div className="text-sm text-gray-900 font-medium truncate">
                               {task.patient_mrn}
