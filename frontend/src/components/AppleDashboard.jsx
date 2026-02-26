@@ -1034,27 +1034,27 @@ export const AppleDashboard = ({ user, onLogout }) => {
             </div>
           </div>
 
-          {/* RIGHT COLUMN: Task Assignment + Patient Details */}
-          <div className="col-span-12 lg:col-span-3 space-y-4">
+          {/* RIGHT COLUMN: Task Assignment + Patient Details - Full width on mobile */}
+          <div className="lg:col-span-3 space-y-4">
             {/* Task Assignment Form */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-              <h3 className="text-base font-semibold text-slate-900 mb-4 flex items-center">
-                <CheckCircle2 className="h-5 w-5 mr-2 text-green-500" />
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-5">
+              <h3 className="text-sm md:text-base font-semibold text-slate-900 mb-3 md:mb-4 flex items-center">
+                <CheckCircle2 className="h-4 w-4 md:h-5 md:w-5 mr-2 text-green-500" />
                 Create Task
               </h3>
               <div className="space-y-3">
                 <div>
-                  <Label className="text-sm font-medium text-slate-700 mb-1 block">Task Description</Label>
-                  <Input className="h-9 text-sm rounded-lg" value={taskForm.task_description} onChange={(e) => setTaskForm({...taskForm, task_description: e.target.value})} placeholder="Describe the task..." />
+                  <Label className="text-xs md:text-sm font-medium text-slate-700 mb-1 block">Task Description</Label>
+                  <Input className="h-11 md:h-9 text-base md:text-sm rounded-lg" value={taskForm.task_description} onChange={(e) => setTaskForm({...taskForm, task_description: e.target.value})} placeholder="Describe the task..." />
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-slate-700 mb-1 block">Due Date</Label>
-                  <Input type="date" className="h-9 text-sm rounded-lg" value={taskForm.due_date} onChange={(e) => setTaskForm({...taskForm, due_date: e.target.value})} />
+                  <Label className="text-xs md:text-sm font-medium text-slate-700 mb-1 block">Due Date</Label>
+                  <Input type="date" className="h-11 md:h-9 text-base md:text-sm rounded-lg" value={taskForm.due_date} onChange={(e) => setTaskForm({...taskForm, due_date: e.target.value})} />
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-slate-700 mb-1 block">Assign To</Label>
+                  <Label className="text-xs md:text-sm font-medium text-slate-700 mb-1 block">Assign To</Label>
                   <Select value={taskForm.assigned_to} onValueChange={(value) => { const selectedResident = residents.find(r => r.name === value); setTaskForm({...taskForm, assigned_to: value, assigned_to_email: selectedResident?.email || ''}); }}>
-                    <SelectTrigger className="h-9 text-sm rounded-lg"><SelectValue placeholder="Select resident" /></SelectTrigger>
+                    <SelectTrigger className="h-11 md:h-9 text-base md:text-sm rounded-lg"><SelectValue placeholder="Select resident" /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="Others">Others</SelectItem>
                       {residents.length > 0 ? residents.map((resident) => (<SelectItem key={resident._id} value={resident.name}>{resident.name}</SelectItem>)) : <SelectItem value="none" disabled>No active residents</SelectItem>}
@@ -1062,9 +1062,9 @@ export const AppleDashboard = ({ user, onLogout }) => {
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-slate-700 mb-1 block">Urgency</Label>
+                  <Label className="text-xs md:text-sm font-medium text-slate-700 mb-1 block">Urgency</Label>
                   <Select value={taskForm.urgency} onValueChange={(v) => setTaskForm({...taskForm, urgency: v})}>
-                    <SelectTrigger className="h-9 text-sm rounded-lg"><SelectValue placeholder="Select urgency" /></SelectTrigger>
+                    <SelectTrigger className="h-11 md:h-9 text-base md:text-sm rounded-lg"><SelectValue placeholder="Select urgency" /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="low">Low</SelectItem>
                       <SelectItem value="medium">Medium</SelectItem>
@@ -1074,10 +1074,10 @@ export const AppleDashboard = ({ user, onLogout }) => {
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-slate-700 mb-1 block">Link to Patient</Label>
-                  <Input className="h-9 text-sm rounded-lg" value={taskForm.patient_mrn} onChange={(e) => setTaskForm({...taskForm, patient_mrn: e.target.value})} placeholder="Patient ID (optional)" />
+                  <Label className="text-xs md:text-sm font-medium text-slate-700 mb-1 block">Link to Patient</Label>
+                  <Input className="h-11 md:h-9 text-base md:text-sm rounded-lg" value={taskForm.patient_mrn} onChange={(e) => setTaskForm({...taskForm, patient_mrn: e.target.value})} placeholder="Patient ID (optional)" />
                 </div>
-                <Button onClick={handleTaskCreate} className="w-full bg-green-500 hover:bg-green-600 text-white rounded-lg h-10 text-sm font-medium" data-testid="create-task-btn">
+                <Button onClick={handleTaskCreate} className="w-full bg-green-500 hover:bg-green-600 active:bg-green-700 text-white rounded-lg h-11 md:h-10 text-sm font-medium" data-testid="create-task-btn">
                   <CheckCircle2 className="h-4 w-4 mr-2" />
                   Create Task
                 </Button>
