@@ -68,6 +68,12 @@ export const Tasks = ({ onNavigate, initialFilter, user, onLogout }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Pull to refresh handler
+  const handleRefresh = useCallback(async () => {
+    await fetchData();
+    toast.success('Tasks refreshed', { duration: 1500 });
+  }, []);
+
   // Get task status
   const getTaskStatus = (task) => {
     if (task.completed) return 'completed';
