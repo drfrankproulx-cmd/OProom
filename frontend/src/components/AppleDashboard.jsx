@@ -197,6 +197,21 @@ export const AppleDashboard = ({ user, onLogout }) => {
   // Drag and drop state
   const [draggedAddOn, setDraggedAddOn] = useState(null);
   const [dragOverDate, setDragOverDate] = useState(null);
+  
+  // Modal states
+  const [scheduleModalData, setScheduleModalData] = useState(null); // {addOn, patient, initialDate}
+  const [patientDetailData, setPatientDetailData] = useState(null); // {schedule, patient}
+  const [activeId, setActiveId] = useState(null); // For DnD
+
+  // DnD sensors - pointer for desktop, touch for mobile
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 8 }
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 200, tolerance: 5 }
+    })
+  );
 
   // Helper to navigate with filter and toast
   const navigateWithFilter = (view, filter, toastMessage) => {
