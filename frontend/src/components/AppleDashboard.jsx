@@ -1358,6 +1358,35 @@ export const AppleDashboard = ({ user, onLogout }) => {
         </div>
       </div>
       </PullToRefresh>
+
+      {/* Schedule Patient Modal */}
+      {scheduleModalData && (
+        <SchedulePatientModal
+          patient={scheduleModalData.patient}
+          schedule={scheduleModalData.addOn}
+          initialDate={scheduleModalData.initialDate}
+          onClose={() => setScheduleModalData(null)}
+          onSchedule={handleSchedulePatient}
+          existingSchedules={schedules.filter(s => !s.is_addon)}
+          attendings={attendings}
+        />
+      )}
+
+      {/* Patient Detail Panel */}
+      {patientDetailData && (
+        <PatientDetailPanel
+          schedule={patientDetailData.schedule}
+          patient={patientDetailData.patient}
+          onClose={() => setPatientDetailData(null)}
+          onEdit={(schedule) => {
+            setPatientDetailData(null);
+            setScheduleModalData({ addOn: schedule, patient: patientDetailData.patient, initialDate: schedule.scheduled_date ? parseISO(schedule.scheduled_date) : new Date() });
+          }}
+          onCancelCase={handleCancelCase}
+          onViewFullRecord={handleViewFullRecord}
+          onUpdateChecklist={handleChecklistUpdate}
+        />
+      )}
     </PageLayout>
   );
 };
