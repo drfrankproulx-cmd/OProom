@@ -87,6 +87,12 @@ const Calendar = ({ onNavigate, initialFilter, user, onLogout }) => {
     fetchData();
   }, []);
 
+  // Pull to refresh handler
+  const handleRefresh = useCallback(async () => {
+    await fetchData();
+    toast.success('Calendar refreshed', { duration: 1500 });
+  }, []);
+
   const weekStart = startOfWeek(currentDate, { weekStartsOn: 0 });
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
   
