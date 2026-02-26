@@ -709,12 +709,12 @@ export const AppleDashboard = ({ user, onLogout }) => {
           </div>
 
           {/* Row 3: Scheduling Options */}
-          <div className="pt-4 border-t border-slate-200">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+          <div className="pt-3 md:pt-4 border-t border-slate-200">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-4 items-end">
               <div>
-                <Label className="text-sm font-medium text-slate-700 mb-1 block">Scheduling</Label>
+                <Label className="text-xs md:text-sm font-medium text-slate-700 mb-1 block">Scheduling</Label>
                 <Select value={intakeForm.scheduling_type} onValueChange={(v) => setIntakeForm({...intakeForm, scheduling_type: v})}>
-                  <SelectTrigger className="h-10 text-sm rounded-lg">
+                  <SelectTrigger className="h-11 md:h-10 text-base md:text-sm rounded-lg">
                     <SelectValue placeholder="Select scheduling type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -727,18 +727,18 @@ export const AppleDashboard = ({ user, onLogout }) => {
               {intakeForm.scheduling_type === 'scheduled' && (
                 <>
                   <div>
-                    <Label className="text-sm font-medium text-slate-700 mb-1 block">Scheduled Date</Label>
-                    <Input type="date" className="h-10 text-sm rounded-lg" value={intakeForm.scheduled_date} onChange={(e) => setIntakeForm({...intakeForm, scheduled_date: e.target.value})} />
+                    <Label className="text-xs md:text-sm font-medium text-slate-700 mb-1 block">Scheduled Date</Label>
+                    <Input type="date" className="h-11 md:h-10 text-base md:text-sm rounded-lg" value={intakeForm.scheduled_date} onChange={(e) => setIntakeForm({...intakeForm, scheduled_date: e.target.value})} />
                   </div>
                   <div>
-                    <Label className="text-sm font-medium text-slate-700 mb-1 block">Scheduled Time</Label>
-                    <Input type="time" className="h-10 text-sm rounded-lg" value={intakeForm.scheduled_time} onChange={(e) => setIntakeForm({...intakeForm, scheduled_time: e.target.value})} />
+                    <Label className="text-xs md:text-sm font-medium text-slate-700 mb-1 block">Scheduled Time</Label>
+                    <Input type="time" className="h-11 md:h-10 text-base md:text-sm rounded-lg" value={intakeForm.scheduled_time} onChange={(e) => setIntakeForm({...intakeForm, scheduled_time: e.target.value})} />
                   </div>
                 </>
               )}
 
               <div className={intakeForm.scheduling_type === 'scheduled' ? '' : 'md:col-span-3'}>
-                <Button onClick={handleQuickAdd} className="w-full bg-teal-500 hover:bg-teal-600 text-white rounded-lg h-10 text-sm font-medium" data-testid="add-patient-btn">
+                <Button onClick={handleQuickAdd} className="w-full bg-teal-500 hover:bg-teal-600 active:bg-teal-700 text-white rounded-lg h-11 md:h-10 text-sm font-medium" data-testid="add-patient-btn">
                   <Plus className="h-4 w-4 mr-2" />
                   {intakeForm.scheduling_type === 'scheduled' ? 'Schedule Patient' : 'Add to Add-On List'}
                 </Button>
