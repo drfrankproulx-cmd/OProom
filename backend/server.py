@@ -133,10 +133,13 @@ JWT_ALGORITHM = os.environ.get('JWT_ALGORITHM', 'HS256')
 # Extended to 30 days for persistent login (was 1440 minutes = 24 hours)
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get('ACCESS_TOKEN_EXPIRE_MINUTES', 43200))  # 30 days
 
-# WebAuthn Configuration
-RP_ID = os.environ.get('WEBAUTHN_RP_ID', 'surgery-command.preview.emergentagent.com')
+# WebAuthn Configuration - Uses FRONTEND_URL from env for flexibility
+FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://surgery-planner-3.preview.emergentagent.com')
+# Extract domain from FRONTEND_URL for RP_ID
+_parsed_url = FRONTEND_URL.replace('https://', '').replace('http://', '').split('/')[0]
+RP_ID = os.environ.get('WEBAUTHN_RP_ID', _parsed_url)
 RP_NAME = os.environ.get('WEBAUTHN_RP_NAME', 'OR Scheduler')
-RP_ORIGIN = os.environ.get('WEBAUTHN_RP_ORIGIN', 'https://surgery-command.preview.emergentagent.com')
+RP_ORIGIN = os.environ.get('WEBAUTHN_RP_ORIGIN', FRONTEND_URL)
 
 # Email Configuration
 SMTP_SERVER = os.environ.get('SMTP_SERVER', 'smtp.gmail.com')
