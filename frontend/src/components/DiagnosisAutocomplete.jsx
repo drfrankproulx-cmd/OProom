@@ -126,8 +126,8 @@ export const DiagnosisAutocomplete = ({ value, onChange, label = "Diagnosis", re
   };
 
   return (
-    <div className="space-y-2" ref={dropdownRef}>
-      <Label htmlFor="diagnosis">
+    <div className="space-y-1 md:space-y-2" ref={dropdownRef}>
+      <Label htmlFor="diagnosis" className="text-xs md:text-sm">
         {label} {required && <span className="text-red-500">*</span>}
       </Label>
       <div className="relative">
@@ -138,8 +138,8 @@ export const DiagnosisAutocomplete = ({ value, onChange, label = "Diagnosis", re
             value={searchQuery}
             onChange={handleInputChange}
             onFocus={handleFocus}
-            placeholder="Search diagnosis (e.g., 'mandible fracture', 'lefort')"
-            className="pl-9"
+            placeholder="Search diagnosis..."
+            className="pl-9 h-11 md:h-10 text-base md:text-sm"
             autoComplete="off"
             data-testid="diagnosis-autocomplete-input"
           />
@@ -147,7 +147,7 @@ export const DiagnosisAutocomplete = ({ value, onChange, label = "Diagnosis", re
 
         {/* Dropdown */}
         {isOpen && filteredDiagnoses.length > 0 && (
-          <div className="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-96 overflow-y-auto">
+          <div className="absolute z-[9999] mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-[50vh] md:max-h-96 overflow-y-auto">
             {/* Header for frequently used */}
             {!searchQuery && frequentlyUsed.length > 0 && (
               <div className="px-3 py-1.5 bg-purple-50 border-b border-purple-200 sticky top-0">
@@ -163,29 +163,29 @@ export const DiagnosisAutocomplete = ({ value, onChange, label = "Diagnosis", re
                 key={`${diagnosis.id || diagnosis.name}-${index}`}
                 type="button"
                 onClick={() => handleSelectDiagnosis(diagnosis)}
-                className={`w-full text-left px-4 py-3 hover:bg-blue-50 border-b border-gray-100 last:border-b-0 transition-colors ${
+                className={`w-full text-left px-3 md:px-4 py-3 md:py-3 hover:bg-blue-50 active:bg-blue-100 border-b border-gray-100 last:border-b-0 transition-colors ${
                   index === 0 ? 'rounded-t-lg' : ''
                 } ${index === filteredDiagnoses.length - 1 ? 'rounded-b-lg' : ''}`}
                 data-testid={`diagnosis-option-${index}`}
               >
                 <div className="flex items-start justify-between">
-                  <div className="flex-1">
+                  <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       {diagnosis.category === 'Frequently Used' && (
-                        <Clock className="h-3 w-3 text-purple-500" />
+                        <Clock className="h-3 w-3 text-purple-500 flex-shrink-0" />
                       )}
-                      <span className="font-medium text-gray-900 text-sm">
+                      <span className="font-medium text-gray-900 text-sm truncate">
                         {diagnosis.name}
                       </span>
                       {diagnosis.icdCode && (
-                        <span className="text-xs font-mono bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded">
+                        <span className="text-xs font-mono bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded flex-shrink-0">
                           {diagnosis.icdCode}
                         </span>
                       )}
                     </div>
                     {diagnosis.category && (
                       <span
-                        className={`inline-block text-xs px-2 py-1 rounded-full border ${getCategoryColor(
+                        className={`inline-block text-[10px] md:text-xs px-2 py-0.5 md:py-1 rounded-full border ${getCategoryColor(
                           diagnosis.category
                         )}`}
                       >
@@ -201,8 +201,8 @@ export const DiagnosisAutocomplete = ({ value, onChange, label = "Diagnosis", re
 
         {/* No results message */}
         {isOpen && searchQuery && filteredDiagnoses.length === 0 && (
-          <div className="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg p-4">
-            <p className="text-gray-500 text-center">
+          <div className="absolute z-[9999] mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg p-4">
+            <p className="text-gray-500 text-center text-sm">
               No diagnoses found for "{searchQuery}"
             </p>
           </div>
@@ -210,18 +210,18 @@ export const DiagnosisAutocomplete = ({ value, onChange, label = "Diagnosis", re
 
         {/* Hint */}
         {isOpen && !searchQuery && (
-          <div className="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-t-lg border-b-0 px-4 py-2">
+          <div className="absolute z-[9998] mt-1 w-full bg-white border border-gray-300 rounded-t-lg border-b-0 px-3 md:px-4 py-2">
             <div className="flex items-center space-x-2 text-xs text-gray-500">
               {frequentlyUsed.length > 0 ? (
                 <>
-                  <Clock className="h-3 w-3 text-purple-500" />
+                  <Clock className="h-3 w-3 text-purple-500 flex-shrink-0" />
                   <span className="text-purple-700 font-medium">
-                    Showing your {filteredDiagnoses.length} most used diagnoses - start typing to search
+                    Most used - start typing to search
                   </span>
                 </>
               ) : (
                 <>
-                  <Search className="h-3 w-3" />
+                  <Search className="h-3 w-3 flex-shrink-0" />
                   <span>Common diagnoses - start typing to search</span>
                 </>
               )}
