@@ -101,6 +101,34 @@ Build a web-based operating room scheduling platform for surgical residents feat
 - `notifications` - User notifications
 
 ## Recently Completed (Feb 26, 2026)
+- [x] **Issue 1: Drag-and-Drop from Add-On List to Calendar (COMPLETE)**:
+  - Installed @dnd-kit/core library for robust drag-and-drop
+  - Desktop: Add-On patients are draggable with GripVertical icon on hover
+  - Mobile: Tap on Add-On patient opens SchedulePatientModal (alternative to drag)
+  - SchedulePatientModal shows: patient info, date picker, time slot grid (07:00-17:30), OR room, attending selection
+  - Occupied time slots shown as disabled/red
+  - Scheduling updates patient from "add-on" to "scheduled" status
+
+- [x] **Issue 2: Patient Detail Panel from Calendar (COMPLETE)**:
+  - Created PatientDetailPanel component
+  - Shows: patient name, MRN, status badges, schedule details (date/time/OR/attending), clinical info (diagnosis/procedure/CPT), pre-op checklist with checkboxes, related tasks
+  - Action buttons: Edit (opens SchedulePatientModal), Cancel Case (returns to Add-On list), View Full Record (navigates to patient page)
+  - Full-screen slide-up on mobile, modal on desktop
+
+- [x] **Issue 3: Clinical Task Dropdown with Categories (COMPLETE)**:
+  - Created /app/frontend/src/data/taskCategories.js with 7 categories:
+    - 🔬 Imaging (CT, Panorex, PET, MRI, Chest X-Ray, CBCT)
+    - 📋 Insurance & Authorization (Prior Auth, Verification, Predetermination, Financial Clearance)
+    - 🎯 Surgical Planning (VSP KLS Martin/Stryker/Other, Splint Fabrication, Model Surgery, 3D Printing)
+    - 🧪 Labs & Medical Optimization (CBC/BMP/CMP, Coags, T&S, HbA1c, Clearances, Anesthesia Pre-Op)
+    - 📝 Consents & Documentation (Surgical/Anesthesia/Blood Consents, H&P, Dictation)
+    - 👤 Patient Coordination (Pre-Op/Post-Op Scheduling, Phone Call, DME, Consults)
+    - 📌 Other (Custom Task free text)
+  - Two-level dropdown: Category → Specific Task
+  - Task type auto-fills task description
+  - Colored category badges on Tasks page
+  - Backend Task model updated with task_category and task_type fields
+
 - [x] **Persistent Login & Biometric Authentication (COMPLETE)**:
   - **Persistent Login (Remember Me)**:
     - JWT token expiration extended to 30 days (ACCESS_TOKEN_EXPIRE_MINUTES=43200)
