@@ -1896,6 +1896,297 @@ async def delete_notification(notification_id: str, current_user: str = Depends(
         raise HTTPException(status_code=404, detail="Notification not found")
     return {"message": "Notification deleted successfully"}
 
+@app.post("/api/notifications/dismiss/{notification_id}")
+async def dismiss_notification(notification_id: str, current_user: str = Depends(get_current_user)):
+    """Dismiss a notification (hide from feed but keep in history)"""
+    result = notifications_collection.update_one(
+        {"_id": ObjectId(notification_id), "recipient_email": current_user},
+        {"$set": {"dismissed": True}}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Notification not found")
+    return {"message": "Notification dismissed"}
+
+# ============ NOTIFICATION PREFERENCES ============
+
+@app.get("/api/notifications/preferences")
+async def get_notification_preferences(current_user: str = Depends(get_current_user)):
+    """Get notification preferences for current user"""
+    prefs = notification_preferences.find_one({"user_email": current_user})
+    if prefs:
+        prefs["_id"] = str(prefs["_id"])
+        return prefs
+    # Return defaults if no preferences set
+    return {
+        "user_email": current_user,
+        "in_app_enabled": True,
+        "email_digest_enabled": True,
+        "email_digest_day": "monday",
+        "push_enabled": True,
+        "notify_task_due_today": True,
+        "notify_task_due_soon": True,
+        "notify_task_overdue": True,
+        "notify_task_assigned": True,
+        "notify_case_scheduled": True
+    }
+
+@app.put("/api/notifications/preferences")
+async def update_notification_preferences(prefs: NotificationPreferences, current_user: str = Depends(get_current_user)):
+    """Update notification preferences for current user"""
+    prefs_dict = prefs.dict()
+    prefs_dict["user_email"] = current_user
+    prefs_dict["updated_at"] = datetime.utcnow()
+    
+    result = notification_preferences.update_one(
+        {"user_email": current_user},
+        {"$set": prefs_dict},
+        upsert=True
+    )
+    return {"message": "Preferences updated successfully"}
+
+# ============ PUSH SUBSCRIPTIONS ============
+
+@app.post("/api/push/subscribe")
+async def subscribe_push(subscription: PushSubscription, current_user: str = Depends(get_current_user)):
+    """Subscribe to push notifications"""
+    sub_dict = subscription.dict()
+    sub_dict["user_email"] = current_user
+    sub_dict["created_at"] = datetime.utcnow()
+    
+    # Remove existing subscription for this endpoint
+    push_subscriptions.delete_many({"endpoint": subscription.endpoint})
+    
+    # Add new subscription
+    push_subscriptions.insert_one(sub_dict)
+    return {"message": "Push subscription saved"}
+
+@app.delete("/api/push/unsubscribe")
+async def unsubscribe_push(current_user: str = Depends(get_current_user)):
+    """Unsubscribe from push notifications"""
+    result = push_subscriptions.delete_many({"user_email": current_user})
+    return {"message": f"Removed {result.deleted_count} push subscriptions"}
+
+# ============ TASK NOTIFICATION GENERATION ============
+
+@app.post("/api/notifications/generate-task-notifications")
+async def generate_task_notifications(current_user: str = Depends(get_current_user)):
+    """Generate notifications for tasks due today, due soon, and overdue"""
+    from datetime import date, timedelta
+    
+    today = date.today()
+    three_days_later = today + timedelta(days=3)
+    
+    # Get user info
+    user = users_collection.find_one({"email": current_user})
+    user_name = user.get("full_name", current_user) if user else current_user
+    
+    # Get all incomplete tasks assigned to or created by user
+    tasks = list(tasks_collection.find({
+        "$or": [
+            {"assigned_to_email": current_user},
+            {"created_by": current_user}
+        ],
+        "completed": False
+    }))
+    
+    notifications_created = 0
+    
+    for task in tasks:
+        if not task.get("due_date"):
+            continue
+            
+        try:
+            due_date = datetime.strptime(task["due_date"], "%Y-%m-%d").date()
+        except:
+            continue
+        
+        task_id = str(task["_id"])
+        
+        # Check for existing notification of same type for this task today
+        existing = notifications_collection.find_one({
+            "task_id": task_id,
+            "recipient_email": current_user,
+            "created_at": {"$gte": datetime.combine(today, datetime.min.time())}
+        })
+        
+        if existing:
+            continue
+        
+        notification = None
+        
+        # Overdue tasks
+        if due_date < today:
+            days_overdue = (today - due_date).days
+            notification = {
+                "recipient_email": current_user,
+                "recipient_name": user_name,
+                "type": "task_overdue",
+                "title": f"⚠️ Overdue: {task['task_description'][:50]}",
+                "message": f"This task is {days_overdue} day{'s' if days_overdue > 1 else ''} overdue. Assigned to: {task.get('assigned_to', 'Unassigned')}",
+                "task_id": task_id,
+                "priority": "urgent",
+                "read": False,
+                "dismissed": False,
+                "action_url": "/tasks",
+                "created_at": datetime.utcnow()
+            }
+        # Due today
+        elif due_date == today:
+            notification = {
+                "recipient_email": current_user,
+                "recipient_name": user_name,
+                "type": "task_due_today",
+                "title": f"📅 Due Today: {task['task_description'][:50]}",
+                "message": f"This task is due today. Assigned to: {task.get('assigned_to', 'Unassigned')}",
+                "task_id": task_id,
+                "priority": "high",
+                "read": False,
+                "dismissed": False,
+                "action_url": "/tasks",
+                "created_at": datetime.utcnow()
+            }
+        # Due within 3 days
+        elif today < due_date <= three_days_later:
+            days_until = (due_date - today).days
+            notification = {
+                "recipient_email": current_user,
+                "recipient_name": user_name,
+                "type": "task_due_soon",
+                "title": f"🔔 Due Soon: {task['task_description'][:50]}",
+                "message": f"This task is due in {days_until} day{'s' if days_until > 1 else ''}. Assigned to: {task.get('assigned_to', 'Unassigned')}",
+                "task_id": task_id,
+                "priority": "normal",
+                "read": False,
+                "dismissed": False,
+                "action_url": "/tasks",
+                "created_at": datetime.utcnow()
+            }
+        
+        if notification:
+            notifications_collection.insert_one(notification)
+            notifications_created += 1
+    
+    return {"message": f"Generated {notifications_created} task notifications"}
+
+@app.get("/api/notifications/summary")
+async def get_notification_summary(current_user: str = Depends(get_current_user)):
+    """Get summary of notifications for the notification bell badge"""
+    # First generate fresh notifications
+    from datetime import date, timedelta
+    
+    today = date.today()
+    three_days_later = today + timedelta(days=3)
+    
+    # Count tasks by category
+    tasks = list(tasks_collection.find({
+        "$or": [
+            {"assigned_to_email": current_user},
+            {"created_by": current_user}
+        ],
+        "completed": False
+    }))
+    
+    overdue_count = 0
+    due_today_count = 0
+    due_soon_count = 0
+    
+    for task in tasks:
+        if not task.get("due_date"):
+            continue
+        try:
+            due_date = datetime.strptime(task["due_date"], "%Y-%m-%d").date()
+            if due_date < today:
+                overdue_count += 1
+            elif due_date == today:
+                due_today_count += 1
+            elif due_date <= three_days_later:
+                due_soon_count += 1
+        except:
+            continue
+    
+    # Count unread notifications
+    unread_count = notifications_collection.count_documents({
+        "recipient_email": current_user,
+        "read": False,
+        "dismissed": False
+    })
+    
+    return {
+        "unread_count": unread_count,
+        "overdue_tasks": overdue_count,
+        "due_today_tasks": due_today_count,
+        "due_soon_tasks": due_soon_count,
+        "total_action_items": overdue_count + due_today_count + due_soon_count
+    }
+
+@app.get("/api/notifications/weekly-digest")
+async def get_weekly_digest(current_user: str = Depends(get_current_user)):
+    """Get weekly digest data for email or in-app display"""
+    from datetime import date, timedelta
+    
+    today = date.today()
+    week_end = today + timedelta(days=7)
+    
+    user = users_collection.find_one({"email": current_user})
+    user_name = user.get("full_name", current_user) if user else current_user
+    
+    # Get tasks
+    tasks = list(tasks_collection.find({
+        "$or": [
+            {"assigned_to_email": current_user},
+            {"created_by": current_user}
+        ],
+        "completed": False
+    }))
+    
+    overdue_tasks = []
+    due_this_week = []
+    upcoming_tasks = []
+    
+    for task in tasks:
+        task["_id"] = str(task["_id"])
+        if not task.get("due_date"):
+            upcoming_tasks.append(task)
+            continue
+        try:
+            due_date = datetime.strptime(task["due_date"], "%Y-%m-%d").date()
+            if due_date < today:
+                overdue_tasks.append(task)
+            elif due_date <= week_end:
+                due_this_week.append(task)
+            else:
+                upcoming_tasks.append(task)
+        except:
+            upcoming_tasks.append(task)
+    
+    # Get scheduled cases this week
+    schedules = list(schedules_collection.find({
+        "is_addon": False,
+        "scheduled_date": {
+            "$gte": today.isoformat(),
+            "$lte": week_end.isoformat()
+        }
+    }))
+    for s in schedules:
+        s["_id"] = str(s["_id"])
+    
+    return {
+        "user_name": user_name,
+        "generated_at": datetime.utcnow().isoformat(),
+        "week_start": today.isoformat(),
+        "week_end": week_end.isoformat(),
+        "summary": {
+            "overdue_count": len(overdue_tasks),
+            "due_this_week_count": len(due_this_week),
+            "upcoming_count": len(upcoming_tasks),
+            "scheduled_cases_count": len(schedules)
+        },
+        "overdue_tasks": overdue_tasks[:10],  # Limit to 10
+        "due_this_week": due_this_week[:10],
+        "upcoming_tasks": upcoming_tasks[:5],
+        "scheduled_cases": schedules[:10]
+    }
+
 
 # ============ CPT CODES SEARCH ============
 
