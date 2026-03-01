@@ -389,13 +389,34 @@ class Attending(BaseModel):
 class Notification(BaseModel):
     recipient_email: str
     recipient_name: str
-    type: str  # case_added, task_assigned, case_updated
+    type: str  # task_due_today, task_due_soon, task_overdue, task_assigned, case_scheduled, weekly_digest
     title: str
     message: str
     case_mrn: Optional[str] = None
     task_id: Optional[str] = None
+    priority: str = "normal"  # low, normal, high, urgent
     read: bool = False
+    dismissed: bool = False
+    action_url: Optional[str] = None  # Deep link to relevant page
     created_at: Optional[datetime] = None
+
+class PushSubscription(BaseModel):
+    user_email: str
+    endpoint: str
+    keys: dict  # p256dh and auth keys
+    created_at: Optional[datetime] = None
+
+class NotificationPreferences(BaseModel):
+    user_email: str
+    in_app_enabled: bool = True
+    email_digest_enabled: bool = True
+    email_digest_day: str = "monday"  # monday, friday, sunday
+    push_enabled: bool = True
+    notify_task_due_today: bool = True
+    notify_task_due_soon: bool = True  # 3 days
+    notify_task_overdue: bool = True
+    notify_task_assigned: bool = True
+    notify_case_scheduled: bool = True
 
 # Helper functions
 def verify_password(plain_password, hashed_password):
