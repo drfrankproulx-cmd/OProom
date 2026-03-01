@@ -124,6 +124,8 @@ notifications_collection = db.notifications
 usage_stats = db.usage_stats  # For tracking frequently used diagnoses/CPT codes
 webauthn_credentials = db.webauthn_credentials  # For biometric auth credentials
 webauthn_challenges = db.webauthn_challenges  # For temporary challenge storage
+push_subscriptions = db.push_subscriptions  # For web push notification subscriptions
+notification_preferences = db.notification_preferences  # User notification settings
 
 # Security
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
