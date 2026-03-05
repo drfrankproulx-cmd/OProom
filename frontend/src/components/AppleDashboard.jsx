@@ -193,7 +193,6 @@ export const AppleDashboard = ({ user, onLogout }) => {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
   const [settingsInitialTab, setSettingsInitialTab] = useState('residents');
-  const [showNotifications, setShowNotifications] = useState(false);
   
   // Drag and drop state
   const [draggedAddOn, setDraggedAddOn] = useState(null);
