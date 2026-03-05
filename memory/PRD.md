@@ -33,7 +33,7 @@ Build a web-based operating room scheduling platform for surgical residents feat
 - [x] Add-On List for unscheduled cases
 - [x] Pre-Op Status module with expandable checklist and delete functionality
 - [x] Surgery Timeline tracker with document age validation
-- [x] Notifications system
+- [x] Notifications system with in-app feed and preferences
 - [x] CPT Code lookup with autocomplete (combined Procedure/CPT field)
 - [x] **CPT Favorites** - Common maxillofacial procedures from maxillofacial.org
 - [x] PWA setup for mobile installation
