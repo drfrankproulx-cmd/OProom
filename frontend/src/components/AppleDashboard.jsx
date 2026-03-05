@@ -268,24 +268,22 @@ export const AppleDashboard = ({ user, onLogout }) => {
 
   const fetchData = async () => {
     try {
-      const [patientsRes, schedulesRes, tasksRes, conferencesRes, residentsRes, attendingsRes, notificationsRes] = await Promise.all([
+      const [patientsRes, schedulesRes, tasksRes, conferencesRes, residentsRes, attendingsRes] = await Promise.all([
         fetch(`${API_URL}/api/patients`, { headers: getAuthHeaders() }),
         fetch(`${API_URL}/api/schedules`, { headers: getAuthHeaders() }),
         fetch(`${API_URL}/api/tasks`, { headers: getAuthHeaders() }),
         fetch(`${API_URL}/api/conferences`, { headers: getAuthHeaders() }),
         fetch(`${API_URL}/api/residents/active`, { headers: getAuthHeaders() }),
         fetch(`${API_URL}/api/attendings/active`, { headers: getAuthHeaders() }),
-        fetch(`${API_URL}/api/notifications/unread`, { headers: getAuthHeaders() }),
       ]);
 
-      const [patientsData, schedulesData, tasksData, conferencesData, residentsData, attendingsData, notificationsData] = await Promise.all([
+      const [patientsData, schedulesData, tasksData, conferencesData, residentsData, attendingsData] = await Promise.all([
         patientsRes.json(),
         schedulesRes.json(),
         tasksRes.json(),
         conferencesRes.json(),
         residentsRes.json(),
         attendingsRes.json(),
-        notificationsRes.json(),
       ]);
 
       if (patientsRes.ok) setPatients(patientsData);
@@ -294,7 +292,6 @@ export const AppleDashboard = ({ user, onLogout }) => {
       if (conferencesRes.ok) setConferences(conferencesData);
       if (residentsRes.ok) setResidents(residentsData);
       if (attendingsRes.ok) setAttendings(attendingsData);
-      if (notificationsRes.ok) setNotifications(notificationsData);
     } catch (error) {
       console.error('Fetch error:', error);
       toast.error('Failed to load data');
