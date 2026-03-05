@@ -764,44 +764,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
       title="Dashboard"
       subtitle={`${getGreeting()}, ${user?.full_name || 'Doctor'}`}
       headerActions={
-        <div className="relative">
-          <Button 
-            variant="ghost" 
-            onClick={() => setShowNotifications(!showNotifications)} 
-            className="hover:bg-slate-100 rounded-xl relative"
-            data-testid="notifications-btn"
-          >
-            <Bell className="h-5 w-5" />
-            {notifications.length > 0 && (
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
-                {notifications.length}
-              </span>
-            )}
-          </Button>
-          {showNotifications && (
-            <div className="absolute right-0 mt-2 w-80 bg-white border border-slate-200 rounded-xl shadow-xl z-50 max-h-80 overflow-y-auto">
-              <div className="p-3 border-b border-slate-100">
-                <h3 className="font-semibold text-slate-900 text-sm">Notifications</h3>
-              </div>
-              {notifications.length > 0 ? (
-                <div className="divide-y divide-slate-100">
-                  {notifications.map((notif) => (
-                    <div key={notif._id} className="p-3 hover:bg-slate-50 transition-colors">
-                      <p className="font-medium text-slate-900 text-sm mb-1">{notif.title}</p>
-                      <p className="text-slate-500 text-xs mb-1">{notif.message.substring(0, 80)}...</p>
-                      <p className="text-xs text-slate-400">{format(parseISO(notif.created_at), 'MMM d, h:mm a')}</p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="p-6 text-center text-slate-400">
-                  <Bell className="h-8 w-8 mx-auto mb-2 text-slate-300" />
-                  <p className="text-sm">No notifications</p>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+        <NotificationBell onNavigate={handleNavigation} />
       }
     >
       <PullToRefresh onRefresh={handleRefresh}>
