@@ -100,6 +100,42 @@ Build a web-based operating room scheduling platform for surgical residents feat
 - `attendings` - Attending profiles
 - `notifications` - User notifications
 
+## Recently Completed (Mar 5, 2026)
+
+- [x] **Comprehensive Notification System (COMPLETE)**:
+  - **In-App Notification Feed**:
+    - NotificationBell component with bell icon in dashboard header
+    - Badge showing unread notification count (red circle with white text)
+    - Bell icon animates (BellRing) when there are unread notifications
+    - Dropdown panel shows list of notifications with:
+      - Header showing "Notifications" with task summary ("1 due today", "2 overdue")
+      - Notification items with type icons (Clock, AlertTriangle, Calendar, UserPlus)
+      - Title, message, timestamp, and unread indicator (blue dot)
+      - Click to mark as read, X to dismiss
+      - "Mark all as read" button (CheckCheck icon)
+      - "View all tasks" link at bottom
+  - **Notification Settings (Inline Panel)**:
+    - Settings gear icon in dropdown opens inline settings panel
+    - Checkboxes for: In-app notifications, Weekly email digest (with day selector), Push notifications
+    - Notification type toggles: Overdue tasks, Due today, Due soon (3 days), Assigned to me
+    - Settings auto-save via PUT /api/notifications/preferences
+  - **Backend APIs**:
+    - GET /api/notifications/summary - Returns unread_count, overdue_tasks, due_today_tasks, due_soon_tasks
+    - GET /api/notifications - Returns list of notifications for user
+    - GET /api/notifications/unread - Returns only unread notifications
+    - GET /api/notifications/preferences - Returns user notification settings
+    - PUT /api/notifications/preferences - Updates notification settings
+    - PATCH /api/notifications/{id}/read - Marks single notification as read
+    - PATCH /api/notifications/mark-all-read - Marks all as read
+    - POST /api/notifications/dismiss/{id} - Dismisses notification
+    - POST /api/notifications/generate-task-notifications - Generates notifications for tasks
+  - **Files Created/Updated**:
+    - `/app/frontend/src/components/NotificationBell.jsx` - Main component with dropdown and inline settings
+    - `/app/frontend/src/components/NotificationSettings.jsx` - Dedicated settings page (optional route)
+    - `/app/frontend/src/components/AppleDashboard.jsx` - Integrated NotificationBell in header
+    - `/app/backend/server.py` - All notification endpoints (lines 1849-2120)
+  - **Testing**: 100% backend (11/11 tests) and frontend tests passed
+
 ## Recently Completed (Feb 26, 2026)
 - [x] **Issue 1: Drag-and-Drop from Add-On List to Calendar (COMPLETE)**:
   - Installed @dnd-kit/core library for robust drag-and-drop
