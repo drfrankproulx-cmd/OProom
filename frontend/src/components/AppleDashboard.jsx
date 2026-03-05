@@ -739,6 +739,10 @@ export const AppleDashboard = ({ user, onLogout }) => {
     }} user={user} onLogout={onLogout} />;
   }
 
+  if (currentView === 'notification-settings') {
+    return <NotificationSettings onNavigate={handleNavigation} user={user} onLogout={onLogout} />;
+  }
+
   if (currentView === 'settings') {
     setShowSettings(true);
     return null;
