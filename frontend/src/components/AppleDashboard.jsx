@@ -16,7 +16,6 @@ import {
   CheckCircle2,
   Users,
   Activity,
-  Bell,
   X,
   GripVertical,
   Smartphone
