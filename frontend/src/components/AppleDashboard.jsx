@@ -36,6 +36,7 @@ import SchedulePatientModal from './SchedulePatientModal';
 import PatientDetailPanel from './PatientDetailPanel';
 import { TaskCategorySelect, TaskCategoryBadge } from './TaskCategorySelect';
 import { getCPTCodeByCode } from '../data/cptCodes';
+import NotificationBell from './NotificationBell';
 
 // DnD Kit imports
 import {
