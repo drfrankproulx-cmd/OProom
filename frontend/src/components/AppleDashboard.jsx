@@ -188,7 +188,6 @@ export const AppleDashboard = ({ user, onLogout }) => {
   const [conferences, setConferences] = useState([]);
   const [residents, setResidents] = useState([]);
   const [attendings, setAttendings] = useState([]);
-  const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
