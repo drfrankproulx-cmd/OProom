@@ -244,6 +244,29 @@
   color: #065f46;
 }
 
+.section-icon.orthognathic {
+  background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+  color: white;
+}
+
+/* Specialized Section (Orthognathic) */
+.checklist-section.specialized-section {
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.08) 0%, rgba(20, 184, 166, 0.05) 100%);
+  border: 2px solid #14b8a6;
+}
+
+.checklist-section.specialized-section .checklist-section-header {
+  border-bottom-color: #14b8a6;
+}
+
+.checklist-section.specialized-section .checklist-item {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.checklist-section.specialized-section .checklist-item:hover {
+  background: rgba(255, 255, 255, 0.95);
+}
+
 .section-title {
   font-size: 1rem;
   font-weight: 600;
