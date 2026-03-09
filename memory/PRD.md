@@ -100,6 +100,26 @@ Build a web-based operating room scheduling platform for surgical residents feat
 - `attendings` - Attending profiles
 - `notifications` - User notifications
 
+## Recently Completed (Mar 9, 2026)
+
+- [x] **Pre-Op Status Page Error Fix (COMPLETE)**:
+  - Fixed missing `FileSpreadsheet` import in PatientStatusList.jsx
+  - Added import from lucide-react icons
+
+- [x] **Orthognathic Surgery Workflow Checklist (COMPLETE)**:
+  - Added specialized checklist section for orthognathic surgery patients
+  - Auto-detects jaw deformity cases based on diagnosis keywords:
+    - jaw deformity, orthognathic, mandibular, maxillary, le fort, bsso, genioplasty, prognathism, retrognathia, open bite, crossbite, facial asymmetry, dentofacial, malocclusion, class ii, class iii, skeletal
+  - Shows 4 orthognathic-specific checklist items at the top:
+    1. Prior Authorization Complete
+    2. Surgical Records (cephalometric analysis, dental models, photos)
+    3. Bite Approval (orthodontist clearance for surgical bite)
+    4. VSP (Virtual Surgical Planning)
+  - Teal banner indicating "Orthognathic Surgery Case - Additional requirements displayed"
+  - Standard checklist (Labs, Imaging, Consent, Clearance) still shown below
+  - Non-orthognathic patients see standard checklist only
+  - **Files Updated**: `/app/frontend/src/components/patient-status/PreOpChecklist.jsx`, `/app/frontend/src/components/patient-status/PatientStatusList.jsx`, `/app/frontend/src/components/patient-status/patient-status.css`
+
 ## Recently Completed (Mar 5, 2026)
 
 - [x] **Comprehensive Notification System (COMPLETE)**:
