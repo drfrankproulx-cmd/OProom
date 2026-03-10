@@ -22,10 +22,8 @@ import {
 } from 'lucide-react';
 import PageLayout from './PageLayout';
 import Settings from './Settings';
-import Patients from './Patients';
-import Tasks from './Tasks';
+import UnifiedPatients from './UnifiedPatients';
 import Calendar from './Calendar';
-import PatientStatusList from './patient-status/PatientStatusList';
 import SurgeryDashboard from './surgery-timeline/SurgeryDashboard';
 import BulkImport from './BulkImport';
 import CPTCodeAutocomplete from './CPTCodeAutocomplete';
