@@ -3,8 +3,6 @@ import {
   LayoutDashboard, 
   Calendar, 
   Users, 
-  CheckSquare, 
-  ClipboardList,
   Clock,
   Settings,
   Upload,
@@ -17,8 +15,6 @@ const NAV_ITEMS = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { id: 'calendar', label: 'Calendar', icon: Calendar },
   { id: 'patients', label: 'Patients', icon: Users },
-  { id: 'tasks', label: 'Tasks', icon: CheckSquare },
-  { id: 'patient-status', label: 'Pre-Op Status', icon: ClipboardList },
   { id: 'surgery-timeline', label: 'Surgery Timeline', icon: Clock },
 ];
 
