@@ -755,6 +755,46 @@ async def get_all_users(current_user: str = Depends(get_current_user)):
         user["_id"] = str(user["_id"])
     return users
 
+# Default pre-op checklist items (13 items)
+DEFAULT_PREOP_CHECKLIST = [
+    {"id": "hp_complete", "item": "H&P Complete", "checked": False},
+    {"id": "labs_ordered", "item": "Labs Ordered", "checked": False},
+    {"id": "labs_reviewed", "item": "Labs Reviewed", "checked": False},
+    {"id": "imaging_ordered", "item": "Imaging Ordered", "checked": False},
+    {"id": "imaging_reviewed", "item": "Imaging Reviewed", "checked": False},
+    {"id": "consent_signed", "item": "Consent Signed", "checked": False},
+    {"id": "prior_auth", "item": "Prior Authorization Approved", "checked": False},
+    {"id": "vsp_complete", "item": "VSP Complete", "checked": False},
+    {"id": "anesthesia_clearance", "item": "Anesthesia Clearance", "checked": False},
+    {"id": "medical_optimization", "item": "Medical Optimization Complete", "checked": False},
+    {"id": "blood_bank", "item": "Blood Bank (Type & Screen)", "checked": False},
+    {"id": "patient_instructions", "item": "Patient Instructions Given", "checked": False},
+    {"id": "or_scheduled", "item": "OR Scheduled", "checked": False},
+]
+
+# Default tasks to auto-generate on patient creation
+DEFAULT_PATIENT_TASKS = [
+    {"description": "H&P (History & Physical)", "category": "consents_documentation", "task_type": "H&P"},
+    {"description": "Surgical Consent", "category": "consents_documentation", "task_type": "Consent"},
+    {"description": "Insurance Prior Authorization", "category": "insurance", "task_type": "Prior Auth"},
+    {"description": "Labs (CBC/BMP)", "category": "labs", "task_type": "Labs"},
+    {"description": "Anesthesia Pre-Op Evaluation", "category": "labs", "task_type": "Anesthesia Eval"},
+    {"description": "VSP (Virtual Surgical Planning)", "category": "surgical_planning", "task_type": "VSP"},
+]
+
+class PatientCreateRequest(BaseModel):
+    """Extended patient creation request with auto-generate options"""
+    mrn: str
+    patient_name: str
+    dob: Optional[str] = None
+    diagnosis: Optional[str] = None
+    procedures: Optional[str] = None
+    procedure_code: Optional[str] = None
+    attending: Optional[str] = None
+    scheduled_date: Optional[str] = None  # If provided, status = scheduled
+    scheduled_time: Optional[str] = None
+    auto_generate_tasks: bool = True  # Default: generate pre-op tasks
+
 # Patient routes
 @app.post("/api/patients")
 async def create_patient(patient: Patient, current_user: str = Depends(get_current_user)):
@@ -788,6 +828,130 @@ async def create_patient(patient: Patient, current_user: str = Depends(get_curre
         track_usage(current_user, "cpt_code", patient_dict["procedure_code"])
 
     return patient_dict
+
+@app.post("/api/patients/create-with-tasks")
+async def create_patient_with_tasks(request: PatientCreateRequest, current_user: str = Depends(get_current_user)):
+    """
+    Enhanced patient creation endpoint that:
+    1. Creates patient with new 13-item preop_checklist
+    2. Sets status based on scheduled_date (add-on vs scheduled)
+    3. Auto-generates default tasks if enabled
+    4. Creates schedule entry if date provided
+    """
+    # Get user info for task assignment
+    user_info = users_collection.find_one({"email": current_user})
+    user_name = user_info.get("full_name", current_user) if user_info else current_user
+    
+    # Determine status based on scheduled_date
+    status = "scheduled" if request.scheduled_date else "add-on"
+    
+    # Create patient document with new checklist format
+    patient_dict = {
+        "mrn": request.mrn,
+        "patient_name": request.patient_name,
+        "dob": request.dob,
+        "diagnosis": request.diagnosis,
+        "procedures": request.procedures,
+        "procedure_code": request.procedure_code,
+        "attending": request.attending,
+        "status": status,
+        "scheduled_date": request.scheduled_date,
+        "scheduled_time": request.scheduled_time,
+        "preop_checklist": [item.copy() for item in DEFAULT_PREOP_CHECKLIST],  # New 13-item format
+        "prep_checklist": {  # Keep old format for backward compatibility
+            "xrays": False,
+            "lab_tests": False,
+            "insurance_approval": False,
+            "medical_optimization": False
+        },
+        "comments": [],
+        "activity_log": [{
+            "action": "created",
+            "user": current_user,
+            "timestamp": datetime.utcnow().isoformat(),
+            "details": f"Patient record created as {status}"
+        }],
+        "created_by": current_user,
+        "created_at": datetime.utcnow(),
+        "updated_by": None,
+        "updated_at": None,
+        "completed_at": None
+    }
+    
+    # Insert patient
+    result = patients_collection.insert_one(patient_dict)
+    patient_dict["_id"] = str(result.inserted_id)
+    
+    created_tasks = []
+    
+    # Auto-generate tasks if enabled
+    if request.auto_generate_tasks:
+        for task_template in DEFAULT_PATIENT_TASKS:
+            task_doc = {
+                "patient_mrn": request.mrn,
+                "patient_name": request.patient_name,
+                "task_description": task_template["description"],
+                "task_category": task_template["category"],
+                "task_type": task_template["task_type"],
+                "urgency": "medium",
+                "assigned_to": user_name,
+                "assigned_to_email": current_user,
+                "due_date": request.scheduled_date,  # Due by surgery date
+                "status": "pending",
+                "completed": False,
+                "completed_at": None,
+                "created_by": current_user,
+                "created_at": datetime.utcnow(),
+                "notes": None
+            }
+            task_result = tasks_collection.insert_one(task_doc)
+            task_doc["_id"] = str(task_result.inserted_id)
+            created_tasks.append(task_doc)
+        
+        # Log task generation
+        patients_collection.update_one(
+            {"mrn": request.mrn},
+            {"$push": {"activity_log": {
+                "action": "tasks_generated",
+                "user": current_user,
+                "timestamp": datetime.utcnow().isoformat(),
+                "details": f"Auto-generated {len(created_tasks)} pre-op tasks"
+            }}}
+        )
+    
+    # Create schedule entry if date provided
+    schedule_doc = None
+    if request.scheduled_date:
+        schedule_doc = {
+            "patient_mrn": request.mrn,
+            "patient_name": request.patient_name,
+            "procedure": request.procedures or "Procedure TBD",
+            "staff": request.attending or "TBD",
+            "scheduled_date": request.scheduled_date,
+            "scheduled_time": request.scheduled_time,
+            "status": "scheduled",
+            "is_addon": False,
+            "priority": "medium",
+            "diagnosis": request.diagnosis,
+            "created_by": current_user,
+            "created_at": datetime.utcnow()
+        }
+        schedule_result = schedules_collection.insert_one(schedule_doc)
+        schedule_doc["_id"] = str(schedule_result.inserted_id)
+    
+    # Track usage
+    if request.diagnosis:
+        track_usage(current_user, "diagnosis", request.diagnosis)
+    if request.procedure_code:
+        track_usage(current_user, "cpt_code", request.procedure_code)
+    
+    return {
+        "patient": patient_dict,
+        "tasks": created_tasks,
+        "schedule": schedule_doc,
+        "status": status,
+        "message": f"Patient added to {'schedule' if status == 'scheduled' else 'add-on list'}"
+    }
 
 @app.get("/api/patients")
 async def get_patients(current_user: str = Depends(get_current_user)):
