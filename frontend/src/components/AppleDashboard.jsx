@@ -343,59 +343,59 @@ export const AppleDashboard = ({ user, onLogout }) => {
     }
 
     try {
-      const patientData = {
+      // Use the new enhanced endpoint that creates patient, tasks, and schedule in one call
+      const requestData = {
         mrn: intakeForm.mrn,
         patient_name: intakeForm.patient_name,
-        dob: intakeForm.dob,
-        diagnosis: intakeForm.diagnosis,
-        procedures: intakeForm.procedures,
-        procedure_code: intakeForm.procedure_code,
-        attending: intakeForm.attending,
-        status: 'pending',
+        dob: intakeForm.dob || null,
+        diagnosis: intakeForm.diagnosis || null,
+        procedures: intakeForm.procedures || null,
+        procedure_code: intakeForm.procedure_code || null,
+        attending: intakeForm.attending || null,
+        scheduled_date: intakeForm.scheduling_type === 'scheduled' ? intakeForm.scheduled_date : null,
+        scheduled_time: intakeForm.scheduling_type === 'scheduled' ? intakeForm.scheduled_time : null,
+        auto_generate_tasks: intakeForm.auto_generate_tasks
       };
 
-      const patientResponse = await fetch(`${API_URL}/api/patients`, {
+      const response = await fetch(`${API_URL}/api/patients/create-with-tasks`, {
         method: 'POST',
         headers: getAuthHeaders(),
-        body: JSON.stringify(patientData),
+        body: JSON.stringify(requestData),
       });
 
-      const patientResult = await patientResponse.json();
+      const result = await response.json();
 
-      if (!patientResponse.ok) {
-        throw new Error(patientResult.detail || 'Failed to add patient');
+      if (!response.ok) {
+        throw new Error(result.detail || 'Failed to add patient');
       }
 
-      const scheduleData = {
-        patient_mrn: intakeForm.mrn,
-        patient_name: intakeForm.patient_name,
-        procedure: intakeForm.procedures,
-        staff: intakeForm.attending,
-        scheduled_date: intakeForm.scheduling_type === 'scheduled' ? intakeForm.scheduled_date : '',
-        scheduled_time: intakeForm.scheduling_type === 'scheduled' ? intakeForm.scheduled_time : '',
-        status: 'pending',
-        is_addon: intakeForm.scheduling_type === 'addon',
-        priority: 'medium'
-      };
+      // Show success toast with patient name
+      const statusText = result.status === 'scheduled' 
+        ? `scheduled for ${format(parseISO(intakeForm.scheduled_date), 'MMM d')}`
+        : 'added to Add-On List';
+      toast.success(`✓ ${intakeForm.patient_name} ${statusText}`, { duration: 3000 });
 
-      const scheduleResponse = await fetch(`${API_URL}/api/schedules`, {
-        method: 'POST',
-        headers: getAuthHeaders(),
-        body: JSON.stringify(scheduleData),
-      });
-
-      const scheduleResult = await scheduleResponse.json();
-
-      if (!scheduleResponse.ok) {
-        throw new Error(scheduleResult.detail || 'Failed to create schedule');
+      // Also create schedule entry for add-on cases (for calendar add-on list)
+      if (result.status === 'add-on') {
+        const scheduleData = {
+          patient_mrn: intakeForm.mrn,
+          patient_name: intakeForm.patient_name,
+          procedure: intakeForm.procedures || 'Procedure TBD',
+          staff: intakeForm.attending || 'TBD',
+          scheduled_date: '',
+          scheduled_time: '',
+          status: 'pending',
+          is_addon: true,
+          priority: 'medium'
+        };
+        await fetch(`${API_URL}/api/schedules`, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify(scheduleData),
+        });
       }
 
-      toast.success(
-        intakeForm.scheduling_type === 'scheduled'
-          ? 'Patient scheduled successfully'
-          : 'Patient added to add-on list'
-      );
-
+      // Reset form for next patient
       setIntakeForm({
         patient_name: '',
         dob: '',
@@ -406,9 +406,11 @@ export const AppleDashboard = ({ user, onLogout }) => {
         procedure_code: '',
         scheduling_type: 'addon',
         scheduled_date: '',
-        scheduled_time: ''
+        scheduled_time: '',
+        auto_generate_tasks: true
       });
 
+      // Refresh data immediately
       fetchData();
     } catch (error) {
       toast.error(error.message || 'An error occurred');
