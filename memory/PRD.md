@@ -100,6 +100,73 @@ Build a web-based operating room scheduling platform for surgical residents feat
 - `attendings` - Attending profiles
 - `notifications` - User notifications
 
+## Recently Completed (Mar 10, 2026) - MAJOR REFACTORING
+
+### 1. Unified Patients + Tasks View (COMPLETE)
+- **Merged Patients and Tasks tabs** into one unified Patients page
+- **Removed Tasks tab** from navigation (now 4 tabs: Dashboard, Calendar, Patients, Settings)
+- **UnifiedPatients.jsx** - New component with:
+  - Collapsible/expandable patient rows
+  - Each row shows: name, MRN, diagnosis, procedure, status badge, pre-op progress bar, task count, surgery date
+  - **Expanded view** shows inline: Patient Details, Pre-Op Checklist, Tasks List, Activity Log
+  - Pre-op checklist items are clickable checkboxes that save immediately (PATCH API)
+  - "+ Add Task" button within patient opens inline task creation
+  - Filters: All Status, Add-On, Scheduled, Has Pending Tasks
+  - Search by name, MRN, diagnosis, procedure
+  - Sort by: Newest, Name, Surgery Date, Pre-Op Progress
+  - Stats cards: Total, Add-On, Scheduled, With Tasks
+
+### 2. Enhanced Patient Creation with Auto-Generated Tasks (COMPLETE)
+- **New endpoint**: `POST /api/patients/create-with-tasks`
+  - Creates patient with **13-item pre-op checklist** (vs old 4-item format)
+  - Auto-generates **6 default tasks** if checkbox enabled:
+    1. H&P (History & Physical)
+    2. Surgical Consent
+    3. Insurance Prior Authorization
+    4. Labs (CBC/BMP)
+    5. Anesthesia Pre-Op Evaluation
+    6. VSP (Virtual Surgical Planning)
+  - Sets status = "add-on" if no date, "scheduled" if date provided
+  - Creates schedule entry automatically for scheduled patients
+- **Quick Add form** updated with "Auto-generate pre-op tasks" checkbox (default: checked)
+- Success toast shows: "✓ John Doe added to Add-On List" or "✓ John Doe scheduled for Mar 20"
+
+### 3. New 13-Item Pre-Op Checklist (COMPLETE)
+All new patients get the comprehensive checklist:
+1. H&P Complete
+2. Labs Ordered
+3. Labs Reviewed
+4. Imaging Ordered
+5. Imaging Reviewed
+6. Consent Signed
+7. Prior Authorization Approved
+8. VSP Complete
+9. Anesthesia Clearance
+10. Medical Optimization Complete
+11. Blood Bank (Type & Screen)
+12. Patient Instructions Given
+13. OR Scheduled
+
+### 4. Backend API Updates (COMPLETE)
+- `POST /api/patients/create-with-tasks` - Creates patient + tasks + schedule in one call
+- `GET /api/patients/with-tasks` - Returns all patients with their tasks enriched
+- `PATCH /api/patients/{mrn}/preop-checklist/{item_id}` - Toggle individual checklist items
+- `GET /api/patients/{mrn}/with-tasks` - Get single patient with tasks
+
+### 5. Navigation Simplification (COMPLETE)
+- Mobile nav: 4 tabs (Home, Calendar, Patients, Settings)
+- Desktop sidebar: Dashboard, Calendar, Patients, Surgery Timeline, Bulk Import, Settings
+- Tasks and Pre-Op Status routes redirect to unified Patients page
+
+**Files Created/Updated:**
+- `/app/frontend/src/components/UnifiedPatients.jsx` (NEW - 700+ lines)
+- `/app/frontend/src/components/AppleDashboard.jsx` (routing, Quick Add form)
+- `/app/frontend/src/components/MobileNav.jsx` (4 tabs)
+- `/app/frontend/src/components/Sidebar.jsx` (Tasks/Pre-Op removed)
+- `/app/backend/server.py` (new endpoints, 13-item checklist constants)
+
+**Testing**: 100% pass rate (12/12 backend, all frontend tests)
+
 ## Recently Completed (Mar 9, 2026)
 
 - [x] **Pre-Op Status Page Error Fix (COMPLETE)**:
