@@ -960,6 +960,62 @@ async def get_patients(current_user: str = Depends(get_current_user)):
         patient["_id"] = str(patient["_id"])
     return patients
 
+@app.get("/api/patients/with-tasks")
+async def get_patients_with_tasks(current_user: str = Depends(get_current_user)):
+    """Get all patients with their associated tasks and task counts"""
+    patients = list(patients_collection.find())
+    all_tasks = list(tasks_collection.find())
+    all_schedules = list(schedules_collection.find())
+    
+    # Create lookup maps
+    tasks_by_mrn = {}
+    for task in all_tasks:
+        task["_id"] = str(task["_id"])
+        mrn = task.get("patient_mrn")
+        if mrn:
+            if mrn not in tasks_by_mrn:
+                tasks_by_mrn[mrn] = []
+            tasks_by_mrn[mrn].append(task)
+    
+    schedules_by_mrn = {}
+    for schedule in all_schedules:
+        schedule["_id"] = str(schedule["_id"])
+        mrn = schedule.get("patient_mrn")
+        if mrn:
+            schedules_by_mrn[mrn] = schedule
+    
+    # Enrich patients with tasks and counts
+    result = []
+    for patient in patients:
+        patient["_id"] = str(patient["_id"])
+        mrn = patient.get("mrn")
+        patient_tasks = tasks_by_mrn.get(mrn, [])
+        
+        # Calculate task stats
+        pending_tasks = [t for t in patient_tasks if not t.get("completed")]
+        completed_tasks = [t for t in patient_tasks if t.get("completed")]
+        
+        patient["tasks"] = patient_tasks
+        patient["task_count"] = len(patient_tasks)
+        patient["pending_task_count"] = len(pending_tasks)
+        patient["completed_task_count"] = len(completed_tasks)
+        patient["schedule"] = schedules_by_mrn.get(mrn)
+        
+        # Calculate preop progress
+        preop_checklist = patient.get("preop_checklist", [])
+        if isinstance(preop_checklist, list) and len(preop_checklist) > 0:
+            checked = sum(1 for item in preop_checklist if item.get("checked"))
+            patient["preop_progress"] = {"checked": checked, "total": len(preop_checklist)}
+        else:
+            # Fallback to old format
+            prep = patient.get("prep_checklist", {})
+            checked = sum(1 for v in prep.values() if v)
+            patient["preop_progress"] = {"checked": checked, "total": 4}
+        
+        result.append(patient)
+    
+    return result
+
 @app.get("/api/patients/{mrn}")
 async def get_patient(mrn: str, current_user: str = Depends(get_current_user)):
     patient = patients_collection.find_one({"mrn": mrn})
@@ -967,6 +1023,82 @@ async def get_patient(mrn: str, current_user: str = Depends(get_current_user)):
         raise HTTPException(status_code=404, detail="Patient not found")
     patient["_id"] = str(patient["_id"])
     return patient
+
+@app.get("/api/patients/{mrn}/with-tasks")
+async def get_patient_with_tasks(mrn: str, current_user: str = Depends(get_current_user)):
+    """Get a single patient with their tasks"""
+    patient = patients_collection.find_one({"mrn": mrn})
+    if not patient:
+        raise HTTPException(status_code=404, detail="Patient not found")
+    patient["_id"] = str(patient["_id"])
+    
+    # Get tasks for this patient
+    tasks = list(tasks_collection.find({"patient_mrn": mrn}))
+    for task in tasks:
+        task["_id"] = str(task["_id"])
+    
+    # Get schedule
+    schedule = schedules_collection.find_one({"patient_mrn": mrn})
+    if schedule:
+        schedule["_id"] = str(schedule["_id"])
+    
+    patient["tasks"] = tasks
+    patient["schedule"] = schedule
+    
+    return patient
+
+@app.patch("/api/patients/{mrn}/preop-checklist/{item_id}")
+async def toggle_preop_checklist_item(mrn: str, item_id: str, current_user: str = Depends(get_current_user)):
+    """Toggle a specific item in the new 13-item preop_checklist"""
+    patient = patients_collection.find_one({"mrn": mrn})
+    if not patient:
+        raise HTTPException(status_code=404, detail="Patient not found")
+    
+    preop_checklist = patient.get("preop_checklist", [])
+    if not isinstance(preop_checklist, list):
+        raise HTTPException(status_code=400, detail="Patient does not have new checklist format")
+    
+    # Find and toggle the item
+    item_found = False
+    new_value = False
+    for item in preop_checklist:
+        if item.get("id") == item_id:
+            item["checked"] = not item.get("checked", False)
+            new_value = item["checked"]
+            item_found = True
+            break
+    
+    if not item_found:
+        raise HTTPException(status_code=404, detail=f"Checklist item '{item_id}' not found")
+    
+    # Update in database
+    result = patients_collection.update_one(
+        {"mrn": mrn},
+        {
+            "$set": {
+                "preop_checklist": preop_checklist,
+                "updated_by": current_user,
+                "updated_at": datetime.utcnow()
+            },
+            "$push": {
+                "activity_log": {
+                    "action": "checklist_updated",
+                    "user": current_user,
+                    "timestamp": datetime.utcnow().isoformat(),
+                    "details": f"{'Checked' if new_value else 'Unchecked'}: {item_id}"
+                }
+            }
+        }
+    )
+    
+    # Calculate new progress
+    checked_count = sum(1 for item in preop_checklist if item.get("checked"))
+    
+    return {
+        "item_id": item_id,
+        "checked": new_value,
+        "progress": {"checked": checked_count, "total": len(preop_checklist)}
+    }
 
 @app.put("/api/patients/{mrn}")
 async def update_patient(mrn: str, patient: Patient, current_user: str = Depends(get_current_user)):
