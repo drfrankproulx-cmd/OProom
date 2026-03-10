@@ -3,7 +3,6 @@ import {
   LayoutDashboard, 
   Calendar, 
   Users, 
-  CheckSquare, 
   Settings
 } from 'lucide-react';
 
@@ -11,7 +10,6 @@ const MOBILE_NAV_ITEMS = [
   { id: 'dashboard', label: 'Home', icon: LayoutDashboard },
   { id: 'calendar', label: 'Calendar', icon: Calendar },
   { id: 'patients', label: 'Patients', icon: Users },
-  { id: 'tasks', label: 'Tasks', icon: CheckSquare },
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
 
