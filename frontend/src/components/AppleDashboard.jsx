@@ -710,15 +710,17 @@ export const AppleDashboard = ({ user, onLogout }) => {
   }
 
   if (currentView === 'patients') {
-    return <Patients onNavigate={handleNavigation} initialFilter={viewFilter} user={user} onLogout={onLogout} />;
+    return <UnifiedPatients onNavigate={handleNavigation} initialFilter={viewFilter} user={user} onLogout={onLogout} />;
   }
 
+  // Redirect tasks to patients (merged view)
   if (currentView === 'tasks') {
-    return <Tasks onNavigate={handleNavigation} initialFilter={viewFilter} user={user} onLogout={onLogout} />;
+    return <UnifiedPatients onNavigate={handleNavigation} initialFilter={{ hasTasks: true, ...viewFilter }} user={user} onLogout={onLogout} />;
   }
 
+  // Redirect patient-status to patients (consolidated)
   if (currentView === 'patient-status') {
-    return <PatientStatusList onNavigate={handleNavigation} user={user} onLogout={onLogout} />;
+    return <UnifiedPatients onNavigate={handleNavigation} initialFilter={viewFilter} user={user} onLogout={onLogout} />;
   }
 
   if (currentView === 'surgery-timeline') {
