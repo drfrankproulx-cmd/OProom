@@ -916,7 +916,20 @@ export const AppleDashboard = ({ user, onLogout }) => {
                 </>
               )}
 
-              <div className={intakeForm.scheduling_type === 'scheduled' ? '' : 'md:col-span-3'}>
+              {/* Auto-generate tasks checkbox */}
+              <div className="flex items-center gap-2 col-span-1 md:col-span-2">
+                <Checkbox 
+                  id="auto-generate-tasks"
+                  checked={intakeForm.auto_generate_tasks}
+                  onCheckedChange={(checked) => setIntakeForm({...intakeForm, auto_generate_tasks: checked})}
+                  className="h-4 w-4"
+                />
+                <Label htmlFor="auto-generate-tasks" className="text-xs text-slate-600 cursor-pointer">
+                  Auto-generate pre-op tasks
+                </Label>
+              </div>
+
+              <div className={intakeForm.scheduling_type === 'scheduled' ? '' : 'md:col-span-1'}>
                 <Button onClick={handleQuickAdd} className="w-full bg-teal-500 hover:bg-teal-600 active:bg-teal-700 text-white rounded-lg h-11 md:h-10 text-sm font-medium" data-testid="add-patient-btn">
                   <Plus className="h-4 w-4 mr-2" />
                   {intakeForm.scheduling_type === 'scheduled' ? 'Schedule Patient' : 'Add to Add-On List'}
