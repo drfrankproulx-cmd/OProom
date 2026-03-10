@@ -295,7 +295,7 @@ class Patient(BaseModel):
     """
     mrn: str
     patient_name: str
-    dob: str
+    dob: Optional[str] = None
     diagnosis: Optional[str] = None
     procedures: Optional[str] = None
     procedure_code: Optional[str] = None
