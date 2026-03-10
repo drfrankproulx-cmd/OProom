@@ -239,7 +239,8 @@ export const AppleDashboard = ({ user, onLogout }) => {
     procedure_code: '',
     scheduling_type: 'addon',
     scheduled_date: '',
-    scheduled_time: ''
+    scheduled_time: '',
+    auto_generate_tasks: true  // Auto-generate pre-op tasks by default
   });
 
   const [taskForm, setTaskForm] = useState({
