@@ -1121,6 +1121,10 @@ async def update_imaging_selection(mrn: str, request: Request, current_user: str
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Invalid JSON: {str(e)}")
     
+    # Debug: return parsed body immediately to verify parsing
+    if mrn == "DEBUG_TEST":
+        return {"parsed_selection": new_selection, "body": body}
+    
     is_checked = len(new_selection) > 0
     
     patient = patients_collection.find_one({"mrn": mrn})
