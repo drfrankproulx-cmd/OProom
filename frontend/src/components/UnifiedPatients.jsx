@@ -569,6 +569,7 @@ const PatientRow = ({
         <PatientExpandedView
           patient={patient}
           onToggleChecklistItem={onToggleChecklistItem}
+          onUpdateImagingSelection={onUpdateImagingSelection}
           onToggleTask={onToggleTask}
           onDeleteTask={onDeleteTask}
           onAddTask={onAddTask}
