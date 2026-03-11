@@ -1135,7 +1135,7 @@ async def update_imaging_selection(mrn: str, request: ImagingUpdateRequest, curr
             {"mrn": mrn},
             {
                 "$set": {
-                    "preop_checklist.$[elem].selection": request.selection,
+                    "preop_checklist.$[elem].selection": new_selection,
                     "preop_checklist.$[elem].checked": is_checked,
                     "updated_by": current_user,
                     "updated_at": datetime.utcnow()
@@ -1145,7 +1145,7 @@ async def update_imaging_selection(mrn: str, request: ImagingUpdateRequest, curr
                         "action": "imaging_updated",
                         "user": current_user,
                         "timestamp": datetime.utcnow().isoformat(),
-                        "details": f"Imaging studies: {', '.join(request.selection) if request.selection else 'None selected'}"
+                        "details": f"Imaging studies: {', '.join(new_selection) if new_selection else 'None selected'}"
                     }
                 }
             },
@@ -1163,7 +1163,7 @@ async def update_imaging_selection(mrn: str, request: ImagingUpdateRequest, curr
                             "item": "Imaging",
                             "checked": is_checked,
                             "type": "dropdown",
-                            "selection": request.selection
+                            "selection": new_selection
                         }],
                         "$position": 0
                     },
@@ -1171,7 +1171,7 @@ async def update_imaging_selection(mrn: str, request: ImagingUpdateRequest, curr
                         "action": "imaging_updated",
                         "user": current_user,
                         "timestamp": datetime.utcnow().isoformat(),
-                        "details": f"Imaging studies: {', '.join(request.selection) if request.selection else 'None selected'}"
+                        "details": f"Imaging studies: {', '.join(new_selection) if new_selection else 'None selected'}"
                     }
                 },
                 "$set": {
@@ -1187,7 +1187,7 @@ async def update_imaging_selection(mrn: str, request: ImagingUpdateRequest, curr
     checked_count = sum(1 for item in updated_checklist if item.get("checked"))
     
     return {
-        "selection": request.selection,
+        "selection": new_selection,
         "checked": is_checked,
         "progress": {"checked": checked_count, "total": len(updated_checklist)}
     }
