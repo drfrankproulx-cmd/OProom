@@ -31,25 +31,42 @@ import {
 import PageLayout from './PageLayout';
 import PullToRefresh from './PullToRefresh';
 import { TaskCategorySelect, TaskCategoryBadge } from './TaskCategorySelect';
+import ImagingDropdown from './ImagingDropdown';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
-// Pre-op checklist item component
-const PreOpChecklistItem = ({ item, onToggle, disabled }) => (
-  <div 
-    className={`flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors ${item.checked ? 'bg-green-50' : ''}`}
-    onClick={() => !disabled && onToggle(item.id)}
-  >
-    <Checkbox 
-      checked={item.checked} 
-      className="h-5 w-5"
-      disabled={disabled}
-    />
-    <span className={`text-sm ${item.checked ? 'text-green-700 line-through' : 'text-slate-700'}`}>
-      {item.item}
-    </span>
-  </div>
-);
+// Pre-op checklist item component - handles both regular items and imaging dropdown
+const PreOpChecklistItem = ({ item, onToggle, onImagingChange, disabled }) => {
+  // Special handling for imaging dropdown
+  if (item.type === 'dropdown' && item.id === 'imaging') {
+    return (
+      <div className="rounded-lg bg-slate-50 border border-slate-200">
+        <ImagingDropdown
+          selection={item.selection || []}
+          onSelectionChange={onImagingChange}
+          disabled={disabled}
+        />
+      </div>
+    );
+  }
+
+  // Regular checkbox item
+  return (
+    <div 
+      className={`flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors ${item.checked ? 'bg-green-50' : ''}`}
+      onClick={() => !disabled && onToggle(item.id)}
+    >
+      <Checkbox 
+        checked={item.checked} 
+        className="h-5 w-5"
+        disabled={disabled}
+      />
+      <span className={`text-sm ${item.checked ? 'text-green-700 line-through' : 'text-slate-700'}`}>
+        {item.item}
+      </span>
+    </div>
+  );
+};
 
 // Task status helpers
 const getTaskStatus = (task) => {
