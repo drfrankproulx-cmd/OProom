@@ -1123,14 +1123,20 @@ async def test_imaging_parse(request: Request):
 @app.patch("/api/patients/{mrn}/preop-checklist/imaging")
 async def update_imaging_selection(mrn: str, request: Request, current_user: str = Depends(get_current_user)):
     """Update the imaging selection for a patient's pre-op checklist"""
+    import sys
+    print(f"[IMAGING] Endpoint called for mrn={mrn}", file=sys.stderr, flush=True)
+    
     # Parse body manually 
     try:
         body = await request.json()
         new_selection = body.get("selection", [])
+        print(f"[IMAGING] Parsed body: selection={new_selection}", file=sys.stderr, flush=True)
     except Exception as e:
+        print(f"[IMAGING] Error parsing body: {e}", file=sys.stderr, flush=True)
         raise HTTPException(status_code=400, detail=f"Invalid JSON: {str(e)}")
     
     is_checked = len(new_selection) > 0
+    print(f"[IMAGING] is_checked={is_checked}, len={len(new_selection)}", file=sys.stderr, flush=True)
     
     patient = patients_collection.find_one({"mrn": mrn})
     if not patient:
