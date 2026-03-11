@@ -1114,9 +1114,7 @@ class ImagingUpdateRequest(BaseModel):
 @app.patch("/api/patients/{mrn}/preop-checklist/imaging")
 async def update_imaging_selection(mrn: str, request: ImagingUpdateRequest, current_user: str = Depends(get_current_user)):
     """Update the imaging selection for a patient's pre-op checklist"""
-    import logging
-    logger = logging.getLogger("uvicorn")
-    logger.info(f"Imaging update for {mrn}: selection={request.selection}")
+    print(f"[IMAGING DEBUG] Imaging update for {mrn}: selection={request.selection}", flush=True)
     
     patient = patients_collection.find_one({"mrn": mrn})
     if not patient:
@@ -1126,7 +1124,7 @@ async def update_imaging_selection(mrn: str, request: ImagingUpdateRequest, curr
     if not isinstance(preop_checklist, list):
         raise HTTPException(status_code=400, detail="Patient does not have new checklist format")
     
-    logger.info(f"Current checklist has {len(preop_checklist)} items")
+    print(f"[IMAGING DEBUG] Current checklist has {len(preop_checklist)} items", flush=True)
     
     # Find the imaging item and update it
     imaging_found = False
@@ -1136,7 +1134,7 @@ async def update_imaging_selection(mrn: str, request: ImagingUpdateRequest, curr
             # Auto-check if at least one study is selected
             item["checked"] = len(request.selection) > 0
             imaging_found = True
-            logger.info(f"Updated imaging item: selection={item['selection']}, checked={item['checked']}")
+            print(f"[IMAGING DEBUG] Updated imaging item: selection={item['selection']}, checked={item['checked']}", flush=True)
             break
     
     if not imaging_found:
