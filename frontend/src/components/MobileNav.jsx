@@ -19,7 +19,7 @@ export const MobileNav = ({ currentView, onNavigate }) => {
       <div className="flex items-center justify-around h-16 px-2">
         {MOBILE_NAV_ITEMS.map((item) => {
           const isActive = currentView === item.id || 
-            (item.id === 'settings' && ['settings', 'bulk-import', 'patient-status', 'surgery-timeline'].includes(currentView));
+            (item.id === 'settings' && ['settings', 'bulk-import'].includes(currentView));
           
           return (
             <button

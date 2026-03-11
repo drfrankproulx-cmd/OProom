@@ -136,7 +136,7 @@ JWT_ALGORITHM = os.environ.get('JWT_ALGORITHM', 'HS256')
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get('ACCESS_TOKEN_EXPIRE_MINUTES', 43200))  # 30 days
 
 # WebAuthn Configuration - Uses FRONTEND_URL from env for flexibility
-FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://surgical-planner-1.preview.emergentagent.com')
+FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://preop-hub.preview.emergentagent.com')
 # Extract domain from FRONTEND_URL for RP_ID
 _parsed_url = FRONTEND_URL.replace('https://', '').replace('http://', '').split('/')[0]
 RP_ID = os.environ.get('WEBAUTHN_RP_ID', _parsed_url)
@@ -1050,18 +1050,104 @@ async def get_patient_with_tasks(mrn: str, current_user: str = Depends(get_curre
     
     return patient
 
-@app.patch("/api/patients/{mrn}/preop-checklist/{item_id}")
-async def toggle_preop_checklist_item(mrn: str, item_id: str, current_user: str = Depends(get_current_user)):
-    """Toggle a specific item in the new 13-item preop_checklist"""
+@app.get("/api/imaging-options")
+async def get_imaging_options():
+    """Return the list of available imaging study types for OMFS"""
+    return {"options": IMAGING_OPTIONS}
+
+@app.patch("/api/patients/{mrn}/preop-checklist/imaging")
+async def update_imaging_selection(mrn: str, request: Request, current_user: str = Depends(get_current_user)):
+    """Update the imaging selection for a patient's pre-op checklist.
+    IMPORTANT: This route MUST be declared before the generic /{item_id} route."""
+    body = await request.json()
+    new_selection = body.get("selection", [])
+    is_checked = len(new_selection) > 0
+    
     patient = patients_collection.find_one({"mrn": mrn})
     if not patient:
         raise HTTPException(status_code=404, detail="Patient not found")
     
     preop_checklist = patient.get("preop_checklist", [])
-    if not isinstance(preop_checklist, list):
-        raise HTTPException(status_code=400, detail="Patient does not have new checklist format")
+    # If old format or missing, normalize and save to DB first
+    if not isinstance(preop_checklist, list) or not any(isinstance(i, dict) and i.get("id") == "imaging" for i in preop_checklist):
+        preop_checklist = normalize_preop_checklist(preop_checklist)
+        patients_collection.update_one({"mrn": mrn}, {"$set": {"preop_checklist": preop_checklist}})
     
-    # Find and toggle the item
+    imaging_exists = any(item.get("id") == "imaging" for item in preop_checklist)
+    
+    if imaging_exists:
+        result = patients_collection.update_one(
+            {"mrn": mrn},
+            {
+                "$set": {
+                    "preop_checklist.$[elem].selection": list(new_selection),
+                    "preop_checklist.$[elem].checked": is_checked,
+                    "updated_by": current_user,
+                    "updated_at": datetime.utcnow()
+                },
+                "$push": {
+                    "activity_log": {
+                        "action": "imaging_updated",
+                        "user": current_user,
+                        "timestamp": datetime.utcnow().isoformat(),
+                        "details": f"Imaging studies: {', '.join(new_selection) if new_selection else 'None selected'}"
+                    }
+                }
+            },
+            array_filters=[{"elem.id": "imaging"}]
+        )
+    else:
+        result = patients_collection.update_one(
+            {"mrn": mrn},
+            {
+                "$push": {
+                    "preop_checklist": {
+                        "$each": [{
+                            "id": "imaging",
+                            "item": "Imaging",
+                            "checked": is_checked,
+                            "type": "dropdown",
+                            "selection": list(new_selection)
+                        }],
+                        "$position": 0
+                    },
+                    "activity_log": {
+                        "action": "imaging_updated",
+                        "user": current_user,
+                        "timestamp": datetime.utcnow().isoformat(),
+                        "details": f"Imaging studies: {', '.join(new_selection) if new_selection else 'None selected'}"
+                    }
+                },
+                "$set": {
+                    "updated_by": current_user,
+                    "updated_at": datetime.utcnow()
+                }
+            }
+        )
+    
+    updated_patient = patients_collection.find_one({"mrn": mrn})
+    updated_checklist = updated_patient.get("preop_checklist", []) if updated_patient else []
+    checked_count = sum(1 for item in updated_checklist if item.get("checked"))
+    
+    return {
+        "selection": new_selection,
+        "checked": is_checked,
+        "progress": {"checked": checked_count, "total": len(updated_checklist)}
+    }
+
+@app.patch("/api/patients/{mrn}/preop-checklist/{item_id}")
+async def toggle_preop_checklist_item(mrn: str, item_id: str, current_user: str = Depends(get_current_user)):
+    """Toggle a specific item in the preop_checklist"""
+    patient = patients_collection.find_one({"mrn": mrn})
+    if not patient:
+        raise HTTPException(status_code=404, detail="Patient not found")
+    
+    preop_checklist = patient.get("preop_checklist", [])
+    # Normalize old format if needed
+    if not isinstance(preop_checklist, list) or (len(preop_checklist) > 0 and not any(isinstance(i, dict) and "id" in i for i in preop_checklist)):
+        preop_checklist = normalize_preop_checklist(preop_checklist)
+        patients_collection.update_one({"mrn": mrn}, {"$set": {"preop_checklist": preop_checklist}})
+    
     item_found = False
     new_value = False
     for item in preop_checklist:
@@ -1074,7 +1160,6 @@ async def toggle_preop_checklist_item(mrn: str, item_id: str, current_user: str 
     if not item_found:
         raise HTTPException(status_code=404, detail=f"Checklist item '{item_id}' not found")
     
-    # Update in database
     result = patients_collection.update_one(
         {"mrn": mrn},
         {
@@ -1094,126 +1179,12 @@ async def toggle_preop_checklist_item(mrn: str, item_id: str, current_user: str 
         }
     )
     
-    # Calculate new progress
     checked_count = sum(1 for item in preop_checklist if item.get("checked"))
     
     return {
         "item_id": item_id,
         "checked": new_value,
         "progress": {"checked": checked_count, "total": len(preop_checklist)}
-    }
-
-@app.get("/api/imaging-options")
-async def get_imaging_options():
-    """Return the list of available imaging study types for OMFS"""
-    return {"options": IMAGING_OPTIONS}
-
-class ImagingUpdateRequest(BaseModel):
-    selection: List[str] = []
-
-@app.post("/api/test-imaging-parse")
-async def test_imaging_parse(request: Request):
-    """Debug endpoint to test body parsing"""
-    try:
-        body = await request.json()
-        return {"body": body, "selection": body.get("selection", [])}
-    except Exception as e:
-        return {"error": str(e)}
-
-@app.patch("/api/patients/{mrn}/preop-checklist/imaging")
-async def update_imaging_selection(mrn: str, request: Request, current_user: str = Depends(get_current_user)):
-    """Update the imaging selection for a patient's pre-op checklist"""
-    import sys
-    print(f"[IMAGING] Endpoint called for mrn={mrn}", file=sys.stderr, flush=True)
-    
-    # Parse body manually 
-    try:
-        body = await request.json()
-        new_selection = body.get("selection", [])
-        print(f"[IMAGING] Parsed body: selection={new_selection}", file=sys.stderr, flush=True)
-    except Exception as e:
-        print(f"[IMAGING] Error parsing body: {e}", file=sys.stderr, flush=True)
-        raise HTTPException(status_code=400, detail=f"Invalid JSON: {str(e)}")
-    
-    is_checked = len(new_selection) > 0
-    print(f"[IMAGING] is_checked={is_checked}, len={len(new_selection)}", file=sys.stderr, flush=True)
-    
-    patient = patients_collection.find_one({"mrn": mrn})
-    if not patient:
-        raise HTTPException(status_code=404, detail="Patient not found")
-    
-    preop_checklist = patient.get("preop_checklist", [])
-    if not isinstance(preop_checklist, list):
-        raise HTTPException(status_code=400, detail="Patient does not have new checklist format")
-    
-    # Check if imaging item exists
-    imaging_exists = any(item.get("id") == "imaging" for item in preop_checklist)
-    
-    if imaging_exists:
-        # Use array filter to update the specific element
-        import sys
-        print(f"[IMAGING DB] About to update with new_selection={new_selection}, type={type(new_selection)}", file=sys.stderr, flush=True)
-        
-        result = patients_collection.update_one(
-            {"mrn": mrn},
-            {
-                "$set": {
-                    "preop_checklist.$[elem].selection": list(new_selection),  # Ensure it's a list
-                    "preop_checklist.$[elem].checked": is_checked,
-                    "updated_by": current_user,
-                    "updated_at": datetime.utcnow()
-                },
-                "$push": {
-                    "activity_log": {
-                        "action": "imaging_updated",
-                        "user": current_user,
-                        "timestamp": datetime.utcnow().isoformat(),
-                        "details": f"Imaging studies: {', '.join(new_selection) if new_selection else 'None selected'}"
-                    }
-                }
-            },
-            array_filters=[{"elem.id": "imaging"}]
-        )
-        print(f"[IMAGING DB] Update result: matched={result.matched_count}, modified={result.modified_count}", file=sys.stderr, flush=True)
-    else:
-        # Add imaging item if it doesn't exist (migration case)
-        result = patients_collection.update_one(
-            {"mrn": mrn},
-            {
-                "$push": {
-                    "preop_checklist": {
-                        "$each": [{
-                            "id": "imaging",
-                            "item": "Imaging",
-                            "checked": is_checked,
-                            "type": "dropdown",
-                            "selection": new_selection
-                        }],
-                        "$position": 0
-                    },
-                    "activity_log": {
-                        "action": "imaging_updated",
-                        "user": current_user,
-                        "timestamp": datetime.utcnow().isoformat(),
-                        "details": f"Imaging studies: {', '.join(new_selection) if new_selection else 'None selected'}"
-                    }
-                },
-                "$set": {
-                    "updated_by": current_user,
-                    "updated_at": datetime.utcnow()
-                }
-            }
-        )
-    
-    # Fetch updated checklist for progress calculation
-    updated_patient = patients_collection.find_one({"mrn": mrn})
-    updated_checklist = updated_patient.get("preop_checklist", []) if updated_patient else []
-    checked_count = sum(1 for item in updated_checklist if item.get("checked"))
-    
-    return {
-        "selection": new_selection,
-        "checked": is_checked,
-        "progress": {"checked": checked_count, "total": len(updated_checklist)}
     }
 
 def normalize_preop_checklist(checklist):
@@ -2911,11 +2882,11 @@ async def google_oauth_callback(code: str, state: str = None):
         )
         
         # Redirect to frontend with success
-        frontend_url = os.environ.get('FRONTEND_URL', 'https://surgical-planner-1.preview.emergentagent.com')
+        frontend_url = os.environ.get('FRONTEND_URL', 'https://preop-hub.preview.emergentagent.com')
         return RedirectResponse(f"{frontend_url}?google_connected=true")
         
     except Exception as e:
-        frontend_url = os.environ.get('FRONTEND_URL', 'https://surgical-planner-1.preview.emergentagent.com')
+        frontend_url = os.environ.get('FRONTEND_URL', 'https://preop-hub.preview.emergentagent.com')
         return RedirectResponse(f"{frontend_url}?google_error={str(e)}")
 
 

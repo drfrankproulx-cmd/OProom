@@ -1,0 +1,92 @@
+{
+  "summary": "Comprehensive testing of CRITICAL imaging endpoint fix and UI changes. All 11 backend API tests passed. Frontend tests confirmed: imaging selection saves and displays correctly, sidebar navigation removed Surgery Timeline, Patients page with expandable rows and 9-item OMFS checklist all working.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_imaging_fix.py",
+    "/app/test_reports/pytest/pytest_imaging_fix.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Route ordering fix is correct - PATCH /api/patients/{mrn}/preop-checklist/imaging (line 1058) is declared BEFORE generic /{item_id} route (line 1138) in server.py"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_imaging_fix.py"
+  ],
+  "success_rate": {
+    "backend": "100% (11/11 tests passed)",
+    "frontend": "100% (all UI tests passed)"
+  },
+  "test_credentials": {
+    "email": "proul076@umn.edu",
+    "password": "59K63i75%("
+  },
+  "seed_data_creation": "Created and cleaned up test patient TEST_IMG_* during backend tests",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "CRITICAL BUG FIX VERIFIED: Imaging endpoint route ordering fixed. Patient SJ2026002 (Sarah Johnson) has PET Scan imaging selection saved and displays correctly. Test patients with new 9-item OMFS checklist working. Sidebar navigation correctly shows only: Dashboard, Calendar, Patients, Bulk Import, Settings - NO Surgery Timeline.",
+  "features_tested": {
+    "imaging_endpoint_fix": {
+      "status": "PASS",
+      "details": "PATCH /api/patients/{mrn}/preop-checklist/imaging correctly saves imaging selections. Route ordering fix verified - imaging endpoint declared before generic /{item_id} route."
+    },
+    "imaging_selection_persistence": {
+      "status": "PASS",
+      "details": "Imaging selections persist to database and display as badges in expanded patient view. Sarah Johnson (SJ2026002) shows 'PET Scan' badge."
+    },
+    "regular_checklist_toggle": {
+      "status": "PASS",
+      "details": "PATCH /api/patients/{mrn}/preop-checklist/{item_id} still works correctly after route reorder. Labs Ordered toggle confirmed working on Sarah Johnson patient."
+    },
+    "patients_with_tasks_api": {
+      "status": "PASS",
+      "details": "GET /api/patients/with-tasks returns normalized 9-item OMFS checklist with imaging data for all patients."
+    },
+    "quick_add_patient": {
+      "status": "PASS",
+      "details": "POST /api/patients/create-with-tasks creates patient with 9-item preop_checklist (including imaging dropdown item) and 6 auto-generated tasks."
+    },
+    "sidebar_navigation_removed_surgery_timeline": {
+      "status": "PASS",
+      "details": "Sidebar shows: Dashboard, Calendar, Patients, Bulk Import, Settings. NO Surgery Timeline or Patient Status nav items."
+    },
+    "patients_page_layout": {
+      "status": "PASS",
+      "details": "Patients page shows stats cards (Total, Add-On, Scheduled, With Tasks), search/filter, and patient rows with expandable details."
+    },
+    "expandable_patient_rows": {
+      "status": "PASS",
+      "details": "Clicking patient row expands to show Patient Details, Pre-Op Checklist (9 items), Tasks list, Activity Log sections."
+    },
+    "9_item_omfs_checklist": {
+      "status": "PASS",
+      "details": "Checklist items: Imaging (dropdown), Labs Ordered, Labs Reviewed, Prior Authorization Approved, VSP Complete, Orthodontist Approval, Anesthesia Clearance, Medical Optimization Complete, OR Scheduled"
+    },
+    "imaging_dropdown_component": {
+      "status": "PASS",
+      "details": "ImagingDropdown component renders in expanded view with multi-select functionality. Options: CT Facial, CT Abd/Leg Run-Off, PET Scan, OPG, Lateral Cephalometric."
+    },
+    "imaging_options_api": {
+      "status": "PASS",
+      "details": "GET /api/imaging-options returns correct 5 OMFS imaging options."
+    }
+  },
+  "root_cause_analysis": {
+    "bug": "Imaging selection not being saved to database",
+    "root_cause": "FastAPI route ordering - generic PATCH /api/patients/{mrn}/preop-checklist/{item_id} route was matching 'imaging' as item_id before the specific /imaging route could handle it",
+    "fix": "Moved PATCH /api/patients/{mrn}/preop-checklist/imaging endpoint (line 1058) BEFORE the generic /{item_id} endpoint (line 1138) in server.py",
+    "verification": "test_imaging_route_not_caught_by_generic_route test confirms the fix - response contains 'selection' field (imaging endpoint) not 'item_id' field (generic endpoint)"
+  },
+  "mocked_apis": {
+    "has_mocked_apis": false,
+    "mocked_apis_list": []
+  },
+  "notes": "All critical features verified working. The imaging endpoint bug fix was successfully implemented by reordering routes in server.py. Patient SJ2026002 (Sarah Johnson) used as test patient has imaging data persisted correctly."
+}

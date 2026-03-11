@@ -24,7 +24,6 @@ import PageLayout from './PageLayout';
 import Settings from './Settings';
 import UnifiedPatients from './UnifiedPatients';
 import Calendar from './Calendar';
-import SurgeryDashboard from './surgery-timeline/SurgeryDashboard';
 import BulkImport from './BulkImport';
 import CPTCodeAutocomplete from './CPTCodeAutocomplete';
 import DiagnosisAutocomplete from './DiagnosisAutocomplete';
@@ -721,13 +720,9 @@ export const AppleDashboard = ({ user, onLogout }) => {
     return <UnifiedPatients onNavigate={handleNavigation} initialFilter={{ hasTasks: true, ...viewFilter }} user={user} onLogout={onLogout} />;
   }
 
-  // Redirect patient-status to patients (consolidated)
-  if (currentView === 'patient-status') {
+  // Redirect patient-status and surgery-timeline to patients (consolidated)
+  if (currentView === 'patient-status' || currentView === 'surgery-timeline') {
     return <UnifiedPatients onNavigate={handleNavigation} initialFilter={viewFilter} user={user} onLogout={onLogout} />;
-  }
-
-  if (currentView === 'surgery-timeline') {
-    return <SurgeryDashboard onNavigate={handleNavigation} user={user} onLogout={onLogout} />;
   }
 
   if (currentView === 'bulk-import') {
