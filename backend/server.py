@@ -755,31 +755,36 @@ async def get_all_users(current_user: str = Depends(get_current_user)):
         user["_id"] = str(user["_id"])
     return users
 
-# Default pre-op checklist items (13 items)
+# Imaging options for OMFS pre-op checklist
+IMAGING_OPTIONS = [
+    "CT Facial (Maxillofacial)",
+    "CT Abd/Leg Run-Off (Fibula Free Flap Planning)",
+    "PET Scan",
+    "OPG (Orthopantomogram / Panorex)",
+    "Lateral Cephalometric"
+]
+
+# OMFS-specific pre-op checklist (9 items)
 DEFAULT_PREOP_CHECKLIST = [
-    {"id": "hp_complete", "item": "H&P Complete", "checked": False},
+    {"id": "imaging", "item": "Imaging", "checked": False, "type": "dropdown", "selection": []},
     {"id": "labs_ordered", "item": "Labs Ordered", "checked": False},
     {"id": "labs_reviewed", "item": "Labs Reviewed", "checked": False},
-    {"id": "imaging_ordered", "item": "Imaging Ordered", "checked": False},
-    {"id": "imaging_reviewed", "item": "Imaging Reviewed", "checked": False},
-    {"id": "consent_signed", "item": "Consent Signed", "checked": False},
     {"id": "prior_auth", "item": "Prior Authorization Approved", "checked": False},
     {"id": "vsp_complete", "item": "VSP Complete", "checked": False},
+    {"id": "ortho_approval", "item": "Orthodontist Approval", "checked": False},
     {"id": "anesthesia_clearance", "item": "Anesthesia Clearance", "checked": False},
     {"id": "medical_optimization", "item": "Medical Optimization Complete", "checked": False},
-    {"id": "blood_bank", "item": "Blood Bank (Type & Screen)", "checked": False},
-    {"id": "patient_instructions", "item": "Patient Instructions Given", "checked": False},
     {"id": "or_scheduled", "item": "OR Scheduled", "checked": False},
 ]
 
-# Default tasks to auto-generate on patient creation
+# Default tasks to auto-generate on patient creation (OMFS-specific)
 DEFAULT_PATIENT_TASKS = [
-    {"description": "H&P (History & Physical)", "category": "consents_documentation", "task_type": "H&P"},
-    {"description": "Surgical Consent", "category": "consents_documentation", "task_type": "Consent"},
-    {"description": "Insurance Prior Authorization", "category": "insurance", "task_type": "Prior Auth"},
+    {"description": "Prior Authorization", "category": "insurance", "task_type": "Prior Auth"},
     {"description": "Labs (CBC/BMP)", "category": "labs", "task_type": "Labs"},
     {"description": "Anesthesia Pre-Op Evaluation", "category": "labs", "task_type": "Anesthesia Eval"},
     {"description": "VSP (Virtual Surgical Planning)", "category": "surgical_planning", "task_type": "VSP"},
+    {"description": "Imaging", "category": "imaging", "task_type": "Imaging"},
+    {"description": "Orthodontist Approval", "category": "patient_coordination", "task_type": "Ortho Approval"},
 ]
 
 class PatientCreateRequest(BaseModel):
