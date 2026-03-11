@@ -1123,16 +1123,12 @@ async def test_imaging_parse(request: Request):
 @app.patch("/api/patients/{mrn}/preop-checklist/imaging")
 async def update_imaging_selection(mrn: str, request: Request, current_user: str = Depends(get_current_user)):
     """Update the imaging selection for a patient's pre-op checklist"""
-    # Parse body manually to debug
+    # Parse body manually 
     try:
         body = await request.json()
         new_selection = body.get("selection", [])
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Invalid JSON: {str(e)}")
-    
-    # Debug: return parsed body immediately to verify parsing
-    if mrn == "DEBUG_TEST":
-        return {"parsed_selection": new_selection, "body": body, "selection_len": len(new_selection)}
     
     is_checked = len(new_selection) > 0
     
