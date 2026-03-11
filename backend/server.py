@@ -1111,6 +1111,15 @@ async def get_imaging_options():
 class ImagingUpdateRequest(BaseModel):
     selection: List[str] = []
 
+@app.post("/api/test-imaging-parse")
+async def test_imaging_parse(request: Request):
+    """Debug endpoint to test body parsing"""
+    try:
+        body = await request.json()
+        return {"body": body, "selection": body.get("selection", [])}
+    except Exception as e:
+        return {"error": str(e)}
+
 @app.patch("/api/patients/{mrn}/preop-checklist/imaging")
 async def update_imaging_selection(mrn: str, request: Request, current_user: str = Depends(get_current_user)):
     """Update the imaging selection for a patient's pre-op checklist"""
