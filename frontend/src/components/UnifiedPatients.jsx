@@ -418,6 +418,7 @@ const PatientRow = ({
   onToggleExpand, 
   onDelete,
   onToggleChecklistItem,
+  onUpdateImagingSelection,
   onToggleTask,
   onDeleteTask,
   onAddTask,
@@ -426,13 +427,10 @@ const PatientRow = ({
   const tasks = patient.tasks || [];
   const pendingTaskCount = tasks.filter(t => !t.completed).length;
   
-  // Calculate progress
+  // Calculate progress (always out of 9 for OMFS checklist)
   const preopChecklist = Array.isArray(patient.preop_checklist) ? patient.preop_checklist : [];
-  const hasNewChecklist = preopChecklist.length > 0;
-  const checkedCount = hasNewChecklist 
-    ? preopChecklist.filter(item => item.checked).length 
-    : Object.values(patient.prep_checklist || {}).filter(Boolean).length;
-  const totalCount = hasNewChecklist ? preopChecklist.length : 4;
+  const checkedCount = preopChecklist.filter(item => item.checked).length;
+  const totalCount = 9; // Fixed at 9 for OMFS checklist
   const progressPercent = totalCount > 0 ? Math.round((checkedCount / totalCount) * 100) : 0;
 
   // Get surgery date
