@@ -1109,13 +1109,18 @@ async def get_imaging_options():
     return {"options": IMAGING_OPTIONS}
 
 class ImagingUpdateRequest(BaseModel):
-    selection: List[str]
+    selection: List[str] = []
 
 @app.patch("/api/patients/{mrn}/preop-checklist/imaging")
-async def update_imaging_selection(mrn: str, request: ImagingUpdateRequest, current_user: str = Depends(get_current_user)):
+async def update_imaging_selection(mrn: str, request: Request, current_user: str = Depends(get_current_user)):
     """Update the imaging selection for a patient's pre-op checklist"""
-    # Make a copy of the selection list immediately
-    new_selection = list(request.selection) if request.selection else []
+    # Parse body manually to debug
+    try:
+        body = await request.json()
+        new_selection = body.get("selection", [])
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Invalid JSON: {str(e)}")
+    
     is_checked = len(new_selection) > 0
     
     patient = patients_collection.find_one({"mrn": mrn})
