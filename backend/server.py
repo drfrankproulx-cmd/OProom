@@ -1151,11 +1151,14 @@ async def update_imaging_selection(mrn: str, request: Request, current_user: str
     
     if imaging_exists:
         # Use array filter to update the specific element
+        import sys
+        print(f"[IMAGING DB] About to update with new_selection={new_selection}, type={type(new_selection)}", file=sys.stderr, flush=True)
+        
         result = patients_collection.update_one(
             {"mrn": mrn},
             {
                 "$set": {
-                    "preop_checklist.$[elem].selection": new_selection,
+                    "preop_checklist.$[elem].selection": list(new_selection),  # Ensure it's a list
                     "preop_checklist.$[elem].checked": is_checked,
                     "updated_by": current_user,
                     "updated_at": datetime.utcnow()
@@ -1171,6 +1174,7 @@ async def update_imaging_selection(mrn: str, request: Request, current_user: str
             },
             array_filters=[{"elem.id": "imaging"}]
         )
+        print(f"[IMAGING DB] Update result: matched={result.matched_count}, modified={result.modified_count}", file=sys.stderr, flush=True)
     else:
         # Add imaging item if it doesn't exist (migration case)
         result = patients_collection.update_one(
