@@ -296,20 +296,21 @@ const PatientExpandedView = ({
           </div>
         </div>
         
-        {hasNewChecklist ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1">
+        {preopChecklist.length > 0 ? (
+          <div className="space-y-1">
             {preopChecklist.map((item) => (
               <PreOpChecklistItem
                 key={item.id}
                 item={item}
                 onToggle={onToggleChecklistItem}
+                onImagingChange={(selection) => onUpdateImagingSelection(patient.mrn, selection)}
                 disabled={checklistLoading}
               />
             ))}
           </div>
         ) : (
           <div className="text-sm text-slate-500 italic">
-            Legacy checklist format - new patients will have detailed checklist
+            No checklist items available
           </div>
         )}
       </div>
