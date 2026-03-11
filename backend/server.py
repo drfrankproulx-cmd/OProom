@@ -1006,16 +1006,14 @@ async def get_patients_with_tasks(current_user: str = Depends(get_current_user))
         patient["completed_task_count"] = len(completed_tasks)
         patient["schedule"] = schedules_by_mrn.get(mrn)
         
-        # Calculate preop progress
+        # Normalize preop_checklist to new 9-item OMFS format
         preop_checklist = patient.get("preop_checklist", [])
-        if isinstance(preop_checklist, list) and len(preop_checklist) > 0:
-            checked = sum(1 for item in preop_checklist if item.get("checked"))
-            patient["preop_progress"] = {"checked": checked, "total": len(preop_checklist)}
-        else:
-            # Fallback to old format
-            prep = patient.get("prep_checklist", {})
-            checked = sum(1 for v in prep.values() if v)
-            patient["preop_progress"] = {"checked": checked, "total": 4}
+        normalized_checklist = normalize_preop_checklist(preop_checklist)
+        patient["preop_checklist"] = normalized_checklist
+        
+        # Calculate preop progress from normalized checklist (always 9 items now)
+        checked = sum(1 for item in normalized_checklist if item.get("checked"))
+        patient["preop_progress"] = {"checked": checked, "total": 9}
         
         result.append(patient)
     
