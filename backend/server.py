@@ -1114,6 +1114,9 @@ class ImagingUpdateRequest(BaseModel):
 @app.patch("/api/patients/{mrn}/preop-checklist/imaging")
 async def update_imaging_selection(mrn: str, request: ImagingUpdateRequest, current_user: str = Depends(get_current_user)):
     """Update the imaging selection for a patient's pre-op checklist"""
+    # Debug log the received request
+    print(f"[DEBUG] Received imaging update - mrn={mrn}, selection={request.selection}, selection_type={type(request.selection)}", flush=True)
+    
     patient = patients_collection.find_one({"mrn": mrn})
     if not patient:
         raise HTTPException(status_code=404, detail="Patient not found")
@@ -1126,6 +1129,7 @@ async def update_imaging_selection(mrn: str, request: ImagingUpdateRequest, curr
     imaging_exists = any(item.get("id") == "imaging" for item in preop_checklist)
     
     is_checked = len(request.selection) > 0
+    print(f"[DEBUG] is_checked={is_checked}, len={len(request.selection)}", flush=True)
     
     if imaging_exists:
         # Use array filter to update the specific element
