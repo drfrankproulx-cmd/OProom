@@ -1105,6 +1105,117 @@ async def toggle_preop_checklist_item(mrn: str, item_id: str, current_user: str 
         "progress": {"checked": checked_count, "total": len(preop_checklist)}
     }
 
+@app.get("/api/imaging-options")
+async def get_imaging_options():
+    """Return the list of available imaging study types for OMFS"""
+    return {"options": IMAGING_OPTIONS}
+
+class ImagingUpdateRequest(BaseModel):
+    selection: List[str]
+
+@app.patch("/api/patients/{mrn}/preop-checklist/imaging")
+async def update_imaging_selection(mrn: str, request: ImagingUpdateRequest, current_user: str = Depends(get_current_user)):
+    """Update the imaging selection for a patient's pre-op checklist"""
+    patient = patients_collection.find_one({"mrn": mrn})
+    if not patient:
+        raise HTTPException(status_code=404, detail="Patient not found")
+    
+    preop_checklist = patient.get("preop_checklist", [])
+    if not isinstance(preop_checklist, list):
+        raise HTTPException(status_code=400, detail="Patient does not have new checklist format")
+    
+    # Find the imaging item and update it
+    imaging_found = False
+    for item in preop_checklist:
+        if item.get("id") == "imaging":
+            item["selection"] = request.selection
+            # Auto-check if at least one study is selected
+            item["checked"] = len(request.selection) > 0
+            imaging_found = True
+            break
+    
+    if not imaging_found:
+        # Add imaging item if it doesn't exist (migration case)
+        preop_checklist.insert(0, {
+            "id": "imaging",
+            "item": "Imaging",
+            "checked": len(request.selection) > 0,
+            "type": "dropdown",
+            "selection": request.selection
+        })
+    
+    # Update in database
+    result = patients_collection.update_one(
+        {"mrn": mrn},
+        {
+            "$set": {
+                "preop_checklist": preop_checklist,
+                "updated_by": current_user,
+                "updated_at": datetime.utcnow()
+            },
+            "$push": {
+                "activity_log": {
+                    "action": "imaging_updated",
+                    "user": current_user,
+                    "timestamp": datetime.utcnow().isoformat(),
+                    "details": f"Imaging studies: {', '.join(request.selection) if request.selection else 'None selected'}"
+                }
+            }
+        }
+    )
+    
+    # Calculate new progress
+    checked_count = sum(1 for item in preop_checklist if item.get("checked"))
+    
+    return {
+        "selection": request.selection,
+        "checked": len(request.selection) > 0,
+        "progress": {"checked": checked_count, "total": len(preop_checklist)}
+    }
+
+def normalize_preop_checklist(checklist):
+    """
+    Normalize an old checklist format to the new 9-item OMFS format.
+    Preserves checked states for items that still exist.
+    """
+    if not isinstance(checklist, list):
+        return [item.copy() for item in DEFAULT_PREOP_CHECKLIST]
+    
+    # Map old item IDs to their checked states
+    old_states = {}
+    old_imaging_selection = []
+    for item in checklist:
+        if isinstance(item, dict):
+            item_id = item.get("id", "")
+            old_states[item_id] = item.get("checked", False)
+            # Preserve imaging selection if it exists
+            if item_id == "imaging" and "selection" in item:
+                old_imaging_selection = item.get("selection", [])
+            # Convert old imaging_ordered to imaging
+            if item_id == "imaging_ordered" and item.get("checked"):
+                old_states["imaging"] = True
+    
+    # Create new checklist with preserved states
+    new_checklist = []
+    for item in DEFAULT_PREOP_CHECKLIST:
+        new_item = item.copy()
+        item_id = new_item["id"]
+        
+        # Preserve checked state if item existed before
+        if item_id in old_states:
+            new_item["checked"] = old_states[item_id]
+        
+        # For imaging, preserve selection
+        if item_id == "imaging":
+            new_item["selection"] = old_imaging_selection
+            # Auto-check if there are selections
+            if old_imaging_selection:
+                new_item["checked"] = True
+        
+        new_checklist.append(new_item)
+    
+    return new_checklist
+
 @app.put("/api/patients/{mrn}")
 async def update_patient(mrn: str, patient: Patient, current_user: str = Depends(get_current_user)):
     # Get current patient to compare changes
