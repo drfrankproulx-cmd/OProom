@@ -1123,7 +1123,7 @@ async def update_imaging_selection(mrn: str, request: Request, current_user: str
     
     # Debug: return parsed body immediately to verify parsing
     if mrn == "DEBUG_TEST":
-        return {"parsed_selection": new_selection, "body": body}
+        return {"parsed_selection": new_selection, "body": body, "selection_len": len(new_selection)}
     
     is_checked = len(new_selection) > 0
     
