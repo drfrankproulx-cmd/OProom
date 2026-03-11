@@ -80,4 +80,4 @@ Build a web-based operating room scheduling platform for surgical residents feat
 - [ ] Additional patient intake fields (insurance, notes)
 
 ## Last Updated
-March 11, 2026
+March 11, 2026 - Added quick-filter by attending on Patients page

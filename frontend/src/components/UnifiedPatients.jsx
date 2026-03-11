@@ -587,6 +587,7 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState(initialFilter?.status || 'all');
   const [filterTasks, setFilterTasks] = useState(initialFilter?.hasTasks ? 'has-tasks' : 'all');
+  const [filterAttending, setFilterAttending] = useState('all');
   const [sortBy, setSortBy] = useState('created_at');
   const [expandedPatient, setExpandedPatient] = useState(null);
   const [checklistLoading, setChecklistLoading] = useState(false);
@@ -779,6 +780,9 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
     }
   };
 
+  // Unique attendings derived from patient data
+  const uniqueAttendings = [...new Set(patients.map(p => p.attending).filter(Boolean))].sort();
+
   // Filter and sort
   const filteredPatients = patients.filter(p => {
     const matchesSearch = 
@@ -797,7 +801,11 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
       filterTasks === 'all' ||
       (filterTasks === 'has-tasks' && pendingTasks.length > 0);
 
-    return matchesSearch && matchesStatus && matchesTasks;
+    const matchesAttending = 
+      filterAttending === 'all' ||
+      p.attending === filterAttending;
+
+    return matchesSearch && matchesStatus && matchesTasks && matchesAttending;
   });
 
   const sortedPatients = [...filteredPatients].sort((a, b) => {
@@ -866,7 +874,19 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
               </div>
               
               {/* Filter dropdowns */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
+                <select
+                  value={filterAttending}
+                  onChange={(e) => setFilterAttending(e.target.value)}
+                  data-testid="filter-attending"
+                  className="h-11 px-3 rounded-lg border border-slate-200 text-sm bg-white min-w-[140px]"
+                >
+                  <option value="all">All Attendings</option>
+                  {uniqueAttendings.map(name => (
+                    <option key={name} value={name}>{name}</option>
+                  ))}
+                </select>
+
                 <select
                   value={filterStatus}
                   onChange={(e) => setFilterStatus(e.target.value)}
