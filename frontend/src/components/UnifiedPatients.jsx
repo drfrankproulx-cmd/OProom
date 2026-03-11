@@ -213,7 +213,8 @@ const AddTaskForm = ({ patient, onSubmit, onCancel }) => {
 // Expanded Patient Detail Panel
 const PatientExpandedView = ({ 
   patient, 
-  onToggleChecklistItem, 
+  onToggleChecklistItem,
+  onUpdateImagingSelection, 
   onToggleTask, 
   onDeleteTask, 
   onAddTask,
@@ -221,17 +222,14 @@ const PatientExpandedView = ({
 }) => {
   const [showAddTask, setShowAddTask] = useState(false);
   
-  // Get preop checklist (handle both formats)
+  // Get preop checklist (normalized to 9-item OMFS format)
   const preopChecklist = Array.isArray(patient.preop_checklist) 
     ? patient.preop_checklist 
     : [];
-  const hasNewChecklist = preopChecklist.length > 0;
   
-  // Calculate progress
-  const checkedCount = hasNewChecklist 
-    ? preopChecklist.filter(item => item.checked).length 
-    : Object.values(patient.prep_checklist || {}).filter(Boolean).length;
-  const totalCount = hasNewChecklist ? preopChecklist.length : 4;
+  // Calculate progress (always out of 9 items)
+  const checkedCount = preopChecklist.filter(item => item.checked).length;
+  const totalCount = 9; // Fixed at 9 for OMFS checklist
   const progressPercent = totalCount > 0 ? Math.round((checkedCount / totalCount) * 100) : 0;
 
   const tasks = patient.tasks || [];
