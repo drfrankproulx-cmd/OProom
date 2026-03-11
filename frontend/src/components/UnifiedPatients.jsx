@@ -957,6 +957,7 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
                   onToggleExpand={() => setExpandedPatient(expandedPatient === patient.mrn ? null : patient.mrn)}
                   onDelete={() => handleDeletePatient(patient.mrn, patient.patient_name)}
                   onToggleChecklistItem={(itemId) => handleToggleChecklistItem(patient.mrn, itemId)}
+                  onUpdateImagingSelection={handleUpdateImagingSelection}
                   onToggleTask={handleToggleTask}
                   onDeleteTask={handleDeleteTask}
                   onAddTask={handleAddTask}
