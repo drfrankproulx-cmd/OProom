@@ -1174,12 +1174,33 @@ async def update_imaging_selection(mrn: str, request: ImagingUpdateRequest, curr
 def normalize_preop_checklist(checklist):
     """
     Normalize an old checklist format to the new 9-item OMFS format.
-    Preserves checked states for items that still exist.
+    Preserves checked states and imaging selections for items that still exist.
+    If the checklist is already in the new format, preserve it as-is.
     """
     if not isinstance(checklist, list):
         return [item.copy() for item in DEFAULT_PREOP_CHECKLIST]
     
-    # Map old item IDs to their checked states
+    # Check if this is already the new 9-item format (has the expected IDs)
+    new_format_ids = {item["id"] for item in DEFAULT_PREOP_CHECKLIST}
+    current_ids = {item.get("id") for item in checklist if isinstance(item, dict)}
+    
+    # If it's already the new format (same IDs), preserve it exactly
+    if current_ids == new_format_ids and len(checklist) == 9:
+        # Just ensure all required fields exist
+        normalized = []
+        for item in checklist:
+            item_copy = item.copy()
+            # Ensure imaging has selection array
+            if item_copy.get("id") == "imaging":
+                if "selection" not in item_copy:
+                    item_copy["selection"] = []
+                if "type" not in item_copy:
+                    item_copy["type"] = "dropdown"
+            normalized.append(item_copy)
+        return normalized
+    
+    # Otherwise, this is an old format - need to migrate
+    # Map old item IDs to their checked states and imaging selection
     old_states = {}
     old_imaging_selection = []
     for item in checklist:
