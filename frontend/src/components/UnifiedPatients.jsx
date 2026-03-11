@@ -743,6 +743,42 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
     }
   };
 
+  // Update imaging selection
+  const handleUpdateImagingSelection = async (patientMrn, selection) => {
+    setChecklistLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/api/patients/${patientMrn}/preop-checklist/imaging`, {
+        method: 'PATCH',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ selection }),
+      });
+      if (response.ok) {
+        const result = await response.json();
+        // Update local state
+        setPatients(prev => prev.map(p => {
+          if (p.mrn === patientMrn && Array.isArray(p.preop_checklist)) {
+            return {
+              ...p,
+              preop_checklist: p.preop_checklist.map(item => 
+                item.id === 'imaging' 
+                  ? { ...item, selection: result.selection, checked: result.checked } 
+                  : item
+              )
+            };
+          }
+          return p;
+        }));
+        toast.success(selection.length > 0 ? 'Imaging studies updated' : 'Imaging studies cleared');
+      } else {
+        toast.error('Failed to update imaging');
+      }
+    } catch (error) {
+      toast.error('Failed to update imaging');
+    } finally {
+      setChecklistLoading(false);
+    }
+  };
+
   // Filter and sort
   const filteredPatients = patients.filter(p => {
     const matchesSearch = 
