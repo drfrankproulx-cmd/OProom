@@ -1162,6 +1162,10 @@ async def update_imaging_selection(mrn: str, request: ImagingUpdateRequest, curr
         }
     )
     
+    # Debug logging
+    print(f"DEBUG: Update result - matched={result.matched_count}, modified={result.modified_count}")
+    print(f"DEBUG: Updated checklist[0] = {preop_checklist[0] if preop_checklist else 'None'}")
+    
     # Calculate new progress
     checked_count = sum(1 for item in preop_checklist if item.get("checked"))
     
