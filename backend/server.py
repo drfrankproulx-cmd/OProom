@@ -1114,8 +1114,6 @@ class ImagingUpdateRequest(BaseModel):
 @app.patch("/api/patients/{mrn}/preop-checklist/imaging")
 async def update_imaging_selection(mrn: str, request: ImagingUpdateRequest, current_user: str = Depends(get_current_user)):
     """Update the imaging selection for a patient's pre-op checklist"""
-    print(f"[IMAGING DEBUG] Imaging update for {mrn}: selection={request.selection}", flush=True)
-    
     patient = patients_collection.find_one({"mrn": mrn})
     if not patient:
         raise HTTPException(status_code=404, detail="Patient not found")
@@ -1124,60 +1122,72 @@ async def update_imaging_selection(mrn: str, request: ImagingUpdateRequest, curr
     if not isinstance(preop_checklist, list):
         raise HTTPException(status_code=400, detail="Patient does not have new checklist format")
     
-    print(f"[IMAGING DEBUG] Current checklist has {len(preop_checklist)} items", flush=True)
+    # Check if imaging item exists
+    imaging_exists = any(item.get("id") == "imaging" for item in preop_checklist)
     
-    # Find the imaging item and update it
-    imaging_found = False
-    for item in preop_checklist:
-        if item.get("id") == "imaging":
-            item["selection"] = request.selection
-            # Auto-check if at least one study is selected
-            item["checked"] = len(request.selection) > 0
-            imaging_found = True
-            print(f"[IMAGING DEBUG] Updated imaging item: selection={item['selection']}, checked={item['checked']}", flush=True)
-            break
+    is_checked = len(request.selection) > 0
     
-    if not imaging_found:
-        # Add imaging item if it doesn't exist (migration case)
-        preop_checklist.insert(0, {
-            "id": "imaging",
-            "item": "Imaging",
-            "checked": len(request.selection) > 0,
-            "type": "dropdown",
-            "selection": request.selection
-        })
-    
-    # Update in database
-    result = patients_collection.update_one(
-        {"mrn": mrn},
-        {
-            "$set": {
-                "preop_checklist": preop_checklist,
-                "updated_by": current_user,
-                "updated_at": datetime.utcnow()
+    if imaging_exists:
+        # Use array filter to update the specific element
+        result = patients_collection.update_one(
+            {"mrn": mrn},
+            {
+                "$set": {
+                    "preop_checklist.$[elem].selection": request.selection,
+                    "preop_checklist.$[elem].checked": is_checked,
+                    "updated_by": current_user,
+                    "updated_at": datetime.utcnow()
+                },
+                "$push": {
+                    "activity_log": {
+                        "action": "imaging_updated",
+                        "user": current_user,
+                        "timestamp": datetime.utcnow().isoformat(),
+                        "details": f"Imaging studies: {', '.join(request.selection) if request.selection else 'None selected'}"
+                    }
+                }
             },
-            "$push": {
-                "activity_log": {
-                    "action": "imaging_updated",
-                    "user": current_user,
-                    "timestamp": datetime.utcnow().isoformat(),
-                    "details": f"Imaging studies: {', '.join(request.selection) if request.selection else 'None selected'}"
+            array_filters=[{"elem.id": "imaging"}]
+        )
+    else:
+        # Add imaging item if it doesn't exist (migration case)
+        result = patients_collection.update_one(
+            {"mrn": mrn},
+            {
+                "$push": {
+                    "preop_checklist": {
+                        "$each": [{
+                            "id": "imaging",
+                            "item": "Imaging",
+                            "checked": is_checked,
+                            "type": "dropdown",
+                            "selection": request.selection
+                        }],
+                        "$position": 0
+                    },
+                    "activity_log": {
+                        "action": "imaging_updated",
+                        "user": current_user,
+                        "timestamp": datetime.utcnow().isoformat(),
+                        "details": f"Imaging studies: {', '.join(request.selection) if request.selection else 'None selected'}"
+                    }
+                },
+                "$set": {
+                    "updated_by": current_user,
+                    "updated_at": datetime.utcnow()
                 }
             }
-        }
-    )
+        )
     
-    # Debug logging
-    print(f"DEBUG: Update result - matched={result.matched_count}, modified={result.modified_count}")
-    print(f"DEBUG: Updated checklist[0] = {preop_checklist[0] if preop_checklist else 'None'}")
-    
-    # Calculate new progress
-    checked_count = sum(1 for item in preop_checklist if item.get("checked"))
+    # Fetch updated checklist for progress calculation
+    updated_patient = patients_collection.find_one({"mrn": mrn})
+    updated_checklist = updated_patient.get("preop_checklist", []) if updated_patient else []
+    checked_count = sum(1 for item in updated_checklist if item.get("checked"))
     
     return {
         "selection": request.selection,
-        "checked": len(request.selection) > 0,
-        "progress": {"checked": checked_count, "total": len(preop_checklist)}
+        "checked": is_checked,
+        "progress": {"checked": checked_count, "total": len(updated_checklist)}
     }
 
 def normalize_preop_checklist(checklist):
