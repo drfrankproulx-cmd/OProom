@@ -38,7 +38,7 @@ with SuppressBcryptWarning():
     _ctx = CryptContext(schemes=["bcrypt"], deprecated="auto")
     _ctx.hash("test")
 
-from fastapi import FastAPI, HTTPException, Depends, status, Query
+from fastapi import FastAPI, HTTPException, Depends, status, Query, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
