@@ -1,112 +1,114 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Star, Search, Filter, Clock, Sparkles } from 'lucide-react';
+import { Badge } from './ui/badge';
+import { Star, Search, Clock, Sparkles, X } from 'lucide-react';
 import { CPT_CODES, searchCPTCodes, getFavoriteCPTCodes, getRelevantCPTCodes } from '../data/cptCodes';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
 /**
- * CPT Code Autocomplete Component
- * Searchable dropdown with favorites system and diagnosis-based filtering
+ * CPT Code Autocomplete Component - Multi-select
+ * Searchable dropdown with favorites system, diagnosis-based filtering,
+ * and support for selecting multiple CPT codes displayed as removable tags.
  */
 export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT Code", required = false, diagnosis = null }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [filteredCodes, setFilteredCodes] = useState([]);
-  const [selectedCPT, setSelectedCPT] = useState(null);
+  const [selectedCPTs, setSelectedCPTs] = useState([]);
   const [frequentlyUsed, setFrequentlyUsed] = useState([]);
   const dropdownRef = useRef(null);
+  const inputRef = useRef(null);
 
   // Load frequently used CPT codes on mount
   useEffect(() => {
     fetchFrequentlyUsed();
   }, []);
 
+  // Sync selected CPTs from parent value (comma-separated codes string)
   useEffect(() => {
-    // Get diagnosis-specific CPT codes if diagnosis is provided
+    if (value) {
+      const codes = value.split(',').map(c => c.trim()).filter(Boolean);
+      const matched = codes.map(code => CPT_CODES.find(c => c.code === code)).filter(Boolean);
+      if (matched.length !== selectedCPTs.length || !matched.every((m, i) => selectedCPTs[i]?.code === m.code)) {
+        setSelectedCPTs(matched);
+      }
+    } else if (selectedCPTs.length > 0) {
+      setSelectedCPTs([]);
+    }
+  }, [value]);
+
+  useEffect(() => {
     const relevantCodes = diagnosis ? getRelevantCPTCodes(diagnosis) : null;
     const hasRelevantCodes = relevantCodes && relevantCodes.length > 0;
 
     if (!searchQuery) {
-      // Priority: Diagnosis-specific > Frequently used > Favorites
       if (hasRelevantCodes) {
-        // Use searchCPTCodes with diagnosis to get sorted results
         const sortedCodes = searchCPTCodes('', diagnosis);
         setFilteredCodes(sortedCodes.slice(0, 20));
       } else if (frequentlyUsed.length > 0) {
-        // Show frequently used codes
         setFilteredCodes(frequentlyUsed);
       } else {
         setFilteredCodes(getFavoriteCPTCodes());
       }
     } else {
-      // Search with diagnosis-based sorting
       const searchResults = searchCPTCodes(searchQuery, diagnosis);
-      setFilteredCodes(searchResults.slice(0, 20)); // Limit to 20 results
+      setFilteredCodes(searchResults.slice(0, 20));
     }
   }, [searchQuery, diagnosis, frequentlyUsed]);
 
   useEffect(() => {
-    // Find selected CPT if value exists
-    if (value) {
-      const cpt = CPT_CODES.find(c => c.code === value);
-      setSelectedCPT(cpt);
-      if (cpt) {
-        setSearchQuery(cpt.code);
-      }
-    }
-  }, [value]);
-
-  useEffect(() => {
-    // Close dropdown when clicking outside
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   const handleInputChange = (e) => {
-    const query = e.target.value;
-    setSearchQuery(query);
+    setSearchQuery(e.target.value);
     setIsOpen(true);
-    if (!query) {
-      setSelectedCPT(null);
-      onChange('', '');
-    }
   };
 
   const fetchFrequentlyUsed = async () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) return;
-
       const response = await fetch(`${API_URL}/api/usage/frequently-used-cpt?limit=10`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        headers: { 'Authorization': `Bearer ${token}` }
       });
-
       if (response.ok) {
         const data = await response.json();
-        // Mark as frequently used
-        const marked = data.map(cpt => ({ ...cpt, isFrequentlyUsed: true }));
-        setFrequentlyUsed(marked);
+        setFrequentlyUsed(data.map(cpt => ({ ...cpt, isFrequentlyUsed: true })));
       }
     } catch (error) {
       console.error('Failed to fetch frequently used CPT codes:', error);
     }
   };
 
+  const emitChange = (cpts) => {
+    const codes = cpts.map(c => c.code).join(', ');
+    const descriptions = cpts.map(c => c.description).join('; ');
+    onChange(codes, descriptions);
+  };
+
   const handleSelectCPT = (cpt) => {
-    setSelectedCPT(cpt);
-    setSearchQuery(cpt.code);
-    onChange(cpt.code, cpt.description);
-    setIsOpen(false);
+    // Don't add duplicates
+    if (selectedCPTs.some(s => s.code === cpt.code)) return;
+    const updated = [...selectedCPTs, cpt];
+    setSelectedCPTs(updated);
+    emitChange(updated);
+    setSearchQuery('');
+    inputRef.current?.focus();
+  };
+
+  const handleRemoveCPT = (code) => {
+    const updated = selectedCPTs.filter(c => c.code !== code);
+    setSelectedCPTs(updated);
+    emitChange(updated);
   };
 
   const handleFocus = () => {
@@ -114,10 +116,8 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
     if (!searchQuery) {
       const relevantCodes = diagnosis ? getRelevantCPTCodes(diagnosis) : null;
       const hasRelevantCodes = relevantCodes && relevantCodes.length > 0;
-      
       if (hasRelevantCodes) {
-        const sortedCodes = searchCPTCodes('', diagnosis);
-        setFilteredCodes(sortedCodes.slice(0, 20));
+        setFilteredCodes(searchCPTCodes('', diagnosis).slice(0, 20));
       } else if (frequentlyUsed.length > 0) {
         setFilteredCodes(frequentlyUsed);
       } else {
@@ -125,6 +125,16 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
       }
     }
   };
+
+  const handleKeyDown = (e) => {
+    // Backspace with empty search removes last tag
+    if (e.key === 'Backspace' && !searchQuery && selectedCPTs.length > 0) {
+      handleRemoveCPT(selectedCPTs[selectedCPTs.length - 1].code);
+    }
+  };
+
+  // Filter out already-selected codes from dropdown
+  const availableCodes = filteredCodes.filter(c => !selectedCPTs.some(s => s.code === c.code));
 
   const getCategoryColor = (category) => {
     const colors = {
@@ -153,48 +163,70 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
     <div className="space-y-1 md:space-y-2" ref={dropdownRef}>
       <Label htmlFor="cpt-code" className="text-xs md:text-sm">
         {label} {required && <span className="text-red-500">*</span>}
-        {selectedCPT && (
-          <span className="ml-2 px-2 py-0.5 bg-teal-100 text-teal-700 rounded text-xs font-medium">
-            {selectedCPT.code}
-          </span>
-        )}
       </Label>
       <div className="relative">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-          <Input
-            id="cpt-code"
-            value={searchQuery}
-            onChange={handleInputChange}
-            onFocus={handleFocus}
-            placeholder="Search CPT code or procedure..."
-            className="pl-9 h-11 md:h-10 text-base md:text-sm"
-            autoComplete="off"
-            data-testid="cpt-autocomplete-input"
-          />
+        {/* Tags + Input container */}
+        <div
+          className={`flex flex-wrap items-center gap-1.5 min-h-[44px] md:min-h-[40px] px-3 py-1.5 border rounded-lg bg-white transition-colors ${
+            isOpen ? 'border-teal-500 ring-1 ring-teal-200' : 'border-slate-200'
+          }`}
+          onClick={() => inputRef.current?.focus()}
+        >
+          {/* Selected CPT tags */}
+          {selectedCPTs.map(cpt => (
+            <Badge
+              key={cpt.code}
+              className="bg-teal-100 text-teal-800 pl-2 pr-1 py-1 text-xs font-medium rounded-md flex items-center gap-1 whitespace-nowrap"
+            >
+              <span className="font-mono font-semibold">{cpt.code}</span>
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); handleRemoveCPT(cpt.code); }}
+                className="ml-0.5 p-0.5 rounded hover:bg-teal-200 transition-colors"
+                data-testid={`remove-cpt-${cpt.code}`}
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </Badge>
+          ))}
+
+          {/* Search input */}
+          <div className="flex-1 min-w-[120px] relative">
+            {selectedCPTs.length === 0 && !searchQuery && (
+              <Search className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+            )}
+            <input
+              ref={inputRef}
+              id="cpt-code"
+              value={searchQuery}
+              onChange={handleInputChange}
+              onFocus={handleFocus}
+              onKeyDown={handleKeyDown}
+              placeholder={selectedCPTs.length > 0 ? "Add another..." : "Search CPT code or procedure..."}
+              className={`w-full bg-transparent border-none outline-none text-sm h-7 ${
+                selectedCPTs.length === 0 && !searchQuery ? 'pl-6' : 'pl-0'
+              }`}
+              autoComplete="off"
+              data-testid="cpt-autocomplete-input"
+            />
+          </div>
         </div>
 
-        {/* Selected CPT Display */}
-        {selectedCPT && !isOpen && (
-          <div className="mt-2 p-2 md:p-3 bg-blue-50 border border-blue-200 rounded-lg">
-            <div className="flex items-start justify-between">
-              <div className="min-w-0">
-                <div className="flex items-center space-x-2 mb-1">
-                  <span className="font-mono font-semibold text-blue-700 text-sm">{selectedCPT.code}</span>
-                  {selectedCPT.isFavorite && (
-                    <Star className="h-3 w-3 md:h-4 md:w-4 text-yellow-500 fill-yellow-500 flex-shrink-0" />
-                  )}
-                </div>
-                <p className="text-xs md:text-sm text-gray-700 line-clamp-2">{selectedCPT.description}</p>
+        {/* Selected CPTs detail (when closed, show descriptions) */}
+        {selectedCPTs.length > 0 && !isOpen && (
+          <div className="mt-1.5 space-y-1">
+            {selectedCPTs.map(cpt => (
+              <div key={cpt.code} className="flex items-center gap-2 px-2 py-1 bg-slate-50 rounded-md text-xs text-slate-600">
+                <span className="font-mono font-semibold text-teal-700">{cpt.code}</span>
+                <span className="truncate">{cpt.description}</span>
               </div>
-            </div>
+            ))}
           </div>
         )}
 
         {/* Dropdown */}
-        {isOpen && filteredCodes.length > 0 && (
+        {isOpen && availableCodes.length > 0 && (
           <div className="absolute z-[9999] mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-[50vh] md:max-h-96 overflow-y-auto">
-            {/* Header for frequently used */}
             {!searchQuery && frequentlyUsed.length > 0 && !diagnosis && (
               <div className="px-3 py-1.5 bg-purple-50 border-b border-purple-200 sticky top-0">
                 <span className="text-xs font-semibold text-purple-700 flex items-center gap-1">
@@ -204,7 +236,6 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
               </div>
             )}
 
-            {/* Header for diagnosis-filtered */}
             {!searchQuery && diagnosis && getRelevantCPTCodes(diagnosis)?.length > 0 && (
               <div className="px-3 py-1.5 bg-teal-50 border-b border-teal-200 sticky top-0">
                 <span className="text-xs font-semibold text-teal-700 flex items-center gap-1">
@@ -214,106 +245,50 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
               </div>
             )}
 
-            {filteredCodes.map((cpt, index) => {
+            {availableCodes.map((cpt, index) => {
               const relevantCodes = diagnosis ? getRelevantCPTCodes(diagnosis) : null;
               const isRelevant = relevantCodes && relevantCodes.includes(cpt.code);
               
               return (
-              <button
-                key={cpt.code}
-                type="button"
-                onClick={() => handleSelectCPT(cpt)}
-                className={`w-full text-left px-3 md:px-4 py-3 hover:bg-blue-50 active:bg-blue-100 border-b border-gray-100 last:border-b-0 transition-colors ${
-                  index === 0 ? 'rounded-t-lg' : ''
-                } ${index === filteredCodes.length - 1 ? 'rounded-b-lg' : ''} ${
-                  isRelevant ? 'bg-teal-50/50' : ''
-                }`}
-                data-testid={`cpt-option-${cpt.code}`}
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center space-x-2 mb-1 flex-wrap">
-                      <span className="font-mono font-semibold text-blue-600 text-base md:text-lg">
-                        {cpt.code}
+                <button
+                  key={cpt.code}
+                  type="button"
+                  onClick={() => handleSelectCPT(cpt)}
+                  className={`w-full text-left px-3 md:px-4 py-3 hover:bg-blue-50 active:bg-blue-100 border-b border-gray-100 last:border-b-0 transition-colors ${
+                    isRelevant ? 'bg-teal-50/50' : ''
+                  }`}
+                  data-testid={`cpt-option-${cpt.code}`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center space-x-2 mb-1 flex-wrap">
+                        <span className="font-mono font-semibold text-blue-600 text-base md:text-lg">
+                          {cpt.code}
+                        </span>
+                        {isRelevant && <Sparkles className="h-3 w-3 md:h-4 md:w-4 text-teal-500 flex-shrink-0" />}
+                        {cpt.isFrequentlyUsed && <Clock className="h-3 w-3 md:h-4 md:w-4 text-purple-500 flex-shrink-0" />}
+                        {cpt.isFavorite && !isRelevant && <Star className="h-3 w-3 md:h-4 md:w-4 text-yellow-500 fill-yellow-500 flex-shrink-0" />}
+                      </div>
+                      <p className="text-xs md:text-sm text-gray-700 mb-1 md:mb-2 line-clamp-2">{cpt.description}</p>
+                      <span className={`inline-block text-[10px] md:text-xs px-2 py-0.5 md:py-1 rounded-full border ${getCategoryColor(cpt.category)}`}>
+                        {cpt.category}
                       </span>
-                      {isRelevant && (
-                        <Sparkles className="h-3 w-3 md:h-4 md:w-4 text-teal-500 flex-shrink-0" />
-                      )}
-                      {cpt.isFrequentlyUsed && (
-                        <Clock className="h-3 w-3 md:h-4 md:w-4 text-purple-500 flex-shrink-0" />
-                      )}
-                      {cpt.isFavorite && !isRelevant && (
-                        <Star className="h-3 w-3 md:h-4 md:w-4 text-yellow-500 fill-yellow-500 flex-shrink-0" />
-                      )}
                     </div>
-                    <p className="text-xs md:text-sm text-gray-700 mb-1 md:mb-2 line-clamp-2">{cpt.description}</p>
-                    <span
-                      className={`inline-block text-[10px] md:text-xs px-2 py-0.5 md:py-1 rounded-full border ${getCategoryColor(
-                        cpt.category
-                      )}`}
-                    >
-                      {cpt.category}
-                    </span>
                   </div>
-                </div>
-              </button>
+                </button>
               );
             })}
           </div>
         )}
 
-        {/* No results message */}
-        {isOpen && searchQuery && filteredCodes.length === 0 && (
+        {/* No results */}
+        {isOpen && searchQuery && availableCodes.length === 0 && (
           <div className="absolute z-[9999] mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg p-4">
             <p className="text-gray-500 text-center text-sm">
               No CPT codes found for "{searchQuery}"
             </p>
           </div>
         )}
-
-        {/* Diagnosis, Frequently Used, or Favorites hint */}
-        {isOpen && !searchQuery && (() => {
-          const relevantCodes = diagnosis ? getRelevantCPTCodes(diagnosis) : null;
-          const isDiagnosisFiltered = relevantCodes && relevantCodes.length > 0;
-          const isFrequentlyUsedShown = !isDiagnosisFiltered && frequentlyUsed.length > 0;
-
-          let bgColor = 'bg-white';
-          let borderColor = 'border-gray-300';
-          if (isDiagnosisFiltered) {
-            bgColor = 'bg-teal-50';
-            borderColor = 'border-teal-200';
-          } else if (isFrequentlyUsedShown) {
-            bgColor = 'bg-purple-50';
-            borderColor = 'border-purple-200';
-          }
-
-          return (
-            <div className={`absolute z-[9998] mt-1 w-full ${bgColor} border ${borderColor} rounded-t-lg border-b-0 px-3 md:px-4 py-2`}>
-              <div className="flex items-center space-x-2 text-xs text-gray-500">
-                {isDiagnosisFiltered ? (
-                  <>
-                    <Sparkles className="h-3 w-3 text-teal-600 flex-shrink-0" />
-                    <span className="text-teal-700 font-medium">
-                      Smart sorted by diagnosis
-                    </span>
-                  </>
-                ) : isFrequentlyUsedShown ? (
-                  <>
-                    <Clock className="h-3 w-3 text-purple-600 flex-shrink-0" />
-                    <span className="text-purple-700 font-medium">
-                      Most used - start typing to search
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <Star className="h-3 w-3 text-yellow-500 fill-yellow-500 flex-shrink-0" />
-                    <span>Favorites - start typing to search</span>
-                  </>
-                )}
-              </div>
-            </div>
-          );
-        })()}
       </div>
     </div>
   );
