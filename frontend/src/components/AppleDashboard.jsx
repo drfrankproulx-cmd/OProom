@@ -31,7 +31,7 @@ import PullToRefresh from './PullToRefresh';
 import SchedulePatientModal from './SchedulePatientModal';
 import PatientDetailPanel from './PatientDetailPanel';
 import { TaskCategorySelect, TaskCategoryBadge } from './TaskCategorySelect';
-import { getCPTCodeByCode } from '../data/cptCodes';
+import { loadCPTCodes } from '../data/cptCodes';
 import NotificationBell from './NotificationBell';
 import NotificationSettings from './NotificationSettings';
 
@@ -299,6 +299,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
 
   useEffect(() => {
     fetchData();
+    loadCPTCodes(); // Preload CPT codes from backend
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

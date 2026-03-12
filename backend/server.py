@@ -2640,134 +2640,110 @@ async def get_weekly_digest(current_user: str = Depends(get_current_user)):
 # Load CPT codes from JSON file
 import json
 CPT_CODES_FILE = os.path.join(os.path.dirname(__file__), 'cpt_codes.json')
-CPT_CODES_DATA = {}
+CPT_CODES_DATA = {"categories": [], "metadata": {}}
+CPT_CODES_FLAT = []  # Flattened list for fast searching
 try:
     with open(CPT_CODES_FILE, 'r') as f:
         CPT_CODES_DATA = json.load(f)
+    # Build flat index for search
+    for cat in CPT_CODES_DATA.get("categories", []):
+        cat_name = cat["name"]
+        for c in cat.get("codes", []):
+            CPT_CODES_FLAT.append({**c, "category": cat_name})
 except Exception as e:
     print(f"Warning: Could not load CPT codes: {e}")
 
 @app.get("/api/cpt-codes/search")
-async def search_cpt_codes(query: str = Query(..., min_length=2)):
-    """Search CPT codes by code or description"""
+async def search_cpt_codes(query: str = Query(..., min_length=1)):
+    """Search CPT codes by code, description, or common_name — grouped by category"""
+    q = query.lower()
     results = []
-    query_lower = query.lower()
-    
-    for category, codes in CPT_CODES_DATA.items():
-        for code, description in codes.items():
-            if query_lower in code.lower() or query_lower in description.lower():
-                results.append({
-                    "code": code,
-                    "description": description,
-                    "category": category.replace('_', ' ').title()
-                })
-                if len(results) >= 15:  # Limit results
-                    return results
-    
+    seen = set()
+    for entry in CPT_CODES_FLAT:
+        if (q in entry["code"].lower()
+            or q in entry.get("description", "").lower()
+            or q in entry.get("common_name", "").lower()
+            or q in entry.get("subcategory", "").lower()):
+            if entry["code"] not in seen:
+                seen.add(entry["code"])
+                results.append(entry)
+            if len(results) >= 30:
+                break
     return results
 
 @app.get("/api/cpt-codes/categories")
 async def get_cpt_categories():
-    """Get all CPT code categories"""
-    return list(CPT_CODES_DATA.keys())
+    """Get all CPT code category names with counts"""
+    return [
+        {"name": cat["name"], "count": len(cat.get("codes", []))}
+        for cat in CPT_CODES_DATA.get("categories", [])
+    ]
+
+@app.get("/api/cpt-codes/category/{category_name}")
+async def get_cpt_by_category(category_name: str):
+    """Get all codes in a specific category"""
+    for cat in CPT_CODES_DATA.get("categories", []):
+        if cat["name"].lower() == category_name.lower():
+            return cat
+    raise HTTPException(status_code=404, detail=f"Category '{category_name}' not found")
+
+@app.get("/api/cpt-codes/all")
+async def get_all_cpt_codes():
+    """Get the full categorized CPT codes data"""
+    return CPT_CODES_DATA
 
 @app.get("/api/cpt-codes/favorites")
 async def get_cpt_favorites(diagnosis: str = Query(None)):
     """Get favorite/common CPT codes, optionally filtered by diagnosis"""
     
-    # Diagnosis to category mapping
-    DIAGNOSIS_MAPPINGS = {
-        # Fractures
-        "mandible fracture": "mandible_fractures",
-        "mandibular fracture": "mandible_fractures",
-        "jaw fracture": "mandible_fractures",
-        "midface fracture": "midface_fractures",
-        "zmc fracture": "midface_fractures",
-        "zygomatic fracture": "midface_fractures",
-        "orbital fracture": "midface_fractures",
-        "lefort": "midface_fractures",
-        "noe fracture": "midface_fractures",
-        "nasal fracture": "midface_fractures",
-        
-        # Orthognathic
-        "malocclusion": "orthognathic",
-        "prognathism": "orthognathic",
-        "retrognathia": "orthognathic",
-        "micrognathia": "orthognathic",
-        "orthognathic": "orthognathic",
-        "bsso": "orthognathic",
-        "lefort i": "orthognathic",
-        
-        # Infections
-        "abscess": "odontogenic_infections",
-        "infection": "odontogenic_infections",
-        "osteomyelitis": "odontogenic_infections",
-        "cellulitis": "odontogenic_infections",
-        "ludwig": "odontogenic_infections",
-        
-        # Cancer/Tumors
-        "cancer": "ablation",
-        "tumor": "ablation",
-        "carcinoma": "ablation",
-        "scc": "ablation",
-        "squamous cell": "ablation",
-        "malignant": "ablation",
-        "ameloblastoma": "ablation",
-        "odontogenic tumor": "ablation",
-        
-        # Reconstruction
-        "reconstruction": "reconstruction",
-        "defect": "reconstruction",
-        "free flap": "reconstruction",
-        "fibula flap": "reconstruction",
-        
-        # Biopsy
-        "biopsy": "biopsy",
-        "lesion": "biopsy",
-        "mass": "biopsy",
-        
-        # Cosmetic
-        "rhinoplasty": "cosmetic",
-        "genioplasty": "cosmetic",
-        "chin": "cosmetic",
-        "blepharoplasty": "cosmetic",
+    DIAGNOSIS_CATEGORY_MAP = {
+        "mandible fracture": "Trauma", "mandibular fracture": "Trauma",
+        "jaw fracture": "Trauma", "zmc fracture": "Trauma",
+        "zygomatic fracture": "Trauma", "orbital fracture": "Trauma",
+        "lefort fracture": "Trauma", "noe fracture": "Trauma",
+        "nasal fracture": "Trauma", "midface fracture": "Trauma",
+        "condyle fracture": "Trauma", "panfacial": "Trauma",
+        "malocclusion": "Orthognathic Surgery", "prognathism": "Orthognathic Surgery",
+        "retrognathia": "Orthognathic Surgery", "micrognathia": "Orthognathic Surgery",
+        "orthognathic": "Orthognathic Surgery", "bsso": "Orthognathic Surgery",
+        "lefort i": "Orthognathic Surgery", "open bite": "Orthognathic Surgery",
+        "abscess": "Odontogenic Infections", "infection": "Odontogenic Infections",
+        "osteomyelitis": "Odontogenic Infections", "cellulitis": "Odontogenic Infections",
+        "ludwig": "Odontogenic Infections",
+        "cancer": "Oncology & Ablative", "tumor": "Oncology & Ablative",
+        "carcinoma": "Oncology & Ablative", "scc": "Oncology & Ablative",
+        "squamous cell": "Oncology & Ablative", "malignant": "Oncology & Ablative",
+        "ameloblastoma": "Oncology & Ablative", "odontogenic tumor": "Oncology & Ablative",
+        "reconstruction": "Reconstruction & Free Flaps", "defect": "Reconstruction & Free Flaps",
+        "free flap": "Reconstruction & Free Flaps", "fibula flap": "Reconstruction & Free Flaps",
+        "biopsy": "Pathology", "lesion": "Pathology", "mass": "Pathology", "cyst": "Pathology",
+        "tmj": "TMJ", "temporomandibular": "TMJ", "disc displacement": "TMJ", "ankylosis": "TMJ",
+        "cleft": "Cleft & Craniofacial", "cleft lip": "Cleft & Craniofacial",
+        "cleft palate": "Cleft & Craniofacial",
+        "rhinoplasty": "Miscellaneous", "blepharoplasty": "Miscellaneous",
+        "implant": "Implants & Preprosthetic", "sinus lift": "Implants & Preprosthetic",
+        "extraction": "Dentoalveolar Surgery", "impacted": "Dentoalveolar Surgery",
+        "torus": "Dentoalveolar Surgery", "wisdom": "Dentoalveolar Surgery",
     }
-    
-    results = []
     
     if diagnosis:
         diagnosis_lower = diagnosis.lower()
         matched_category = None
-        
-        # Find matching category based on diagnosis
-        for keyword, category in DIAGNOSIS_MAPPINGS.items():
+        for keyword, category in DIAGNOSIS_CATEGORY_MAP.items():
             if keyword in diagnosis_lower:
                 matched_category = category
                 break
         
-        # If we found a matching category, return those CPT codes
-        if matched_category and matched_category in CPT_CODES_DATA:
-            category_codes = CPT_CODES_DATA[matched_category]
-            results = [
-                {
-                    "code": code,
-                    "description": description,
-                    "category": matched_category.replace('_', ' ').title()
-                }
-                for code, description in category_codes.items()
-            ]
-            return results
+        if matched_category:
+            for cat in CPT_CODES_DATA.get("categories", []):
+                if cat["name"] == matched_category:
+                    return [
+                        {**c, "category": matched_category}
+                        for c in cat.get("codes", [])
+                    ]
     
-    # Default: return general favorites
-    favorites = CPT_CODES_DATA.get('favorites', {})
-    return [
-        {
-            "code": code,
-            "description": description,
-            "category": "Favorites"
-        }
-        for code, description in favorites.items()
-    ]
+    # Default: return all favorites
+    return [e for e in CPT_CODES_FLAT if e.get("isFavorite")]
 
 
 # ============ USAGE TRACKING ENDPOINTS ============

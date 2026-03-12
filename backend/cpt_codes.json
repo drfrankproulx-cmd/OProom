@@ -1,230 +1,3626 @@
 {
-  "favorites": {
-    "21196": "Mandibular sagittal split osteotomy (BSSO)",
-    "21141": "LeFort I osteotomy, single piece",
-    "21045": "Segmental mandibulectomy",
-    "21044": "Marginal mandibulectomy",
-    "21462": "Open treatment mandibular fracture with interdental fixation",
-    "21365": "ZMC fracture repair through multiple approaches",
-    "21407": "Orbital floor reconstruction",
-    "15758": "Radial forearm free flap",
-    "20969": "Fibula free flap (osteocutaneous)",
-    "42415": "Superficial parotidectomy with CN VII preservation",
-    "21110": "Apply arch bars",
-    "21085": "Oral surgical splint"
-  },
-  "biopsy": {
-    "40490": "Biopsy lip",
-    "40808": "Biopsy vestibule",
-    "41100": "Biopsy anterior tongue",
-    "41105": "Biopsy posterior tongue",
-    "41108": "Biopsy floor of mouth",
-    "42100": "Biopsy palate soft tissue",
-    "20245": "Biopsy maxilla hard tissue / Deep bone open biopsy",
-    "20240": "Biopsy mandible hard tissue",
-    "20200": "Biopsy, Muscle, Superficial"
-  },
-  "ablation": {
-    "31600": "Tracheostomy",
-    "31525": "Direct laryngoscopy",
-    "41120": "Partial glossectomy",
-    "41130": "Hemi glossectomy",
-    "41116": "Excision floor of mouth",
-    "21044": "Marginal mandibulectomy cancer",
-    "21045": "Segmental mandibulectomy cancer",
-    "21047": "Segmental mandibulectomy benign",
-    "21040": "Excision benign tumor of mandible, enucleation curettage",
-    "31225": "Maxillectomy cancer / without orbital exenteration",
-    "21025": "Excision of mandibular bone (for osteomyelitis)",
-    "21030": "Maxillectomy benign / Excision benign tumor maxilla",
-    "21034": "Maxillectomy - Excision malignant tumor/cyst maxilla",
-    "42120": "Resection of soft palate",
-    "42415": "Superficial parotidectomy with facial nerve dissection",
-    "11011": "Debridement of bone",
-    "42420": "Total parotidectomy with facial nerve dissection",
-    "40820": "Laser ablation dysplasia",
-    "21070": "Coronoidectomy",
-    "38700": "Supraomohyoid lymph node dissection",
-    "38724": "Modified radical neck dissection",
-    "38720": "Radical neck dissection",
-    "40520": "Lip excision",
-    "41155": "Composite procedure with floor of mouth resection, mandibular resection, and neck dissection",
-    "42440": "Excision submandibular gland",
-    "42450": "Excision sublingual gland",
-    "88331": "Pathology consultation during surgery"
-  },
-  "reconstruction": {
-    "15758": "Radial forearm free flap (soft tissue)",
-    "20969": "Fibula free flap (osteocutaneous)",
-    "21244": "Reconstruction of mandible with transosteal bone plate",
-    "15734": "Pectoralis flap / Muscle myocutaneous trunk",
-    "42145": "Pharyngoplasty",
-    "15100": "Split thickness skin graft extremity",
-    "15120": "Harvest skin split thick / STSG face",
-    "15757": "Radial forearm free flap",
-    "20955": "Bone-only fibula free flap",
-    "15220": "Full thickness skin graft",
-    "21209": "Osteoplasty facial bones with reduction",
-    "15740": "Island pedicle flap",
-    "21076": "Surgical obturator placement",
-    "14040": "Soft tissue rearrangement",
-    "42505": "Sialodochoplasty",
-    "21215": "Allograft, bone graft mandible",
-    "21497": "Interdental fixation",
-    "35701": "Carotid exploration",
-    "15733": "Muscle myocutaneous head and neck / Submental island flap",
-    "14041": "Local tissue transfer or rearrangement 10.1-30.0 sq cm",
-    "69990": "Microsurgical techniques with operating microscope",
-    "29515": "Leg splint application",
-    "29125": "Application of short arm splint",
-    "97605": "Wound vac application < 50cm sq"
-  },
-  "diagnostic_procedures": {
-    "31526": "Laryngoscopy diagnostic with operating microscope",
-    "31622": "Bronchoscopy, diagnostic",
-    "43200": "Esophagoscopy, flexible, transoral diagnostic"
-  },
-  "revision": {
-    "11042": "Flap debulking",
-    "21248": "Dental implants (1-3)",
-    "21249": "Dental implants (4 or more)",
-    "40840": "Vestibuloplasty anterior",
-    "40842": "Vestibuloplasty posterior",
-    "40844": "Vestibuloplasty entire",
-    "20680": "Hardware removal",
-    "C9290": "Injection of Exparel",
-    "41850": "Laser hair removal at flap"
-  },
-  "odontogenic_infections": {
-    "40801": "Vestibular complicated",
-    "41006": "Intraoral sublingual",
-    "41007": "Intraoral submental",
-    "41008": "Intraoral submandibular",
-    "41009": "Intraoral masticator",
-    "41015": "Extraoral sublingual",
-    "41016": "Extraoral submental",
-    "41017": "Extraoral submandibular",
-    "41018": "Extraoral masticator",
-    "42720": "Extraoral lateral and retropharyngeal",
-    "10140": "Hematoma evacuation",
-    "10061": "Facial infection complex",
-    "10180": "Post operative wound infection"
-  },
-  "mandible_fractures": {
-    "21453": "Closed treatment mandibular fracture with interdental fixation",
-    "21454": "Open treatment mandibular fracture with external fixation",
-    "21462": "Open treatment mandibular fracture with interdental fixation",
-    "21470": "Open treatment complicated mandibular fracture by multiple approaches"
-  },
-  "midface_fractures": {
-    "21365": "ZMC fracture through multiple approaches",
-    "21423": "Complex LeFort I fracture",
-    "21407": "Orbital floor reconstruction",
-    "21338": "ORIF NOE fracture",
-    "21344": "ORIF frontal sinus with multiple approaches, coronal complicated",
-    "21282": "Lateral canthopexy"
-  },
-  "bone_graft": {
-    "20902": "Bone graft, major or large"
-  },
-  "laceration": {
-    "40831": "Closure of laceration complex"
-  },
-  "orthognathic": {
-    "21085": "Oral surgical splint",
-    "21110": "Apply arch bars",
-    "21141": "Max osteotomy, 1 segment without graft",
-    "21142": "Max osteotomy, 2 segment without graft",
-    "21143": "Max osteotomy, 3 segment without graft",
-    "30520": "Septoplasty (with LeFort)",
-    "21196": "Mandibular sagittal split osteotomy (BSSO)",
-    "21193": "Mandibular rami osteotomy without bone graft",
-    "21199": "Genioglossus advancement",
-    "64400": "Local anesthesia for non-opioid pain control",
-    "41115": "Labial frenectomy (with LeFort)",
-    "76377": "3D post-processing images on independent workstation"
-  },
-  "cosmetic": {
-    "11920": "Tattooing/micropigmentation 6.0 sq cm or less",
-    "11921": "Tattooing/micropigmentation 6.1 to 20.0 sq cm",
-    "11922": "Tattooing/micropigmentation each additional 20.0 sq cm",
-    "11960": "Insertion of tissue expander (non-breast)",
-    "11970": "Replacement of tissue expander with permanent prosthesis",
-    "11971": "Removal of tissue expander without prosthesis",
-    "15750": "Flap neurovascular pedicle",
-    "15760": "Graft composite (full thickness ear or nasal ala)",
-    "15770": "Derma-fat fascia graft",
-    "15786": "Abrasion single lesion",
-    "15787": "Abrasion each additional four lesions or less",
-    "15819": "Cervicoplasty",
-    "15820": "Blepharoplasty, lower eyelid",
-    "15821": "Blepharoplasty lower eyelid with extensive herniated fat pad",
-    "15822": "Blepharoplasty, upper eyelid",
-    "15823": "Blepharoplasty upper eyelid with excessive skin",
-    "15830": "Excision excessive skin abdomen panniculectomy",
-    "15847": "Abdominoplasty with umbilical transposition",
-    "17106": "Destruction cutaneous vascular lesions less than 10 sq cm",
-    "17107": "Destruction cutaneous vascular lesions 10.0 to 50.0 sq cm",
-    "17108": "Destruction cutaneous vascular lesions over 50.0 sq cm",
-    "20912": "Cartilage graft nasal septum",
-    "21120": "Genioplasty augmentation",
-    "21121": "Genioplasty sliding osteotomy single piece",
-    "21122": "Genioplasty sliding osteotomies two or more",
-    "21123": "Genioplasty sliding with interpositional bone grafts",
-    "21125": "Augmentation mandibular body/angle prosthetic",
-    "21127": "Augmentation mandibular body/angle with bone graft",
-    "21137": "Reduction forehead contouring only",
-    "21138": "Reduction forehead with prosthetic or bone graft",
-    "21139": "Reduction forehead with setback of frontal sinus wall",
-    "21145": "LeFort I single piece requiring bone grafts",
-    "21146": "LeFort I two pieces requiring bone grafts",
-    "21147": "LeFort I three or more pieces requiring bone grafts",
-    "21150": "LeFort II anterior intrusion",
-    "21151": "LeFort II any direction requiring bone grafts",
-    "21154": "LeFort III extracranial requiring bone grafts without LeFort I",
-    "21155": "LeFort III extracranial with LeFort I",
-    "21159": "LeFort III with forehead advancement without LeFort I",
-    "21160": "LeFort III with forehead advancement with LeFort I",
-    "21172": "Reconstruction superior-lateral orbital rim and forehead",
-    "21175": "Reconstruction bifrontal orbital rims and forehead",
-    "21179": "Reconstruction forehead with allograft or prosthetic",
-    "21180": "Reconstruction forehead with autograft",
-    "21188": "Reconstruction midface osteotomies (other than LeFort)",
-    "21194": "Mandibular rami osteotomy with bone graft",
-    "21195": "Mandibular sagittal split without internal rigid fixation",
-    "21198": "Osteotomy mandible segmental",
-    "21206": "Osteotomy maxilla segmental (Wassmund/Schuchard)",
-    "21208": "Osteoplasty facial bones augmentation",
-    "21210": "Graft bone nasal maxillary or malar areas",
-    "21230": "Graft rib cartilage autogenous to face/chin/nose/ear",
-    "21235": "Graft ear cartilage autogenous to nose or ear",
-    "21245": "Reconstruction mandible/maxilla subperiosteal implant partial",
-    "21246": "Reconstruction mandible/maxilla subperiosteal implant complete",
-    "21247": "Reconstruction mandibular condyle with bone/cartilage autografts",
-    "21255": "Reconstruction zygomatic arch and glenoid fossa",
-    "21270": "Malar augmentation prosthetic material",
-    "21275": "Secondary revision of orbitocraniofacial reconstruction",
-    "21280": "Medial canthopexy",
-    "21740": "Reconstructive repair pectus excavatum/carinatum",
-    "30150": "Rhinectomy partial",
-    "30160": "Rhinectomy total",
-    "30400": "Rhinoplasty primary lateral/alar cartilages",
-    "30410": "Rhinoplasty complete external parts including bony pyramid",
-    "30420": "Rhinoplasty including major septal repair",
-    "30430": "Rhinoplasty secondary minor revision",
-    "30435": "Rhinoplasty secondary intermediate revision",
-    "30450": "Rhinoplasty secondary major revision",
-    "30620": "Septal or intranasal dermatoplasty",
-    "41510": "Suture of tongue to lip for micrognathia (Douglas)",
-    "67900": "Repair of brow ptosis",
-    "67901": "Repair blepharoptosis frontalis muscle with suture",
-    "67902": "Repair blepharoptosis frontalis muscle with fascial sling",
-    "67903": "Repair blepharoptosis levator resection internal approach",
-    "67904": "Repair blepharoptosis levator resection external approach",
-    "67906": "Repair blepharoptosis superior rectus with fascial sling",
-    "67908": "Repair blepharoptosis conjunctivo-tarso-Muller's muscle",
-    "67909": "Reduction of overcorrection of ptosis",
-    "67911": "Correction of lid retraction",
-    "69300": "Otoplasty protruding ear"
+  "categories": [
+    {
+      "name": "Dentoalveolar Surgery",
+      "codes": [
+        {
+          "code": "20200",
+          "description": "Biopsy, muscle; superficial",
+          "common_name": "Biopsy muscle superficial",
+          "subcategory": "Biopsy",
+          "isFavorite": false
+        },
+        {
+          "code": "20240",
+          "description": "Biopsy, bone, open; superficial (eg, ilium, sternum, spinous process, ribs, trochanter of femur)",
+          "common_name": "Biopsy bone superficial (mandible)",
+          "subcategory": "Biopsy",
+          "isFavorite": false
+        },
+        {
+          "code": "20245",
+          "description": "Biopsy, bone, open; deep (eg, humeral shaft, ischium, femoral shaft)",
+          "common_name": "Biopsy bone deep (maxilla)",
+          "subcategory": "Biopsy",
+          "isFavorite": false
+        },
+        {
+          "code": "21031",
+          "description": "Excision of torus mandibularis",
+          "common_name": "Torus mandibularis removal",
+          "subcategory": "Exostosis",
+          "isFavorite": false
+        },
+        {
+          "code": "21032",
+          "description": "Excision of maxillary torus palatinus",
+          "common_name": "Torus palatinus removal",
+          "subcategory": "Exostosis",
+          "isFavorite": false
+        },
+        {
+          "code": "40490",
+          "description": "Biopsy of lip",
+          "common_name": "Biopsy lip",
+          "subcategory": "Biopsy",
+          "isFavorite": true
+        },
+        {
+          "code": "40808",
+          "description": "Biopsy of vestibule of mouth",
+          "common_name": "Biopsy vestibule",
+          "subcategory": "Biopsy",
+          "isFavorite": true
+        },
+        {
+          "code": "40819",
+          "description": "Excision of frenum, labial or buccal",
+          "common_name": "Frenectomy labial",
+          "subcategory": "Frenectomy",
+          "isFavorite": false
+        },
+        {
+          "code": "41000",
+          "description": "Intraoral incision and drainage of abscess, sublingual, superficial",
+          "common_name": "I&D sublingual superficial",
+          "subcategory": "I&D",
+          "isFavorite": false
+        },
+        {
+          "code": "41005",
+          "description": "Intraoral incision and drainage of abscess, sublingual",
+          "common_name": "I&D sublingual",
+          "subcategory": "I&D",
+          "isFavorite": false
+        },
+        {
+          "code": "41100",
+          "description": "Biopsy of tongue, anterior two-thirds",
+          "common_name": "Biopsy anterior tongue",
+          "subcategory": "Biopsy",
+          "isFavorite": true
+        },
+        {
+          "code": "41105",
+          "description": "Biopsy of tongue, posterior one-third",
+          "common_name": "Biopsy posterior tongue",
+          "subcategory": "Biopsy",
+          "isFavorite": false
+        },
+        {
+          "code": "41108",
+          "description": "Biopsy of floor of mouth",
+          "common_name": "Biopsy floor of mouth",
+          "subcategory": "Biopsy",
+          "isFavorite": false
+        },
+        {
+          "code": "41115",
+          "description": "Excision of lingual frenum (frenectomy)",
+          "common_name": "Lingual frenectomy",
+          "subcategory": "Frenectomy",
+          "isFavorite": false
+        },
+        {
+          "code": "41520",
+          "description": "Frenoplasty (surgical revision of frenum)",
+          "common_name": "Frenoplasty",
+          "subcategory": "Frenectomy",
+          "isFavorite": false
+        },
+        {
+          "code": "41800",
+          "description": "Drainage of abscess, cyst, or hematoma from dentoalveolar structures",
+          "common_name": "I&D dentoalveolar abscess",
+          "subcategory": "I&D",
+          "isFavorite": false
+        },
+        {
+          "code": "41805",
+          "description": "Removal of embedded foreign body from dentoalveolar structures, soft tissue",
+          "common_name": "Foreign body removal soft tissue",
+          "subcategory": "Alveolar",
+          "isFavorite": false
+        },
+        {
+          "code": "41806",
+          "description": "Removal of foreign body, mandible, requiring osteotomy",
+          "common_name": "Foreign body removal mandible",
+          "subcategory": "Alveolar",
+          "isFavorite": false
+        },
+        {
+          "code": "41825",
+          "description": "Excision of lesion or tumor (except listed above), dentoalveolar structures; without repair",
+          "common_name": "Excision dentoalveolar lesion",
+          "subcategory": "Excision",
+          "isFavorite": false
+        },
+        {
+          "code": "41826",
+          "description": "Excision of lesion or tumor, dentoalveolar structures; with simple repair",
+          "common_name": "Excision dentoalveolar lesion + repair",
+          "subcategory": "Excision",
+          "isFavorite": false
+        },
+        {
+          "code": "41827",
+          "description": "Excision of lesion or tumor, dentoalveolar structures; with complex repair",
+          "common_name": "Excision dentoalveolar lesion + complex repair",
+          "subcategory": "Excision",
+          "isFavorite": false
+        },
+        {
+          "code": "41830",
+          "description": "Alveolectomy, including curettage of osteitis or sequestrum",
+          "common_name": "Alveolectomy",
+          "subcategory": "Alveolar",
+          "isFavorite": false
+        },
+        {
+          "code": "41870",
+          "description": "Periodontal bone graft, mucosal graft",
+          "common_name": "Gum/bone graft periodontal",
+          "subcategory": "Alveolar",
+          "isFavorite": false
+        },
+        {
+          "code": "41872",
+          "description": "Gingivoplasty, each quadrant",
+          "common_name": "Gingivoplasty",
+          "subcategory": "Alveolar",
+          "isFavorite": false
+        },
+        {
+          "code": "41874",
+          "description": "Alveoloplasty, each quadrant (specify)",
+          "common_name": "Alveoloplasty",
+          "subcategory": "Alveolar",
+          "isFavorite": false
+        },
+        {
+          "code": "41899",
+          "description": "Unlisted procedure, dentoalveolar structures",
+          "common_name": "Dentoalveolar NOS",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "42100",
+          "description": "Biopsy of palate, uvula",
+          "common_name": "Biopsy palate",
+          "subcategory": "Biopsy",
+          "isFavorite": false
+        },
+        {
+          "code": "D3410",
+          "description": "Apicoectomy \u2014 anterior",
+          "common_name": "Apicoectomy anterior",
+          "subcategory": "Periapical",
+          "isFavorite": false
+        },
+        {
+          "code": "D3421",
+          "description": "Apicoectomy \u2014 bicuspid (first root)",
+          "common_name": "Apicoectomy premolar",
+          "subcategory": "Periapical",
+          "isFavorite": false
+        },
+        {
+          "code": "D3425",
+          "description": "Apicoectomy \u2014 molar (first root)",
+          "common_name": "Apicoectomy molar",
+          "subcategory": "Periapical",
+          "isFavorite": false
+        },
+        {
+          "code": "D3426",
+          "description": "Apicoectomy (each additional root)",
+          "common_name": "Apicoectomy add'l root",
+          "subcategory": "Periapical",
+          "isFavorite": false
+        },
+        {
+          "code": "D3430",
+          "description": "Retrograde filling \u2014 per root",
+          "common_name": "Retrograde filling",
+          "subcategory": "Periapical",
+          "isFavorite": false
+        },
+        {
+          "code": "D7140",
+          "description": "Extraction, erupted tooth or exposed root",
+          "common_name": "Simple extraction",
+          "subcategory": "Extractions",
+          "isFavorite": false
+        },
+        {
+          "code": "D7210",
+          "description": "Extraction, erupted tooth requiring removal of bone and/or sectioning of tooth",
+          "common_name": "Surgical extraction",
+          "subcategory": "Extractions",
+          "isFavorite": false
+        },
+        {
+          "code": "D7220",
+          "description": "Removal of impacted tooth, soft tissue",
+          "common_name": "Soft tissue impaction",
+          "subcategory": "Extractions",
+          "isFavorite": false
+        },
+        {
+          "code": "D7230",
+          "description": "Removal of impacted tooth, partially bony",
+          "common_name": "Partial bony impaction",
+          "subcategory": "Extractions",
+          "isFavorite": false
+        },
+        {
+          "code": "D7240",
+          "description": "Removal of impacted tooth, completely bony",
+          "common_name": "Full bony impaction",
+          "subcategory": "Extractions",
+          "isFavorite": false
+        },
+        {
+          "code": "D7241",
+          "description": "Removal of impacted tooth, completely bony with unusual surgical complications",
+          "common_name": "Full bony impaction complicated",
+          "subcategory": "Extractions",
+          "isFavorite": false
+        },
+        {
+          "code": "D7250",
+          "description": "Removal of residual tooth roots",
+          "common_name": "Root tip removal",
+          "subcategory": "Extractions",
+          "isFavorite": false
+        },
+        {
+          "code": "D7251",
+          "description": "Coronectomy \u2014 intentional partial tooth removal",
+          "common_name": "Coronectomy",
+          "subcategory": "Extractions",
+          "isFavorite": false
+        },
+        {
+          "code": "D7283",
+          "description": "Placement of device to facilitate eruption of impacted tooth",
+          "common_name": "Exposure & bracketing",
+          "subcategory": "Exposure",
+          "isFavorite": false
+        },
+        {
+          "code": "D7953",
+          "description": "Bone replacement graft for ridge preservation \u2014 per site",
+          "common_name": "Socket preservation graft",
+          "subcategory": "Socket Preservation",
+          "isFavorite": false
+        }
+      ]
+    },
+    {
+      "name": "Orthognathic Surgery",
+      "codes": [
+        {
+          "code": "21085",
+          "description": "Oral surgical splint",
+          "common_name": "Surgical splint",
+          "subcategory": "Supportive",
+          "isFavorite": true
+        },
+        {
+          "code": "21110",
+          "description": "Application of interdental fixation device for conditions other than fracture",
+          "common_name": "Arch bars (non-fracture)",
+          "subcategory": "Supportive",
+          "isFavorite": true
+        },
+        {
+          "code": "21120",
+          "description": "Genioplasty; augmentation (autograft, allograft, or prosthetic material)",
+          "common_name": "Genioplasty augmentation",
+          "subcategory": "Genioplasty",
+          "isFavorite": true
+        },
+        {
+          "code": "21121",
+          "description": "Genioplasty; sliding osteotomy, single piece",
+          "common_name": "Sliding genioplasty",
+          "subcategory": "Genioplasty",
+          "isFavorite": true
+        },
+        {
+          "code": "21122",
+          "description": "Genioplasty; sliding osteotomy, 2+ osteotomies (eg, wedge excision for asymmetry)",
+          "common_name": "Genioplasty 2+ cuts (asymmetry)",
+          "subcategory": "Genioplasty",
+          "isFavorite": false
+        },
+        {
+          "code": "21123",
+          "description": "Genioplasty; sliding, augmentation with interpositional bone grafts",
+          "common_name": "Genioplasty + bone graft",
+          "subcategory": "Genioplasty",
+          "isFavorite": false
+        },
+        {
+          "code": "21125",
+          "description": "Augmentation, mandibular body or angle; prosthetic material",
+          "common_name": "Mandible angle augmentation (implant)",
+          "subcategory": "Genioplasty",
+          "isFavorite": false
+        },
+        {
+          "code": "21127",
+          "description": "Augmentation mandibular body or angle; with bone graft, onlay or interpositional",
+          "common_name": "Mandible angle augmentation (bone graft)",
+          "subcategory": "Genioplasty",
+          "isFavorite": false
+        },
+        {
+          "code": "21141",
+          "description": "Reconstruction midface, Le Fort I; single piece, without bone graft",
+          "common_name": "Le Fort I 1-piece no graft",
+          "subcategory": "Le Fort I",
+          "isFavorite": true
+        },
+        {
+          "code": "21142",
+          "description": "Reconstruction midface, Le Fort I; 2 pieces, without bone graft",
+          "common_name": "Le Fort I 2-piece no graft",
+          "subcategory": "Le Fort I",
+          "isFavorite": true
+        },
+        {
+          "code": "21143",
+          "description": "Reconstruction midface, Le Fort I; 3+ pieces, without bone graft",
+          "common_name": "Le Fort I 3-piece no graft",
+          "subcategory": "Le Fort I",
+          "isFavorite": false
+        },
+        {
+          "code": "21145",
+          "description": "Reconstruction midface, Le Fort I; single piece, with bone grafts",
+          "common_name": "Le Fort I 1-piece + graft",
+          "subcategory": "Le Fort I",
+          "isFavorite": true
+        },
+        {
+          "code": "21146",
+          "description": "Reconstruction midface, Le Fort I; 2 pieces, with bone grafts",
+          "common_name": "Le Fort I 2-piece + graft",
+          "subcategory": "Le Fort I",
+          "isFavorite": true
+        },
+        {
+          "code": "21147",
+          "description": "Reconstruction midface, Le Fort I; 3+ pieces, with bone grafts",
+          "common_name": "Le Fort I 3-piece + graft",
+          "subcategory": "Le Fort I",
+          "isFavorite": false
+        },
+        {
+          "code": "21150",
+          "description": "Reconstruction midface, Le Fort II; anterior intrusion",
+          "common_name": "Le Fort II anterior intrusion",
+          "subcategory": "Le Fort II/III",
+          "isFavorite": false
+        },
+        {
+          "code": "21151",
+          "description": "Reconstruction midface, Le Fort II; any direction, requiring bone grafts",
+          "common_name": "Le Fort II + bone graft",
+          "subcategory": "Le Fort II/III",
+          "isFavorite": false
+        },
+        {
+          "code": "21154",
+          "description": "Reconstruction midface, Le Fort III (extracranial); without Le Fort I",
+          "common_name": "Le Fort III without Le Fort I",
+          "subcategory": "Le Fort II/III",
+          "isFavorite": false
+        },
+        {
+          "code": "21155",
+          "description": "Reconstruction midface, Le Fort III (extracranial); with Le Fort I",
+          "common_name": "Le Fort III with Le Fort I",
+          "subcategory": "Le Fort II/III",
+          "isFavorite": false
+        },
+        {
+          "code": "21159",
+          "description": "Reconstruction midface, Le Fort III (extra/intracranial) with forehead; without Le Fort I",
+          "common_name": "Le Fort III + forehead, no Le Fort I",
+          "subcategory": "Le Fort II/III",
+          "isFavorite": false
+        },
+        {
+          "code": "21160",
+          "description": "Reconstruction midface, Le Fort III (extra/intracranial) with forehead; with Le Fort I",
+          "common_name": "Le Fort III + forehead + Le Fort I",
+          "subcategory": "Le Fort II/III",
+          "isFavorite": false
+        },
+        {
+          "code": "21188",
+          "description": "Reconstruction midface, osteotomies (other than Le Fort) and bone grafts",
+          "common_name": "Midface osteotomy + graft (non-Le Fort)",
+          "subcategory": "Midface Osteotomy",
+          "isFavorite": false
+        },
+        {
+          "code": "21193",
+          "description": "Reconstruction mandibular rami, horizontal/vertical/C/L osteotomy; without bone graft",
+          "common_name": "Mandibular ramus osteotomy no graft",
+          "subcategory": "Mandibular Osteotomy",
+          "isFavorite": true
+        },
+        {
+          "code": "21194",
+          "description": "Reconstruction mandibular rami osteotomy; with bone graft",
+          "common_name": "Mandibular ramus osteotomy + graft",
+          "subcategory": "Mandibular Osteotomy",
+          "isFavorite": false
+        },
+        {
+          "code": "21195",
+          "description": "Reconstruction mandibular rami and/or body, sagittal split; without internal rigid fixation",
+          "common_name": "BSSO without fixation",
+          "subcategory": "BSSO",
+          "isFavorite": false
+        },
+        {
+          "code": "21196",
+          "description": "Reconstruction mandibular rami and/or body, sagittal split; with internal rigid fixation",
+          "common_name": "BSSO with fixation",
+          "subcategory": "BSSO",
+          "isFavorite": true
+        },
+        {
+          "code": "21198",
+          "description": "Osteotomy, mandible, segmental",
+          "common_name": "Mandibular segmental osteotomy",
+          "subcategory": "Segmental Osteotomy",
+          "isFavorite": false
+        },
+        {
+          "code": "21199",
+          "description": "Osteotomy, mandible, segmental; with genioglossus advancement",
+          "common_name": "Genioglossus advancement",
+          "subcategory": "Segmental Osteotomy",
+          "isFavorite": true
+        },
+        {
+          "code": "21206",
+          "description": "Osteotomy, maxilla, segmental (eg, Wassmund or Schuchard)",
+          "common_name": "Maxillary segmental osteotomy",
+          "subcategory": "Segmental Osteotomy",
+          "isFavorite": false
+        },
+        {
+          "code": "21295",
+          "description": "Reduction of masseter muscle and bone; extraoral approach",
+          "common_name": "Masseter reduction extraoral",
+          "subcategory": "Adjunct",
+          "isFavorite": false
+        },
+        {
+          "code": "21296",
+          "description": "Reduction of masseter muscle and bone; intraoral approach",
+          "common_name": "Masseter reduction intraoral",
+          "subcategory": "Adjunct",
+          "isFavorite": false
+        },
+        {
+          "code": "21495",
+          "description": "Open treatment of hyoid fracture",
+          "common_name": "Open treatment hyoid fracture",
+          "subcategory": "Supportive",
+          "isFavorite": false
+        },
+        {
+          "code": "30520",
+          "description": "Septoplasty or submucous resection, with or without cartilage scoring",
+          "common_name": "Septoplasty (with Le Fort)",
+          "subcategory": "Supportive",
+          "isFavorite": true
+        },
+        {
+          "code": "76377",
+          "description": "3D rendering with interpretation and reporting of CT, MRI, US",
+          "common_name": "3D post-processing images",
+          "subcategory": "Planning",
+          "isFavorite": false
+        }
+      ]
+    },
+    {
+      "name": "Reconstruction & Free Flaps",
+      "codes": [
+        {
+          "code": "14040",
+          "description": "Adjacent tissue transfer or rearrangement, forehead, cheeks, chin, mouth, neck, axillae, genitalia; defect 10 sq cm or less",
+          "common_name": "Local tissue transfer \u226410 sq cm",
+          "subcategory": "Tissue Transfer",
+          "isFavorite": false
+        },
+        {
+          "code": "14041",
+          "description": "Adjacent tissue transfer or rearrangement; defect 10.1 to 30 sq cm",
+          "common_name": "Local tissue transfer 10-30 sq cm / V-Y",
+          "subcategory": "Tissue Transfer",
+          "isFavorite": true
+        },
+        {
+          "code": "14060",
+          "description": "Adjacent tissue transfer or rearrangement; eyelids, nose, ears, lips; defect 10 sq cm or less",
+          "common_name": "Local transfer eyelids/nose/ears/lips \u226410 sq cm",
+          "subcategory": "Tissue Transfer",
+          "isFavorite": false
+        },
+        {
+          "code": "14061",
+          "description": "Adjacent tissue transfer or rearrangement; eyelids, nose, ears, lips; defect 10.1 to 30 sq cm",
+          "common_name": "Local transfer eyelids/nose/ears/lips 10-30 sq cm",
+          "subcategory": "Tissue Transfer",
+          "isFavorite": false
+        },
+        {
+          "code": "15100",
+          "description": "Split-thickness autograft, trunk, arms, legs; first 100 sq cm",
+          "common_name": "STSG trunk/extremity",
+          "subcategory": "Skin Grafts",
+          "isFavorite": false
+        },
+        {
+          "code": "15120",
+          "description": "Split-thickness autograft, face, scalp, eyelids, mouth, neck, ears, orbits, genitalia; first 100 sq cm",
+          "common_name": "STSG face/neck",
+          "subcategory": "Skin Grafts",
+          "isFavorite": true
+        },
+        {
+          "code": "15220",
+          "description": "Full thickness graft, free, including direct closure of donor site; 20 sq cm or less",
+          "common_name": "FTSG \u226420 sq cm",
+          "subcategory": "Skin Grafts",
+          "isFavorite": false
+        },
+        {
+          "code": "15240",
+          "description": "Full thickness graft, free; 20 sq cm or less, face/neck",
+          "common_name": "FTSG face/neck",
+          "subcategory": "Skin Grafts",
+          "isFavorite": false
+        },
+        {
+          "code": "15260",
+          "description": "Full thickness graft, free; 20 sq cm or less, nose/ears/eyelids/lips",
+          "common_name": "FTSG nose/ears/eyelids/lips",
+          "subcategory": "Skin Grafts",
+          "isFavorite": false
+        },
+        {
+          "code": "15730",
+          "description": "Midface flap (muscle, myocutaneous, or fasciocutaneous)",
+          "common_name": "Midface flap",
+          "subcategory": "Pedicled Flaps",
+          "isFavorite": false
+        },
+        {
+          "code": "15731",
+          "description": "Forehead flap with microvascular anastomosis",
+          "common_name": "Forehead flap",
+          "subcategory": "Pedicled Flaps",
+          "isFavorite": false
+        },
+        {
+          "code": "15733",
+          "description": "Muscle, myocutaneous, or fasciocutaneous flap; head and neck",
+          "common_name": "Submental island flap / head-neck flap",
+          "subcategory": "Pedicled Flaps",
+          "isFavorite": true
+        },
+        {
+          "code": "15734",
+          "description": "Muscle, myocutaneous, or fasciocutaneous flap; trunk",
+          "common_name": "Pectoralis major flap / Pec flap",
+          "subcategory": "Pedicled Flaps",
+          "isFavorite": true
+        },
+        {
+          "code": "15736",
+          "description": "Muscle, myocutaneous, or fasciocutaneous flap; upper extremity",
+          "common_name": "Upper extremity flap",
+          "subcategory": "Pedicled Flaps",
+          "isFavorite": false
+        },
+        {
+          "code": "15738",
+          "description": "Muscle, myocutaneous, or fasciocutaneous flap; lower extremity",
+          "common_name": "Lower extremity flap",
+          "subcategory": "Pedicled Flaps",
+          "isFavorite": false
+        },
+        {
+          "code": "15740",
+          "description": "Flap; island pedicle, requiring identification and dissection of an anatomically named axial vessel",
+          "common_name": "Island pedicle flap",
+          "subcategory": "Pedicled Flaps",
+          "isFavorite": false
+        },
+        {
+          "code": "15750",
+          "description": "Flap; neurovascular pedicle",
+          "common_name": "Neurovascular pedicle flap",
+          "subcategory": "Pedicled Flaps",
+          "isFavorite": false
+        },
+        {
+          "code": "15756",
+          "description": "Free muscle flap with microvascular anastomosis",
+          "common_name": "Free muscle flap",
+          "subcategory": "Free Flaps",
+          "isFavorite": false
+        },
+        {
+          "code": "15757",
+          "description": "Free skin flap with microvascular anastomosis",
+          "common_name": "Free skin flap (eg, radial forearm)",
+          "subcategory": "Free Flaps",
+          "isFavorite": true
+        },
+        {
+          "code": "15758",
+          "description": "Free fascial flap with microvascular anastomosis",
+          "common_name": "Free fascial flap (eg, ALT, radial forearm)",
+          "subcategory": "Free Flaps",
+          "isFavorite": true
+        },
+        {
+          "code": "20900",
+          "description": "Bone graft, any donor area; minor or small",
+          "common_name": "Bone graft minor/small",
+          "subcategory": "Bone Grafts",
+          "isFavorite": false
+        },
+        {
+          "code": "20902",
+          "description": "Bone graft, any donor area; major or large",
+          "common_name": "Bone graft major/large",
+          "subcategory": "Bone Grafts",
+          "isFavorite": true
+        },
+        {
+          "code": "20910",
+          "description": "Cartilage graft; costochondral",
+          "common_name": "Costochondral graft",
+          "subcategory": "Cartilage Grafts",
+          "isFavorite": false
+        },
+        {
+          "code": "20912",
+          "description": "Cartilage graft; nasal septum",
+          "common_name": "Nasal septal cartilage graft",
+          "subcategory": "Cartilage Grafts",
+          "isFavorite": false
+        },
+        {
+          "code": "20955",
+          "description": "Bone graft with microvascular anastomosis; fibula",
+          "common_name": "Fibula free flap (bone only)",
+          "subcategory": "Free Flaps",
+          "isFavorite": false
+        },
+        {
+          "code": "20956",
+          "description": "Bone graft with microvascular anastomosis; iliac crest",
+          "common_name": "Iliac crest free flap (DCIA)",
+          "subcategory": "Free Flaps",
+          "isFavorite": false
+        },
+        {
+          "code": "20957",
+          "description": "Bone graft with microvascular anastomosis; metatarsal",
+          "common_name": "Metatarsal free flap",
+          "subcategory": "Free Flaps",
+          "isFavorite": false
+        },
+        {
+          "code": "20962",
+          "description": "Bone graft with microvascular anastomosis; other than fibula, iliac crest, or metatarsal",
+          "common_name": "Free bone flap (other)",
+          "subcategory": "Free Flaps",
+          "isFavorite": false
+        },
+        {
+          "code": "20969",
+          "description": "Free osteocutaneous flap with microvascular anastomosis; other than iliac crest, metatarsal, or great toe",
+          "common_name": "Fibula free flap (osteocutaneous)",
+          "subcategory": "Free Flaps",
+          "isFavorite": true
+        },
+        {
+          "code": "20970",
+          "description": "Free osteocutaneous flap with microvascular anastomosis; iliac crest",
+          "common_name": "Iliac crest osteocutaneous flap",
+          "subcategory": "Free Flaps",
+          "isFavorite": false
+        },
+        {
+          "code": "20972",
+          "description": "Free osteocutaneous flap with microvascular anastomosis; metatarsal",
+          "common_name": "Metatarsal osteocutaneous flap",
+          "subcategory": "Free Flaps",
+          "isFavorite": false
+        },
+        {
+          "code": "20973",
+          "description": "Free osteocutaneous flap with microvascular anastomosis; great toe with web space",
+          "common_name": "Great toe osteocutaneous flap",
+          "subcategory": "Free Flaps",
+          "isFavorite": false
+        },
+        {
+          "code": "21076",
+          "description": "Impression and custom preparation; surgical obturator prosthesis",
+          "common_name": "Surgical obturator",
+          "subcategory": "Prosthetics",
+          "isFavorite": true
+        },
+        {
+          "code": "21077",
+          "description": "Impression and custom preparation; orbital prosthesis",
+          "common_name": "Orbital prosthesis",
+          "subcategory": "Prosthetics",
+          "isFavorite": false
+        },
+        {
+          "code": "21079",
+          "description": "Impression and custom preparation; interim obturator prosthesis",
+          "common_name": "Interim obturator",
+          "subcategory": "Prosthetics",
+          "isFavorite": false
+        },
+        {
+          "code": "21080",
+          "description": "Impression and custom preparation; definitive obturator prosthesis",
+          "common_name": "Definitive obturator",
+          "subcategory": "Prosthetics",
+          "isFavorite": false
+        },
+        {
+          "code": "21081",
+          "description": "Impression and custom preparation; mandibular resection prosthesis",
+          "common_name": "Mandibular resection prosthesis",
+          "subcategory": "Prosthetics",
+          "isFavorite": false
+        },
+        {
+          "code": "21082",
+          "description": "Impression and custom preparation; palatal augmentation prosthesis",
+          "common_name": "Palatal augmentation prosthesis",
+          "subcategory": "Prosthetics",
+          "isFavorite": false
+        },
+        {
+          "code": "21083",
+          "description": "Impression and custom preparation; palatal lift prosthesis",
+          "common_name": "Palatal lift prosthesis",
+          "subcategory": "Prosthetics",
+          "isFavorite": false
+        },
+        {
+          "code": "21084",
+          "description": "Impression and custom preparation; speech aid prosthesis",
+          "common_name": "Speech aid prosthesis",
+          "subcategory": "Prosthetics",
+          "isFavorite": false
+        },
+        {
+          "code": "21086",
+          "description": "Impression and custom preparation; auricular prosthesis",
+          "common_name": "Auricular prosthesis",
+          "subcategory": "Prosthetics",
+          "isFavorite": false
+        },
+        {
+          "code": "21087",
+          "description": "Impression and custom preparation; nasal prosthesis",
+          "common_name": "Nasal prosthesis",
+          "subcategory": "Prosthetics",
+          "isFavorite": false
+        },
+        {
+          "code": "21088",
+          "description": "Impression and custom preparation; facial prosthesis",
+          "common_name": "Facial prosthesis",
+          "subcategory": "Prosthetics",
+          "isFavorite": false
+        },
+        {
+          "code": "21089",
+          "description": "Unlisted maxillofacial prosthetic procedure",
+          "common_name": "Maxillofacial prosthetic NOS",
+          "subcategory": "Prosthetics",
+          "isFavorite": false
+        },
+        {
+          "code": "21172",
+          "description": "Reconstruction superior-lateral orbital rim and lower forehead",
+          "common_name": "Orbital rim reconstruction",
+          "subcategory": "Facial Reconstruction",
+          "isFavorite": false
+        },
+        {
+          "code": "21175",
+          "description": "Reconstruction bifrontal, superior-lateral orbital rims and lower forehead",
+          "common_name": "Bifrontal/orbital reconstruction",
+          "subcategory": "Facial Reconstruction",
+          "isFavorite": false
+        },
+        {
+          "code": "21179",
+          "description": "Reconstruction forehead and/or orbital rims; with allograft/prosthetic",
+          "common_name": "Forehead recon (allograft)",
+          "subcategory": "Facial Reconstruction",
+          "isFavorite": false
+        },
+        {
+          "code": "21180",
+          "description": "Reconstruction forehead and/or orbital rims; with autograft",
+          "common_name": "Forehead recon (autograft)",
+          "subcategory": "Facial Reconstruction",
+          "isFavorite": false
+        },
+        {
+          "code": "21181",
+          "description": "Reconstruction by extracranial removal of cranial bone",
+          "common_name": "Extracranial bone removal recon",
+          "subcategory": "Facial Reconstruction",
+          "isFavorite": false
+        },
+        {
+          "code": "21182",
+          "description": "Reconstruction of orbital walls, rims, forehead; total, \u226440 sq cm",
+          "common_name": "Orbital wall recon \u226440 sq cm",
+          "subcategory": "Facial Reconstruction",
+          "isFavorite": false
+        },
+        {
+          "code": "21183",
+          "description": "Reconstruction of orbital walls, rims, forehead; total, 40-80 sq cm",
+          "common_name": "Orbital wall recon 40-80 sq cm",
+          "subcategory": "Facial Reconstruction",
+          "isFavorite": false
+        },
+        {
+          "code": "21184",
+          "description": "Reconstruction of orbital walls, rims, forehead; total, >80 sq cm",
+          "common_name": "Orbital wall recon >80 sq cm",
+          "subcategory": "Facial Reconstruction",
+          "isFavorite": false
+        },
+        {
+          "code": "21208",
+          "description": "Osteoplasty, facial bones; augmentation (autograft, allograft, or prosthetic)",
+          "common_name": "Facial bone augmentation",
+          "subcategory": "Osteoplasty",
+          "isFavorite": false
+        },
+        {
+          "code": "21209",
+          "description": "Osteoplasty, facial bones; reduction",
+          "common_name": "Facial bone reduction",
+          "subcategory": "Osteoplasty",
+          "isFavorite": false
+        },
+        {
+          "code": "21210",
+          "description": "Graft, bone; nasal, maxillary or malar areas (includes obtaining graft)",
+          "common_name": "Bone graft nasal/maxillary/malar",
+          "subcategory": "Bone Grafts",
+          "isFavorite": false
+        },
+        {
+          "code": "21215",
+          "description": "Graft, bone; mandible (includes obtaining graft)",
+          "common_name": "Bone graft mandible",
+          "subcategory": "Bone Grafts",
+          "isFavorite": true
+        },
+        {
+          "code": "21230",
+          "description": "Graft; rib cartilage, autogenous, to face, chin, nose or ear",
+          "common_name": "Rib cartilage graft to face",
+          "subcategory": "Cartilage Grafts",
+          "isFavorite": false
+        },
+        {
+          "code": "21235",
+          "description": "Graft; ear cartilage, autogenous, to nose or ear",
+          "common_name": "Ear cartilage graft to nose/ear",
+          "subcategory": "Cartilage Grafts",
+          "isFavorite": false
+        },
+        {
+          "code": "21244",
+          "description": "Reconstruction of mandible, extraoral, with transosteal bone plate",
+          "common_name": "Mandible recon with plate",
+          "subcategory": "Mandible Reconstruction",
+          "isFavorite": true
+        },
+        {
+          "code": "21245",
+          "description": "Reconstruction mandible or maxilla, subperiosteal implant; partial",
+          "common_name": "Mandible/maxilla recon subperiosteal partial",
+          "subcategory": "Mandible Reconstruction",
+          "isFavorite": false
+        },
+        {
+          "code": "21246",
+          "description": "Reconstruction mandible or maxilla, subperiosteal implant; complete",
+          "common_name": "Mandible/maxilla recon subperiosteal complete",
+          "subcategory": "Mandible Reconstruction",
+          "isFavorite": false
+        },
+        {
+          "code": "21247",
+          "description": "Reconstruction mandibular condyle with bone and cartilage autografts",
+          "common_name": "Condyle reconstruction autograft",
+          "subcategory": "Mandible Reconstruction",
+          "isFavorite": true
+        },
+        {
+          "code": "21248",
+          "description": "Reconstruction mandible or maxilla, endosteal implant; partial",
+          "common_name": "Mandible/maxilla recon endosteal partial",
+          "subcategory": "Mandible Reconstruction",
+          "isFavorite": true
+        },
+        {
+          "code": "21249",
+          "description": "Reconstruction mandible or maxilla, endosteal implant; complete",
+          "common_name": "Mandible/maxilla recon endosteal complete",
+          "subcategory": "Mandible Reconstruction",
+          "isFavorite": true
+        },
+        {
+          "code": "21255",
+          "description": "Reconstruction zygomatic arch and glenoid fossa with bone and cartilage",
+          "common_name": "Zygomatic arch reconstruction",
+          "subcategory": "Facial Reconstruction",
+          "isFavorite": false
+        },
+        {
+          "code": "21256",
+          "description": "Reconstruction of orbit with osteotomies and bone grafts",
+          "common_name": "Orbital recon + bone graft",
+          "subcategory": "Facial Reconstruction",
+          "isFavorite": false
+        },
+        {
+          "code": "21260",
+          "description": "Periorbital osteotomies for orbital hypertelorism",
+          "common_name": "Hypertelorism correction",
+          "subcategory": "Facial Reconstruction",
+          "isFavorite": false
+        },
+        {
+          "code": "21261",
+          "description": "Combined intra- and extracranial approach, periorbital osteotomies",
+          "common_name": "Hypertelorism correction (combined)",
+          "subcategory": "Facial Reconstruction",
+          "isFavorite": false
+        },
+        {
+          "code": "21263",
+          "description": "Periorbital osteotomies with forehead advancement",
+          "common_name": "Hypertelorism + forehead advancement",
+          "subcategory": "Facial Reconstruction",
+          "isFavorite": false
+        },
+        {
+          "code": "21267",
+          "description": "Orbital repositioning with bone grafts; extracranial approach",
+          "common_name": "Orbital repositioning extracranial",
+          "subcategory": "Facial Reconstruction",
+          "isFavorite": false
+        },
+        {
+          "code": "21268",
+          "description": "Orbital repositioning with bone grafts; combined intra/extracranial",
+          "common_name": "Orbital repositioning combined",
+          "subcategory": "Facial Reconstruction",
+          "isFavorite": false
+        },
+        {
+          "code": "21270",
+          "description": "Malar augmentation, prosthetic material",
+          "common_name": "Malar augmentation (implant)",
+          "subcategory": "Facial Reconstruction",
+          "isFavorite": false
+        },
+        {
+          "code": "21275",
+          "description": "Secondary revision of orbitocraniofacial reconstruction",
+          "common_name": "Revision orbitocraniofacial recon",
+          "subcategory": "Facial Reconstruction",
+          "isFavorite": false
+        },
+        {
+          "code": "29125",
+          "description": "Application of short arm splint, forearm to hand; static",
+          "common_name": "Short arm splint (radial forearm donor)",
+          "subcategory": "Donor Site",
+          "isFavorite": false
+        },
+        {
+          "code": "29515",
+          "description": "Application of short leg splint; calf to foot",
+          "common_name": "Short leg splint (fibula donor)",
+          "subcategory": "Donor Site",
+          "isFavorite": false
+        },
+        {
+          "code": "35180",
+          "description": "Repair, congenital arteriovenous fistula; head and neck",
+          "common_name": "AV fistula repair head/neck",
+          "subcategory": "Microvascular",
+          "isFavorite": false
+        },
+        {
+          "code": "35201",
+          "description": "Repair blood vessel, direct; neck",
+          "common_name": "Vessel repair neck",
+          "subcategory": "Microvascular",
+          "isFavorite": false
+        },
+        {
+          "code": "35231",
+          "description": "Repair blood vessel with vein graft; neck",
+          "common_name": "Vessel repair + vein graft neck",
+          "subcategory": "Microvascular",
+          "isFavorite": false
+        },
+        {
+          "code": "35261",
+          "description": "Repair blood vessel with graft other than vein; neck",
+          "common_name": "Vessel repair + synthetic graft neck",
+          "subcategory": "Microvascular",
+          "isFavorite": false
+        },
+        {
+          "code": "35701",
+          "description": "Exploration not followed by surgical repair, carotid artery",
+          "common_name": "Carotid exploration",
+          "subcategory": "Vascular",
+          "isFavorite": false
+        },
+        {
+          "code": "69990",
+          "description": "Microsurgical techniques, requiring use of operating microscope",
+          "common_name": "Microsurgical technique (add-on)",
+          "subcategory": "Microvascular",
+          "isFavorite": true
+        },
+        {
+          "code": "97605",
+          "description": "Negative pressure wound therapy (VAC); surface area \u226450 sq cm",
+          "common_name": "Wound VAC \u226450 sq cm",
+          "subcategory": "Wound Care",
+          "isFavorite": false
+        },
+        {
+          "code": "97606",
+          "description": "Negative pressure wound therapy (VAC); surface area >50 sq cm",
+          "common_name": "Wound VAC >50 sq cm",
+          "subcategory": "Wound Care",
+          "isFavorite": false
+        }
+      ]
+    },
+    {
+      "name": "Oncology & Ablative",
+      "codes": [
+        {
+          "code": "11011",
+          "description": "Debridement including removal of foreign material associated with open fracture and/or dislocation; skin, subcutaneous tissue, muscle fascia, and muscle and bone",
+          "common_name": "Bone debridement",
+          "subcategory": "Debridement",
+          "isFavorite": false
+        },
+        {
+          "code": "11042",
+          "description": "Debridement, subcutaneous tissue; first 20 sq cm",
+          "common_name": "Debridement subcutaneous",
+          "subcategory": "Debridement",
+          "isFavorite": true
+        },
+        {
+          "code": "11043",
+          "description": "Debridement, muscle and/or fascia; first 20 sq cm",
+          "common_name": "Debridement muscle/fascia",
+          "subcategory": "Debridement",
+          "isFavorite": false
+        },
+        {
+          "code": "11044",
+          "description": "Debridement, bone; first 20 sq cm",
+          "common_name": "Bone debridement (first 20 sq cm)",
+          "subcategory": "Debridement",
+          "isFavorite": false
+        },
+        {
+          "code": "21011",
+          "description": "Excision, tumor, soft tissue of face or scalp, subcutaneous; <2 cm",
+          "common_name": "Face/scalp tumor excision subQ <2cm",
+          "subcategory": "Soft Tissue Tumor",
+          "isFavorite": false
+        },
+        {
+          "code": "21012",
+          "description": "Excision, tumor, soft tissue of face or scalp, subcutaneous; \u22652 cm",
+          "common_name": "Face/scalp tumor excision subQ \u22652cm",
+          "subcategory": "Soft Tissue Tumor",
+          "isFavorite": false
+        },
+        {
+          "code": "21013",
+          "description": "Excision, tumor, soft tissue of face or scalp, subfascial; <2 cm",
+          "common_name": "Face/scalp tumor excision subfascial <2cm",
+          "subcategory": "Soft Tissue Tumor",
+          "isFavorite": false
+        },
+        {
+          "code": "21014",
+          "description": "Excision, tumor, soft tissue of face or scalp, subfascial; \u22652 cm",
+          "common_name": "Face/scalp tumor excision subfascial \u22652cm",
+          "subcategory": "Soft Tissue Tumor",
+          "isFavorite": false
+        },
+        {
+          "code": "21015",
+          "description": "Radical resection of tumor, soft tissue of face or scalp; <2 cm",
+          "common_name": "Radical resection face/scalp <2cm",
+          "subcategory": "Soft Tissue Tumor",
+          "isFavorite": false
+        },
+        {
+          "code": "21016",
+          "description": "Radical resection of tumor, soft tissue of face or scalp; \u22652 cm",
+          "common_name": "Radical resection face/scalp \u22652cm",
+          "subcategory": "Soft Tissue Tumor",
+          "isFavorite": false
+        },
+        {
+          "code": "21025",
+          "description": "Excision of bone (eg, for osteomyelitis or bone abscess); mandible",
+          "common_name": "Mandible bone excision (osteomyelitis)",
+          "subcategory": "Bone Excision",
+          "isFavorite": false
+        },
+        {
+          "code": "21026",
+          "description": "Excision of bone; facial bone(s)",
+          "common_name": "Facial bone excision",
+          "subcategory": "Bone Excision",
+          "isFavorite": false
+        },
+        {
+          "code": "21030",
+          "description": "Excision of benign tumor or cyst of maxilla by enucleation and/or curettage",
+          "common_name": "Enucleation maxilla (benign)",
+          "subcategory": "Maxilla Tumor",
+          "isFavorite": false
+        },
+        {
+          "code": "21034",
+          "description": "Excision of malignant tumor of maxilla or zygoma",
+          "common_name": "Maxillectomy (malignant)",
+          "subcategory": "Maxilla Tumor",
+          "isFavorite": false
+        },
+        {
+          "code": "21040",
+          "description": "Excision of benign tumor or cyst of mandible by enucleation and/or curettage",
+          "common_name": "Enucleation mandible (benign)",
+          "subcategory": "Mandible Tumor",
+          "isFavorite": false
+        },
+        {
+          "code": "21044",
+          "description": "Excision of malignant tumor of mandible",
+          "common_name": "Marginal mandibulectomy",
+          "subcategory": "Mandible Tumor",
+          "isFavorite": true
+        },
+        {
+          "code": "21045",
+          "description": "Excision of malignant tumor of mandible; radical resection",
+          "common_name": "Segmental mandibulectomy (radical)",
+          "subcategory": "Mandible Tumor",
+          "isFavorite": true
+        },
+        {
+          "code": "21046",
+          "description": "Excision of benign tumor or cyst of mandible; requiring intra-oral osteotomy",
+          "common_name": "Excision mandible tumor intraoral",
+          "subcategory": "Mandible Tumor",
+          "isFavorite": false
+        },
+        {
+          "code": "21047",
+          "description": "Excision of benign tumor or cyst of mandible; requiring extra-oral osteotomy and partial mandibulectomy",
+          "common_name": "Partial mandibulectomy (benign)",
+          "subcategory": "Mandible Tumor",
+          "isFavorite": false
+        },
+        {
+          "code": "21048",
+          "description": "Excision of benign tumor or cyst of maxilla; requiring intra-oral osteotomy",
+          "common_name": "Excision maxilla tumor intraoral",
+          "subcategory": "Maxilla Tumor",
+          "isFavorite": false
+        },
+        {
+          "code": "21049",
+          "description": "Excision of benign tumor or cyst of maxilla; requiring extra-oral osteotomy and partial maxillectomy",
+          "common_name": "Partial maxillectomy (benign)",
+          "subcategory": "Maxilla Tumor",
+          "isFavorite": false
+        },
+        {
+          "code": "21552",
+          "description": "Excision, tumor, soft tissue of neck or anterior thorax, subcutaneous; \u22653 cm",
+          "common_name": "Neck tumor excision subQ \u22653cm",
+          "subcategory": "Neck Tumor",
+          "isFavorite": false
+        },
+        {
+          "code": "21554",
+          "description": "Excision, tumor, soft tissue of neck or anterior thorax, subfascial; <5 cm",
+          "common_name": "Neck tumor excision subfascial <5cm",
+          "subcategory": "Neck Tumor",
+          "isFavorite": false
+        },
+        {
+          "code": "21555",
+          "description": "Excision, tumor, soft tissue of neck or anterior thorax, subcutaneous; <3 cm",
+          "common_name": "Neck tumor excision subQ <3cm",
+          "subcategory": "Neck Tumor",
+          "isFavorite": false
+        },
+        {
+          "code": "21556",
+          "description": "Excision, tumor, soft tissue of neck or anterior thorax, subcutaneous; \u22653 cm",
+          "common_name": "Neck tumor excision subQ \u22653cm (deep)",
+          "subcategory": "Neck Tumor",
+          "isFavorite": false
+        },
+        {
+          "code": "21557",
+          "description": "Radical resection of tumor, soft tissue of neck or anterior thorax; <5 cm",
+          "common_name": "Radical resection neck <5cm",
+          "subcategory": "Neck Tumor",
+          "isFavorite": false
+        },
+        {
+          "code": "21558",
+          "description": "Radical resection of tumor, soft tissue of neck or anterior thorax; \u22655 cm",
+          "common_name": "Radical resection neck \u22655cm",
+          "subcategory": "Neck Tumor",
+          "isFavorite": false
+        },
+        {
+          "code": "31225",
+          "description": "Maxillectomy without orbital exenteration",
+          "common_name": "Maxillectomy (without orbital exenteration)",
+          "subcategory": "Maxilla Tumor",
+          "isFavorite": true
+        },
+        {
+          "code": "31230",
+          "description": "Maxillectomy with orbital exenteration",
+          "common_name": "Maxillectomy (with orbital exenteration)",
+          "subcategory": "Maxilla Tumor",
+          "isFavorite": false
+        },
+        {
+          "code": "38700",
+          "description": "Suprahyoid lymphadenectomy",
+          "common_name": "Suprahyoid neck dissection",
+          "subcategory": "Neck Dissection",
+          "isFavorite": true
+        },
+        {
+          "code": "38720",
+          "description": "Cervical lymphadenectomy (complete)",
+          "common_name": "Radical neck dissection",
+          "subcategory": "Neck Dissection",
+          "isFavorite": false
+        },
+        {
+          "code": "38724",
+          "description": "Cervical lymphadenectomy (modified radical neck dissection)",
+          "common_name": "Modified radical neck dissection",
+          "subcategory": "Neck Dissection",
+          "isFavorite": true
+        },
+        {
+          "code": "38792",
+          "description": "Injection procedure; for identification of sentinel node",
+          "common_name": "Sentinel node injection",
+          "subcategory": "Neck Dissection",
+          "isFavorite": false
+        },
+        {
+          "code": "38900",
+          "description": "Intraoperative identification of sentinel lymph node(s)",
+          "common_name": "Sentinel node identification",
+          "subcategory": "Neck Dissection",
+          "isFavorite": false
+        },
+        {
+          "code": "40500",
+          "description": "Vermilionectomy (lip shave), with mucosal advancement",
+          "common_name": "Lip shave / vermilionectomy",
+          "subcategory": "Lip",
+          "isFavorite": false
+        },
+        {
+          "code": "40510",
+          "description": "Excision of lip; transverse wedge excision with primary closure",
+          "common_name": "Lip wedge excision",
+          "subcategory": "Lip",
+          "isFavorite": false
+        },
+        {
+          "code": "40520",
+          "description": "Excision of lip; V-excision with primary direct linear closure",
+          "common_name": "Lip V-excision",
+          "subcategory": "Lip",
+          "isFavorite": false
+        },
+        {
+          "code": "40525",
+          "description": "Excision of lip; full thickness, reconstruction with local flap (eg, Estlander or fan)",
+          "common_name": "Lip excision + local flap (Estlander)",
+          "subcategory": "Lip",
+          "isFavorite": false
+        },
+        {
+          "code": "40527",
+          "description": "Excision of lip; full thickness, reconstruction with cross lip flap (Abbe-Estlander)",
+          "common_name": "Lip excision + Abbe-Estlander flap",
+          "subcategory": "Lip",
+          "isFavorite": false
+        },
+        {
+          "code": "40810",
+          "description": "Excision of lesion of mucosa and submucosa, vestibule of mouth; without repair",
+          "common_name": "Vestibule lesion excision",
+          "subcategory": "Vestibule/Mouth",
+          "isFavorite": false
+        },
+        {
+          "code": "40812",
+          "description": "Excision of lesion of mucosa and submucosa, vestibule of mouth; with simple repair",
+          "common_name": "Vestibule lesion excision + repair",
+          "subcategory": "Vestibule/Mouth",
+          "isFavorite": false
+        },
+        {
+          "code": "40814",
+          "description": "Excision of lesion of mucosa and submucosa, vestibule of mouth; with complex repair",
+          "common_name": "Vestibule lesion excision + complex repair",
+          "subcategory": "Vestibule/Mouth",
+          "isFavorite": false
+        },
+        {
+          "code": "40816",
+          "description": "Excision of lesion of mucosa and submucosa, vestibule of mouth; complex, with excision of underlying muscle",
+          "common_name": "Vestibule lesion excision + muscle",
+          "subcategory": "Vestibule/Mouth",
+          "isFavorite": false
+        },
+        {
+          "code": "40818",
+          "description": "Excision of mucosa of vestibule of mouth as donor graft",
+          "common_name": "Mucosal graft harvest vestibule",
+          "subcategory": "Vestibule/Mouth",
+          "isFavorite": false
+        },
+        {
+          "code": "40820",
+          "description": "Destruction of lesion or scar of vestibule of mouth by physical methods",
+          "common_name": "Laser ablation oral dysplasia",
+          "subcategory": "Ablation",
+          "isFavorite": false
+        },
+        {
+          "code": "41110",
+          "description": "Excision of lesion of tongue without closure",
+          "common_name": "Tongue lesion excision",
+          "subcategory": "Tongue",
+          "isFavorite": false
+        },
+        {
+          "code": "41112",
+          "description": "Excision of lesion of tongue with closure; anterior two-thirds",
+          "common_name": "Tongue lesion excision + closure anterior",
+          "subcategory": "Tongue",
+          "isFavorite": false
+        },
+        {
+          "code": "41113",
+          "description": "Excision of lesion of tongue with closure; posterior one-third",
+          "common_name": "Tongue lesion excision + closure posterior",
+          "subcategory": "Tongue",
+          "isFavorite": false
+        },
+        {
+          "code": "41114",
+          "description": "Excision of lesion of tongue with closure; with local tongue flap",
+          "common_name": "Tongue lesion excision + local flap",
+          "subcategory": "Tongue",
+          "isFavorite": false
+        },
+        {
+          "code": "41116",
+          "description": "Excision, lesion of floor of mouth",
+          "common_name": "Floor of mouth excision",
+          "subcategory": "Tongue",
+          "isFavorite": true
+        },
+        {
+          "code": "41120",
+          "description": "Glossectomy; less than one-half tongue",
+          "common_name": "Partial glossectomy",
+          "subcategory": "Tongue",
+          "isFavorite": true
+        },
+        {
+          "code": "41130",
+          "description": "Glossectomy; hemiglossectomy",
+          "common_name": "Hemiglossectomy",
+          "subcategory": "Tongue",
+          "isFavorite": true
+        },
+        {
+          "code": "41135",
+          "description": "Glossectomy; partial, with unilateral radical neck dissection",
+          "common_name": "Glossectomy + radical neck",
+          "subcategory": "Tongue",
+          "isFavorite": false
+        },
+        {
+          "code": "41140",
+          "description": "Glossectomy; complete or total, with or without tracheostomy, without radical neck dissection",
+          "common_name": "Total glossectomy",
+          "subcategory": "Tongue",
+          "isFavorite": false
+        },
+        {
+          "code": "41145",
+          "description": "Glossectomy; complete, with or without tracheostomy, with unilateral radical neck dissection",
+          "common_name": "Total glossectomy + unilateral neck",
+          "subcategory": "Tongue",
+          "isFavorite": false
+        },
+        {
+          "code": "41150",
+          "description": "Glossectomy; composite procedure with resection floor of mouth and mandibular resection, without radical neck dissection",
+          "common_name": "Composite resection no neck",
+          "subcategory": "Tongue",
+          "isFavorite": false
+        },
+        {
+          "code": "41153",
+          "description": "Glossectomy; composite procedure with resection floor of mouth, with suprahyoid neck dissection",
+          "common_name": "Composite resection + suprahyoid neck",
+          "subcategory": "Tongue",
+          "isFavorite": false
+        },
+        {
+          "code": "41155",
+          "description": "Glossectomy; composite procedure with resection floor of mouth, mandibular resection, and radical neck dissection (commando)",
+          "common_name": "Commando procedure",
+          "subcategory": "Tongue",
+          "isFavorite": true
+        },
+        {
+          "code": "42104",
+          "description": "Excision, lesion of palate, uvula; without closure",
+          "common_name": "Palate lesion excision",
+          "subcategory": "Palate",
+          "isFavorite": false
+        },
+        {
+          "code": "42106",
+          "description": "Excision, lesion of palate, uvula; with simple primary closure",
+          "common_name": "Palate lesion excision + closure",
+          "subcategory": "Palate",
+          "isFavorite": false
+        },
+        {
+          "code": "42107",
+          "description": "Excision, lesion of palate, uvula; with local flap closure",
+          "common_name": "Palate lesion excision + local flap",
+          "subcategory": "Palate",
+          "isFavorite": false
+        },
+        {
+          "code": "42120",
+          "description": "Resection of palate or extensive resection of lesion",
+          "common_name": "Palate resection",
+          "subcategory": "Palate",
+          "isFavorite": false
+        },
+        {
+          "code": "42145",
+          "description": "Palatopharyngoplasty (eg, uvulopalatopharyngoplasty)",
+          "common_name": "UPPP / Pharyngoplasty",
+          "subcategory": "Oropharynx",
+          "isFavorite": false
+        },
+        {
+          "code": "42410",
+          "description": "Excision of parotid tumor or parotid gland; lateral lobe, without nerve dissection",
+          "common_name": "Parotidectomy superficial (no nerve)",
+          "subcategory": "Salivary Glands",
+          "isFavorite": false
+        },
+        {
+          "code": "42415",
+          "description": "Excision of parotid tumor or parotid gland; lateral lobe, with nerve dissection and/or preservation",
+          "common_name": "Parotidectomy superficial + nerve",
+          "subcategory": "Salivary Glands",
+          "isFavorite": true
+        },
+        {
+          "code": "42420",
+          "description": "Excision of parotid tumor or parotid gland; total, with nerve dissection",
+          "common_name": "Total parotidectomy + nerve",
+          "subcategory": "Salivary Glands",
+          "isFavorite": true
+        },
+        {
+          "code": "42425",
+          "description": "Excision of parotid tumor or parotid gland; total, en bloc removal with sacrifice of facial nerve",
+          "common_name": "Total parotidectomy (nerve sacrifice)",
+          "subcategory": "Salivary Glands",
+          "isFavorite": false
+        },
+        {
+          "code": "42426",
+          "description": "Excision of parotid tumor or parotid gland; total, with unilateral radical neck dissection",
+          "common_name": "Parotidectomy + neck dissection",
+          "subcategory": "Salivary Glands",
+          "isFavorite": false
+        },
+        {
+          "code": "42440",
+          "description": "Excision of submandibular (submaxillary) gland",
+          "common_name": "Submandibular gland excision",
+          "subcategory": "Salivary Glands",
+          "isFavorite": false
+        },
+        {
+          "code": "42450",
+          "description": "Excision of sublingual gland",
+          "common_name": "Sublingual gland excision",
+          "subcategory": "Salivary Glands",
+          "isFavorite": false
+        },
+        {
+          "code": "42890",
+          "description": "Limited pharyngectomy",
+          "common_name": "Limited pharyngectomy",
+          "subcategory": "Oropharynx",
+          "isFavorite": false
+        },
+        {
+          "code": "42892",
+          "description": "Resection of lateral pharyngeal wall or pyriform sinus, direct closure",
+          "common_name": "Pharyngeal wall resection",
+          "subcategory": "Oropharynx",
+          "isFavorite": false
+        },
+        {
+          "code": "42894",
+          "description": "Resection of pharyngeal wall requiring closure with myocutaneous or fasciocutaneous flap or free muscle, skin, or fascial flap with microvascular anastomosis",
+          "common_name": "Pharyngeal wall resection + flap",
+          "subcategory": "Oropharynx",
+          "isFavorite": false
+        },
+        {
+          "code": "88331",
+          "description": "Pathology consultation during surgery; first tissue block",
+          "common_name": "Frozen section (first block)",
+          "subcategory": "Pathology",
+          "isFavorite": true
+        },
+        {
+          "code": "88332",
+          "description": "Pathology consultation during surgery; each additional tissue block",
+          "common_name": "Frozen section (each add'l block)",
+          "subcategory": "Pathology",
+          "isFavorite": false
+        }
+      ]
+    },
+    {
+      "name": "Pathology",
+      "codes": [
+        {
+          "code": "21029",
+          "description": "Removal by contouring of benign tumor of facial bone",
+          "common_name": "Facial bone tumor contouring",
+          "subcategory": "Excision",
+          "isFavorite": false
+        },
+        {
+          "code": "42300",
+          "description": "Drainage of abscess; parotid, simple",
+          "common_name": "Parotid abscess I&D simple",
+          "subcategory": "Drainage",
+          "isFavorite": false
+        },
+        {
+          "code": "42305",
+          "description": "Drainage of abscess; parotid, complicated",
+          "common_name": "Parotid abscess I&D complicated",
+          "subcategory": "Drainage",
+          "isFavorite": false
+        },
+        {
+          "code": "42310",
+          "description": "Drainage of abscess; submaxillary or sublingual, intraoral",
+          "common_name": "Submandibular/sublingual abscess I&D intraoral",
+          "subcategory": "Drainage",
+          "isFavorite": false
+        },
+        {
+          "code": "42320",
+          "description": "Drainage of abscess; submaxillary, external",
+          "common_name": "Submandibular abscess I&D extraoral",
+          "subcategory": "Drainage",
+          "isFavorite": false
+        },
+        {
+          "code": "42330",
+          "description": "Sialolithotomy; submandibular, sublingual, intraoral",
+          "common_name": "Sialolithiasis removal intraoral",
+          "subcategory": "Salivary",
+          "isFavorite": false
+        },
+        {
+          "code": "42335",
+          "description": "Sialolithotomy; submandibular, extraoral",
+          "common_name": "Sialolithiasis removal extraoral",
+          "subcategory": "Salivary",
+          "isFavorite": false
+        },
+        {
+          "code": "42340",
+          "description": "Sialolithotomy; parotid, extraoral or complicated intraoral",
+          "common_name": "Sialolithiasis removal parotid",
+          "subcategory": "Salivary",
+          "isFavorite": false
+        },
+        {
+          "code": "42408",
+          "description": "Excision of sublingual salivary cyst (ranula)",
+          "common_name": "Ranula excision",
+          "subcategory": "Cyst",
+          "isFavorite": false
+        },
+        {
+          "code": "42409",
+          "description": "Marsupialization of sublingual salivary cyst (ranula)",
+          "common_name": "Ranula marsupialization",
+          "subcategory": "Cyst",
+          "isFavorite": false
+        },
+        {
+          "code": "42500",
+          "description": "Plastic repair of salivary duct",
+          "common_name": "Salivary duct repair",
+          "subcategory": "Salivary",
+          "isFavorite": false
+        },
+        {
+          "code": "42505",
+          "description": "Sialodochoplasty",
+          "common_name": "Sialodochoplasty",
+          "subcategory": "Salivary",
+          "isFavorite": false
+        },
+        {
+          "code": "42507",
+          "description": "Parotid duct diversion, bilateral",
+          "common_name": "Parotid duct diversion",
+          "subcategory": "Salivary",
+          "isFavorite": false
+        },
+        {
+          "code": "42510",
+          "description": "Parotid duct diversion, bilateral; with excision of one submandibular gland",
+          "common_name": "Parotid duct diversion + SMG excision",
+          "subcategory": "Salivary",
+          "isFavorite": false
+        },
+        {
+          "code": "42550",
+          "description": "Injection for sialography",
+          "common_name": "Sialography injection",
+          "subcategory": "Salivary",
+          "isFavorite": false
+        },
+        {
+          "code": "42600",
+          "description": "Closure salivary fistula",
+          "common_name": "Salivary fistula closure",
+          "subcategory": "Salivary",
+          "isFavorite": false
+        },
+        {
+          "code": "42650",
+          "description": "Dilation salivary duct",
+          "common_name": "Salivary duct dilation",
+          "subcategory": "Salivary",
+          "isFavorite": false
+        },
+        {
+          "code": "42660",
+          "description": "Dilation and catheterization of salivary duct, with or without injection",
+          "common_name": "Salivary duct catheterization",
+          "subcategory": "Salivary",
+          "isFavorite": false
+        },
+        {
+          "code": "42665",
+          "description": "Ligation salivary duct, intraoral",
+          "common_name": "Salivary duct ligation",
+          "subcategory": "Salivary",
+          "isFavorite": false
+        },
+        {
+          "code": "42699",
+          "description": "Unlisted procedure, salivary glands or ducts",
+          "common_name": "Salivary procedure NOS",
+          "subcategory": "Salivary",
+          "isFavorite": false
+        },
+        {
+          "code": "42810",
+          "description": "Excision branchial cleft cyst or vestige, confined to skin and subcutaneous tissues",
+          "common_name": "Branchial cleft cyst excision (superficial)",
+          "subcategory": "Cyst",
+          "isFavorite": false
+        },
+        {
+          "code": "42815",
+          "description": "Excision branchial cleft cyst, vestige, or fistula, extending beneath subcutaneous tissues and/or into pharynx",
+          "common_name": "Branchial cleft cyst excision (deep)",
+          "subcategory": "Cyst",
+          "isFavorite": false
+        }
+      ]
+    },
+    {
+      "name": "TMJ",
+      "codes": [
+        {
+          "code": "20605",
+          "description": "Arthrocentesis, aspiration and/or injection; intermediate joint",
+          "common_name": "TMJ arthrocentesis",
+          "subcategory": "Arthrocentesis",
+          "isFavorite": false
+        },
+        {
+          "code": "21010",
+          "description": "Arthrotomy, temporomandibular joint",
+          "common_name": "TMJ arthrotomy",
+          "subcategory": "Open Surgery",
+          "isFavorite": true
+        },
+        {
+          "code": "21050",
+          "description": "Condylectomy, temporomandibular joint (separate procedure)",
+          "common_name": "Condylectomy",
+          "subcategory": "Open Surgery",
+          "isFavorite": true
+        },
+        {
+          "code": "21060",
+          "description": "Meniscectomy, partial or complete, temporomandibular joint (separate procedure)",
+          "common_name": "TMJ meniscectomy / discectomy",
+          "subcategory": "Open Surgery",
+          "isFavorite": false
+        },
+        {
+          "code": "21070",
+          "description": "Coronoidectomy (separate procedure)",
+          "common_name": "Coronoidectomy",
+          "subcategory": "Open Surgery",
+          "isFavorite": false
+        },
+        {
+          "code": "21073",
+          "description": "Manipulation of temporomandibular joint(s) under anesthesia",
+          "common_name": "TMJ manipulation under anesthesia",
+          "subcategory": "Manipulation",
+          "isFavorite": false
+        },
+        {
+          "code": "21116",
+          "description": "Injection procedure for TMJ arthrography",
+          "common_name": "TMJ arthrogram injection",
+          "subcategory": "Injection",
+          "isFavorite": false
+        },
+        {
+          "code": "21240",
+          "description": "Arthroplasty, TMJ, with or without autograft",
+          "common_name": "TMJ arthroplasty (autograft)",
+          "subcategory": "Arthroplasty",
+          "isFavorite": true
+        },
+        {
+          "code": "21242",
+          "description": "Arthroplasty, TMJ, with allograft",
+          "common_name": "TMJ arthroplasty (allograft)",
+          "subcategory": "Arthroplasty",
+          "isFavorite": false
+        },
+        {
+          "code": "21243",
+          "description": "Arthroplasty, TMJ, with prosthetic joint replacement",
+          "common_name": "TMJ total joint replacement",
+          "subcategory": "Arthroplasty",
+          "isFavorite": true
+        },
+        {
+          "code": "29800",
+          "description": "Arthroscopy, temporomandibular joint, diagnostic, with or without synovial biopsy",
+          "common_name": "TMJ arthroscopy diagnostic",
+          "subcategory": "Arthroscopy",
+          "isFavorite": false
+        },
+        {
+          "code": "29804",
+          "description": "Arthroscopy, temporomandibular joint, surgical",
+          "common_name": "TMJ arthroscopy surgical",
+          "subcategory": "Arthroscopy",
+          "isFavorite": false
+        }
+      ]
+    },
+    {
+      "name": "Odontogenic Infections",
+      "codes": [
+        {
+          "code": "10060",
+          "description": "Incision and drainage of abscess; simple or single",
+          "common_name": "I&D abscess simple/single",
+          "subcategory": "Skin",
+          "isFavorite": false
+        },
+        {
+          "code": "10061",
+          "description": "Incision and drainage of abscess; complicated or multiple",
+          "common_name": "I&D abscess complicated/multiple",
+          "subcategory": "Skin",
+          "isFavorite": false
+        },
+        {
+          "code": "10140",
+          "description": "Incision and drainage of hematoma, seroma, or fluid collection",
+          "common_name": "Hematoma evacuation",
+          "subcategory": "Skin",
+          "isFavorite": false
+        },
+        {
+          "code": "10180",
+          "description": "Incision and drainage, complex, postoperative wound infection",
+          "common_name": "Post-op wound infection I&D",
+          "subcategory": "Skin",
+          "isFavorite": false
+        },
+        {
+          "code": "40800",
+          "description": "Drainage of abscess, cyst, hematoma, vestibule of mouth; simple",
+          "common_name": "Vestibular I&D simple",
+          "subcategory": "Vestibular",
+          "isFavorite": false
+        },
+        {
+          "code": "40801",
+          "description": "Drainage of abscess, cyst, hematoma, vestibule of mouth; complicated",
+          "common_name": "Vestibular I&D complicated",
+          "subcategory": "Vestibular",
+          "isFavorite": true
+        },
+        {
+          "code": "41006",
+          "description": "Intraoral I&D abscess, sublingual, bilateral",
+          "common_name": "I&D sublingual bilateral",
+          "subcategory": "Intraoral",
+          "isFavorite": true
+        },
+        {
+          "code": "41007",
+          "description": "Intraoral I&D abscess, submental",
+          "common_name": "I&D submental intraoral",
+          "subcategory": "Intraoral",
+          "isFavorite": true
+        },
+        {
+          "code": "41008",
+          "description": "Intraoral I&D abscess, submandibular space",
+          "common_name": "I&D submandibular intraoral",
+          "subcategory": "Intraoral",
+          "isFavorite": true
+        },
+        {
+          "code": "41009",
+          "description": "Intraoral I&D abscess, masticator space",
+          "common_name": "I&D masticator space intraoral",
+          "subcategory": "Intraoral",
+          "isFavorite": false
+        },
+        {
+          "code": "41015",
+          "description": "Extraoral I&D abscess, sublingual",
+          "common_name": "I&D sublingual extraoral",
+          "subcategory": "Extraoral",
+          "isFavorite": false
+        },
+        {
+          "code": "41016",
+          "description": "Extraoral I&D abscess, submental",
+          "common_name": "I&D submental extraoral",
+          "subcategory": "Extraoral",
+          "isFavorite": false
+        },
+        {
+          "code": "41017",
+          "description": "Extraoral I&D abscess, submandibular",
+          "common_name": "I&D submandibular extraoral",
+          "subcategory": "Extraoral",
+          "isFavorite": false
+        },
+        {
+          "code": "41018",
+          "description": "Extraoral I&D abscess, masticator space",
+          "common_name": "I&D masticator space extraoral",
+          "subcategory": "Extraoral",
+          "isFavorite": false
+        },
+        {
+          "code": "41019",
+          "description": "Placement of needles, catheters, or other device(s) into the head and/or neck for subsequent interstitial radioelement application",
+          "common_name": "I&D head/neck (device placement)",
+          "subcategory": "Deep Space",
+          "isFavorite": false
+        }
+      ]
+    },
+    {
+      "name": "Trauma",
+      "codes": [
+        {
+          "code": "12011",
+          "description": "Simple repair of superficial wounds of face, ears, eyelids, nose, lips, and/or mucous membranes; 2.5 cm or less",
+          "common_name": "Simple repair face \u22642.5cm",
+          "subcategory": "Laceration",
+          "isFavorite": false
+        },
+        {
+          "code": "12013",
+          "description": "Simple repair of superficial wounds of face; 2.6 to 5.0 cm",
+          "common_name": "Simple repair face 2.6-5cm",
+          "subcategory": "Laceration",
+          "isFavorite": false
+        },
+        {
+          "code": "12014",
+          "description": "Simple repair of superficial wounds of face; 5.1 to 7.5 cm",
+          "common_name": "Simple repair face 5.1-7.5cm",
+          "subcategory": "Laceration",
+          "isFavorite": false
+        },
+        {
+          "code": "12015",
+          "description": "Simple repair of superficial wounds of face; 7.6 to 12.5 cm",
+          "common_name": "Simple repair face 7.6-12.5cm",
+          "subcategory": "Laceration",
+          "isFavorite": false
+        },
+        {
+          "code": "12016",
+          "description": "Simple repair of superficial wounds of face; 12.6 to 20.0 cm",
+          "common_name": "Simple repair face 12.6-20cm",
+          "subcategory": "Laceration",
+          "isFavorite": false
+        },
+        {
+          "code": "12051",
+          "description": "Layered closure of wounds of face; 2.5 cm or less",
+          "common_name": "Layered closure face \u22642.5cm",
+          "subcategory": "Laceration",
+          "isFavorite": false
+        },
+        {
+          "code": "12052",
+          "description": "Layered closure of wounds of face; 2.6 to 5.0 cm",
+          "common_name": "Layered closure face 2.6-5cm",
+          "subcategory": "Laceration",
+          "isFavorite": false
+        },
+        {
+          "code": "12053",
+          "description": "Layered closure of wounds of face; 5.1 to 7.5 cm",
+          "common_name": "Layered closure face 5.1-7.5cm",
+          "subcategory": "Laceration",
+          "isFavorite": false
+        },
+        {
+          "code": "12054",
+          "description": "Layered closure of wounds of face; 7.6 to 12.5 cm",
+          "common_name": "Layered closure face 7.6-12.5cm",
+          "subcategory": "Laceration",
+          "isFavorite": false
+        },
+        {
+          "code": "12056",
+          "description": "Layered closure of wounds of face; 20.1 to 30.0 cm",
+          "common_name": "Layered closure face 20-30cm",
+          "subcategory": "Laceration",
+          "isFavorite": false
+        },
+        {
+          "code": "13131",
+          "description": "Complex repair, forehead, cheeks, chin, mouth, neck, axillae, genitalia, hands, and/or feet; 1.1 to 2.5 cm",
+          "common_name": "Complex repair face 1.1-2.5cm",
+          "subcategory": "Laceration",
+          "isFavorite": true
+        },
+        {
+          "code": "13132",
+          "description": "Complex repair, forehead, cheeks, chin, mouth, neck; 2.6 to 7.5 cm",
+          "common_name": "Complex repair face 2.6-7.5cm",
+          "subcategory": "Laceration",
+          "isFavorite": true
+        },
+        {
+          "code": "13133",
+          "description": "Complex repair, forehead, cheeks, chin, mouth, neck; each additional 5 cm or less",
+          "common_name": "Complex repair face add'l 5cm",
+          "subcategory": "Laceration",
+          "isFavorite": false
+        },
+        {
+          "code": "20670",
+          "description": "Removal of implant; superficial (eg, buried wire, pin, rod)",
+          "common_name": "Hardware removal superficial",
+          "subcategory": "Hardware",
+          "isFavorite": false
+        },
+        {
+          "code": "20680",
+          "description": "Removal of implant; deep (eg, buried wire, pin, screw, metal band, nail, rod, plate)",
+          "common_name": "Hardware removal deep",
+          "subcategory": "Hardware",
+          "isFavorite": true
+        },
+        {
+          "code": "21100",
+          "description": "Application of halo type appliance for maxillofacial fixation",
+          "common_name": "Halo application (maxillofacial)",
+          "subcategory": "Fixation",
+          "isFavorite": false
+        },
+        {
+          "code": "21280",
+          "description": "Medial canthopexy (separate procedure)",
+          "common_name": "Medial canthopexy",
+          "subcategory": "Canthopexy",
+          "isFavorite": false
+        },
+        {
+          "code": "21282",
+          "description": "Lateral canthopexy",
+          "common_name": "Lateral canthopexy",
+          "subcategory": "Canthopexy",
+          "isFavorite": true
+        },
+        {
+          "code": "21310",
+          "description": "Closed treatment of nasal bone fracture without manipulation",
+          "common_name": "Nasal fracture closed (no manipulation)",
+          "subcategory": "Nasal Fractures",
+          "isFavorite": true
+        },
+        {
+          "code": "21315",
+          "description": "Closed treatment of nasal bone fracture; with manipulation, without stabilization",
+          "common_name": "Nasal fracture closed + manipulation",
+          "subcategory": "Nasal Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21320",
+          "description": "Closed treatment of nasal bone fracture; with manipulation, with stabilization",
+          "common_name": "Nasal fracture closed + stabilization",
+          "subcategory": "Nasal Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21325",
+          "description": "Open treatment of nasal fracture; uncomplicated",
+          "common_name": "ORIF nasal (uncomplicated)",
+          "subcategory": "Nasal Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21330",
+          "description": "Open treatment of nasal fracture; complicated, with internal and/or external skeletal fixation",
+          "common_name": "ORIF nasal (complicated)",
+          "subcategory": "Nasal Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21335",
+          "description": "Open treatment of nasal fracture; with concomitant open treatment fractured septum",
+          "common_name": "ORIF nasal + septum",
+          "subcategory": "Nasal Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21336",
+          "description": "Open treatment of nasal septal fracture, with or without stabilization",
+          "common_name": "ORIF nasal septum",
+          "subcategory": "Nasal Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21337",
+          "description": "Closed treatment of nasal septal fracture, with or without stabilization",
+          "common_name": "Nasal septal fracture closed",
+          "subcategory": "Nasal Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21338",
+          "description": "Open treatment of naso-ethmoid-orbital fracture; without external fixation",
+          "common_name": "ORIF NOE (no ext fixation)",
+          "subcategory": "NOE Fractures",
+          "isFavorite": true
+        },
+        {
+          "code": "21339",
+          "description": "Open treatment of naso-ethmoid-orbital fracture; with external fixation",
+          "common_name": "ORIF NOE (with ext fixation)",
+          "subcategory": "NOE Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21340",
+          "description": "Percutaneous treatment of naso-ethmoid-orbital complex fracture, with splint, wire, or headcap",
+          "common_name": "NOE fracture percutaneous",
+          "subcategory": "NOE Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21343",
+          "description": "Open treatment of depressed frontal sinus fracture",
+          "common_name": "ORIF frontal sinus",
+          "subcategory": "Frontal Sinus",
+          "isFavorite": false
+        },
+        {
+          "code": "21344",
+          "description": "Open treatment of complicated depressed frontal sinus fracture, via coronal or multiple approaches",
+          "common_name": "ORIF frontal sinus (multiple approaches)",
+          "subcategory": "Frontal Sinus",
+          "isFavorite": false
+        },
+        {
+          "code": "21345",
+          "description": "Closed treatment of nasomaxillary complex fracture (Le Fort II) with interdental wire fixation",
+          "common_name": "Le Fort II closed",
+          "subcategory": "Maxillary Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21346",
+          "description": "Open treatment of nasomaxillary complex fracture (Le Fort II)",
+          "common_name": "ORIF Le Fort II",
+          "subcategory": "Maxillary Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21347",
+          "description": "Open treatment of nasomaxillary complex fracture; requiring multiple surgical approaches",
+          "common_name": "ORIF Le Fort II (multiple approaches)",
+          "subcategory": "Maxillary Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21348",
+          "description": "Open treatment of nasomaxillary complex fracture; with bone grafting",
+          "common_name": "ORIF Le Fort II + bone graft",
+          "subcategory": "Maxillary Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21355",
+          "description": "Percutaneous treatment of fracture of malar area, including zygomatic arch and malar tripod",
+          "common_name": "Zygoma fracture percutaneous (Gillies)",
+          "subcategory": "Zygoma Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21356",
+          "description": "Open treatment of depressed zygomatic arch fracture",
+          "common_name": "ORIF zygomatic arch",
+          "subcategory": "Zygoma Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21360",
+          "description": "Open treatment of depressed malar fracture, including zygomatic arch",
+          "common_name": "ORIF ZMC (single approach)",
+          "subcategory": "Zygoma Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21365",
+          "description": "Open treatment of complicated fracture of malar area; with multiple approaches and internal fixation",
+          "common_name": "ORIF ZMC (multiple approaches)",
+          "subcategory": "Zygoma Fractures",
+          "isFavorite": true
+        },
+        {
+          "code": "21366",
+          "description": "Open treatment of complicated fracture of malar area; with bone grafting",
+          "common_name": "ORIF ZMC + bone graft",
+          "subcategory": "Zygoma Fractures",
+          "isFavorite": true
+        },
+        {
+          "code": "21385",
+          "description": "Open treatment of orbital floor blowout fracture; transantral approach",
+          "common_name": "Orbital floor repair (Caldwell-Luc)",
+          "subcategory": "Orbital Fractures",
+          "isFavorite": true
+        },
+        {
+          "code": "21386",
+          "description": "Open treatment of orbital floor blowout fracture; periorbital approach",
+          "common_name": "Orbital floor repair (periorbital)",
+          "subcategory": "Orbital Fractures",
+          "isFavorite": true
+        },
+        {
+          "code": "21387",
+          "description": "Open treatment of orbital floor blowout fracture; combined approach",
+          "common_name": "Orbital floor repair (combined)",
+          "subcategory": "Orbital Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21390",
+          "description": "Open treatment of orbital floor blowout fracture; periorbital approach, with alloplastic or other implant",
+          "common_name": "Orbital floor repair + implant",
+          "subcategory": "Orbital Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21395",
+          "description": "Open treatment of orbital floor blowout fracture; periorbital approach, with bone graft",
+          "common_name": "Orbital floor repair + bone graft",
+          "subcategory": "Orbital Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21400",
+          "description": "Closed treatment of fracture of orbit, except blowout; without manipulation",
+          "common_name": "Orbital fracture closed (no manipulation)",
+          "subcategory": "Orbital Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21401",
+          "description": "Closed treatment of fracture of orbit, except blowout; with manipulation",
+          "common_name": "Orbital fracture closed + manipulation",
+          "subcategory": "Orbital Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21406",
+          "description": "Open treatment of fracture of orbit, except blowout; without implant",
+          "common_name": "ORIF orbit (no implant)",
+          "subcategory": "Orbital Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21407",
+          "description": "Open treatment of fracture of orbit, except blowout; with implant",
+          "common_name": "ORIF orbit + implant",
+          "subcategory": "Orbital Fractures",
+          "isFavorite": true
+        },
+        {
+          "code": "21408",
+          "description": "Open treatment of fracture of orbit, except blowout; with bone grafting",
+          "common_name": "ORIF orbit + bone graft",
+          "subcategory": "Orbital Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21421",
+          "description": "Closed treatment of palatal or maxillary fracture (Le Fort I type)",
+          "common_name": "Le Fort I fracture closed",
+          "subcategory": "Le Fort Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21422",
+          "description": "Open treatment of palatal or maxillary fracture (Le Fort I type)",
+          "common_name": "ORIF Le Fort I",
+          "subcategory": "Le Fort Fractures",
+          "isFavorite": true
+        },
+        {
+          "code": "21423",
+          "description": "Open treatment of palatal or maxillary fracture; complicated, multiple approaches",
+          "common_name": "ORIF Le Fort I (complicated)",
+          "subcategory": "Le Fort Fractures",
+          "isFavorite": true
+        },
+        {
+          "code": "21431",
+          "description": "Closed treatment of craniofacial separation (Le Fort III type)",
+          "common_name": "Le Fort III fracture closed",
+          "subcategory": "Le Fort Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21432",
+          "description": "Open treatment of craniofacial separation (Le Fort III type); with wiring/fixation",
+          "common_name": "ORIF Le Fort III",
+          "subcategory": "Le Fort Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21433",
+          "description": "Open treatment of craniofacial separation (Le Fort III type); complicated, multiple approaches",
+          "common_name": "ORIF Le Fort III (complicated)",
+          "subcategory": "Le Fort Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21435",
+          "description": "Open treatment of craniofacial separation (Le Fort III); with internal and/or external fixation",
+          "common_name": "ORIF Le Fort III (int + ext fixation)",
+          "subcategory": "Le Fort Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21436",
+          "description": "Open treatment of craniofacial separation (Le Fort III); complicated, utilizing internal and external fixation techniques",
+          "common_name": "ORIF Le Fort III (halo/headcap)",
+          "subcategory": "Le Fort Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21440",
+          "description": "Closed treatment of mandibular or maxillary alveolar ridge fracture",
+          "common_name": "Alveolar fracture closed",
+          "subcategory": "Maxillary Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21445",
+          "description": "Open treatment of mandibular or maxillary alveolar ridge fracture",
+          "common_name": "ORIF alveolar ridge",
+          "subcategory": "Maxillary Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21450",
+          "description": "Closed treatment of mandibular fracture; without manipulation",
+          "common_name": "Mandible fracture closed (no manipulation)",
+          "subcategory": "Mandible Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21451",
+          "description": "Closed treatment of mandibular fracture; with manipulation",
+          "common_name": "Mandible fracture closed + manipulation",
+          "subcategory": "Mandible Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21452",
+          "description": "Percutaneous treatment of mandibular fracture, with external fixation",
+          "common_name": "Mandible fracture percutaneous ext fixation",
+          "subcategory": "Mandible Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21453",
+          "description": "Closed treatment of mandibular fracture with interdental fixation",
+          "common_name": "Mandible fracture closed + IMF",
+          "subcategory": "Mandible Fractures",
+          "isFavorite": true
+        },
+        {
+          "code": "21454",
+          "description": "Open treatment of mandibular fracture with external fixation",
+          "common_name": "ORIF mandible (ext fixation)",
+          "subcategory": "Mandible Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21461",
+          "description": "Open treatment of mandibular fracture; without interdental fixation",
+          "common_name": "ORIF mandible (no IMF)",
+          "subcategory": "Mandible Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "21462",
+          "description": "Open treatment of mandibular fracture; with interdental fixation",
+          "common_name": "ORIF mandible + IMF",
+          "subcategory": "Mandible Fractures",
+          "isFavorite": true
+        },
+        {
+          "code": "21465",
+          "description": "Open treatment of mandibular condylar fracture",
+          "common_name": "ORIF mandible condyle",
+          "subcategory": "Mandible Fractures",
+          "isFavorite": true
+        },
+        {
+          "code": "21470",
+          "description": "Open treatment of complicated mandibular fracture by multiple surgical approaches",
+          "common_name": "ORIF mandible (complicated, multiple approaches)",
+          "subcategory": "Mandible Fractures",
+          "isFavorite": true
+        },
+        {
+          "code": "21480",
+          "description": "Closed treatment of temporomandibular dislocation; initial or subsequent",
+          "common_name": "TMJ dislocation closed",
+          "subcategory": "TMJ Dislocation",
+          "isFavorite": false
+        },
+        {
+          "code": "21485",
+          "description": "Closed treatment of temporomandibular dislocation; complicated, requiring anesthesia and/or fixation",
+          "common_name": "TMJ dislocation closed (complicated)",
+          "subcategory": "TMJ Dislocation",
+          "isFavorite": false
+        },
+        {
+          "code": "21490",
+          "description": "Open treatment of temporomandibular dislocation",
+          "common_name": "TMJ dislocation open treatment",
+          "subcategory": "TMJ Dislocation",
+          "isFavorite": false
+        },
+        {
+          "code": "21497",
+          "description": "Interdental wiring, for condition other than fracture",
+          "common_name": "Interdental wiring (non-fracture)",
+          "subcategory": "Fixation",
+          "isFavorite": false
+        },
+        {
+          "code": "40830",
+          "description": "Closure of laceration, vestibule of mouth; 2.5 cm or less",
+          "common_name": "Vestibule laceration \u22642.5cm",
+          "subcategory": "Laceration",
+          "isFavorite": false
+        },
+        {
+          "code": "40831",
+          "description": "Closure of laceration, vestibule of mouth; over 2.5 cm or complex",
+          "common_name": "Vestibule laceration complex",
+          "subcategory": "Laceration",
+          "isFavorite": true
+        },
+        {
+          "code": "42180",
+          "description": "Repair of laceration of palate; up to 2 cm",
+          "common_name": "Palate laceration \u22642cm",
+          "subcategory": "Laceration",
+          "isFavorite": false
+        },
+        {
+          "code": "42182",
+          "description": "Repair of laceration of palate; over 2 cm or complex",
+          "common_name": "Palate laceration complex",
+          "subcategory": "Laceration",
+          "isFavorite": false
+        },
+        {
+          "code": "64831",
+          "description": "Suture of digital nerve, hand or foot; 1 nerve",
+          "common_name": "Digital nerve repair",
+          "subcategory": "Nerve Repair",
+          "isFavorite": false
+        },
+        {
+          "code": "64856",
+          "description": "Suture of major peripheral nerve, arm or leg, except sciatic; each nerve",
+          "common_name": "Peripheral nerve repair",
+          "subcategory": "Nerve Repair",
+          "isFavorite": false
+        },
+        {
+          "code": "64885",
+          "description": "Nerve graft (includes obtaining graft), head or neck; up to 4 cm",
+          "common_name": "Nerve graft head/neck \u22644cm",
+          "subcategory": "Nerve Repair",
+          "isFavorite": false
+        },
+        {
+          "code": "64886",
+          "description": "Nerve graft (includes obtaining graft), head or neck; more than 4 cm",
+          "common_name": "Nerve graft head/neck >4cm",
+          "subcategory": "Nerve Repair",
+          "isFavorite": false
+        }
+      ]
+    },
+    {
+      "name": "Complex Case & Supportive",
+      "codes": [
+        {
+          "code": "00170",
+          "description": "Anesthesia for intraoral procedures, including biopsy; not otherwise specified",
+          "common_name": "General anesthesia intraoral NOS",
+          "subcategory": "Anesthesia",
+          "isFavorite": false
+        },
+        {
+          "code": "00172",
+          "description": "Anesthesia for repair of cleft palate",
+          "common_name": "General anesthesia cleft palate",
+          "subcategory": "Anesthesia",
+          "isFavorite": false
+        },
+        {
+          "code": "00190",
+          "description": "Anesthesia for procedures on facial bones or skull; not otherwise specified",
+          "common_name": "General anesthesia facial bones NOS",
+          "subcategory": "Anesthesia",
+          "isFavorite": false
+        },
+        {
+          "code": "00192",
+          "description": "Anesthesia for procedures on facial bones or skull; radical surgery",
+          "common_name": "General anesthesia radical face surgery",
+          "subcategory": "Anesthesia",
+          "isFavorite": false
+        },
+        {
+          "code": "20936",
+          "description": "Autograft for spine surgery only; local morselized",
+          "common_name": "Bone graft local morselized",
+          "subcategory": "Bone Grafts",
+          "isFavorite": false
+        },
+        {
+          "code": "20937",
+          "description": "Autograft for spine surgery only; morselized through separate incision",
+          "common_name": "Bone graft morselized separate incision",
+          "subcategory": "Bone Grafts",
+          "isFavorite": false
+        },
+        {
+          "code": "20938",
+          "description": "Autograft for spine surgery only; structural, bicortical or tricortical",
+          "common_name": "Bone graft structural separate incision",
+          "subcategory": "Bone Grafts",
+          "isFavorite": false
+        },
+        {
+          "code": "20985",
+          "description": "Computer-assisted surgical navigational procedure for musculoskeletal procedures, image-less",
+          "common_name": "Surgical navigation (image-less)",
+          "subcategory": "Navigation",
+          "isFavorite": false
+        },
+        {
+          "code": "21299",
+          "description": "Unlisted craniofacial and maxillofacial procedure",
+          "common_name": "Unlisted craniofacial/maxillofacial procedure",
+          "subcategory": "Unlisted",
+          "isFavorite": false
+        },
+        {
+          "code": "21499",
+          "description": "Unlisted musculoskeletal procedure, head",
+          "common_name": "Unlisted MSK head procedure",
+          "subcategory": "Unlisted",
+          "isFavorite": false
+        },
+        {
+          "code": "31525",
+          "description": "Laryngoscopy, direct, with or without tracheoscopy; diagnostic",
+          "common_name": "Direct laryngoscopy",
+          "subcategory": "Endoscopy",
+          "isFavorite": false
+        },
+        {
+          "code": "31526",
+          "description": "Laryngoscopy with operating microscope or telescope",
+          "common_name": "Laryngoscopy + microscope",
+          "subcategory": "Endoscopy",
+          "isFavorite": false
+        },
+        {
+          "code": "31600",
+          "description": "Tracheostomy, planned (separate procedure)",
+          "common_name": "Tracheostomy (planned)",
+          "subcategory": "Airway",
+          "isFavorite": false
+        },
+        {
+          "code": "31601",
+          "description": "Tracheostomy, planned; younger than 2 years",
+          "common_name": "Tracheostomy (planned, <2 years)",
+          "subcategory": "Airway",
+          "isFavorite": false
+        },
+        {
+          "code": "31603",
+          "description": "Tracheostomy, emergency procedure; transtracheal",
+          "common_name": "Emergency tracheostomy (transtracheal)",
+          "subcategory": "Airway",
+          "isFavorite": false
+        },
+        {
+          "code": "31605",
+          "description": "Tracheostomy, emergency procedure; cricothyroid membrane",
+          "common_name": "Emergency cricothyrotomy",
+          "subcategory": "Airway",
+          "isFavorite": false
+        },
+        {
+          "code": "31610",
+          "description": "Tracheostomy, fenestration procedure with skin flaps",
+          "common_name": "Tracheostomy fenestration",
+          "subcategory": "Airway",
+          "isFavorite": false
+        },
+        {
+          "code": "31622",
+          "description": "Bronchoscopy, rigid or flexible; diagnostic",
+          "common_name": "Bronchoscopy diagnostic",
+          "subcategory": "Endoscopy",
+          "isFavorite": false
+        },
+        {
+          "code": "36430",
+          "description": "Transfusion, blood or blood components",
+          "common_name": "Blood transfusion",
+          "subcategory": "Transfusion",
+          "isFavorite": false
+        },
+        {
+          "code": "36555",
+          "description": "Insertion of non-tunneled centrally inserted central venous catheter; younger than 5 years",
+          "common_name": "Central line <5 yrs",
+          "subcategory": "Vascular Access",
+          "isFavorite": false
+        },
+        {
+          "code": "36556",
+          "description": "Insertion of non-tunneled centrally inserted central venous catheter; age 5 years or older",
+          "common_name": "Central line \u22655 yrs",
+          "subcategory": "Vascular Access",
+          "isFavorite": false
+        },
+        {
+          "code": "40899",
+          "description": "Unlisted procedure, vestibule of mouth",
+          "common_name": "Unlisted vestibule procedure",
+          "subcategory": "Unlisted",
+          "isFavorite": false
+        },
+        {
+          "code": "42999",
+          "description": "Unlisted procedure, pharynx, adenoids, or tonsils",
+          "common_name": "Unlisted pharynx/tonsil procedure",
+          "subcategory": "Unlisted",
+          "isFavorite": false
+        },
+        {
+          "code": "43200",
+          "description": "Esophagoscopy, flexible, transoral; diagnostic",
+          "common_name": "Esophagoscopy diagnostic",
+          "subcategory": "Endoscopy",
+          "isFavorite": false
+        },
+        {
+          "code": "43246",
+          "description": "Esophagogastroduodenoscopy with directed placement of percutaneous gastrostomy tube",
+          "common_name": "PEG tube placement (EGD)",
+          "subcategory": "Feeding",
+          "isFavorite": false
+        },
+        {
+          "code": "43653",
+          "description": "Laparoscopy, surgical; gastrostomy, without construction of gastric tube",
+          "common_name": "Laparoscopic gastrostomy",
+          "subcategory": "Feeding",
+          "isFavorite": false
+        },
+        {
+          "code": "43760",
+          "description": "Change of gastrostomy tube, percutaneous, without imaging or endoscopic guidance",
+          "common_name": "PEG tube change",
+          "subcategory": "Feeding",
+          "isFavorite": false
+        },
+        {
+          "code": "43830",
+          "description": "Gastrostomy, open; without construction of gastric tube",
+          "common_name": "Open gastrostomy (PEG tube)",
+          "subcategory": "Feeding",
+          "isFavorite": false
+        },
+        {
+          "code": "61781",
+          "description": "Stereotactic computer-assisted (navigated) procedure; cranial",
+          "common_name": "Surgical navigation (cranial)",
+          "subcategory": "Navigation",
+          "isFavorite": false
+        },
+        {
+          "code": "89130",
+          "description": "Nasogastric tube placement, for enteral feeding",
+          "common_name": "NGT placement",
+          "subcategory": "Feeding",
+          "isFavorite": false
+        },
+        {
+          "code": "99151",
+          "description": "Moderate sedation services provided by the same physician; initial 15 minutes, patient younger than 5 years",
+          "common_name": "Moderate sedation same MD <5yrs",
+          "subcategory": "Sedation",
+          "isFavorite": false
+        },
+        {
+          "code": "99152",
+          "description": "Moderate sedation services provided by the same physician; initial 15 minutes, patient age 5 years or older",
+          "common_name": "Moderate sedation same MD \u22655yrs",
+          "subcategory": "Sedation",
+          "isFavorite": false
+        },
+        {
+          "code": "99153",
+          "description": "Moderate sedation services; each additional 15 minutes intraservice time",
+          "common_name": "Moderate sedation add'l 15 min",
+          "subcategory": "Sedation",
+          "isFavorite": false
+        },
+        {
+          "code": "99155",
+          "description": "Moderate sedation services provided by a physician other than the health care professional performing the procedure; initial 15 minutes, patient younger than 5 years",
+          "common_name": "Moderate sedation diff MD <5yrs",
+          "subcategory": "Sedation",
+          "isFavorite": false
+        },
+        {
+          "code": "99156",
+          "description": "Moderate sedation services provided by a physician other than the health care professional performing the procedure; initial 15 minutes, patient age 5 years or older",
+          "common_name": "Moderate sedation diff MD \u22655yrs",
+          "subcategory": "Sedation",
+          "isFavorite": false
+        }
+      ]
+    },
+    {
+      "name": "Implants & Preprosthetic",
+      "codes": [
+        {
+          "code": "31295",
+          "description": "Nasal/sinus endoscopy, surgical, with dilation of maxillary sinus ostium",
+          "common_name": "Sinus dilation maxillary",
+          "subcategory": "Sinus",
+          "isFavorite": false
+        },
+        {
+          "code": "40840",
+          "description": "Vestibuloplasty; anterior",
+          "common_name": "Vestibuloplasty anterior",
+          "subcategory": "Preprosthetic",
+          "isFavorite": false
+        },
+        {
+          "code": "40842",
+          "description": "Vestibuloplasty; posterior, unilateral",
+          "common_name": "Vestibuloplasty posterior",
+          "subcategory": "Preprosthetic",
+          "isFavorite": false
+        },
+        {
+          "code": "40843",
+          "description": "Vestibuloplasty; posterior, bilateral",
+          "common_name": "Vestibuloplasty posterior bilateral",
+          "subcategory": "Preprosthetic",
+          "isFavorite": false
+        },
+        {
+          "code": "40844",
+          "description": "Vestibuloplasty; entire arch",
+          "common_name": "Vestibuloplasty entire arch",
+          "subcategory": "Preprosthetic",
+          "isFavorite": false
+        },
+        {
+          "code": "40845",
+          "description": "Vestibuloplasty; complex (ridge extension, muscle repositioning)",
+          "common_name": "Vestibuloplasty complex",
+          "subcategory": "Preprosthetic",
+          "isFavorite": false
+        },
+        {
+          "code": "64738",
+          "description": "Transection or avulsion of obturator nerve, extrapelvic, with or without adductor tenotomy",
+          "common_name": "Nerve transection",
+          "subcategory": "Nerve",
+          "isFavorite": false
+        },
+        {
+          "code": "D6010",
+          "description": "Surgical placement of implant body; endosteal implant",
+          "common_name": "Dental implant placement",
+          "subcategory": "Implant Placement",
+          "isFavorite": false
+        },
+        {
+          "code": "D6013",
+          "description": "Surgical placement of mini implant",
+          "common_name": "Mini dental implant",
+          "subcategory": "Implant Placement",
+          "isFavorite": false
+        },
+        {
+          "code": "D6040",
+          "description": "Surgical placement: eposteal implant",
+          "common_name": "Eposteal implant",
+          "subcategory": "Implant Placement",
+          "isFavorite": false
+        },
+        {
+          "code": "D6100",
+          "description": "Implant removal",
+          "common_name": "Implant removal",
+          "subcategory": "Implant Removal",
+          "isFavorite": false
+        },
+        {
+          "code": "D6945",
+          "description": "Sinus augmentation via lateral open approach",
+          "common_name": "Sinus lift (lateral approach)",
+          "subcategory": "Sinus",
+          "isFavorite": false
+        },
+        {
+          "code": "D7950",
+          "description": "Osseous, osteoperiosteal, or cartilage graft of the mandible or maxilla \u2014 autogenous or nonautogenous, by report",
+          "common_name": "Ridge augmentation / GBR",
+          "subcategory": "Ridge Augmentation",
+          "isFavorite": false
+        },
+        {
+          "code": "D7955",
+          "description": "Repair of maxillofacial soft and hard tissue defect",
+          "common_name": "Maxillofacial defect repair",
+          "subcategory": "Ridge Augmentation",
+          "isFavorite": false
+        }
+      ]
+    },
+    {
+      "name": "Cleft & Craniofacial",
+      "codes": [
+        {
+          "code": "30460",
+          "description": "Rhinoplasty for nasal deformity secondary to congenital cleft lip/palate, including columellar lengthening; tip only",
+          "common_name": "Cleft rhinoplasty (tip)",
+          "subcategory": "Cleft Rhinoplasty",
+          "isFavorite": false
+        },
+        {
+          "code": "30462",
+          "description": "Rhinoplasty for nasal deformity secondary to congenital cleft lip/palate; tip, septum, osteotomies",
+          "common_name": "Cleft rhinoplasty (complete)",
+          "subcategory": "Cleft Rhinoplasty",
+          "isFavorite": false
+        },
+        {
+          "code": "40700",
+          "description": "Repair cleft lip/nasal deformity; primary, partial or complete, unilateral",
+          "common_name": "Cleft lip repair unilateral (partial)",
+          "subcategory": "Cleft Lip",
+          "isFavorite": true
+        },
+        {
+          "code": "40701",
+          "description": "Repair cleft lip/nasal deformity; primary, complete, unilateral",
+          "common_name": "Cleft lip repair unilateral (complete)",
+          "subcategory": "Cleft Lip",
+          "isFavorite": true
+        },
+        {
+          "code": "40702",
+          "description": "Repair cleft lip/nasal deformity; primary bilateral, one stage or two stage",
+          "common_name": "Cleft lip repair bilateral",
+          "subcategory": "Cleft Lip",
+          "isFavorite": false
+        },
+        {
+          "code": "40720",
+          "description": "Repair cleft lip/nasal deformity; secondary, by recreation of defect and reclosure",
+          "common_name": "Cleft lip revision",
+          "subcategory": "Cleft Lip",
+          "isFavorite": false
+        },
+        {
+          "code": "40761",
+          "description": "Repair cleft lip/nasal deformity; with cross lip pedicle flap (Abbe-Estlander type)",
+          "common_name": "Cleft lip repair (Abbe-Estlander)",
+          "subcategory": "Cleft Lip",
+          "isFavorite": false
+        },
+        {
+          "code": "42200",
+          "description": "Palatoplasty for cleft palate, soft and/or hard palate only",
+          "common_name": "Cleft palate repair (soft/hard)",
+          "subcategory": "Cleft Palate",
+          "isFavorite": true
+        },
+        {
+          "code": "42205",
+          "description": "Palatoplasty for cleft palate; closure of alveolar ridge and nasal floor",
+          "common_name": "Cleft palate repair + alveolar/nasal floor",
+          "subcategory": "Cleft Palate",
+          "isFavorite": false
+        },
+        {
+          "code": "42210",
+          "description": "Palatoplasty for cleft palate; with closure of alveolar ridge (vomer flap)",
+          "common_name": "Cleft palate repair + alveolar (vomer flap)",
+          "subcategory": "Cleft Palate",
+          "isFavorite": false
+        },
+        {
+          "code": "42215",
+          "description": "Palatoplasty for cleft palate; major revision (cleft palate pushback)",
+          "common_name": "Cleft palate pushback",
+          "subcategory": "Cleft Palate",
+          "isFavorite": false
+        },
+        {
+          "code": "42220",
+          "description": "Palatoplasty for cleft palate; attachment pharyngeal flap",
+          "common_name": "Cleft palate + pharyngeal flap",
+          "subcategory": "Cleft Palate",
+          "isFavorite": false
+        },
+        {
+          "code": "42225",
+          "description": "Palatoplasty for cleft palate; island flap or lengthening",
+          "common_name": "Cleft palate (island flap/Furlow)",
+          "subcategory": "Cleft Palate",
+          "isFavorite": false
+        },
+        {
+          "code": "42226",
+          "description": "Lengthening of palate, and target pharyngeal flap or sphincter pharyngoplasty",
+          "common_name": "Palate lengthening + pharyngoplasty",
+          "subcategory": "Cleft Palate",
+          "isFavorite": false
+        },
+        {
+          "code": "42227",
+          "description": "Lengthening of palate, and pharyngeal flap attachment",
+          "common_name": "Palate lengthening + pharyngeal flap",
+          "subcategory": "Cleft Palate",
+          "isFavorite": false
+        },
+        {
+          "code": "42235",
+          "description": "Repair of anterior palate, including vomer flap",
+          "common_name": "Anterior palate repair (vomer flap)",
+          "subcategory": "Cleft Palate",
+          "isFavorite": false
+        },
+        {
+          "code": "42260",
+          "description": "Repair of nasoalveolar fistula (oronasal fistula)",
+          "common_name": "Oronasal fistula repair",
+          "subcategory": "Alveolar Bone Graft",
+          "isFavorite": false
+        },
+        {
+          "code": "42280",
+          "description": "Maxillary impression for palatal prosthesis",
+          "common_name": "Palatal prosthesis impression",
+          "subcategory": "Prosthesis",
+          "isFavorite": false
+        },
+        {
+          "code": "42281",
+          "description": "Insertion of pin-retained palatal prosthesis",
+          "common_name": "Palatal prosthesis insertion",
+          "subcategory": "Prosthesis",
+          "isFavorite": false
+        },
+        {
+          "code": "42950",
+          "description": "Pharyngoplasty (pharyngeal flap)",
+          "common_name": "Pharyngeal flap",
+          "subcategory": "VPI Surgery",
+          "isFavorite": false
+        }
+      ]
+    },
+    {
+      "name": "Miscellaneous",
+      "codes": [
+        {
+          "code": "11920",
+          "description": "Tattooing, intradermal introduction of insoluble opaque pigments; 6.0 sq cm or less",
+          "common_name": "Tattooing/micropigmentation \u22646 sq cm",
+          "subcategory": "Cosmetic",
+          "isFavorite": false
+        },
+        {
+          "code": "11921",
+          "description": "Tattooing; 6.1 to 20.0 sq cm",
+          "common_name": "Tattooing 6.1-20 sq cm",
+          "subcategory": "Cosmetic",
+          "isFavorite": false
+        },
+        {
+          "code": "11922",
+          "description": "Tattooing; each additional 20.0 sq cm",
+          "common_name": "Tattooing add'l 20 sq cm",
+          "subcategory": "Cosmetic",
+          "isFavorite": false
+        },
+        {
+          "code": "11960",
+          "description": "Insertion of tissue expander(s) for other than breast",
+          "common_name": "Tissue expander insertion",
+          "subcategory": "Cosmetic",
+          "isFavorite": false
+        },
+        {
+          "code": "11970",
+          "description": "Replacement of tissue expander with permanent prosthesis",
+          "common_name": "Tissue expander \u2192 prosthesis",
+          "subcategory": "Cosmetic",
+          "isFavorite": false
+        },
+        {
+          "code": "11971",
+          "description": "Removal of tissue expander(s) without insertion of prosthesis",
+          "common_name": "Tissue expander removal",
+          "subcategory": "Cosmetic",
+          "isFavorite": false
+        },
+        {
+          "code": "13100",
+          "description": "Repair of wound or scar; trunk; 1.1 to 2.5 cm",
+          "common_name": "Scar revision trunk",
+          "subcategory": "Scar Revision",
+          "isFavorite": false
+        },
+        {
+          "code": "15760",
+          "description": "Graft; composite (eg, full thickness of external ear or nasal ala)",
+          "common_name": "Composite graft (ear/nose)",
+          "subcategory": "Grafts",
+          "isFavorite": false
+        },
+        {
+          "code": "15770",
+          "description": "Graft; derma-fat-fascia",
+          "common_name": "Derma-fat-fascia graft",
+          "subcategory": "Grafts",
+          "isFavorite": false
+        },
+        {
+          "code": "15786",
+          "description": "Abrasion; single lesion (eg, keratosis, scar)",
+          "common_name": "Dermabrasion single lesion",
+          "subcategory": "Scar Revision",
+          "isFavorite": false
+        },
+        {
+          "code": "15787",
+          "description": "Abrasion; each additional 4 lesions or less",
+          "common_name": "Dermabrasion add'l lesions",
+          "subcategory": "Scar Revision",
+          "isFavorite": false
+        },
+        {
+          "code": "15819",
+          "description": "Cervicoplasty",
+          "common_name": "Cervicoplasty",
+          "subcategory": "Cosmetic",
+          "isFavorite": false
+        },
+        {
+          "code": "15820",
+          "description": "Blepharoplasty, lower eyelid",
+          "common_name": "Blepharoplasty lower",
+          "subcategory": "Cosmetic",
+          "isFavorite": false
+        },
+        {
+          "code": "15821",
+          "description": "Blepharoplasty, lower eyelid; with extensive herniated fat pad",
+          "common_name": "Blepharoplasty lower + fat",
+          "subcategory": "Cosmetic",
+          "isFavorite": false
+        },
+        {
+          "code": "15822",
+          "description": "Blepharoplasty, upper eyelid",
+          "common_name": "Blepharoplasty upper",
+          "subcategory": "Cosmetic",
+          "isFavorite": false
+        },
+        {
+          "code": "15823",
+          "description": "Blepharoplasty, upper eyelid; with excessive skin weighing down lid",
+          "common_name": "Blepharoplasty upper + skin",
+          "subcategory": "Cosmetic",
+          "isFavorite": false
+        },
+        {
+          "code": "17106",
+          "description": "Destruction of cutaneous vascular proliferative lesions; less than 10 sq cm",
+          "common_name": "Vascular lesion destruction <10 sq cm",
+          "subcategory": "Lesion",
+          "isFavorite": false
+        },
+        {
+          "code": "17107",
+          "description": "Destruction of cutaneous vascular proliferative lesions; 10-50 sq cm",
+          "common_name": "Vascular lesion destruction 10-50 sq cm",
+          "subcategory": "Lesion",
+          "isFavorite": false
+        },
+        {
+          "code": "17108",
+          "description": "Destruction of cutaneous vascular proliferative lesions; >50 sq cm",
+          "common_name": "Vascular lesion destruction >50 sq cm",
+          "subcategory": "Lesion",
+          "isFavorite": false
+        },
+        {
+          "code": "21137",
+          "description": "Reduction forehead; contouring only",
+          "common_name": "Forehead contouring",
+          "subcategory": "Cosmetic",
+          "isFavorite": false
+        },
+        {
+          "code": "21138",
+          "description": "Reduction forehead; contouring and application of prosthetic material or bone graft",
+          "common_name": "Forehead contouring + graft",
+          "subcategory": "Cosmetic",
+          "isFavorite": false
+        },
+        {
+          "code": "21139",
+          "description": "Reduction forehead; contouring and setback of anterior frontal sinus wall",
+          "common_name": "Forehead contouring + frontal sinus setback",
+          "subcategory": "Cosmetic",
+          "isFavorite": false
+        },
+        {
+          "code": "30130",
+          "description": "Excision inferior turbinate, partial or complete, any method",
+          "common_name": "Inferior turbinectomy",
+          "subcategory": "Nasal",
+          "isFavorite": false
+        },
+        {
+          "code": "30140",
+          "description": "Submucous resection inferior turbinate, partial or complete, any method",
+          "common_name": "Submucous resection turbinate",
+          "subcategory": "Nasal",
+          "isFavorite": false
+        },
+        {
+          "code": "30150",
+          "description": "Rhinectomy; partial",
+          "common_name": "Rhinectomy partial",
+          "subcategory": "Nasal",
+          "isFavorite": false
+        },
+        {
+          "code": "30160",
+          "description": "Rhinectomy; total",
+          "common_name": "Rhinectomy total",
+          "subcategory": "Nasal",
+          "isFavorite": false
+        },
+        {
+          "code": "30400",
+          "description": "Rhinoplasty, primary; lateral and alar cartilages and/or elevation of nasal tip",
+          "common_name": "Rhinoplasty primary (tip/alar)",
+          "subcategory": "Rhinoplasty",
+          "isFavorite": true
+        },
+        {
+          "code": "30410",
+          "description": "Rhinoplasty, primary; complete, external parts including bony pyramid, lateral and alar cartilages, and/or elevation of nasal tip",
+          "common_name": "Rhinoplasty primary (complete)",
+          "subcategory": "Rhinoplasty",
+          "isFavorite": true
+        },
+        {
+          "code": "30420",
+          "description": "Rhinoplasty, primary; including major septal repair",
+          "common_name": "Rhinoplasty primary + major septal repair",
+          "subcategory": "Rhinoplasty",
+          "isFavorite": false
+        },
+        {
+          "code": "30430",
+          "description": "Rhinoplasty, secondary; minor revision (small amount of nasal tip work)",
+          "common_name": "Rhinoplasty revision (minor)",
+          "subcategory": "Rhinoplasty",
+          "isFavorite": false
+        },
+        {
+          "code": "30435",
+          "description": "Rhinoplasty, secondary; intermediate revision (bony work with osteotomies)",
+          "common_name": "Rhinoplasty revision (intermediate)",
+          "subcategory": "Rhinoplasty",
+          "isFavorite": false
+        },
+        {
+          "code": "30450",
+          "description": "Rhinoplasty, secondary; major revision (nasal tip work and osteotomies)",
+          "common_name": "Rhinoplasty revision (major)",
+          "subcategory": "Rhinoplasty",
+          "isFavorite": false
+        },
+        {
+          "code": "30468",
+          "description": "Repair of nasal valve collapse with subcutaneous/submucosal lateral wall implant(s)",
+          "common_name": "Nasal valve repair (implant)",
+          "subcategory": "Nasal",
+          "isFavorite": false
+        },
+        {
+          "code": "30469",
+          "description": "Repair of nasal valve collapse with low energy, temperature-controlled submucosal tissue remodeling",
+          "common_name": "Nasal valve repair (tissue remodeling)",
+          "subcategory": "Nasal",
+          "isFavorite": false
+        },
+        {
+          "code": "30540",
+          "description": "Repair choanal atresia; intranasal",
+          "common_name": "Choanal atresia repair intranasal",
+          "subcategory": "Nasal",
+          "isFavorite": false
+        },
+        {
+          "code": "30545",
+          "description": "Repair choanal atresia; transpalatine",
+          "common_name": "Choanal atresia repair transpalatine",
+          "subcategory": "Nasal",
+          "isFavorite": false
+        },
+        {
+          "code": "30560",
+          "description": "Lysis intranasal synechia",
+          "common_name": "Intranasal synechiae lysis",
+          "subcategory": "Nasal",
+          "isFavorite": false
+        },
+        {
+          "code": "30580",
+          "description": "Repair fistula; oromaxillary (combine with 31030 if antral)",
+          "common_name": "Oromaxillary fistula repair",
+          "subcategory": "Nasal",
+          "isFavorite": false
+        },
+        {
+          "code": "30600",
+          "description": "Repair fistula; oronasal",
+          "common_name": "Oronasal fistula repair",
+          "subcategory": "Nasal",
+          "isFavorite": false
+        },
+        {
+          "code": "30620",
+          "description": "Septal or other intranasal dermatoplasty (does not include obtaining graft)",
+          "common_name": "Septal dermatoplasty",
+          "subcategory": "Nasal",
+          "isFavorite": false
+        },
+        {
+          "code": "30901",
+          "description": "Control nasal hemorrhage, anterior, simple",
+          "common_name": "Epistaxis control anterior simple",
+          "subcategory": "Nasal",
+          "isFavorite": false
+        },
+        {
+          "code": "30903",
+          "description": "Control nasal hemorrhage, anterior, complex (limited cautery and/or packing)",
+          "common_name": "Epistaxis control anterior complex",
+          "subcategory": "Nasal",
+          "isFavorite": false
+        },
+        {
+          "code": "30905",
+          "description": "Control nasal hemorrhage, posterior, with posterior nasal packs and/or cautery",
+          "common_name": "Epistaxis control posterior (packing)",
+          "subcategory": "Nasal",
+          "isFavorite": false
+        },
+        {
+          "code": "30906",
+          "description": "Control nasal hemorrhage, posterior, repeat",
+          "common_name": "Epistaxis control posterior (repeat)",
+          "subcategory": "Nasal",
+          "isFavorite": false
+        },
+        {
+          "code": "41510",
+          "description": "Suture of tongue to lip for micrognathia (Douglas procedure)",
+          "common_name": "Tongue-lip adhesion (Douglas)",
+          "subcategory": "Special",
+          "isFavorite": false
+        },
+        {
+          "code": "41512",
+          "description": "Tongue base suspension, permanent suture technique",
+          "common_name": "Tongue base suspension",
+          "subcategory": "Special",
+          "isFavorite": false
+        },
+        {
+          "code": "41850",
+          "description": "Destruction of lesion (except excision), dentoalveolar structures",
+          "common_name": "Laser treatment dentoalveolar",
+          "subcategory": "Special",
+          "isFavorite": false
+        },
+        {
+          "code": "42700",
+          "description": "Incision and drainage abscess; peritonsillar",
+          "common_name": "Peritonsillar abscess I&D",
+          "subcategory": "Throat",
+          "isFavorite": false
+        },
+        {
+          "code": "42720",
+          "description": "Incision and drainage abscess; retropharyngeal or parapharyngeal, intraoral approach",
+          "common_name": "Retropharyngeal abscess I&D",
+          "subcategory": "Throat",
+          "isFavorite": false
+        },
+        {
+          "code": "42725",
+          "description": "Incision and drainage abscess; retropharyngeal or parapharyngeal, external approach",
+          "common_name": "Parapharyngeal abscess I&D (external)",
+          "subcategory": "Throat",
+          "isFavorite": false
+        },
+        {
+          "code": "42820",
+          "description": "Tonsillectomy and adenoidectomy; younger than age 12",
+          "common_name": "T&A <12 yrs",
+          "subcategory": "Throat",
+          "isFavorite": false
+        },
+        {
+          "code": "42821",
+          "description": "Tonsillectomy and adenoidectomy; age 12 or over",
+          "common_name": "T&A \u226512 yrs",
+          "subcategory": "Throat",
+          "isFavorite": false
+        },
+        {
+          "code": "42825",
+          "description": "Tonsillectomy, primary or secondary; younger than age 12",
+          "common_name": "Tonsillectomy <12 yrs",
+          "subcategory": "Throat",
+          "isFavorite": false
+        },
+        {
+          "code": "42826",
+          "description": "Tonsillectomy, primary or secondary; age 12 or over",
+          "common_name": "Tonsillectomy \u226512 yrs",
+          "subcategory": "Throat",
+          "isFavorite": false
+        },
+        {
+          "code": "64400",
+          "description": "Injection, anesthetic agent; trigeminal nerve",
+          "common_name": "Trigeminal nerve block",
+          "subcategory": "Injection",
+          "isFavorite": false
+        },
+        {
+          "code": "67900",
+          "description": "Repair of brow ptosis (supraciliary, mid-forehead, or coronal approach)",
+          "common_name": "Brow ptosis repair",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67901",
+          "description": "Repair of blepharoptosis; frontalis muscle technique with suture or other material",
+          "common_name": "Blepharoptosis repair (frontalis suture)",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67902",
+          "description": "Repair of blepharoptosis; frontalis muscle technique with fascial sling",
+          "common_name": "Blepharoptosis repair (fascial sling)",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67903",
+          "description": "Repair of blepharoptosis; tarso levator resection or advancement, internal approach",
+          "common_name": "Blepharoptosis repair (internal)",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67904",
+          "description": "Repair of blepharoptosis; tarso levator resection or advancement, external approach",
+          "common_name": "Blepharoptosis repair (external)",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "69300",
+          "description": "Otoplasty, protruding ear, with or without size reduction",
+          "common_name": "Otoplasty",
+          "subcategory": "Cosmetic",
+          "isFavorite": false
+        },
+        {
+          "code": "99213",
+          "description": "Office or other outpatient visit for the evaluation and management of an established patient (level 3)",
+          "common_name": "E/M office visit level 3",
+          "subcategory": "E/M",
+          "isFavorite": false
+        },
+        {
+          "code": "99214",
+          "description": "Office or other outpatient visit for the evaluation and management of an established patient (level 4)",
+          "common_name": "E/M office visit level 4",
+          "subcategory": "E/M",
+          "isFavorite": false
+        },
+        {
+          "code": "99215",
+          "description": "Office or other outpatient visit for the evaluation and management of an established patient (level 5)",
+          "common_name": "E/M office visit level 5",
+          "subcategory": "E/M",
+          "isFavorite": false
+        },
+        {
+          "code": "99221",
+          "description": "Initial hospital care (level 1)",
+          "common_name": "E/M hospital admission level 1",
+          "subcategory": "E/M",
+          "isFavorite": false
+        },
+        {
+          "code": "99222",
+          "description": "Initial hospital care (level 2)",
+          "common_name": "E/M hospital admission level 2",
+          "subcategory": "E/M",
+          "isFavorite": false
+        },
+        {
+          "code": "99223",
+          "description": "Initial hospital care (level 3)",
+          "common_name": "E/M hospital admission level 3",
+          "subcategory": "E/M",
+          "isFavorite": false
+        },
+        {
+          "code": "99231",
+          "description": "Subsequent hospital care (level 1)",
+          "common_name": "E/M subsequent hospital level 1",
+          "subcategory": "E/M",
+          "isFavorite": false
+        },
+        {
+          "code": "99232",
+          "description": "Subsequent hospital care (level 2)",
+          "common_name": "E/M subsequent hospital level 2",
+          "subcategory": "E/M",
+          "isFavorite": false
+        },
+        {
+          "code": "99233",
+          "description": "Subsequent hospital care (level 3)",
+          "common_name": "E/M subsequent hospital level 3",
+          "subcategory": "E/M",
+          "isFavorite": false
+        },
+        {
+          "code": "99281",
+          "description": "Emergency department visit (level 1)",
+          "common_name": "ED visit level 1",
+          "subcategory": "E/M",
+          "isFavorite": false
+        },
+        {
+          "code": "99282",
+          "description": "Emergency department visit (level 2)",
+          "common_name": "ED visit level 2",
+          "subcategory": "E/M",
+          "isFavorite": false
+        },
+        {
+          "code": "99283",
+          "description": "Emergency department visit (level 3)",
+          "common_name": "ED visit level 3",
+          "subcategory": "E/M",
+          "isFavorite": false
+        },
+        {
+          "code": "99284",
+          "description": "Emergency department visit (level 4)",
+          "common_name": "ED visit level 4",
+          "subcategory": "E/M",
+          "isFavorite": false
+        },
+        {
+          "code": "99285",
+          "description": "Emergency department visit (level 5)",
+          "common_name": "ED visit level 5",
+          "subcategory": "E/M",
+          "isFavorite": false
+        },
+        {
+          "code": "C9290",
+          "description": "Injection of liposomal bupivacaine (Exparel)",
+          "common_name": "Exparel injection",
+          "subcategory": "Injection",
+          "isFavorite": false
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "total_codes": 508,
+    "source": "Extracted from Optum Current Procedural Coding Expert 2024 PDF + OMFS clinical expertise",
+    "extracted_date": "2026-03-12",
+    "categories_count": 12
   }
 }
