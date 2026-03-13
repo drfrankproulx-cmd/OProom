@@ -36,11 +36,11 @@ Build a web-based operating room scheduling platform for surgical residents feat
 - `BulkImport.jsx` - CSV import wizard
 - `Sidebar.jsx` / `MobileNav.jsx` - Navigation components
 
-## CPT Code System (508 codes, 12 categories)
-- **Source**: Extracted from Optum Current Procedural Coding Expert 2024 PDF + OMFS clinical expertise
+## CPT Code System (633 codes, 12 categories)
+- **Source**: Optum Current Procedural Coding Expert 2024 + Optum OMS Coding Guide (Book1, 784 pages OCR'd) + OMFS clinical expertise
 - **Backend**: `/app/backend/cpt_codes.json` — served via `/api/cpt-codes/*` endpoints
 - **Frontend**: Async-loaded from backend, local search with relevance scoring
-- **Categories**: Dentoalveolar (42), Orthognathic (33), Reconstruction & Free Flaps (83), Oncology & Ablative (75), Pathology (22), TMJ (12), Odontogenic Infections (15), Trauma (81), Complex Case & Supportive (35), Implants & Preprosthetic (14), Cleft & Craniofacial (20), Miscellaneous (76)
+- **Categories**: Dentoalveolar (60), Orthognathic (33), Reconstruction & Free Flaps (97), Oncology & Ablative (80), Pathology (35), TMJ (18), Odontogenic Infections (17), Trauma (91), Complex Case & Supportive (43), Implants & Preprosthetic (18), Cleft & Craniofacial (20), Miscellaneous (121)
 - **Features**: Category headers with color coding, subcategory tags, multi-select with removable teal badges, diagnosis-based filtering
 
 ## 9-Item OMFS Pre-Op Checklist
@@ -80,7 +80,7 @@ Build a web-based operating room scheduling platform for surgical residents feat
 - [x] Imaging multi-select dropdown (FIXED route ordering bug)
 - [x] Quick-filter by attending on Patients page
 - [x] Multi-select CPT codes (removable tags)
-- [x] 508 OMFS CPT codes extracted from PDF, categorized, deployed
+- [x] 633 OMFS CPT/CDT codes from 2 PDFs (Book1 784pg OCR + Book2 237pg), categorized, deployed
 - [x] Category-grouped CPT autocomplete dropdown with color coding
 - [x] In-app notification system
 - [x] Pre-Op Status tab removed, Surgery Timeline removed
@@ -95,4 +95,4 @@ Build a web-based operating room scheduling platform for surgical residents feat
 - [ ] Additional patient intake fields (insurance, notes)
 
 ## Last Updated
-March 12, 2026
+March 13, 2026

@@ -39,11 +39,25 @@
           "isFavorite": false
         },
         {
+          "code": "31500",
+          "description": "Tumor/Lesion CCheekbone, 21030, 21034, 21048-21049 Cranial Bone, 21181-21184 Dentoalveolar, 41825-41827, 41850 Face, 21011-21016 Facial Bones, 21029-21030, 21034-21049 Gums, 41825-41827 Lung, 21030 Mandible, 21040-21047 Maxilla, 27080, 21034, 21048-21049 Parotid Gland, 42420-42426",
+          "common_name": "Tumor/Lesion CCheekbone, 21030, 21034, 21048-21049 Cranial Bone, 21181-21184 ...",
+          "subcategory": "Salivary Glands",
+          "isFavorite": false
+        },
+        {
           "code": "40490",
           "description": "Biopsy of lip",
           "common_name": "Biopsy lip",
           "subcategory": "Biopsy",
           "isFavorite": true
+        },
+        {
+          "code": "40530",
+          "description": "Alveolar Ridge Masseter Muscle/Bone, 21295-21296 inpatient/Observation,",
+          "common_name": "Alveolar Ridge Masseter Muscle/Bone, 21295-21296 inpatient/Observation,",
+          "subcategory": "General",
+          "isFavorite": false
         },
         {
           "code": "40808",
@@ -130,6 +144,34 @@
           "isFavorite": false
         },
         {
+          "code": "41820",
+          "description": "Gingivectomy, excision gingiva, each quadrant 41872 Gingivoplasty, each quadrant (specify) ICD-10-CM Diagnostic Codes K06.010 Localized gingival recession, unspecified K06.011 Localized gingival recession, minimal K06.012",
+          "common_name": "Gingivectomy, excision gingiva, each quadrant 41872 Gingivoplasty, each quadr...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "41821",
+          "description": "Operculectomy, excision pericoronal tissues Doctor removes gingiva,",
+          "common_name": "Operculectomy, excision pericoronal tissues Doctor removes gingiva,",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "41822",
+          "description": "Excision of fibrous tuberosities, dentoalveolar structures 19 Hard palate",
+          "common_name": "Excision of fibrous tuberosities, dentoalveolar structures 19 Hard palate",
+          "subcategory": "Palate",
+          "isFavorite": false
+        },
+        {
+          "code": "41823",
+          "description": "Excision of osseous tuberosities, dentoalveolar structures",
+          "common_name": "Excision of osseous tuberosities, dentoalveolar structures",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
           "code": "41825",
           "description": "Excision of lesion or tumor (except listed above), dentoalveolar structures; without repair",
           "common_name": "Excision dentoalveolar lesion",
@@ -193,6 +235,20 @@
           "isFavorite": false
         },
         {
+          "code": "64716",
+          "description": "Neuroplasty and/or transposition; cranial nerve (specify) A cranial nerve is freed from scar tissue and/or moved to a new position Access may be intraoral, extraoral, or a combination, depending on nerve and complexity Inferior alveolar nerve Lingual nerve",
+          "common_name": "Neuroplasty and/or transposition; cranial nerve (specify) A cranial nerve is ...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "64727",
+          "description": "Internal neurolysis, requiring use of operating microscope (List separately in addition to code for neuroplasty) (Neuroplasty includes external neurolysis) RL Inferior alveolar neve Lingual nerve",
+          "common_name": "Internal neurolysis, requiring use of operating microscope (List separately i...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
           "code": "D3410",
           "description": "Apicoectomy \u2014 anterior",
           "common_name": "Apicoectomy anterior",
@@ -225,6 +281,13 @@
           "description": "Retrograde filling \u2014 per root",
           "common_name": "Retrograde filling",
           "subcategory": "Periapical",
+          "isFavorite": false
+        },
+        {
+          "code": "D4264",
+          "description": "Ostectomy, D750 Osteitis, localized (dry socket), 09930 Osteoplasty, 07940 Osteotomy indexing dynamic robotic assisted/robatic navigation, 07939 mandibular, 07941-07943, 07945 segmented/subapical, 07944 Overdenture complete",
+          "common_name": "Ostectomy, D750 Osteitis, localized (dry socket), 09930 Osteoplasty, 07940 Os...",
+          "subcategory": "General",
           "isFavorite": false
         },
         {
@@ -284,10 +347,73 @@
           "isFavorite": false
         },
         {
+          "code": "D7272",
+          "description": "Transseptal fiberotomy, 07291 Trigeminal division block (anesthesia), 09212 Trismus appliance, 05937 Tuberosity reduction fibrous, D7972 osseous, 07485 Tumor, removal, D7440-D7465, U",
+          "common_name": "Transseptal fiberotomy, 07291 Trigeminal division block (anesthesia), 09212 T...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "D7282",
+          "description": "Evaluation, 00120-00180 Examination coral, 00120-00160 Excision hyperplastic tissue, D7970 lesion benign, 07410-D7412 malignant, 07413-D7441 pericoronal gingiva, 07971 salivary gland, 07981 Exostosis (tuberosity) removal lateral, 07471",
+          "common_name": "Evaluation, 00120-00180 Examination coral, 00120-00160 Excision hyperplastic ...",
+          "subcategory": "Exposure",
+          "isFavorite": false
+        },
+        {
           "code": "D7283",
           "description": "Placement of device to facilitate eruption of impacted tooth",
           "common_name": "Exposure & bracketing",
           "subcategory": "Exposure",
+          "isFavorite": false
+        },
+        {
+          "code": "D7291",
+          "description": "Surgery oral, 07111-07999",
+          "common_name": "Surgery oral, 07111-07999",
+          "subcategory": "Exposure",
+          "isFavorite": false
+        },
+        {
+          "code": "D7350",
+          "description": "Viral culture, 00416 Ww Wax up (diagnostic cast), D9950 Wedge, mesial/distal, 04274 Whitening (bleaching)",
+          "common_name": "Viral culture, 00416 Ww Wax up (diagnostic cast), D9950 Wedge, mesial/distal,...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "D7441",
+          "description": "Liner, soft, D5765 Localized osteitis, dry socket, 09930 Lysis and lavage, open, 07871",
+          "common_name": "Liner, soft, D5765 Localized osteitis, dry socket, 09930 Lysis and lavage, op...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "D7521",
+          "description": "Abutments for implants, 06051, 06056-06057 retainers for resin bonded",
+          "common_name": "Abutments for implants, 06051, 06056-06057 retainers for resin bonded",
+          "subcategory": "Fracture",
+          "isFavorite": false
+        },
+        {
+          "code": "D7858",
+          "description": "Joint reconstruction D7865 arthroplasty ICD-10-CM Diagnostic Codes C411 Malignant neoplasm of mandible M26.611 Adhesions and ankylosis of right temporomandibular joint M26.621",
+          "common_name": "Joint reconstruction D7865 arthroplasty ICD-10-CM Diagnostic Codes C411 Malig...",
+          "subcategory": "Excision",
+          "isFavorite": false
+        },
+        {
+          "code": "D7910",
+          "description": "Replacement broken/missing tooth",
+          "common_name": "Replacement broken/missing tooth",
+          "subcategory": "Other Surgery",
+          "isFavorite": false
+        },
+        {
+          "code": "D7948",
+          "description": "LeFort Il or LeFort Ill (osteoplasty of facial bones for midface hypoplasia or retrusion) - without bone graft ICD-10-CM Diagnostic Codes S02.40AA Malar fracture, right side, initial encounter for closed fracture 502.40AB Malar fracture, right side, initial encounter for open fracture ta",
+          "common_name": "LeFort Il or LeFort Ill (osteoplasty of facial bones for midface hypoplasia o...",
+          "subcategory": "Other Surgery",
           "isFavorite": false
         },
         {
@@ -574,11 +700,32 @@
           "isFavorite": false
         },
         {
+          "code": "15115",
+          "description": "Epidermal autograft, face, scalp, eyelids, mouth, neck, ears, orbits, genitalia, hands, feet, and/or multiple digits; first 100 sq cm orless, or 1",
+          "common_name": "Epidermal autograft, face, scalp, eyelids, mouth, neck, ears, orbits, genital...",
+          "subcategory": "Grafts",
+          "isFavorite": false
+        },
+        {
           "code": "15120",
           "description": "Split-thickness autograft, face, scalp, eyelids, mouth, neck, ears, orbits, genitalia; first 100 sq cm",
           "common_name": "STSG face/neck",
           "subcategory": "Skin Grafts",
           "isFavorite": true
+        },
+        {
+          "code": "15135",
+          "description": "Dermal autograft, face, scalp, eyelids, mouth, neck, ears, orbits, genitalia, hands, feet, and/or multiple digits; first 100 sq cm or less, or 1",
+          "common_name": "Dermal autograft, face, scalp, eyelids, mouth, neck, ears, orbits, genitalia,...",
+          "subcategory": "Grafts",
+          "isFavorite": false
+        },
+        {
+          "code": "15155",
+          "description": "Tissue cultured skin autograft, face, scalp, eyelids, mouth, neck,",
+          "common_name": "Tissue cultured skin autograft, face, scalp, eyelids, mouth, neck,",
+          "subcategory": "Skin Grafts",
+          "isFavorite": false
         },
         {
           "code": "15220",
@@ -595,10 +742,52 @@
           "isFavorite": false
         },
         {
+          "code": "15241",
+          "description": "Hair shaft Full- thickness (epidermis and all of dermis) harvested in one cut Y",
+          "common_name": "Hair shaft Full- thickness (epidermis and all of dermis) harvested in one cut Y",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
           "code": "15260",
           "description": "Full thickness graft, free; 20 sq cm or less, nose/ears/eyelids/lips",
           "common_name": "FTSG nose/ears/eyelids/lips",
           "subcategory": "Skin Grafts",
+          "isFavorite": false
+        },
+        {
+          "code": "15261",
+          "description": "Hair shaft Full thickness (epidermis and all of dermis) harvested in one cut",
+          "common_name": "Hair shaft Full thickness (epidermis and all of dermis) harvested in one cut",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "15277",
+          "description": "Application of skin substitute graft to face, scalp, eyelids, mouth, neck, ears, orbits, genitalia, hands, feet, and/or multiple digits, total wound surface area greater than or equal to 100 sq cm; first 100 sq cm wound surface area, or 1",
+          "common_name": "Application of skin substitute graft to face, scalp, eyelids, mouth, neck, ea...",
+          "subcategory": "Skin Grafts",
+          "isFavorite": false
+        },
+        {
+          "code": "15278",
+          "description": "Hospital Services Inpatient/Observation Discharge Management, 99238-99239 Initial Care, 99221-99223 Prolonged, (99418) Same Day Admit/Discharge, 99234- 99236 Hizarov Procedure Application, Bone Fixation Device, 20690- 20692",
+          "common_name": "Hospital Services Inpatient/Observation Discharge Management, 99238-99239 Ini...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "15574",
+          "description": "Formation of direct or tubed pedicle, with or without transfer; forehead, cheeks, chin, mouth, neck, axillae, genitalia, hands or feet a ss Vo Transfer site Teper)",
+          "common_name": "Formation of direct or tubed pedicle, with or without transfer; forehead, che...",
+          "subcategory": "Pedicled Flaps",
+          "isFavorite": false
+        },
+        {
+          "code": "15576",
+          "description": "Formation of direct ortubed pedicle, with or without transfer; eyelids, nose, ears, lips, or intraoral",
+          "common_name": "Formation of direct ortubed pedicle, with or without transfer; eyelids, nose,...",
+          "subcategory": "Pedicled Flaps",
           "isFavorite": false
         },
         {
@@ -1118,12 +1307,54 @@
           "common_name": "Wound VAC >50 sq cm",
           "subcategory": "Wound Care",
           "isFavorite": false
+        },
+        {
+          "code": "D5911",
+          "description": "Medicinal carrier, topical, D1355, 05991 ial/distal wedge, single tooth, D4274 Microabrasion, enamel, 09970 Minimal sedation, 09248 Missed appointment, 9986",
+          "common_name": "Medicinal carrier, topical, D1355, 05991 ial/distal wedge, single tooth, D427...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "D5931",
+          "description": "Occlusal adjustment, 09951-D9952 guard adjustment, 09943 hard full arch, 09944 partial arch, 09946 reline/repait, 09942 soft, full arch, 09945 image, 00240 orthotic device, D7880 adjustment, D7881",
+          "common_name": "Occlusal adjustment, 09951-D9952 guard adjustment, 09943 hard full arch, 0994...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "D5987",
+          "description": "Facility RVU Fup",
+          "common_name": "Facility RVU Fup",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "D5996",
+          "description": "Periodontics, 04210-04323, 04355-04381, 4920, 04999 biologic materials, 04265",
+          "common_name": "Periodontics, 04210-04323, 04355-04381, 4920, 04999 biologic materials, 04265",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "D5999",
+          "description": "Pulp vitality test, D0460 R Radiation carrier, 05983 cone locator, D585, shield, 05984 Radiograph, 00210-00395 implant index, 06190 Recement crown, 06092 implant, D6093",
+          "common_name": "Pulp vitality test, D0460 R Radiation carrier, 05983 cone locator, D585, shie...",
+          "subcategory": "General",
+          "isFavorite": false
         }
       ]
     },
     {
       "name": "Oncology & Ablative",
       "codes": [
+        {
+          "code": "00180",
+          "description": "Examination coral, 00120-00160 Excision hyperplastic tissue, D7970 lesion benign, 07410-D7412 malignant, 07413-D7441 pericoronal gingiva, 07971 salivary gland, 07981 Exostosis (tuberosity) removal lateral, 07471",
+          "common_name": "Examination coral, 00120-00160 Excision hyperplastic tissue, D7970 lesion ben...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
         {
           "code": "11011",
           "description": "Debridement including removal of foreign material associated with open fracture and/or dislocation; skin, subcutaneous tissue, muscle fascia, and muscle and bone",
@@ -1311,6 +1542,13 @@
           "description": "Radical resection of tumor, soft tissue of neck or anterior thorax; \u22655 cm",
           "common_name": "Radical resection neck \u22655cm",
           "subcategory": "Neck Tumor",
+          "isFavorite": false
+        },
+        {
+          "code": "31030",
+          "description": "Sinusotomy, maxillary (antrotomy); radical (Caldwell-Luc) without removal of antrochoanal polyps 31032",
+          "common_name": "Sinusotomy, maxillary (antrotomy); radical (Caldwell-Luc) without removal of ...",
+          "subcategory": "Sinus",
           "isFavorite": false
         },
         {
@@ -1531,6 +1769,13 @@
           "isFavorite": true
         },
         {
+          "code": "41530",
+          "description": "Submucosal ablation of the tongue base, radiofrequency, 1 or more sites, per session Radiofrequency is used to ablate the submucosal tissue at the base of the tongue Explanation Using radiofrequency, the physician ablates submucosal tissues with temperatures in the 60",
+          "common_name": "Submucosal ablation of the tongue base, radiofrequency, 1 or more sites, per ...",
+          "subcategory": "Tongue",
+          "isFavorite": false
+        },
+        {
           "code": "42104",
           "description": "Excision, lesion of palate, uvula; without closure",
           "common_name": "Palate lesion excision",
@@ -1563,6 +1808,20 @@
           "description": "Palatopharyngoplasty (eg, uvulopalatopharyngoplasty)",
           "common_name": "UPPP / Pharyngoplasty",
           "subcategory": "Oropharynx",
+          "isFavorite": false
+        },
+        {
+          "code": "42160",
+          "description": "Zygoma, 21030, 21034 Turbinate Mucosa",
+          "common_name": "Zygoma, 21030, 21034 Turbinate Mucosa",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "42405",
+          "description": "Biopsy of salivary gland; incisional ICD-10-CM Diagnostic Codes 08.0 Malignant neoplasm of submandibular gland 08.1 Malignant neoplasm of sublingual gland",
+          "common_name": "Biopsy of salivary gland; incisional ICD-10-CM Diagnostic Codes 08.0 Malignan...",
+          "subcategory": "Salivary Glands",
           "isFavorite": false
         },
         {
@@ -1655,10 +1914,66 @@
       "name": "Pathology",
       "codes": [
         {
+          "code": "00100",
+          "description": "Relative Value Units/Medicare Edits 00100 Anesthesia for procedures on salivary glands, including biopsy i Work PE MP Total Explanation _",
+          "common_name": "Relative Value Units/Medicare Edits 00100 Anesthesia for procedures on saliva...",
+          "subcategory": "Anesthesia",
+          "isFavorite": false
+        },
+        {
+          "code": "00102",
+          "description": "Biopsy, 00100 Intraoral, 00170 Parotid Gland, 00100 Salivary Gland, 00100 Sublingual Gland, 00100 Submandibutar Gland, 00100 Cleft Lip Repair, 00102 Cleft Palate Repair, 00172 Conscious Sedation, 99151-99157 Dressing Change, 15852 Excision Retropharyngeal tumor, 00174 External Fixation System",
+          "common_name": "Biopsy, 00100 Intraoral, 00170 Parotid Gland, 00100 Salivary Gland, 00100 Sub...",
+          "subcategory": "Salivary Glands",
+          "isFavorite": false
+        },
+        {
+          "code": "00174",
+          "description": "Salivary Glands, 00100 Sedation Moderate, 99155-99157 with Independent Observation, 99151-99153 Skul, 00190 Subcutaneous Tissue Head, 00100 Sublingual Gland, 00100 Submandibutar(Submaxillary",
+          "common_name": "Salivary Glands, 00100 Sedation Moderate, 99155-99157 with Independent Observ...",
+          "subcategory": "Salivary Glands",
+          "isFavorite": false
+        },
+        {
+          "code": "10160",
+          "description": "Facial Bone(s), 21026 Gums, 41800 Lymph Node, 38300-38305 Mandible, 21025 Mouth Dentoalveolar, 41800 Floor of Mouth Extraoral, 41015-41018 Intraoral, 41000-41009 Vestibule, 40800-40801 Palate, 42000 Parotid Gland, 42300-42305 Pharynx, 42700-42725 Salivary Gland, 42300-42320",
+          "common_name": "Facial Bone(s), 21026 Gums, 41800 Lymph Node, 38300-38305 Mandible, 21025 Mou...",
+          "subcategory": "Salivary Glands",
+          "isFavorite": false
+        },
+        {
+          "code": "20692",
+          "description": "Mouth Abscess Incision and Drainage, 40800-40801, 41005-41009, 41015-41018 Biopsy, 40808, 41108 Gst Incision and Drainage, 40800-40801, 41005-41009, 41015-41018 Excision Frenum, 40819 Mouth",
+          "common_name": "Mouth Abscess Incision and Drainage, 40800-40801, 41005-41009, 41015-41018 Bi...",
+          "subcategory": "Biopsy",
+          "isFavorite": false
+        },
+        {
           "code": "21029",
           "description": "Removal by contouring of benign tumor of facial bone",
           "common_name": "Facial bone tumor contouring",
           "subcategory": "Excision",
+          "isFavorite": false
+        },
+        {
+          "code": "31050",
+          "description": "Sinusotomy, sphenoid, with or without biopsy; 31051 with mucosal stripping or removal of polyp(s) Cartilage is dissected to expose the sphenoid",
+          "common_name": "Sinusotomy, sphenoid, with or without biopsy; 31051 with mucosal stripping or...",
+          "subcategory": "Biopsy",
+          "isFavorite": false
+        },
+        {
+          "code": "38500",
+          "description": "Biopsy or excision of lymph node(s); open, superficial 03.321 Acute lymphangitis of abdominal wall 38505",
+          "common_name": "Biopsy or excision of lymph node(s); open, superficial 03.321 Acute lymphangi...",
+          "subcategory": "Biopsy",
+          "isFavorite": false
+        },
+        {
+          "code": "38505",
+          "description": "Muscie, 20206 Salivary Gland, 42400 Nerves Avulsion, 64732-64744 Biopsy, 64795 Decompression, 64716, 64727 Destruction, 64600-64610, 64611-64617 Incision, 64732-64744 Injection",
+          "common_name": "Muscie, 20206 Salivary Gland, 42400 Nerves Avulsion, 64732-64744 Biopsy, 6479...",
+          "subcategory": "Biopsy",
           "isFavorite": false
         },
         {
@@ -1708,6 +2023,13 @@
           "description": "Sialolithotomy; parotid, extraoral or complicated intraoral",
           "common_name": "Sialolithiasis removal parotid",
           "subcategory": "Salivary",
+          "isFavorite": false
+        },
+        {
+          "code": "42400",
+          "description": "Biopsy of salivary gland; needle 42405 _ incisional",
+          "common_name": "Biopsy of salivary gland; needle 42405 _ incisional",
+          "subcategory": "Biopsy",
           "isFavorite": false
         },
         {
@@ -1795,6 +2117,20 @@
           "isFavorite": false
         },
         {
+          "code": "42800",
+          "description": "Biopsy; oropharynx Epiglottis Vocal cord Oropharynx. Cricoid cartilage region Hypopharynx region Esophagus gland W",
+          "common_name": "Biopsy; oropharynx Epiglottis Vocal cord Oropharynx. Cricoid cartilage region...",
+          "subcategory": "Biopsy",
+          "isFavorite": false
+        },
+        {
+          "code": "42804",
+          "description": "Biopsy; nasopharynx, visible lesion, simple 42806 nasopharynx, survey for unknown primary lesion",
+          "common_name": "Biopsy; nasopharynx, visible lesion, simple 42806 nasopharynx, survey for unk...",
+          "subcategory": "Biopsy",
+          "isFavorite": false
+        },
+        {
           "code": "42810",
           "description": "Excision branchial cleft cyst or vestige, confined to skin and subcutaneous tissues",
           "common_name": "Branchial cleft cyst excision (superficial)",
@@ -1806,6 +2142,20 @@
           "description": "Excision branchial cleft cyst, vestige, or fistula, extending beneath subcutaneous tissues and/or into pharynx",
           "common_name": "Branchial cleft cyst excision (deep)",
           "subcategory": "Cyst",
+          "isFavorite": false
+        },
+        {
+          "code": "70380",
+          "description": "Radiologic examination, salivary gland for calculus by the medical record documentation should be reported. A salivary gland is injected with contrast medium for a separately reportable imaging procedure Relative Value Units/Medicare Edits Non-Faciity RVU",
+          "common_name": "Radiologic examination, salivary gland for calculus by the medical record doc...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "70390",
+          "description": "Sialography, radiological supervision and interpretation Main salivary glands. The injection may highlight glands, ducts, or both Parotid 7",
+          "common_name": "Sialography, radiological supervision and interpretation Main salivary glands...",
+          "subcategory": "Salivary Glands",
           "isFavorite": false
         }
       ]
@@ -1896,6 +2246,48 @@
           "common_name": "TMJ arthroscopy surgical",
           "subcategory": "Arthroscopy",
           "isFavorite": false
+        },
+        {
+          "code": "31051",
+          "description": "Skin Lesion, 11102-11107 Temporomandibular Joint, 29800 Throat, 42800-42806 Tongue, 41100-41105 Uvuia, 42100 Blepharoplasty, 15820-15823 Blepharospasm",
+          "common_name": "Skin Lesion, 11102-11107 Temporomandibular Joint, 29800 Throat, 42800-42806 T...",
+          "subcategory": "Tongue",
+          "isFavorite": false
+        },
+        {
+          "code": "70260",
+          "description": "Teeth, 70300-70320 with Contrast Salivary Gland, 70390 Temporomandibular Joint (TMI), 70328-70832 Z-Plasty, 41520 Zygoma Fracture Treatment, 21355-21366 Reconstruction, 21270 Zygomatic Arch Fracture Treatment",
+          "common_name": "Teeth, 70300-70320 with Contrast Salivary Gland, 70390 Temporomandibular Join...",
+          "subcategory": "Mandible Fractures",
+          "isFavorite": false
+        },
+        {
+          "code": "70328",
+          "description": "Radiologic examination, temporomandibular joint, open and closed mouth; unilateral 70330 _ bilateral Upper joint space Articular disc Lower joint space (meniscus) Condyle Detail of TMJ",
+          "common_name": "Radiologic examination, temporomandibular joint, open and closed mouth; unila...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "70332",
+          "description": "Temporomandibular joint arthrography, radiological supervision and interpretation Upper joint space Articular disc Lower joint space (meniscus)",
+          "common_name": "Temporomandibular joint arthrography, radiological supervision and interpreta...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "70336",
+          "description": "Magnetic resonance (eg, proton) imaging, temporomandibular joint(s) ke Coneylar ROsesS",
+          "common_name": "Magnetic resonance (eg, proton) imaging, temporomandibular joint(s) ke Coneyl...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "99245",
+          "description": "Contouring Cranial Bones, 21181 Forehead, 21137-21138 Frontal Sinus Wall, 21139 Septoplasty, 30520 Silicone injections, 11950-11954 Tumor Facial Bone, 21029 Coronoidectomy Temporomandibular Joint, 21070 Cranial Bone Reconstruction Extracranial, 21181-21184 (Cranial Nerve",
+          "common_name": "Contouring Cranial Bones, 21181 Forehead, 21137-21138 Frontal Sinus Wall, 211...",
+          "subcategory": "Sinus",
+          "isFavorite": false
         }
       ]
     },
@@ -1914,6 +2306,13 @@
           "description": "Incision and drainage of abscess; complicated or multiple",
           "common_name": "I&D abscess complicated/multiple",
           "subcategory": "Skin",
+          "isFavorite": false
+        },
+        {
+          "code": "10120",
+          "description": "Incision and removal of foreign body, subcutaneous tissues; simple 10121 Incision and removal of foreign body, subcutaneous tissues; complicated 20520 Removal of foreign body in muscle or tendon sheath; simple 20670 Removal of implant; superficial (eg, buried wire, pin or rod)",
+          "common_name": "Incision and removal of foreign body, subcutaneous tissues; simple 10121 Inci...",
+          "subcategory": "Implant",
           "isFavorite": false
         },
         {
@@ -1970,6 +2369,13 @@
           "description": "Intraoral I&D abscess, masticator space",
           "common_name": "I&D masticator space intraoral",
           "subcategory": "Intraoral",
+          "isFavorite": false
+        },
+        {
+          "code": "41010",
+          "description": "Tt 331 0.17 659 Facility RVU Work PE MP",
+          "common_name": "Tt 331 0.17 659 Facility RVU Work PE MP",
+          "subcategory": "General",
           "isFavorite": false
         },
         {
@@ -2048,6 +2454,13 @@
           "isFavorite": false
         },
         {
+          "code": "12021",
+          "description": "Superficial, 12020 with Packing, 12021 Wrist Arthrocentesis, 20605-20606 Bursa Aspiration or Injection, 20605-20606 xX Xray Facial Bones, 70140-70150 X-ray",
+          "common_name": "Superficial, 12020 with Packing, 12021 Wrist Arthrocentesis, 20605-20606 Burs...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
           "code": "12051",
           "description": "Layered closure of wounds of face; 2.5 cm or less",
           "common_name": "Layered closure face \u22642.5cm",
@@ -2083,6 +2496,13 @@
           "isFavorite": false
         },
         {
+          "code": "12057",
+          "description": "Layered, 12051-12057 Simple, 12011-12018 Superficial, 12011-12018 chin Complex, 13131-13133 Intermediate, 12051-12057 Layered, 12051-12057 Simple, 12011-12018 Superficial, 12011-12018 Ear, Ears",
+          "common_name": "Layered, 12051-12057 Simple, 12011-12018 Superficial, 12011-12018 chin Comple...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
           "code": "13131",
           "description": "Complex repair, forehead, cheeks, chin, mouth, neck, axillae, genitalia, hands, and/or feet; 1.1 to 2.5 cm",
           "common_name": "Complex repair face 1.1-2.5cm",
@@ -2101,6 +2521,27 @@
           "description": "Complex repair, forehead, cheeks, chin, mouth, neck; each additional 5 cm or less",
           "common_name": "Complex repair face add'l 5cm",
           "subcategory": "Laceration",
+          "isFavorite": false
+        },
+        {
+          "code": "13151",
+          "description": "Repair, complex, eyelids, nose, ears and/or lips; 1.1 cm to 2.5 cm 13152 2.6cmto7.5cm",
+          "common_name": "Repair, complex, eyelids, nose, ears and/or lips; 1.1 cm to 2.5 cm 13152 2.6c...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "13160",
+          "description": "Complicated, 13160, Extensive, 13160 Skin and Subcutaneous Tissue Simple, 12020 with Packing, 12021 Superficial, 12020 with Packing, 12021 Exploration Penetrating Neck, 20100 Penetrating Trauma, 20100",
+          "common_name": "Complicated, 13160, Extensive, 13160 Skin and Subcutaneous Tissue Simple, 120...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "20206",
+          "description": "Salivary Gland, 42400 Soft Tissue Drainage, 10030 Fistula Nose Repair, 30580-30600 Fixation (Device) Application, External, 20690-20694 Insertion, 20690-20694 Interdental without Fracture, 21497 Removal",
+          "common_name": "Salivary Gland, 42400 Soft Tissue Drainage, 10030 Fistula Nose Repair, 30580-...",
+          "subcategory": "Fractures",
           "isFavorite": false
         },
         {
@@ -2524,6 +2965,13 @@
           "isFavorite": false
         },
         {
+          "code": "30100",
+          "description": "Bleed, 30901-30906 Endoscopy Surgical, 31276 Fracture Treatment",
+          "common_name": "Bleed, 30901-30906 Endoscopy Surgical, 31276 Fracture Treatment",
+          "subcategory": "Fractures",
+          "isFavorite": false
+        },
+        {
           "code": "40830",
           "description": "Closure of laceration, vestibule of mouth; 2.5 cm or less",
           "common_name": "Vestibule laceration \u22642.5cm",
@@ -2552,6 +3000,13 @@
           "isFavorite": false
         },
         {
+          "code": "64405",
+          "description": "Neurolytic, 64600-64610",
+          "common_name": "Neurolytic, 64600-64610",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
           "code": "64831",
           "description": "Suture of digital nerve, hand or foot; 1 nerve",
           "common_name": "Digital nerve repair",
@@ -2566,6 +3021,20 @@
           "isFavorite": false
         },
         {
+          "code": "64864",
+          "description": "Suture of facial nerve; extracranial 64865",
+          "common_name": "Suture of facial nerve; extracranial 64865",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "64872",
+          "description": "Suture of nerve; requiring secondary or delayed suture (List separately in addition to code for primary neurorrhaphy)",
+          "common_name": "Suture of nerve; requiring secondary or delayed suture (List separately in ad...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
           "code": "64885",
           "description": "Nerve graft (includes obtaining graft), head or neck; up to 4 cm",
           "common_name": "Nerve graft head/neck \u22644cm",
@@ -2577,6 +3046,13 @@
           "description": "Nerve graft (includes obtaining graft), head or neck; more than 4 cm",
           "common_name": "Nerve graft head/neck >4cm",
           "subcategory": "Nerve Repair",
+          "isFavorite": false
+        },
+        {
+          "code": "D7660",
+          "description": "Zygomatic arch, fracture treatment",
+          "common_name": "Zygomatic arch, fracture treatment",
+          "subcategory": "Fracture",
           "isFavorite": false
         }
       ]
@@ -2609,6 +3085,13 @@
           "code": "00192",
           "description": "Anesthesia for procedures on facial bones or skull; radical surgery",
           "common_name": "General anesthesia radical face surgery",
+          "subcategory": "Anesthesia",
+          "isFavorite": false
+        },
+        {
+          "code": "20693",
+          "description": "Adjustment or revision of external fixation system requiring anesthesia (eg, new pin",
+          "common_name": "Adjustment or revision of external fixation system requiring anesthesia (eg, ...",
           "subcategory": "Anesthesia",
           "isFavorite": false
         },
@@ -2828,12 +3311,68 @@
           "common_name": "Moderate sedation diff MD \u22655yrs",
           "subcategory": "Sedation",
           "isFavorite": false
+        },
+        {
+          "code": "D9120",
+          "description": "Bruxism appliance, D9947-D9946 C Caries application of inhibiting medication, 01354-01355 Carrier medicament, periodontal, D",
+          "common_name": "Bruxism appliance, D9947-D9946 C Caries application of inhibiting medication,...",
+          "subcategory": "Adjunctive",
+          "isFavorite": false
+        },
+        {
+          "code": "D9248",
+          "description": "Analysis saliva sample, DO418 Anesthesia, 09210-09248 block regional, 09211 trigeminal, D9212 deep or general, each 15 minutes, 09223 evaluation, deep or general, D9219 intravenous moderate sedation, each 15 minutes, D9243 local in conjunction with surgical proce- dures, 09215",
+          "common_name": "Analysis saliva sample, DO418 Anesthesia, 09210-09248 block regional, 09211 t...",
+          "subcategory": "Adjunctive",
+          "isFavorite": false
+        },
+        {
+          "code": "D9410",
+          "description": "Nutrition, counseling, 01310 0)",
+          "common_name": "Nutrition, counseling, 01310 0)",
+          "subcategory": "Adjunctive",
+          "isFavorite": false
+        },
+        {
+          "code": "D9950",
+          "description": "Odontogenic cyst, removal, 07450-07451",
+          "common_name": "Odontogenic cyst, removal, 07450-07451",
+          "subcategory": "Adjunctive",
+          "isFavorite": false
+        },
+        {
+          "code": "D9953",
+          "description": "Facility RVU",
+          "common_name": "Facility RVU",
+          "subcategory": "Adjunctive",
+          "isFavorite": false
+        },
+        {
+          "code": "D9974",
+          "description": "Blood glucose testing, D0412 HbAtc, DO417 Bone autogenous harvest, D7295 replacement graft, D7953 tissue excision, D7471-07490 Bridge implant/abutment supported, D6068- 106077, 06098-D60",
+          "common_name": "Blood glucose testing, D0412 HbAtc, DO417 Bone autogenous harvest, D7295 repl...",
+          "subcategory": "Adjunctive",
+          "isFavorite": false
+        },
+        {
+          "code": "D9999",
+          "description": "Lateral exostosis, removal, 07471 LeFort osteotomy, 07946-07947 MHosteotomy, D7948-D7949 lil osteotomy, D7948-D7949 Lesions, D7410-D7465 destruction, 07465 06080-06199 Lesions",
+          "common_name": "Lateral exostosis, removal, 07471 LeFort osteotomy, 07946-07947 MHosteotomy, ...",
+          "subcategory": "Adjunctive",
+          "isFavorite": false
         }
       ]
     },
     {
       "name": "Implants & Preprosthetic",
       "codes": [
+        {
+          "code": "00386",
+          "description": "Unerupted tooth exposure, 07280 Vv Vaccination administration, 01701-D1707, D1781- 01783 counseling, D1301 'Vestibuloplasty, D7340-D7350 Viral culture, 00416 Ww Wax up (diagnostic cast), D9950 Wedge, mesial/distal, 04274 Whitening (bleaching)",
+          "common_name": "Unerupted tooth exposure, 07280 Vv Vaccination administration, 01701-D1707, D...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
         {
           "code": "31295",
           "description": "Nasal/sinus endoscopy, surgical, with dilation of maxillary sinus ostium",
@@ -2902,6 +3441,27 @@
           "description": "Surgical placement: eposteal implant",
           "common_name": "Eposteal implant",
           "subcategory": "Implant Placement",
+          "isFavorite": false
+        },
+        {
+          "code": "D6050",
+          "description": "Plasma rich protein, autolagous, 07921 Precision attachment, 05862 Preparation genetic sample, 00422 saliva samples, 00417 Preventive, D1110-D1120,D1301-D1330,D1353-",
+          "common_name": "Plasma rich protein, autolagous, 07921 Precision attachment, 05862 Preparatio...",
+          "subcategory": "Implant",
+          "isFavorite": false
+        },
+        {
+          "code": "D6055",
+          "description": "Conscious sedation, dental, D9230-D9248 Coronavirus testing, D0604-D0606 Coronectomy, intentional, 07251 Coronoidectomy,, 07991 Corticotomy, D7296-D7297 Counseling disease prevention, D1310-D1320 immunization, D1301 antimicrobial delivery device, 04381 Crown",
+          "common_name": "Conscious sedation, dental, D9230-D9248 Coronavirus testing, D0604-D0606 Coro...",
+          "subcategory": "Implant",
+          "isFavorite": false
+        },
+        {
+          "code": "D6089",
+          "description": "Non-FacilityRVU",
+          "common_name": "Non-FacilityRVU",
+          "subcategory": "Implant",
           "isFavorite": false
         },
         {
@@ -3083,6 +3643,27 @@
       "name": "Miscellaneous",
       "codes": [
         {
+          "code": "11000",
+          "description": "Debridement of extensive eczematous or infected skin; up to 10",
+          "common_name": "Debridement of extensive eczematous or infected skin; up to 10",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "11001",
+          "description": "Full head and neck 9",
+          "common_name": "Full head and neck 9",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "11010",
+          "description": "Al 8.67 0.74 13.6 11011 4.94 9.04 0.95 14.93 11012 6.87 11.37 131 19.55 Facility RVU Work PE MP Total 11010 Ald 33 074 8.23 11011 494 29 0.95 8.79 11012 6.87 417 131 1235 FUD Status",
+          "common_name": "Al 8.67 0.74 13.6 11011 4.94 9.04 0.95 14.93 11012 6.87 11.37 131 19.55 Facil...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
           "code": "11920",
           "description": "Tattooing, intradermal introduction of insoluble opaque pigments; 6.0 sq cm or less",
           "common_name": "Tattooing/micropigmentation \u22646 sq cm",
@@ -3132,6 +3713,13 @@
           "isFavorite": false
         },
         {
+          "code": "15004",
+          "description": "Surgical preparation or creation of recipient site by excision of open wounds, burn eschar, or scar (including subcutaneous tissues), or incisional release of scar contracture, face, scalp, eyelids, mouth, neck, ears, orbits, genitalia, hands, feet and/or multiple digits; first 100 sq cm or 1",
+          "common_name": "Surgical preparation or creation of recipient site by excision of open wounds...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
           "code": "15760",
           "description": "Graft; composite (eg, full thickness of external ear or nasal ala)",
           "common_name": "Composite graft (ear/nose)",
@@ -3142,6 +3730,27 @@
           "code": "15770",
           "description": "Graft; derma-fat-fascia",
           "common_name": "Derma-fat-fascia graft",
+          "subcategory": "Grafts",
+          "isFavorite": false
+        },
+        {
+          "code": "15773",
+          "description": "Grafting of autologous fat harvested by liposuction technique toface, eyelids, mouth, neck, ears, orbits, genitalia, hands, and/or feet; 25 cc or less injectate each additional 25 ccinjectate, or part thereof (List separately in addition to code for primary procedure)",
+          "common_name": "Grafting of autologous fat harvested by liposuction technique toface, eyelids...",
+          "subcategory": "Grafts",
+          "isFavorite": false
+        },
+        {
+          "code": "15774",
+          "description": "Explanation Autologous fat grafting may be utilized in many areas of soft tissue augmentation or reconstruction, including congenital defects, contouring of face or breasts, and scarring as a result of burns, radiation, surgical procedures,",
+          "common_name": "Explanation Autologous fat grafting may be utilized in many areas of soft tis...",
+          "subcategory": "Grafts",
+          "isFavorite": false
+        },
+        {
+          "code": "15775",
+          "description": "Punch graft for hair transplant; 1 to 15 punch grafts 15776 more than 15 punch grafts Hair shaft Epidermis Sebaceous gland Dermis A",
+          "common_name": "Punch graft for hair transplant; 1 to 15 punch grafts 15776 more than 15 punc...",
           "subcategory": "Grafts",
           "isFavorite": false
         },
@@ -3157,6 +3766,13 @@
           "description": "Abrasion; each additional 4 lesions or less",
           "common_name": "Dermabrasion add'l lesions",
           "subcategory": "Scar Revision",
+          "isFavorite": false
+        },
+        {
+          "code": "15788",
+          "description": "Chemical peel, facial; epidermal 15789 dermal Stratum corneum)",
+          "common_name": "Chemical peel, facial; epidermal 15789 dermal Stratum corneum)",
+          "subcategory": "General",
           "isFavorite": false
         },
         {
@@ -3213,6 +3829,34 @@
           "description": "Destruction of cutaneous vascular proliferative lesions; >50 sq cm",
           "common_name": "Vascular lesion destruction >50 sq cm",
           "subcategory": "Lesion",
+          "isFavorite": false
+        },
+        {
+          "code": "20606",
+          "description": "Aspiration, 20605-20606 Injection, 20605-20606 Killian Operation, 31020 Sinusotomy, Frontal, 31070-31087 L Laser Surgery Lesion",
+          "common_name": "Aspiration, 20605-20606 Injection, 20605-20606 Killian Operation, 31020 Sinus...",
+          "subcategory": "Sinus",
+          "isFavorite": false
+        },
+        {
+          "code": "20694",
+          "description": "Internal, 20670-20680 Fixation, Tongue, 41510-41512 Flap Delay of Flap at Trunk at Eyelids, Nose Ears, or Lips, 15630 Fasciocutaneous, 15733 Free",
+          "common_name": "Internal, 20670-20680 Fixation, Tongue, 41510-41512 Flap Delay of Flap at Tru...",
+          "subcategory": "Pedicled Flaps",
+          "isFavorite": false
+        },
+        {
+          "code": "20920",
+          "description": "Fascia lata graft; by stripper ee Wlae crest Sartorius muscle, Af",
+          "common_name": "Fascia lata graft; by stripper ee Wlae crest Sartorius muscle, Af",
+          "subcategory": "Grafts",
+          "isFavorite": false
+        },
+        {
+          "code": "20922",
+          "description": "Fascia lata graft; by incision and area exposure, complex or sheet Sartorius muscle Tensor fascia lata muscle Graft may be harvested from the Subfascial structures",
+          "common_name": "Fascia lata graft; by incision and area exposure, complex or sheet Sartorius ...",
+          "subcategory": "Grafts",
           "isFavorite": false
         },
         {
@@ -3307,6 +3951,13 @@
           "isFavorite": false
         },
         {
+          "code": "30465",
+          "description": "Repair of nasal vestibular stenosis (eg, spreader grafting, lateral nasal wall reconstruction",
+          "common_name": "Repair of nasal vestibular stenosis (eg, spreader grafting, lateral nasal wal...",
+          "subcategory": "Grafts",
+          "isFavorite": false
+        },
+        {
           "code": "30468",
           "description": "Repair of nasal valve collapse with subcutaneous/submucosal lateral wall implant(s)",
           "common_name": "Nasal valve repair (implant)",
@@ -3363,6 +4014,13 @@
           "isFavorite": false
         },
         {
+          "code": "30801",
+          "description": "Aa EE) O17 6.64 30802 208",
+          "common_name": "Aa EE) O17 6.64 30802 208",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
           "code": "30901",
           "description": "Control nasal hemorrhage, anterior, simple",
           "common_name": "Epistaxis control anterior simple",
@@ -3391,6 +4049,55 @@
           "isFavorite": false
         },
         {
+          "code": "31020",
+          "description": "Sinusotomy, maxillary (antrotomy); intranasal 10 1(2) 50",
+          "common_name": "Sinusotomy, maxillary (antrotomy); intranasal 10 1(2) 50",
+          "subcategory": "Sinus",
+          "isFavorite": false
+        },
+        {
+          "code": "31040",
+          "description": "Pterygomaxillary fossa surgery, any approach Posterior a wall opening pte omaxiliary Anterior wall of maxillary sinus Wiessa",
+          "common_name": "Pterygomaxillary fossa surgery, any approach Posterior a wall opening pte oma...",
+          "subcategory": "Sinus",
+          "isFavorite": false
+        },
+        {
+          "code": "31075",
+          "description": "Sinusotomy frontal; transorbital, unilateral (for mucocele or osteoma, Lynch type)",
+          "common_name": "Sinusotomy frontal; transorbital, unilateral (for mucocele or osteoma, Lynch ...",
+          "subcategory": "Sinus",
+          "isFavorite": false
+        },
+        {
+          "code": "31080",
+          "description": "Sinusotomy frontal; obliterative without osteoplastic flap, brow incision (includes ablation) obliterative, without osteoplastic flap, coronal incision (includes ablation) 31081",
+          "common_name": "Sinusotomy frontal; obliterative without osteoplastic flap, brow incision (in...",
+          "subcategory": "Pedicled Flaps",
+          "isFavorite": false
+        },
+        {
+          "code": "31084",
+          "description": "Sinusotomy frontal; obliterative, with osteoplastic flap, brow incision 31085 obliterative, with osteoplastic flap, coronal incision Coronal",
+          "common_name": "Sinusotomy frontal; obliterative, with osteoplastic flap, brow incision 31085...",
+          "subcategory": "Pedicled Flaps",
+          "isFavorite": false
+        },
+        {
+          "code": "31086",
+          "description": "Sinusotomy frontal; nonobliterative, with osteoplastic flap, brow incision 31087",
+          "common_name": "Sinusotomy frontal; nonobliterative, with osteoplastic flap, brow incision 31087",
+          "subcategory": "Pedicled Flaps",
+          "isFavorite": false
+        },
+        {
+          "code": "31090",
+          "description": "Sinusotomy, unilateral, 3 or more paranasal sinuses (frontal, maxillary, ethmoid, sphenoid) Sinuses Frontal Ethmoid",
+          "common_name": "Sinusotomy, unilateral, 3 or more paranasal sinuses (frontal, maxillary, ethm...",
+          "subcategory": "Sinus",
+          "isFavorite": false
+        },
+        {
           "code": "41510",
           "description": "Suture of tongue to lip for micrognathia (Douglas procedure)",
           "common_name": "Tongue-lip adhesion (Douglas)",
@@ -3412,6 +4119,13 @@
           "isFavorite": false
         },
         {
+          "code": "42299",
+          "description": "Unlisted procedure, palate, uvula Explanation This code is used to report procedures performed on the palate or uvula for which there is no code specifically describing the procedure. Relative Value Units/Medicare Edits Non-FacilityRVU",
+          "common_name": "Unlisted procedure, palate, uvula Explanation This code is used to report pro...",
+          "subcategory": "Palate",
+          "isFavorite": false
+        },
+        {
           "code": "42700",
           "description": "Incision and drainage abscess; peritonsillar",
           "common_name": "Peritonsillar abscess I&D",
@@ -3430,6 +4144,20 @@
           "description": "Incision and drainage abscess; retropharyngeal or parapharyngeal, external approach",
           "common_name": "Parapharyngeal abscess I&D (external)",
           "subcategory": "Throat",
+          "isFavorite": false
+        },
+        {
+          "code": "42808",
+          "description": "Excision or destruction of lesion of pharynx, any method Choanae",
+          "common_name": "Excision or destruction of lesion of pharynx, any method Choanae",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "42809",
+          "description": "Removal of foreign body from pharynx Choanae Parotid gland Nasopharynx",
+          "common_name": "Removal of foreign body from pharynx Choanae Parotid gland Nasopharynx",
+          "subcategory": "Salivary Glands",
           "isFavorite": false
         },
         {
@@ -3458,6 +4186,27 @@
           "description": "Tonsillectomy, primary or secondary; age 12 or over",
           "common_name": "Tonsillectomy \u226512 yrs",
           "subcategory": "Throat",
+          "isFavorite": false
+        },
+        {
+          "code": "42900",
+          "description": "Palatal with Bone Graft, 21145-21160, 21188 Closed Treatment Pharynx .",
+          "common_name": "Palatal with Bone Graft, 21145-21160, 21188 Closed Treatment Pharynx .",
+          "subcategory": "Bone Grafts",
+          "isFavorite": false
+        },
+        {
+          "code": "42953",
+          "description": "Pharyngoesophageal repair Horizontal incision",
+          "common_name": "Pharyngoesophageal repair Horizontal incision",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "42960",
+          "description": "Control oropharyngeal hemorrhage, primary or secondary (eg, post-tonsillectomy); simple complicated, requiring hospitalization with secondary surgical intervention 42961 42962 (FAY _ Epiglottis oe",
+          "common_name": "Control oropharyngeal hemorrhage, primary or secondary (eg, post-tonsillectom...",
+          "subcategory": "General",
           "isFavorite": false
         },
         {
@@ -3507,6 +4256,83 @@
           "description": "Otoplasty, protruding ear, with or without size reduction",
           "common_name": "Otoplasty",
           "subcategory": "Cosmetic",
+          "isFavorite": false
+        },
+        {
+          "code": "70140",
+          "description": "Radiologic examination, facial bones; less than 3 views 70150 complete, minimum of 3 views tal tt Frontal Orbital rim",
+          "common_name": "Radiologic examination, facial bones; less than 3 views 70150 complete, minim...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "70160",
+          "description": "Radiologic examination, nasal bones, complete, minimum of 3 views ON Root",
+          "common_name": "Radiologic examination, nasal bones, complete, minimum of 3 views ON Root",
+          "subcategory": "Nasal",
+          "isFavorite": false
+        },
+        {
+          "code": "70200",
+          "description": "Radiologic examination; orbits, complete, minimum of 4 views Foramen of tic nerve oP Frontal bone _",
+          "common_name": "Radiologic examination; orbits, complete, minimum of 4 views Foramen of tic n...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "70210",
+          "description": "Radiologic examination, sinuses, paranasal, less than 3 views 70220 Radiologic examination, sinuses, paranasal, complete, minimum of 3 views Maxillary Frontal in Ethmoid mie SF Sphenoid Soy",
+          "common_name": "Radiologic examination, sinuses, paranasal, less than 3 views 70220 Radiologi...",
+          "subcategory": "Sinus",
+          "isFavorite": false
+        },
+        {
+          "code": "70240",
+          "description": "Radiologic examination, sella turcica Sella turcica g ' z 2 2 3 2",
+          "common_name": "Radiologic examination, sella turcica Sella turcica g ' z 2 2 3 2",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "70250",
+          "description": "Radiological examination, skull; less than 4 views 70260",
+          "common_name": "Radiological examination, skull; less than 4 views 70260",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "70300",
+          "description": "Radiologic examination, teeth; single view 70310 _ partial examination, less than full mouth a 70320 complete, full mouth 3 1 Facial surface 7 iy Occlusal surface Incisal 2 2",
+          "common_name": "Radiologic examination, teeth; single view 70310 _ partial examination, less ...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "70350",
+          "description": "Cephalogram, orthodontic ICD-10-CM Diagnostic Codes K08.21 Minimal atrophy of the mandible K08.22 Moderate atrophy of the mandible K08.23 Severe atrophy of the mandible K08.24 Minimal atrophy of maxilla K08.25 Moderate atrophy of the maxilla K08.26 Severe atrophy of the maxilla 26.211",
+          "common_name": "Cephalogram, orthodontic ICD-10-CM Diagnostic Codes K08.21 Minimal atrophy of...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "70355",
+          "description": "Orthopantogram (eg, panoramic x-ray) ad i givin",
+          "common_name": "Orthopantogram (eg, panoramic x-ray) ad i givin",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "70486",
+          "description": "Computed tomography, maxillofacial area; without contrast material 70487",
+          "common_name": "Computed tomography, maxillofacial area; without contrast material 70487",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "70487",
+          "description": "Maxilia, 70487 without Contrast Face, 70486 Maxilla, 70486 without Contrast, Followed by Contrast Face, 70488 Manilla, 70488 condyle Mandible, Reconstruction, 21247",
+          "common_name": "Maxilia, 70487 without Contrast Face, 70486 Maxilla, 70486 without Contrast, ...",
+          "subcategory": "General",
           "isFavorite": false
         },
         {
@@ -3573,6 +4399,48 @@
           "isFavorite": false
         },
         {
+          "code": "99242",
+          "description": "Office or other outpatient consultation for a new orestablished patient, which requires a medically appropriate history and/or examination and straightforward medical decision making. When using total time on the date of the encounter for code selection, 20 minutes must be met or exceeded.",
+          "common_name": "Office or other outpatient consultation for a new orestablished patient, whic...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "99243",
+          "description": "Office or other outpatient consultation for a new or established patient, which requires a medically appropriate history and/or examination and low level of medical decision making. When using total time on the date of the encounter for code selection, 30 minutes must be met or exceeded.",
+          "common_name": "Office or other outpatient consultation for a new or established patient, whi...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "99244",
+          "description": "Office or other outpatient consultation fora new or established patient, which requires a medically appropriate history and/or examination and moderate level of medical decision making. When using total time on the date of the encounter for code selection, 40 minutes must be met or exceeded.",
+          "common_name": "Office or other outpatient consultation fora new or established patient, whic...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "99252",
+          "description": "Inpatient or observation consultation for a new or established patient, which requires a medically appropriate history and/or examination and straightforward medical decision making. When using total time on the date of the encounter for code selection, 35 minutes must be met or exceeded.",
+          "common_name": "Inpatient or observation consultation for a new or established patient, which...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "99253",
+          "description": "Inpatient or observation consultation for a new or established patient, which requires a medically appropriate history and/or examination and low level of medical decision making. When using total time on the date of the encounter for code selection, 45 minutes must be met or exceeded.",
+          "common_name": "Inpatient or observation consultation for a new or established patient, which...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "99255",
+          "description": "Interprofessional Online/Telephone Referral,",
+          "common_name": "Interprofessional Online/Telephone Referral,",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
           "code": "99281",
           "description": "Emergency department visit (level 1)",
           "common_name": "ED visit level 1",
@@ -3613,14 +4481,21 @@
           "common_name": "Exparel injection",
           "subcategory": "Injection",
           "isFavorite": false
+        },
+        {
+          "code": "D0470",
+          "description": "Closure oroantral fistula, D7260 sinus perforation, D7261 Collection autologous blood, 07921 for culture and sensitivity microorganisms, 00415 viral, 0416 genetic sample, 00422 saliva samples, D0417",
+          "common_name": "Closure oroantral fistula, D7260 sinus perforation, D7261 Collection autologo...",
+          "subcategory": "General",
+          "isFavorite": false
         }
       ]
     }
   ],
   "metadata": {
-    "total_codes": 508,
-    "source": "Extracted from Optum Current Procedural Coding Expert 2024 PDF + OMFS clinical expertise",
-    "extracted_date": "2026-03-12",
+    "total_codes": 633,
+    "source": "Optum Current Procedural Coding Expert 2024 + Optum OMS Coding Guide + OMFS clinical expertise",
+    "extracted_date": "2026-03-13",
     "categories_count": 12
   }
 }
