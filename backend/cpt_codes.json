@@ -411,8 +411,8 @@
         },
         {
           "code": "D7948",
-          "description": "LeFort Il or LeFort Ill (osteoplasty of facial bones for midface hypoplasia or retrusion) - without bone graft ICD-10-CM Diagnostic Codes S02.40AA Malar fracture, right side, initial encounter for closed fracture 502.40AB Malar fracture, right side, initial encounter for open fracture ta",
-          "common_name": "LeFort Il or LeFort Ill (osteoplasty of facial bones for midface hypoplasia o...",
+          "description": "LeFort Il or LeFort (osteoplasty of facial bones for midface hypoplasia or retrusion) - without bone graft ICD-10-CM Diagnostic Codes S02.40AA Malar fracture, right side, initial encounter for closed fracture 502.40AB Malar fracture, right side, initial encounter for open fracture ta",
+          "common_name": "LeFort Il or LeFort (osteoplasty of facial bones for midface hypoplasia o...",
           "subcategory": "Other Surgery",
           "isFavorite": false
         },
@@ -542,29 +542,29 @@
         },
         {
           "code": "21154",
-          "description": "Reconstruction midface, Le Fort III (extracranial); without Le Fort I",
-          "common_name": "Le Fort III without Le Fort I",
+          "description": "Reconstruction midface, Le Fort (extracranial); without Le Fort I",
+          "common_name": "Le Fort without Le Fort I",
           "subcategory": "Le Fort II/III",
           "isFavorite": false
         },
         {
           "code": "21155",
-          "description": "Reconstruction midface, Le Fort III (extracranial); with Le Fort I",
-          "common_name": "Le Fort III with Le Fort I",
+          "description": "Reconstruction midface, Le Fort (extracranial); with Le Fort I",
+          "common_name": "Le Fort with Le Fort I",
           "subcategory": "Le Fort II/III",
           "isFavorite": false
         },
         {
           "code": "21159",
-          "description": "Reconstruction midface, Le Fort III (extra/intracranial) with forehead; without Le Fort I",
-          "common_name": "Le Fort III + forehead, no Le Fort I",
+          "description": "Reconstruction midface, Le Fort (extra/intracranial) with forehead; without Le Fort I",
+          "common_name": "Le Fort + forehead, no Le Fort I",
           "subcategory": "Le Fort II/III",
           "isFavorite": false
         },
         {
           "code": "21160",
-          "description": "Reconstruction midface, Le Fort III (extra/intracranial) with forehead; with Le Fort I",
-          "common_name": "Le Fort III + forehead + Le Fort I",
+          "description": "Reconstruction midface, Le Fort (extra/intracranial) with forehead; with Le Fort I",
+          "common_name": "Le Fort + forehead + Le Fort I",
           "subcategory": "Le Fort II/III",
           "isFavorite": false
         },
@@ -1895,6 +1895,118 @@
           "isFavorite": false
         },
         {
+          "code": "88104",
+          "description": "Cytopathology, fluids, washings or brushings, except cervical or vaginal; smears with interpretation",
+          "common_name": "Cytopathology, fluids, washings or brushings, except cervical or vaginal; sme...",
+          "subcategory": "Cytopathology",
+          "isFavorite": false
+        },
+        {
+          "code": "88106",
+          "description": "",
+          "common_name": "",
+          "subcategory": "Cytopathology",
+          "isFavorite": false
+        },
+        {
+          "code": "88108",
+          "description": "Cytopathology, concentration technique, smears and interpretation (eg, Saccomanno technique)",
+          "common_name": "Cytopathology, concentration technique, smears and interpretation (eg, Saccom...",
+          "subcategory": "Cytopathology",
+          "isFavorite": false
+        },
+        {
+          "code": "88112",
+          "description": "Cytopathology, selective cellular enhancement technique with interpretation (eg, liquid based slide preparation method), except cervical or vaginal",
+          "common_name": "Cytopathology, selective ce ular enhancement technique with interpretation (e...",
+          "subcategory": "Cytopathology",
+          "isFavorite": false
+        },
+        {
+          "code": "88160",
+          "description": "Cytopathology, smears, any other source; screening and interpretation",
+          "common_name": "Cytopathology, smears, any other source; screening and interpretation",
+          "subcategory": "Cytopathology",
+          "isFavorite": false
+        },
+        {
+          "code": "88162",
+          "description": "",
+          "common_name": "",
+          "subcategory": "Cytopathology",
+          "isFavorite": false
+        },
+        {
+          "code": "88300",
+          "description": "Level I - Surgical pathology, gross examination only",
+          "common_name": "Level I - Surgical pathology, gross examination only",
+          "subcategory": "Surgical Pathology",
+          "isFavorite": false
+        },
+        {
+          "code": "88302",
+          "description": "Level II - Surgical pathology, gross and microscopic examination liillYi Confirming identification and disease absence: Appendix, Incidental Fallopian tube, sterilization",
+          "common_name": "Level - Surgical pathology, gross and microscopic examination lii Yi Confirmi...",
+          "subcategory": "Surgical Pathology",
+          "isFavorite": false
+        },
+        {
+          "code": "88304",
+          "description": "Level - Surgical pathology, gross and microscopic examination llmW Abortion, Induced Abscess Anal tag",
+          "common_name": "Level - Surgical pathology, gross and microscopic examination mW Abortion, In...",
+          "subcategory": "Surgical Pathology",
+          "isFavorite": false
+        },
+        {
+          "code": "88305",
+          "description": "Leiomyoma(s), u~erinf myomectomy-without uterus Lip, biopsy/wedge relectlon Lung, transbronchial fiopsy Lymph node, biopsy Muscle, biopsy",
+          "common_name": "Leiomyoma(s), u~erinf myomectomy-without uterus Lip, biopsy/wedge relectlon L...",
+          "subcategory": "Surgical Pathology",
+          "isFavorite": false
+        },
+        {
+          "code": "88307",
+          "description": "Level V - Surgical pathology, gross and microscopic examination",
+          "common_name": "Level V - Surgical pathology, gross and microscopic examination",
+          "subcategory": "Surgical Pathology",
+          "isFavorite": false
+        },
+        {
+          "code": "88309",
+          "description": "Level VI- Surgical pathology, gross and microscopic examination liillifilJ Bone resection Breast, mastectomy-with regional lymph nodes Colon:",
+          "common_name": "Level VI- Surgical pathology, gross and microscopic examination lii ifilJ Bon...",
+          "subcategory": "Surgical Pathology",
+          "isFavorite": false
+        },
+        {
+          "code": "88311",
+          "description": "Oecalcification procedure (List separately in addition to code for surgical pathology examination) Code first surgical pathology exam (88302-88309)",
+          "common_name": "Oecalcification procedure (List separately in addition to code for surgical p...",
+          "subcategory": "Special Stains/IHC",
+          "isFavorite": false
+        },
+        {
+          "code": "88312",
+          "description": "Special stain including interpretation and report; Group I for microorganisms (eg, acid fast, methenamine silver)",
+          "common_name": "Special stain including interpretation and report; Group I for microorganisms...",
+          "subcategory": "Special Stains/IHC",
+          "isFavorite": false
+        },
+        {
+          "code": "88313",
+          "description": "liRillilJ Reporting one unit for each special stain performed on surgical pathology block, cytologic sample, or hematologic smear",
+          "common_name": "liRi ilJ Reporting one unit for each special stain performed on surgical path...",
+          "subcategory": "Special Stains/IHC",
+          "isFavorite": false
+        },
+        {
+          "code": "88314",
+          "description": "histochemical stain on frozen tissue block (List separately + in addition to code for primary procedure) ammD Reporting one unit for each special stain on each frozen surgical pathology block u:m?lim Routine frozen section stain during Mohs surgery",
+          "common_name": "histochemical stain on frozen tissue block (List separately + in addition to ...",
+          "subcategory": "Special Stains/IHC",
+          "isFavorite": false
+        },
+        {
           "code": "88331",
           "description": "Pathology consultation during surgery; first tissue block",
           "common_name": "Frozen section (first block)",
@@ -1906,6 +2018,125 @@
           "description": "Pathology consultation during surgery; each additional tissue block",
           "common_name": "Frozen section (each add'l block)",
           "subcategory": "Pathology",
+          "isFavorite": false
+        },
+        {
+          "code": "88333",
+          "description": "IJ 2.70",
+          "common_name": "IJ 2.70",
+          "subcategory": "Special Stains/IHC",
+          "isFavorite": false
+        },
+        {
+          "code": "88341",
+          "description": "",
+          "common_name": "",
+          "subcategory": "Special Stains/IHC",
+          "isFavorite": false
+        },
+        {
+          "code": "88342",
+          "description": "Consultation and report on referred slides prepared elsewhere",
+          "common_name": "Consultation and report on referred slides prepared elsewhere",
+          "subcategory": "Special Stains/IHC",
+          "isFavorite": false
+        },
+        {
+          "code": "88360",
+          "description": "Morphometric analysis, tumor immunohistochemistry (eg, Her-2/neu, estrogen receptor/progesterone receptor), quantitative or semiquantitative, per specimen, each single antibody stain procedure; manual rmmm Additional stain procedures unless each test for different",
+          "common_name": "Morphometric analysis, tumor immunohistochemistry (eg, Her-2/neu, estrogen re...",
+          "subcategory": "Special Stains/IHC",
+          "isFavorite": false
+        },
+        {
+          "code": "88361",
+          "description": "using computer-assisted technology rmmm Additional stain procedures unless each test fordifferenc antibody (88341, 88342, 88344) Morphometric analysis using in situ hybridization techniques (88367-88368",
+          "common_name": "using computer-assisted technology rmmm Additional stain procedures unless ea...",
+          "subcategory": "Special Stains/IHC",
+          "isFavorite": false
+        },
+        {
+          "code": "88362",
+          "description": "Nerve teasing preparations t1J 6.80",
+          "common_name": "Nerve teasing preparations t1J 6.80",
+          "subcategory": "Special Stains/IHC",
+          "isFavorite": false
+        },
+        {
+          "code": "88363",
+          "description": "Examination and selection of retrieved archival (ie, previously diagnosed) tissue(s) for molecular analysis (eg, KRAS mutational analysis) lii1fill Archival retrieval only",
+          "common_name": "Examination and selection of retrieved archival (ie, previously diagnosed) ti...",
+          "subcategory": "Special Stains/IHC",
+          "isFavorite": false
+        },
+        {
+          "code": "88364",
+          "description": "each additional single probe stain procedure (List separately in addition to code for primary procedure)",
+          "common_name": "each additional single probe stain procedure (List separately in addition to ...",
+          "subcategory": "Special Stains/IHC",
+          "isFavorite": false
+        },
+        {
+          "code": "88365",
+          "description": "In situ hybridization (eg, FISH), per specimen; initial single probe stain procedure rmmm Morphometric analysis probe stain procedures with same probe (88367, [88374], 88368, (88377])",
+          "common_name": "In situ hybridization (eg, FISH), per specimen; initial single probe stain pr...",
+          "subcategory": "Special Stains/IHC",
+          "isFavorite": false
+        },
+        {
+          "code": "88366",
+          "description": "Code first (88365) tlJ 4.07",
+          "common_name": "Code first (88365) tlJ 4.07",
+          "subcategory": "Special Stains/IHC",
+          "isFavorite": false
+        },
+        {
+          "code": "88367",
+          "description": "Morphometric analysis, in situ hybridization (quantitative or semi-quantitative), using computer-assisted technology, per specimen; initial single probe stain procedure \u2022 rmmm In situ hybridization probe stain procedures for same probe (88365, 88366, 88368, (88377])",
+          "common_name": "Morphometric analysis, in situ hybridization (quantitative or semi-quantitati...",
+          "subcategory": "Special Stains/IHC",
+          "isFavorite": false
+        },
+        {
+          "code": "88371",
+          "description": "Protein analysis of tissue by Western Blot, with interpretation and report; ~ 0.00",
+          "common_name": "Protein analysis of tissue by Western Blot, with interpretation and report; ~...",
+          "subcategory": "Special Stains/IHC",
+          "isFavorite": false
+        },
+        {
+          "code": "88372",
+          "description": "immunological probe for band identification, each",
+          "common_name": "immunological probe for band identification, each",
+          "subcategory": "Special Stains/IHC",
+          "isFavorite": false
+        },
+        {
+          "code": "88373",
+          "description": "each additional single probe stain procedure (List separately in addition to code for primary procedure) Code first (88367)",
+          "common_name": "each additional single probe stain procedure (List separately in addition to ...",
+          "subcategory": "Special Stains/IHC",
+          "isFavorite": false
+        },
+        {
+          "code": "88374",
+          "description": "Resequenced code. See code following 88367.",
+          "common_name": "Resequenced code. See code fo owing 88367.",
+          "subcategory": "Special Stains/IHC",
+          "isFavorite": false
+        },
+        {
+          "code": "88375",
+          "description": "Optical endomicroscopic image(s), interpretation and report, real-time or referred, each endoscopic session",
+          "common_name": "Optical endomicroscopic image(s), interpretation and report, real-time or ref...",
+          "subcategory": "Special Stains/IHC",
+          "isFavorite": false
+        },
+        {
+          "code": "88377",
+          "description": "~ 2.04",
+          "common_name": "~ 2.04",
+          "subcategory": "Special Stains/IHC",
           "isFavorite": false
         }
       ]
@@ -2826,36 +3057,36 @@
         },
         {
           "code": "21431",
-          "description": "Closed treatment of craniofacial separation (Le Fort III type)",
-          "common_name": "Le Fort III fracture closed",
+          "description": "Closed treatment of craniofacial separation (Le Fort type)",
+          "common_name": "Le Fort fracture closed",
           "subcategory": "Le Fort Fractures",
           "isFavorite": false
         },
         {
           "code": "21432",
-          "description": "Open treatment of craniofacial separation (Le Fort III type); with wiring/fixation",
-          "common_name": "ORIF Le Fort III",
+          "description": "Open treatment of craniofacial separation (Le Fort type); with wiring/fixation",
+          "common_name": "ORIF Le Fort",
           "subcategory": "Le Fort Fractures",
           "isFavorite": false
         },
         {
           "code": "21433",
-          "description": "Open treatment of craniofacial separation (Le Fort III type); complicated, multiple approaches",
-          "common_name": "ORIF Le Fort III (complicated)",
+          "description": "Open treatment of craniofacial separation (Le Fort type); complicated, multiple approaches",
+          "common_name": "ORIF Le Fort (complicated)",
           "subcategory": "Le Fort Fractures",
           "isFavorite": false
         },
         {
           "code": "21435",
-          "description": "Open treatment of craniofacial separation (Le Fort III); with internal and/or external fixation",
-          "common_name": "ORIF Le Fort III (int + ext fixation)",
+          "description": "Open treatment of craniofacial separation (Le Fort ); with internal and/or external fixation",
+          "common_name": "ORIF Le Fort (int + ext fixation)",
           "subcategory": "Le Fort Fractures",
           "isFavorite": false
         },
         {
           "code": "21436",
-          "description": "Open treatment of craniofacial separation (Le Fort III); complicated, utilizing internal and external fixation techniques",
-          "common_name": "ORIF Le Fort III (halo/headcap)",
+          "description": "Open treatment of craniofacial separation (Le Fort ); complicated, utilizing internal and external fixation techniques",
+          "common_name": "ORIF Le Fort (halo/headcap)",
           "subcategory": "Le Fort Fractures",
           "isFavorite": false
         },
@@ -3278,6 +3509,34 @@
           "isFavorite": false
         },
         {
+          "code": "99100",
+          "description": "Anesthesia for patient of e reine age, younger than 1 year and older than 70 (List separately in addition to code for primary anesthesia proced~re~ rmm Anesthesia se\u00b1ce for infants one year old or less",
+          "common_name": "Anesthesia for patient of e reine age, younger than 1 year and older than 70 ...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "99116",
+          "description": "Anesthesia complicated by utilization of total body hypothermia (List separate y it addition to code for primary anesthesia procedure) rmmm Anesthesio for~roc, dureson heart/pericardialsadgreac vessels",
+          "common_name": "Anesthesia complicated by utilization of total body hypothermia (List separat...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "99135",
+          "description": "Anesthesia complicated by utilization of controlled hypotension (List separately in addition to code for primary anesthesia procedure) l1lmB Anesthesia for procedures on hearr/pericardial",
+          "common_name": "Anesthesia complicated by utilization of contro ed hypotension (List separate...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "99140",
+          "description": "Anesthesia complicated by emergency conditions (specify} (List separately in addition to code for primary anesthesia procedure) liillYi Conditions where treatment delay could be dangerous to life or health",
+          "common_name": "Anesthesia complicated by emergency conditions (specify} (List separately in ...",
+          "subcategory": "General",
+          "isFavorite": false
+        },
+        {
           "code": "99151",
           "description": "Moderate sedation services provided by the same physician; initial 15 minutes, patient younger than 5 years",
           "common_name": "Moderate sedation same MD <5yrs",
@@ -3310,6 +3569,27 @@
           "description": "Moderate sedation services provided by a physician other than the health care professional performing the procedure; initial 15 minutes, patient age 5 years or older",
           "common_name": "Moderate sedation diff MD \u22655yrs",
           "subcategory": "Sedation",
+          "isFavorite": false
+        },
+        {
+          "code": "99157",
+          "description": "First 15 minutes intraservice time for patients under age 5 Services provided to patients by physician/other qualified health care professional other than provider rendering service for which moderate sedation necessary",
+          "common_name": "First 15 minutes intraservice time for patients under age 5 Services provided...",
+          "subcategory": "Sedation",
+          "isFavorite": false
+        },
+        {
+          "code": "99291",
+          "description": "Critical care, evaluation and management of the critically ill or injured patient; first 30-74 minutes",
+          "common_name": "Critical care first 30-74 min",
+          "subcategory": "Critical Care",
+          "isFavorite": false
+        },
+        {
+          "code": "99292",
+          "description": "Critical care, each additional 30 minutes (add-on)",
+          "common_name": "Critical care each add'l 30 min",
+          "subcategory": "Critical Care",
           "isFavorite": false
         },
         {
@@ -4217,6 +4497,111 @@
           "isFavorite": false
         },
         {
+          "code": "67700",
+          "description": "Blepharotomy, drainage of abscess, eyelid",
+          "common_name": "Blepharotomy, drainage of abscess, eyelid",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67710",
+          "description": "Severing of tarsorrhaphy",
+          "common_name": "Severing of tarsorrhaphy",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67715",
+          "description": "Canthotomy (separate procedure) !mn Canrhoplasry /67950) Symblepharon division (68340)",
+          "common_name": "Canthotomy (separate procedure) !mn Canrhoplasry /67950) Symblepharon divisio...",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67800",
+          "description": "",
+          "common_name": "",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67801",
+          "description": "multiple, same lid 4",
+          "common_name": "multiple, same lid 4",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67805",
+          "description": "multiple, different lids 4",
+          "common_name": "multiple, different lids 4",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67808",
+          "description": "under general anesthesia and/or requiring hospitalization, single or multiple 4",
+          "common_name": "under general anesthesia and/or requiring hospitalization, single or multiple...",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67810",
+          "description": "",
+          "common_name": "",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67820",
+          "description": "Correction of trichiasis; epilation, by forceps only 1/J 0.65",
+          "common_name": "Correction of trichiasis; epilation, by forceps only 1/J 0.65",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67835",
+          "description": "epilation by other than forceps (eg, by electrosurgery, cryotherapy, laser surgery) 1/J 3.59",
+          "common_name": "epilation by other than forceps (eg, by electrosurgery, cryotherapy, laser su...",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67840",
+          "description": "Excision oflesion of eyelid (except chalazion) without closure or with simple direct closure rmEm Eyelid resecrion and reconsrrucrion (61967, 67966) 1/J 4.64",
+          "common_name": "Excision oflesion of eyelid (except chalazion) without closure or with simple...",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67850",
+          "description": "Destruction of lesion of lid margin (up to 1 cm) rmEm Mohs micro procedures (11311-11315) Topical chemotherapy (99202-99215) 4",
+          "common_name": "Destruction of lesion of lid margin (up to 1 cm) rmEm Mohs micro procedures (...",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67875",
+          "description": "Temporary closure of eyelids by suture (eg, Frost suture) 1/J 2.80",
+          "common_name": "Temporary closure of eyelids by suture (eg, Frost suture) 1/J 2.80",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67880",
+          "description": "Construction of intermarginal adhesions, median tarsorrhaphy, or canthorrhaphy; 4",
+          "common_name": "Construction of intermarginal adhesions, median tarsorrhaphy, or canthorrhaph...",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67882",
+          "description": "with transposition of tarsal plate 1/J 13.85",
+          "common_name": "with transposition of tarsal plate 1/J 13.85",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
           "code": "67900",
           "description": "Repair of brow ptosis (supraciliary, mid-forehead, or coronal approach)",
           "common_name": "Brow ptosis repair",
@@ -4252,6 +4637,237 @@
           "isFavorite": false
         },
         {
+          "code": "67909",
+          "description": "Reduction of overcorrection of ptosis 4",
+          "common_name": "Reduction of overcorrection of ptosis 4",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67911",
+          "description": "Correction of lid retraction rmEm Autologous graft harvest ([15769], 20920, 20922) Lid defect correction using fat obtained via liposuction (15773-15174) Mucous membrane graft repair trichiasis (61835)",
+          "common_name": "Correction of lid retraction rmEm Autologous graft harvest ([15769], 20920, 2...",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67912",
+          "description": "Correction of lagophthalmos, with implantation of upper eyelid lid load (eg, gold weight) 1/J 14.35",
+          "common_name": "Correction of lagophthalmos, with implantation of upper eyelid lid load (eg, ...",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67914",
+          "description": "Repair of ectropion; suture",
+          "common_name": "Repair of ectropion; suture",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67916",
+          "description": "llillYIDl Canthoplasty (67950)",
+          "common_name": "i YIDl Canthoplasty (67950)",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67917",
+          "description": "extensive (eg, tarsal strip operations)",
+          "common_name": "extensive (eg, tarsal strip operations)",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67921",
+          "description": "Repair of entropion; suture .C 9.19",
+          "common_name": "Repair of entropion; suture .C 9.19",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67922",
+          "description": "thermocauterization .C 5.89",
+          "common_name": "thermocauterization .C 5.89",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67923",
+          "description": "excision tarsal wedge .C 12.64",
+          "common_name": "excision tarsal wedge .C 12.64",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67924",
+          "description": "Repair Ectropion/Entropion umuolsl Operating microscope (69990) rmEm Cicatricial earopion or enrropion with scor excision or graft (61961-67966) 67914 Repair of ectropion; suture 67915 67916 llillYIDl Canthoplasty (67950) Q 9.67",
+          "common_name": "Repair Ectropion/Entropion umuolsl Operating microscope (69990) rmEm Cicatric...",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67930",
+          "description": "Suture of recent wound, eyelid, involving lid margin, tarsus, and/or palpebral conjunctiva direct closure; partial thickness .C 6.93",
+          "common_name": "Suture of recent wound, eyelid, involving lid margin, tarsus, and/or palpebra...",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67935",
+          "description": "full thickness",
+          "common_name": "fu thickness",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67938",
+          "description": "Removal of embedded foreign body, eyelid",
+          "common_name": "Removal of embedded foreign body, eyelid",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67950",
+          "description": "Canthoplasty (reconstruction of canthus)",
+          "common_name": "Canthoplasty (reconstruction of canthus)",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67961",
+          "description": "Excision and repair of eyelid, involving lid margin, tarsus, conjunctiva, canthus, or full thickness, may include preparation for skin graft or pedicle flap with adjacent tissue transfer or rearrangement; up to one-fourth of lid margin tiilliifill Canthoplasty (67950)",
+          "common_name": "Excision and repair of eyelid, involving lid margin, tarsus, conjunctiva, can...",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67966",
+          "description": "over one-fourth of lid margin I,muoesi Canthoplasty (67950)",
+          "common_name": "over one-fourth of lid margin I,muoesi Canthoplasty (67950)",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67971",
+          "description": "Reconstruction of eyelid, full thickness by transfer of tarsoconjunctival flap from opposing eyelid; up to two-thirds of eyelid, 1 stage or first stage filfill Dupuy-Dutemp reconstruction Landolt operation",
+          "common_name": "Reconstruction of eyelid, fu thickness by transfer of tarsoconjunctival flap ...",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67973",
+          "description": "total eyelid, lower, 1 stage or first stage lilliiiDill Landolt operation",
+          "common_name": "total eyelid, lower, 1 stage or first stage li iiiDi Landolt operation",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67974",
+          "description": "total eyelid, upper, 1 stage or first stage liiiil Landolt operation .C 27.07",
+          "common_name": "total eyelid, upper, 1 stage or first stage liiiil Landolt operation .C 27.07...",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "67975",
+          "description": "second stage liii Landolt operation",
+          "common_name": "second stage liii Landolt operation",
+          "subcategory": "Eyelid",
+          "isFavorite": false
+        },
+        {
+          "code": "69000",
+          "description": "Drainage external ear, abscess or hematoma; simple Incision Hematoma Scaphoid fossa Antihelix",
+          "common_name": "Drainage external ear, abscess or hematoma; simple Incision Hematoma Scaphoid...",
+          "subcategory": "Ear",
+          "isFavorite": false
+        },
+        {
+          "code": "69005",
+          "description": "An incision is made to drain the contents of an abscess or hematoma complicated",
+          "common_name": "An incision is made to drain the contents of an abscess or hematoma complicated",
+          "subcategory": "Ear",
+          "isFavorite": false
+        },
+        {
+          "code": "69020",
+          "description": "Drainage external auditory canal, abscess ;",
+          "common_name": "Drainage external auditory canal, abscess ;",
+          "subcategory": "Ear",
+          "isFavorite": false
+        },
+        {
+          "code": "69100",
+          "description": ";",
+          "common_name": ";",
+          "subcategory": "Ear",
+          "isFavorite": false
+        },
+        {
+          "code": "69105",
+          "description": "Biopsy external auditory canal",
+          "common_name": "Biopsy external auditory canal",
+          "subcategory": "Ear",
+          "isFavorite": false
+        },
+        {
+          "code": "69120",
+          "description": "complete amputation",
+          "common_name": "complete amputation",
+          "subcategory": "Ear",
+          "isFavorite": false
+        },
+        {
+          "code": "69155",
+          "description": ";",
+          "common_name": ";",
+          "subcategory": "Ear",
+          "isFavorite": false
+        },
+        {
+          "code": "69200",
+          "description": "Removal foreign body from external auditory canal; without general anesthesia",
+          "common_name": "Removal foreign body from external auditory canal; without general anesthesia",
+          "subcategory": "Ear",
+          "isFavorite": false
+        },
+        {
+          "code": "69205",
+          "description": "with general anesthesia",
+          "common_name": "with general anesthesia",
+          "subcategory": "Ear",
+          "isFavorite": false
+        },
+        {
+          "code": "69209",
+          "description": "Removal impacted cerumen using irrigation/lavage, unilateral rmm Removal impacted cerumen using instrumentation (69210) Removal non impacted cerumen /see appropriate EIM",
+          "common_name": "Removal impacted cerumen using irrigation/lavage, unilateral rmm Removal impa...",
+          "subcategory": "Ear",
+          "isFavorite": false
+        },
+        {
+          "code": "69210",
+          "description": "Removal impacted cerumen requiring instrumentation, unilateral rmm Removal impacted cerumen using irrigation or lavage /69209) Removal nonimpacted cerumen /see appropriate EJM",
+          "common_name": "Removal impacted cerumen requiring instrumentation, unilateral rmm Removal im...",
+          "subcategory": "Ear",
+          "isFavorite": false
+        },
+        {
+          "code": "69220",
+          "description": "Debridement, mastoidectomy cavity, simple (eg, routine cleaning)",
+          "common_name": "Debridement, mastoidectomy cavity, simple (eg, routine cleaning)",
+          "subcategory": "Ear",
+          "isFavorite": false
+        },
+        {
+          "code": "69222",
+          "description": "Debridement, mastoidectomy cavity, complex (eg, with anesthesia or more than routine cleaning)",
+          "common_name": "Debridement, mastoidectomy cavity, complex (eg, with anesthesia or more than ...",
+          "subcategory": "Ear",
+          "isFavorite": false
+        },
+        {
           "code": "69300",
           "description": "Otoplasty, protruding ear, with or without size reduction",
           "common_name": "Otoplasty",
@@ -4259,10 +4875,45 @@
           "isFavorite": false
         },
         {
+          "code": "69320",
+          "description": "Reconstruction of external auditory canal (meatoplasty) (eg, for stenosis due to injury, infection) (separate procedure) ;",
+          "common_name": "Reconstruction of external auditory canal (meatoplasty) (eg, for stenosis due...",
+          "subcategory": "Ear",
+          "isFavorite": false
+        },
+        {
+          "code": "70100",
+          "description": "Radiologic examination, mandible; partial, less than 4 views",
+          "common_name": "Radiologic examination, mandible; partial, less than 4 views",
+          "subcategory": "Facial X-ray",
+          "isFavorite": false
+        },
+        {
+          "code": "70130",
+          "description": "IIJ 1.16",
+          "common_name": "J 1.16",
+          "subcategory": "Facial X-ray",
+          "isFavorite": false
+        },
+        {
+          "code": "70134",
+          "description": "Radiologic examination, internal auditory meati, complete IIJ 1.85",
+          "common_name": "Radiologic examination, internal auditory meati, complete J 1.85",
+          "subcategory": "Facial X-ray",
+          "isFavorite": false
+        },
+        {
           "code": "70140",
           "description": "Radiologic examination, facial bones; less than 3 views 70150 complete, minimum of 3 views tal tt Frontal Orbital rim",
           "common_name": "Radiologic examination, facial bones; less than 3 views 70150 complete, minim...",
           "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "70150",
+          "description": "complete, minimum of 3 views jQ 1.41",
+          "common_name": "complete, minimum of 3 views jQ 1.41",
+          "subcategory": "Facial X-ray",
           "isFavorite": false
         },
         {
@@ -4308,6 +4959,20 @@
           "isFavorite": false
         },
         {
+          "code": "70320",
+          "description": "partial examination, less than full mouth 1.18",
+          "common_name": "partial examination, less than fu mouth 1.18",
+          "subcategory": "Dental/TMJ Imaging",
+          "isFavorite": false
+        },
+        {
+          "code": "70330",
+          "description": "IIJ 1.04",
+          "common_name": "J 1.04",
+          "subcategory": "Dental/TMJ Imaging",
+          "isFavorite": false
+        },
+        {
           "code": "70350",
           "description": "Cephalogram, orthodontic ICD-10-CM Diagnostic Codes K08.21 Minimal atrophy of the mandible K08.22 Moderate atrophy of the mandible K08.23 Severe atrophy of the mandible K08.24 Minimal atrophy of maxilla K08.25 Moderate atrophy of the maxilla K08.26 Severe atrophy of the maxilla 26.211",
           "common_name": "Cephalogram, orthodontic ICD-10-CM Diagnostic Codes K08.21 Minimal atrophy of...",
@@ -4322,6 +4987,55 @@
           "isFavorite": false
         },
         {
+          "code": "70370",
+          "description": "Temporomandibular joint arthrography, radiological supervision and interpretation lillii Fluoroscopic guidance (77002) .",
+          "common_name": "Temporomandibular joint arthrography, radiological supervision and interpreta...",
+          "subcategory": "Neck Imaging",
+          "isFavorite": false
+        },
+        {
+          "code": "70371",
+          "description": "Complex dynamic pharyngeal and speech evaluation by cine or video recording rmmm Laryngeal computed tomography (70490-70492)",
+          "common_name": "Complex dynamic pharyngeal and speech evaluation by cine or video recording r...",
+          "subcategory": "Neck Imaging",
+          "isFavorite": false
+        },
+        {
+          "code": "70450",
+          "description": "Computed tomography, head or brain; without contrast material",
+          "common_name": "Computed tomography, head or brain; without contrast material",
+          "subcategory": "CT Head/Neck",
+          "isFavorite": false
+        },
+        {
+          "code": "70460",
+          "description": "with contrast material(s)",
+          "common_name": "with contrast material(s)",
+          "subcategory": "CT Head/Neck",
+          "isFavorite": false
+        },
+        {
+          "code": "70470",
+          "description": "without contrast material, followed by contrast material(s) material(s) and further sequences and further sections",
+          "common_name": "without contrast material, fo owed by contrast material(s) material(s) and fu...",
+          "subcategory": "CT Head/Neck",
+          "isFavorite": false
+        },
+        {
+          "code": "70481",
+          "description": "Computed tomography, orbit, sella, or posterior fossa or 70544-70549 Magnetic Resonance Angiography: Head and outer, middle, or inner ear; without contrast material Neck .C 4-92",
+          "common_name": "Computed tomography, orbit, se a, or posterior fossa or 70544-70549 Magnetic ...",
+          "subcategory": "CT Head/Neck",
+          "isFavorite": false
+        },
+        {
+          "code": "70482",
+          "description": "without contrast material, followed by contrast material(s) and further sections u,ctuoesi Magnetic fields and radio waves to produce detailed cross-sectional internal body structure images",
+          "common_name": "without contrast material, fo owed by contrast material(s) and further sectio...",
+          "subcategory": "CT Head/Neck",
+          "isFavorite": false
+        },
+        {
           "code": "70486",
           "description": "Computed tomography, maxillofacial area; without contrast material 70487",
           "common_name": "Computed tomography, maxillofacial area; without contrast material 70487",
@@ -4333,6 +5047,237 @@
           "description": "Maxilia, 70487 without Contrast Face, 70486 Maxilla, 70486 without Contrast, Followed by Contrast Face, 70488 Manilla, 70488 condyle Mandible, Reconstruction, 21247",
           "common_name": "Maxilia, 70487 without Contrast Face, 70486 Maxilla, 70486 without Contrast, ...",
           "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "70488",
+          "description": "Computed tomography, maxillofacial area; without then with contrast",
+          "common_name": "CT maxillofacial w/o then w/ contrast",
+          "subcategory": "CT Head/Neck",
+          "isFavorite": false
+        },
+        {
+          "code": "70492",
+          "description": "Computed tomography, soft tissue neck; without contrast material rmmm CT cervical spine (72125)",
+          "common_name": "Computed tomography, soft tissue neck; without contrast material rmmm CT cerv...",
+          "subcategory": "CT Head/Neck",
+          "isFavorite": false
+        },
+        {
+          "code": "70496",
+          "description": "Computed tomographic angiography, head, with contrast material(s}, including noncontrast images, if performed, and image postprocessing",
+          "common_name": "Computed tomographic angiography, head, with contrast material(s}, including ...",
+          "subcategory": "CT Head/Neck",
+          "isFavorite": false
+        },
+        {
+          "code": "70498",
+          "description": "Computed tomographic angiography, neck, with contrast material(s}, including noncontrast images, if performed, and image postprocessing",
+          "common_name": "Computed tomographic angiography, neck, with contrast material(s}, including ...",
+          "subcategory": "CT Head/Neck",
+          "isFavorite": false
+        },
+        {
+          "code": "70540",
+          "description": "Magnetic resonance (eg, proton} imaging, orbit, face, and/or neck; without contrast material(s}",
+          "common_name": "Magnetic resonance (eg, proton} imaging, orbit, face, and/or neck; without co...",
+          "subcategory": "MRI Head/Neck",
+          "isFavorite": false
+        },
+        {
+          "code": "70542",
+          "description": "with contrast material(s} 1tJ 8.41",
+          "common_name": "with contrast material(s} 1tJ 8.41",
+          "subcategory": "MRI Head/Neck",
+          "isFavorite": false
+        },
+        {
+          "code": "70543",
+          "description": "without contrast material(s), followed by contrast",
+          "common_name": "without contrast material(s), fo owed by contrast",
+          "subcategory": "MRI Head/Neck",
+          "isFavorite": false
+        },
+        {
+          "code": "70544",
+          "description": "Magnetic resonance angiography, head; without contrast material(s)",
+          "common_name": "Magnetic resonance angiography, head; without contrast material(s)",
+          "subcategory": "MRI Head/Neck",
+          "isFavorite": false
+        },
+        {
+          "code": "70546",
+          "description": ".0 6. 72",
+          "common_name": ".0 6. 72",
+          "subcategory": "MRI Head/Neck",
+          "isFavorite": false
+        },
+        {
+          "code": "70547",
+          "description": "Magnetic resonance angiography, neck; without contrast material(s) .",
+          "common_name": "Magnetic resonance angiography, neck; without contrast material(s) .",
+          "subcategory": "MRI Head/Neck",
+          "isFavorite": false
+        },
+        {
+          "code": "70549",
+          "description": "with contrast material(s)",
+          "common_name": "with contrast material(s)",
+          "subcategory": "MRI Head/Neck",
+          "isFavorite": false
+        },
+        {
+          "code": "70551",
+          "description": "Magnetic resonance (eg, proton) imaging, brain (including",
+          "common_name": "Magnetic resonance (eg, proton) imaging, brain (including",
+          "subcategory": "MRI Head/Neck",
+          "isFavorite": false
+        },
+        {
+          "code": "70553",
+          "description": "brain stem); without contrast material",
+          "common_name": "brain stem); without contrast material",
+          "subcategory": "MRI Head/Neck",
+          "isFavorite": false
+        },
+        {
+          "code": "70554",
+          "description": "Magnetic resonance imaging, brain, functional MRI; including test selection and administration of repetitive body part movement and/or visual stimulation, not requiring physician or psychologist administration",
+          "common_name": "Magnetic resonance imaging, brain, functional MRI; including test selection a...",
+          "subcategory": "MRI Head/Neck",
+          "isFavorite": false
+        },
+        {
+          "code": "70555",
+          "description": "Magnetic Resonance Imaging: Brain Mapping umuoESI Neuroimaging technique using MRI to identify and map signals related to brain activity lml",
+          "common_name": "Magnetic Resonance Imaging: Brain Mapping umuoESI Neuroimaging technique usin...",
+          "subcategory": "MRI Head/Neck",
+          "isFavorite": false
+        },
+        {
+          "code": "70557",
+          "description": "Magnetic resonance (eg, proton) imaging, brain (including brain stem and skull base), during open intra cranial procedure (eg, to assess for residual tumor or residual vascular malformation); without contrast material",
+          "common_name": "Magnetic resonance (eg, proton) imaging, brain (including brain stem and sku ...",
+          "subcategory": "MRI Head/Neck",
+          "isFavorite": false
+        },
+        {
+          "code": "76376",
+          "description": "3D rendering with interpretation and reporting of computed tomography, magnetic resonance imaging, ultrasound, or other tomographic modality with image postprocessing under concurrent supervision; not requiring image postprocessing on an independent workstation",
+          "common_name": "3D rendering with interpretation and reporting of computed tomography, magnet...",
+          "subcategory": "3D/Ultrasound",
+          "isFavorite": false
+        },
+        {
+          "code": "76380",
+          "description": "Computed tomography, limited or localized follow-up study .",
+          "common_name": "Computed tomography, limited or localized fo ow-up study .",
+          "subcategory": "3D/Ultrasound",
+          "isFavorite": false
+        },
+        {
+          "code": "76536",
+          "description": "Ultrasound, soft tissues of head and neck (eg, thyroid, parathyroid, parotid), real time with image documentation .C 3.35",
+          "common_name": "Ultrasound, soft tissues of head and neck (eg, thyroid, parathyroid, parotid)...",
+          "subcategory": "3D/Ultrasound",
+          "isFavorite": false
+        },
+        {
+          "code": "78300",
+          "description": "Bone and/or joint imaging; limited area",
+          "common_name": "Bone scan limited",
+          "subcategory": "Nuclear Medicine",
+          "isFavorite": false
+        },
+        {
+          "code": "78305",
+          "description": "Bone and/or joint imaging; multiple areas",
+          "common_name": "Bone scan multiple areas",
+          "subcategory": "Nuclear Medicine",
+          "isFavorite": false
+        },
+        {
+          "code": "78306",
+          "description": "Bone and/or joint imaging; whole body",
+          "common_name": "Bone scan whole body",
+          "subcategory": "Nuclear Medicine",
+          "isFavorite": false
+        },
+        {
+          "code": "78811",
+          "description": "PET imaging for limited area",
+          "common_name": "PET scan limited",
+          "subcategory": "Nuclear Medicine",
+          "isFavorite": false
+        },
+        {
+          "code": "78812",
+          "description": "PET imaging skull base to mid-thigh",
+          "common_name": "PET scan skull base to mid-thigh",
+          "subcategory": "Nuclear Medicine",
+          "isFavorite": false
+        },
+        {
+          "code": "78813",
+          "description": "PET imaging whole body",
+          "common_name": "PET scan whole body",
+          "subcategory": "Nuclear Medicine",
+          "isFavorite": false
+        },
+        {
+          "code": "78814",
+          "description": "PET with CT, limited area",
+          "common_name": "PET/CT limited",
+          "subcategory": "Nuclear Medicine",
+          "isFavorite": false
+        },
+        {
+          "code": "78815",
+          "description": "PET with CT, skull base to mid-thigh",
+          "common_name": "PET/CT skull base to mid-thigh",
+          "subcategory": "Nuclear Medicine",
+          "isFavorite": false
+        },
+        {
+          "code": "78816",
+          "description": "PET with CT, whole body",
+          "common_name": "PET/CT whole body",
+          "subcategory": "Nuclear Medicine",
+          "isFavorite": false
+        },
+        {
+          "code": "99202",
+          "description": "Office or other outpatient visit for the evaluation and management of a new patient, which requires a medically appropriate history and/or examination and straightforward medical decision making. When using total time on the date of the encounter for code selection, 1 S minutes must be met or exceeded.",
+          "common_name": "Office or other outpatient visit for the evaluation and management of a new p...",
+          "subcategory": "E/M Office",
+          "isFavorite": false
+        },
+        {
+          "code": "99203",
+          "description": "Office or other outpatient visit for the evaluation and management of a new patient, which requires a medically appropriate history and/or examination and low level of medical decision making. When using total time on the date of the encounter for code selection, 30 minutes must be met or exceeded.",
+          "common_name": "Office or other outpatient visit for the evaluation and management of a new p...",
+          "subcategory": "E/M Office",
+          "isFavorite": false
+        },
+        {
+          "code": "99204",
+          "description": "Office or other outpatient visit for the evaluation and management of a new patient, which requires a medically appropriate history and/or examination and moderate level of medical decision making. When using total time on the date of the encounter for code selection, 45 minutes must be met or exceeded.",
+          "common_name": "Office or other outpatient visit for the evaluation and management of a new p...",
+          "subcategory": "E/M Office",
+          "isFavorite": false
+        },
+        {
+          "code": "99211",
+          "description": "Evaluation and Management Office or other outpatient visit for the evaluation and management of a new patient, which requires a medically appropriate history and/or examination and high level of medical decision making. When using total time on the date of the encounter for code selection, 60 minutes must be met",
+          "common_name": "Evaluation and Management Office or other outpatient visit for the evaluation...",
+          "subcategory": "E/M Office",
+          "isFavorite": false
+        },
+        {
+          "code": "99212",
+          "description": "Office or other outpatient visit for the evaluation and management of an established patient, which requires a medically appropriate history and/or examination and straightforward medical decision making. When using total time on the date of the encounter for code selection, 10 minutes must be met or exceeded.",
+          "common_name": "Office or other outpatient visit for the evaluation and management of an esta...",
+          "subcategory": "E/M Office",
           "isFavorite": false
         },
         {
@@ -4399,6 +5344,20 @@
           "isFavorite": false
         },
         {
+          "code": "99238",
+          "description": "Hospital inpatient or observation discharge day management;",
+          "common_name": "Hospital inpatient or observation discharge day management;",
+          "subcategory": "E/M Hospital",
+          "isFavorite": false
+        },
+        {
+          "code": "99239",
+          "description": "30 minutes or less on the date of the encounter",
+          "common_name": "30 minutes or less on the date of the encounter",
+          "subcategory": "E/M Hospital",
+          "isFavorite": false
+        },
+        {
           "code": "99242",
           "description": "Office or other outpatient consultation for a new orestablished patient, which requires a medically appropriate history and/or examination and straightforward medical decision making. When using total time on the date of the encounter for code selection, 20 minutes must be met or exceeded.",
           "common_name": "Office or other outpatient consultation for a new orestablished patient, whic...",
@@ -4431,6 +5390,13 @@
           "description": "Inpatient or observation consultation for a new or established patient, which requires a medically appropriate history and/or examination and low level of medical decision making. When using total time on the date of the encounter for code selection, 45 minutes must be met or exceeded.",
           "common_name": "Inpatient or observation consultation for a new or established patient, which...",
           "subcategory": "General",
+          "isFavorite": false
+        },
+        {
+          "code": "99254",
+          "description": "Inpatient or observation consultation; moderate-high complexity",
+          "common_name": "Consultation inpatient (mod-high)",
+          "subcategory": "E/M Consultation",
           "isFavorite": false
         },
         {
@@ -4493,8 +5459,8 @@
     }
   ],
   "metadata": {
-    "total_codes": 633,
-    "source": "Optum Current Procedural Coding Expert 2024 + Optum OMS Coding Guide + OMFS clinical expertise",
+    "total_codes": 771,
+    "source": "Optum Current Procedural Coding Expert 2024 + Optum OMS Coding Guide + OMFS clinical expertise + Book2 pages 475-808",
     "extracted_date": "2026-03-13",
     "categories_count": 12
   }
