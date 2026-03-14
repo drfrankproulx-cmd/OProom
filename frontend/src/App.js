@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import AuthPage from './components/AuthPage';
 import { AppleDashboard } from './components/AppleDashboard';
+import SessionTimeout from './components/SessionTimeout';
 import { Toaster } from './components/ui/sonner';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
@@ -142,7 +143,10 @@ function App() {
       {!authState.isAuthenticated ? (
         <AuthPage onLogin={handleLogin} />
       ) : (
-        <AppleDashboard user={authState.user} onLogout={handleLogout} />
+        <>
+          <SessionTimeout onLogout={handleLogout} />
+          <AppleDashboard user={authState.user} onLogout={handleLogout} />
+        </>
       )}
       <Toaster position="top-right" />
     </>

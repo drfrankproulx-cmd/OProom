@@ -38,7 +38,7 @@ with SuppressBcryptWarning():
     _ctx = CryptContext(schemes=["bcrypt"], deprecated="auto")
     _ctx.hash("test")
 
-from fastapi import FastAPI, HTTPException, Depends, status, Query, Request
+from fastapi import FastAPI, HTTPException, Depends, status, Query, Request, Response
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
@@ -47,6 +47,11 @@ from typing import Optional, List
 from datetime import datetime, timedelta, timezone
 from pymongo import MongoClient
 from bson import ObjectId
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import JSONResponse
 import os
 import jwt
 
@@ -95,7 +100,33 @@ from webauthn.helpers.structs import (
 )
 from webauthn.helpers.cose import COSEAlgorithmIdentifier
 
+# ============ RATE LIMITING ============
+limiter = Limiter(key_func=get_remote_address)
+
 app = FastAPI()
+app.state.limiter = limiter
+
+@app.exception_handler(RateLimitExceeded)
+async def rate_limit_handler(request: Request, exc: RateLimitExceeded):
+    return JSONResponse(
+        status_code=429,
+        content={"detail": "Too many requests. Please try again later."}
+    )
+
+# ============ SECURITY HEADERS MIDDLEWARE ============
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+        response.headers["X-Frame-Options"] = "SAMEORIGIN"
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-XSS-Protection"] = "1; mode=block"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+        response.headers["Cache-Control"] = "no-store"
+        response.headers["Pragma"] = "no-cache"
+        return response
+
+app.add_middleware(SecurityHeadersMiddleware)
 
 # CORS configuration
 app.add_middleware(
@@ -126,6 +157,38 @@ webauthn_credentials = db.webauthn_credentials  # For biometric auth credentials
 webauthn_challenges = db.webauthn_challenges  # For temporary challenge storage
 push_subscriptions = db.push_subscriptions  # For web push notification subscriptions
 notification_preferences = db.notification_preferences  # User notification settings
+audit_logs_collection = db.audit_logs  # HIPAA-compliant audit logging
+
+# ============ FAIL-FAST CONFIG CHECK (production only) ============
+if os.environ.get("ENVIRONMENT") == "production":
+    _required = ["MONGO_URL", "JWT_SECRET"]
+    _missing = [k for k in _required if not os.environ.get(k)]
+    if _missing:
+        raise RuntimeError(f"Missing required environment variables: {', '.join(_missing)}")
+    if os.environ.get("JWT_SECRET") == "your-secret-key-change-in-production":
+        raise RuntimeError("JWT_SECRET must be changed from the default value for production")
+
+# ============ AUDIT LOGGING HELPER ============
+def create_audit_log(
+    user_email: str,
+    action: str,
+    resource_type: str,
+    resource_id: str = None,
+    request: Request = None,
+    details: str = None,
+):
+    """Record an audit log entry for HIPAA compliance."""
+    log_entry = {
+        "timestamp": datetime.now(timezone.utc),
+        "user_email": user_email,
+        "action": action,
+        "resource_type": resource_type,
+        "resource_id": resource_id,
+        "ip_address": request.client.host if request else None,
+        "user_agent": request.headers.get("user-agent", "") if request else None,
+        "details": details,
+    }
+    audit_logs_collection.insert_one(log_entry)
 
 # Security
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -453,9 +516,10 @@ async def health_check():
     return {"status": "healthy"}
 
 @app.post("/api/auth/register")
-async def register(user: UserRegister):
+async def register(user: UserRegister, request: Request):
     # Check if user exists
     if users_collection.find_one({"email": user.email}):
+        create_audit_log(user.email, "register_failed", "auth", request=request, details="Email already registered")
         raise HTTPException(status_code=400, detail="Email already registered")
     
     # Create user
@@ -472,6 +536,8 @@ async def register(user: UserRegister):
     # Create token
     access_token = create_access_token(data={"sub": user.email})
     
+    create_audit_log(user.email, "register", "auth", request=request, details="User registered")
+    
     return {
         "access_token": access_token,
         "token_type": "bearer",
@@ -483,14 +549,18 @@ async def register(user: UserRegister):
     }
 
 @app.post("/api/auth/login")
-async def login(user: UserLogin):
+@limiter.limit("10/minute")
+async def login(user: UserLogin, request: Request):
     # Find user
     db_user = users_collection.find_one({"email": user.email})
     if not db_user or not verify_password(user.password, db_user["hashed_password"]):
+        create_audit_log(user.email, "login_failed", "auth", request=request, details="Invalid credentials")
         raise HTTPException(status_code=401, detail="Incorrect email or password")
     
     # Create token
     access_token = create_access_token(data={"sub": user.email})
+    
+    create_audit_log(user.email, "login", "auth", request=request, details="Login successful")
     
     return {
         "access_token": access_token,
@@ -802,7 +872,7 @@ class PatientCreateRequest(BaseModel):
 
 # Patient routes
 @app.post("/api/patients")
-async def create_patient(patient: Patient, current_user: str = Depends(get_current_user)):
+async def create_patient(patient: Patient, request: Request, current_user: str = Depends(get_current_user)):
     patient_dict = patient.dict()
     patient_dict["created_by"] = current_user
     patient_dict["created_at"] = datetime.utcnow()
@@ -832,10 +902,12 @@ async def create_patient(patient: Patient, current_user: str = Depends(get_curre
     if patient_dict.get("procedure_code"):
         track_usage(current_user, "cpt_code", patient_dict["procedure_code"])
 
+    create_audit_log(current_user, "create", "patient", patient.mrn, request, "Patient record created")
+
     return patient_dict
 
 @app.post("/api/patients/create-with-tasks")
-async def create_patient_with_tasks(request: PatientCreateRequest, current_user: str = Depends(get_current_user)):
+async def create_patient_with_tasks(request_obj: PatientCreateRequest, request: Request, current_user: str = Depends(get_current_user)):
     """
     Enhanced patient creation endpoint that:
     1. Creates patient with new 13-item preop_checklist
@@ -848,20 +920,20 @@ async def create_patient_with_tasks(request: PatientCreateRequest, current_user:
     user_name = user_info.get("full_name", current_user) if user_info else current_user
     
     # Determine status based on scheduled_date
-    status = "scheduled" if request.scheduled_date else "add-on"
+    status = "scheduled" if request_obj.scheduled_date else "add-on"
     
     # Create patient document with new checklist format
     patient_dict = {
-        "mrn": request.mrn,
-        "patient_name": request.patient_name,
-        "dob": request.dob,
-        "diagnosis": request.diagnosis,
-        "procedures": request.procedures,
-        "procedure_code": request.procedure_code,
-        "attending": request.attending,
+        "mrn": request_obj.mrn,
+        "patient_name": request_obj.patient_name,
+        "dob": request_obj.dob,
+        "diagnosis": request_obj.diagnosis,
+        "procedures": request_obj.procedures,
+        "procedure_code": request_obj.procedure_code,
+        "attending": request_obj.attending,
         "status": status,
-        "scheduled_date": request.scheduled_date,
-        "scheduled_time": request.scheduled_time,
+        "scheduled_date": request_obj.scheduled_date,
+        "scheduled_time": request_obj.scheduled_time,
         "preop_checklist": [item.copy() for item in DEFAULT_PREOP_CHECKLIST],  # New 13-item format
         "prep_checklist": {  # Keep old format for backward compatibility
             "xrays": False,
@@ -890,18 +962,18 @@ async def create_patient_with_tasks(request: PatientCreateRequest, current_user:
     created_tasks = []
     
     # Auto-generate tasks if enabled
-    if request.auto_generate_tasks:
+    if request_obj.auto_generate_tasks:
         for task_template in DEFAULT_PATIENT_TASKS:
             task_doc = {
-                "patient_mrn": request.mrn,
-                "patient_name": request.patient_name,
+                "patient_mrn": request_obj.mrn,
+                "patient_name": request_obj.patient_name,
                 "task_description": task_template["description"],
                 "task_category": task_template["category"],
                 "task_type": task_template["task_type"],
                 "urgency": "medium",
                 "assigned_to": user_name,
                 "assigned_to_email": current_user,
-                "due_date": request.scheduled_date,  # Due by surgery date
+                "due_date": request_obj.scheduled_date,  # Due by surgery date
                 "status": "pending",
                 "completed": False,
                 "completed_at": None,
@@ -915,7 +987,7 @@ async def create_patient_with_tasks(request: PatientCreateRequest, current_user:
         
         # Log task generation
         patients_collection.update_one(
-            {"mrn": request.mrn},
+            {"mrn": request_obj.mrn},
             {"$push": {"activity_log": {
                 "action": "tasks_generated",
                 "user": current_user,
@@ -926,18 +998,18 @@ async def create_patient_with_tasks(request: PatientCreateRequest, current_user:
     
     # Create schedule entry if date provided
     schedule_doc = None
-    if request.scheduled_date:
+    if request_obj.scheduled_date:
         schedule_doc = {
-            "patient_mrn": request.mrn,
-            "patient_name": request.patient_name,
-            "procedure": request.procedures or "Procedure TBD",
-            "staff": request.attending or "TBD",
-            "scheduled_date": request.scheduled_date,
-            "scheduled_time": request.scheduled_time,
+            "patient_mrn": request_obj.mrn,
+            "patient_name": request_obj.patient_name,
+            "procedure": request_obj.procedures or "Procedure TBD",
+            "staff": request_obj.attending or "TBD",
+            "scheduled_date": request_obj.scheduled_date,
+            "scheduled_time": request_obj.scheduled_time,
             "status": "scheduled",
             "is_addon": False,
             "priority": "medium",
-            "diagnosis": request.diagnosis,
+            "diagnosis": request_obj.diagnosis,
             "created_by": current_user,
             "created_at": datetime.utcnow()
         }
@@ -945,10 +1017,12 @@ async def create_patient_with_tasks(request: PatientCreateRequest, current_user:
         schedule_doc["_id"] = str(schedule_result.inserted_id)
     
     # Track usage
-    if request.diagnosis:
-        track_usage(current_user, "diagnosis", request.diagnosis)
-    if request.procedure_code:
-        track_usage(current_user, "cpt_code", request.procedure_code)
+    if request_obj.diagnosis:
+        track_usage(current_user, "diagnosis", request_obj.diagnosis)
+    if request_obj.procedure_code:
+        track_usage(current_user, "cpt_code", request_obj.procedure_code)
+    
+    create_audit_log(current_user, "create", "patient", request_obj.mrn, request, "Patient created with tasks")
     
     return {
         "patient": patient_dict,
@@ -959,10 +1033,11 @@ async def create_patient_with_tasks(request: PatientCreateRequest, current_user:
     }
 
 @app.get("/api/patients")
-async def get_patients(current_user: str = Depends(get_current_user)):
+async def get_patients(request: Request, current_user: str = Depends(get_current_user)):
     patients = list(patients_collection.find())
     for patient in patients:
         patient["_id"] = str(patient["_id"])
+    create_audit_log(current_user, "view_list", "patient", request=request)
     return patients
 
 @app.get("/api/patients/with-tasks")
@@ -1020,11 +1095,12 @@ async def get_patients_with_tasks(current_user: str = Depends(get_current_user))
     return result
 
 @app.get("/api/patients/{mrn}")
-async def get_patient(mrn: str, current_user: str = Depends(get_current_user)):
+async def get_patient(mrn: str, request: Request, current_user: str = Depends(get_current_user)):
     patient = patients_collection.find_one({"mrn": mrn})
     if not patient:
         raise HTTPException(status_code=404, detail="Patient not found")
     patient["_id"] = str(patient["_id"])
+    create_audit_log(current_user, "view", "patient", mrn, request)
     return patient
 
 @app.get("/api/patients/{mrn}/with-tasks")
@@ -1252,7 +1328,7 @@ def normalize_preop_checklist(checklist):
     return new_checklist
 
 @app.put("/api/patients/{mrn}")
-async def update_patient(mrn: str, patient: Patient, current_user: str = Depends(get_current_user)):
+async def update_patient(mrn: str, patient: Patient, request: Request, current_user: str = Depends(get_current_user)):
     # Get current patient to compare changes
     current_patient = patients_collection.find_one({"mrn": mrn})
     if not current_patient:
@@ -1285,6 +1361,7 @@ async def update_patient(mrn: str, patient: Patient, current_user: str = Depends
     )
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Patient not found")
+    create_audit_log(current_user, "update", "patient", mrn, request, "; ".join(changes) if changes else "No field changes")
     return {"message": "Patient updated successfully"}
 
 @app.post("/api/patients/{mrn}/comments")
@@ -1326,10 +1403,11 @@ async def add_patient_comment(mrn: str, comment: PatientComment, current_user: s
     return comment_dict
 
 @app.delete("/api/patients/{mrn}")
-async def delete_patient(mrn: str, current_user: str = Depends(get_current_user)):
+async def delete_patient(mrn: str, request: Request, current_user: str = Depends(get_current_user)):
     result = patients_collection.delete_one({"mrn": mrn})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Patient not found")
+    create_audit_log(current_user, "delete", "patient", mrn, request, "Patient record deleted")
     return {"message": "Patient deleted successfully"}
 
 @app.patch("/api/patients/{mrn}/checklist")
@@ -2633,6 +2711,37 @@ async def get_weekly_digest(current_user: str = Depends(get_current_user)):
         "upcoming_tasks": upcoming_tasks[:5],
         "scheduled_cases": schedules[:10]
     }
+
+
+# ============ AUDIT LOG ENDPOINTS ============
+
+@app.get("/api/audit-logs")
+async def get_audit_logs(
+    limit: int = Query(50, ge=1, le=500),
+    resource_type: Optional[str] = Query(None),
+    action: Optional[str] = Query(None),
+    user_email: Optional[str] = Query(None),
+    current_user: str = Depends(get_current_user),
+):
+    """Retrieve audit log entries for HIPAA compliance review."""
+    query = {}
+    if resource_type:
+        query["resource_type"] = resource_type
+    if action:
+        query["action"] = action
+    if user_email:
+        query["user_email"] = user_email
+
+    logs = list(
+        audit_logs_collection.find(query, {"_id": 0})
+        .sort("timestamp", -1)
+        .limit(limit)
+    )
+    # Convert datetime objects to ISO strings for JSON serialization
+    for log in logs:
+        if isinstance(log.get("timestamp"), datetime):
+            log["timestamp"] = log["timestamp"].isoformat()
+    return logs
 
 
 # ============ CPT CODES SEARCH ============
