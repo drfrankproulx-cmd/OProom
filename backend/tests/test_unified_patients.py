@@ -14,7 +14,7 @@ import os
 import json
 from datetime import datetime, timedelta
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://preop-hub.preview.emergentagent.com').rstrip('/')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://clinic-scheduler-v2.preview.emergentagent.com').rstrip('/')
 
 # Test credentials
 TEST_EMAIL = "proul076@umn.edu"

@@ -136,7 +136,7 @@ JWT_ALGORITHM = os.environ.get('JWT_ALGORITHM', 'HS256')
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get('ACCESS_TOKEN_EXPIRE_MINUTES', 43200))  # 30 days
 
 # WebAuthn Configuration - Uses FRONTEND_URL from env for flexibility
-FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://preop-hub.preview.emergentagent.com')
+FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://clinic-scheduler-v2.preview.emergentagent.com')
 # Extract domain from FRONTEND_URL for RP_ID
 _parsed_url = FRONTEND_URL.replace('https://', '').replace('http://', '').split('/')[0]
 RP_ID = os.environ.get('WEBAUTHN_RP_ID', _parsed_url)
@@ -2858,11 +2858,11 @@ async def google_oauth_callback(code: str, state: str = None):
         )
         
         # Redirect to frontend with success
-        frontend_url = os.environ.get('FRONTEND_URL', 'https://preop-hub.preview.emergentagent.com')
+        frontend_url = os.environ.get('FRONTEND_URL', 'https://clinic-scheduler-v2.preview.emergentagent.com')
         return RedirectResponse(f"{frontend_url}?google_connected=true")
         
     except Exception as e:
-        frontend_url = os.environ.get('FRONTEND_URL', 'https://preop-hub.preview.emergentagent.com')
+        frontend_url = os.environ.get('FRONTEND_URL', 'https://clinic-scheduler-v2.preview.emergentagent.com')
         return RedirectResponse(f"{frontend_url}?google_error={str(e)}")
 
 

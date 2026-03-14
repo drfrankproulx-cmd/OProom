@@ -1,155 +1,133 @@
 <analysis>**original_problem_statement:**
-The user, a surgical resident, wants a web-based operating room scheduling platform (PWA).
+The user, a surgical resident, wants to prepare the existing web-based operating room scheduling platform for a production-grade, HIPAA-compliant deployment on AWS. This involves a comprehensive DevOps overhaul of the entire application.
 
-The most recent requests from the user are:
-1.  **Merge Patients and Tasks Tabs**: Consolidate the separate Patients and Tasks tabs into a single, unified Patients view. This view should show an expandable list of patients, with each expanded view containing the patient's details, pre-op checklist, tasks, and notes. This was completed.
-2.  **Streamline Quick Add Patient Flow**: Ensure that adding a patient via the dashboard's Quick Add form correctly populates all relevant views (unified Patients page, calendar's Add-On list). This includes auto-generating a default set of pre-op tasks and initializing a pre-op checklist for the new patient. This was completed.
-3.  **Overhaul the Pre-Op Checklist**: The current main task is to overhaul the pre-op checklist to be more specific to an Oral & Maxillofacial Surgery (OMFS) workflow. This involves:
-    *   Reducing the checklist to a lean 9-item list.
-    *   Changing the Imaging item from a simple checkbox to a multi-select dropdown to specify which imaging studies are needed (e.g., CT Facial, PET Scan).
-    *   Updating the auto-generated tasks to match the new checklist.
-    *   Ensuring backward compatibility for existing patients with the old checklist format.
+The user has provided a detailed, multi-step plan which includes:
+1.  **Containerize the Application**: Create production-ready Dockerfiles for the frontend (React + Nginx) and backend (FastAPI), along with a  for local testing.
+2.  **Production Environment Configuration**: Externalize all configuration and secrets to environment variables, creating a  template. The application should fail on startup if required secrets (like , ) are missing.
+3.  **HIPAA-Compliant Audit Logging**: Implement a simplified audit logging system. Every action that touches patient data (view, create, edit, delete) and all authentication events must be recorded in a new  collection in MongoDB. The user specified that all logged-in users will have the same level of access, so the logging is for tracking, not for permission enforcement.
+4.  **Session Timeout**: Implement an automatic session timeout after 15 minutes of user inactivity, with a 3-minute warning modal.
+5.  **Security Hardening**: Implement rate limiting on the login endpoint, ensure no Protected Health Information (PHI) is present in logs or URL parameters, and add standard security headers.
+6.  **AWS Deployment Artifacts**: Create configuration files for AWS deployment, including an ECS task definition () and a CodeBuild specification ().
+
+The user explicitly requested to **skip the implementation of Role-Based Access Control (RBAC)**, stating all providers should have the same level of access.
 
 **User's preferred language**: English
 
 **what currently exists?**
-The application is a full-stack platform (React/FastAPI/MongoDB). The UI has been significantly refactored to feature a unified Patients page that combines patient information and their associated tasks, replacing the previous separate Patients and Tasks tabs. The backend  endpoint has been enhanced to support this new structure, including auto-generating tasks and a new, more detailed pre-op checklist upon patient creation.
-
-The agent has started implementing the OMFS pre-op checklist overhaul. The backend  model, default checklist, and auto-generated tasks have been updated in . A new  component has been created, and the  component has been modified to render the new checklist format. A new  endpoint was created to handle updates to the new imaging dropdown.
+The application is a functional full-stack platform (React/FastAPI/MongoDB) running in a development environment managed by . It features a unified patient and task management view, a calendar, and a powerful, recently-expanded CPT code search system with over 700 OMFS-specific codes. The codebase is not yet containerized or configured for a production environment. The previous agent had just received the productionization request and performed an initial exploration of the codebase.
 
 **Last working item**:
-- **Last item agent was working:** Debugging a critical backend issue with the  endpoint. The endpoint successfully updates the  status of the Imaging checklist item but fails to save the array of selected imaging studies to the  field in the MongoDB document.
-- **Status:** BLOCKED
-- **Agent Testing Done:** Y
-- **Which testing method agent to use?** backend testing agent. The agent needs to use  with  to avoid shell interpretation issues, and potentially write a python script to isolate the issue in 's  function. The problem lies in how the  update query is constructed or executed within the FastAPI context.
+- **Last item agent was working:** The agent was at the very beginning of the Productionize for AWS task. After analyzing the user's detailed request and exploring the existing  and frontend structure, the agent formulated a plan based on the user's prompt. The user then approved this plan with modifications (simplifying audit logging and skipping RBAC). The agent's last action was to acknowledge the user's approval and prepare to start the implementation.
+- **Status:** IN PROGRESS
+- **Agent Testing Done:** N
+- **Which testing method agent to use?** A combination of methods will be needed:
+    1.   to build and run the containerized services locally.
+    2.   to test API endpoints, security headers, and new features like rate limiting.
+    3.  Frontend testing agent or screenshot tool to verify the session timeout UI and functionality.
+    4.  Manual database inspection to verify that audit logs are being created correctly.
 - **User Testing Done:** N
 
 **All Pending/In progress Issue list**:
-- **Issue 1: Imaging selection not saving to database (P0)**
-    - **Description**: The  endpoint is not persisting the  array to the database. While API calls return a  and even indicate success (e.g., ), subsequent checks of the database show the  array remains empty .
-    - **Attempted fixes**:
-        - Confirmed the request body is parsed correctly by FastAPI using a separate  endpoint.
-        - Used  with  to rule out shell-related JSON parsing errors.
-        - Rewrote the MongoDB update logic to use  to target the specific checklist item.
-        - Attempted to add  and  statements to the endpoint, but they did not appear in the logs, complicating debugging.
-        - A direct database update using a standalone Python script **succeeded**, which strongly suggests the issue is within the FastAPI/Pydantic/PyMongo interaction in the  endpoint, not the database or the query logic itself.
-    - **Next debug checklist**:
-        1.  Re-examine the  function in .
-        2.  Focus on the  operation within the  call. The query is .
-        3.  The primary hypothesis is that  is not the expected list of strings when the  command is executed, despite tests showing the request body is parsed correctly.
-        4.  **Action**: Add a line to log the  and  of  *immediately* before the  call. Since standard logging failed, try writing the debug output to a temporary file as a last resort (e.g., ).
-        5.  Compare the exact  parameters (query, update document, array filters) from the failing endpoint with the parameters from the successful standalone Python script.
-    - **Why fix this issue and what will be achieved with the fix?**: This is the primary blocker for the entire pre-op checklist overhaul feature requested by the user. Fixing it will allow imaging selections to be saved and displayed correctly.
-    - **Status**: BLOCKED
-    - **Is recurring issue?**: N
-    - **Should Test frontend/backend/both after fix?**: backend
-    - **Blocked on other issue**: None. This is the blocking issue.
+There are no pending bugs. The focus is entirely on the productionization task.
 
 **In progress Task List**:
-- **Task 1: Complete the Pre-Op Checklist Overhaul (P0)**
-    - **Where to resume**: The task is blocked. Resume by fixing the  endpoint as described in Issue 1. After the backend is fixed, the next step is to test the frontend to ensure  correctly fetches, displays, and saves the selected imaging studies as tags on the patient's expanded view.
-    - **What will be achieved with this?**: A streamlined, OMFS-specific pre-op checklist that improves the clinical workflow, as requested by the user.
-    - **Status**: BLOCKED
+- **Task 1: Productionize the Application for AWS Deployment (P0)**
+    - **Where to resume**: The user has approved the plan. The immediate next step is to begin implementation, starting with **Step 1: Dockerize the Application**. This involves creating the following files exactly as specified in the user's prompt (message #377):
+        - 
+        - 
+        - 
+        - 
+    - **What will be achieved with this?**: This will containerize the application, making it portable and ready for deployment, and setting the foundation for all subsequent DevOps tasks.
+    - **Status**: IN PROGRESS
     - **Should Test frontend/backend/both after fix?**: both
-    - **Blocked on something**: Issue 1: Imaging selection not saving to database.
+    - **Blocked on something**: Nothing.
 
 **Upcoming and Future Tasks**
 *   **Upcoming Tasks:**
-    *   (P1) Code Cleanup: Delete legacy/unused components now that the unified patient view is in place (e.g., , , and components in ).
+    *   (P0) Implement Simplified Audit Logging.
+    *   (P0) Implement Session Timeout.
+    *   (P0) Harden Application Security (Rate Limiting, etc.).
+    *   (P0) Externalize all configuration to Environment Variables.
+    *   (P0) Create AWS Deployment Configuration Files (, ).
 *   **Future Tasks:**
     *   (P2) Implement the weekly email digest feature for notifications.
 
 **Completed work in this session**
-- **Major Refactor: Unified Patient & Task View**:
-  - Merged the Patients and Tasks tabs into a single Patients view ().
-  - Removed Tasks from all navigation elements (, ).
-  - Routes to  now redirect to .
-- **Enhanced Quick Add Patient Flow**:
-  - The  endpoint now auto-generates 6 default tasks and initializes a 13-item pre-op checklist.
-  - Added an Auto-generate pre-op tasks checkbox to the Quick Add form.
-- **Add to Add-On List Bug Fix**:
-  - Fixed a  error by making the  field optional in the backend  model in .
-- **Orthognathic Surgery Workflow**:
-  - Implemented a conditional checklist in  to show specialized items for patients with an orthognathic diagnosis.
-- **Pre-Op Status Page Bug Fix**:
-  - Fixed a runtime error caused by a missing  icon import in .
-- **In-App Notification System**:
-  - Implemented a fully functional in-app notification system, including a  component, notification feed, and inline user settings. Backend endpoints were created and verified.
+- **Massive CPT Code Database Overhaul**:
+  - Extracted, parsed, and categorized **771 OMFS-relevant CPT/CDT codes** from three user-provided PDFs, including a 784-page scanned book that required extensive OCR.
+  - Replaced the frontend hardcoded list with a new backend API () and a comprehensive  database.
+  - Enhanced the frontend autocomplete to show results grouped by clinical category, dramatically improving usability.
+- **Feature Enhancement: Multi-select CPT Codes**: The Quick Add Patient form was updated to allow multiple CPT codes per patient.
+- **Feature Enhancement: Patient Filtering**: Added a dropdown to filter the main patient list by the attending physician.
+- **Critical Bug Fix and Refactor**:
+  - Fixed a FastAPI route-ordering bug that was blocking the Imaging checklist from saving.
+  - Completed the full refactor to remove the deprecated Pre-Op Status and Surgery Timeline tabs, unifying the UI around the Patients page.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
-- **Frontend**: React, Tailwind CSS, shadcn/ui.
-- **Backend**: Python FastAPI, PyMongo.
-- **Architecture**: The app has shifted to a more centralized data model where a patient document contains an embedded  array. The UI reflects this with a single unified patient management view.
-- **Database**: The  schema has been updated twice, first to a 13-item list, and now to a 9-item list with a special object for Imaging. The backend includes a normalization function to handle backward compatibility for older patient documents.
+- **Existing**: React, FastAPI, MongoDB, Tailwind CSS.
+- **To Be Implemented**: Docker, Nginx, Docker Compose, AWS (ECS, ECR, CodeBuild, Secrets Manager), HIPAA-compliant audit logging.
 
 **key DB schema**
-- **patients**: 
-  - The  item in  has the structure: .
+- **NEW (to be created)**: : 
 
 **changes in tech stack**
-- None.
+- No change in core languages, but a significant addition of DevOps technologies (Docker, Nginx, AWS tooling) to containerize and prepare the application for production.
 
 **All files of reference**
-*   **/app/backend/server.py**: Contains all backend logic. The  function is the source of the current blocker. The  function handles data migration.
-*   **/app/frontend/src/components/UnifiedPatients.jsx**: The main new component for displaying the patient list and expanded views. Contains the logic for rendering the new checklist.
-*   **/app/frontend/src/components/ImagingDropdown.jsx**: The new component for the multi-select imaging studies.
-*   **/app/frontend/src/components/AppleDashboard.jsx**: Contains the Quick Add Patient form and top-level routing logic.
+- 
+- 
+- The user's detailed prompt in message #377, which serves as the primary requirements document for this entire task.
 
 **Areas that need refactoring**:
-- The components related to the old, separate Patients and Tasks pages are now obsolete and should be deleted. This includes , , and the entire  directory.
+The entire project is undergoing a DevOps refactor. This includes:
+- Moving all configuration out of the code and into environment variables.
+- Modifying all data-accessing endpoints to include audit logging hooks.
+- Replacing the -based process management with Docker containers.
 
 **key api endpoints**
-*    (NEEDS FIXING)
-*    (NEW)
-*    (UPDATED to normalize checklists)
-*    (UPDATED to create new checklist and tasks)
-*    (Existing endpoint for toggling checkboxes)
+- **NEW (to be created)**:  (for viewing audit history).
+- **To be modified**: All endpoints interacting with patient data (e.g., , , ) must be updated to trigger audit logs.  will be rate-limited.
 
 **Critical Info for New Agent**
-- **YOU ARE BLOCKED.** Your immediate and only priority is to debug the  endpoint in .
-- The core of the problem is that the  array is not being saved to MongoDB, while the  boolean is.
-- A standalone Python script that performs the same database update **works correctly**. This strongly implies the problem lies within the FastAPI application context.
-- Do not get sidetracked by frontend changes or other features. The checklist overhaul cannot proceed until this backend bug is fixed.
-- Review the Attempted fixes and Next debug checklist for a full history of the debugging process.
+- You are executing a large, multi-step DevOps task to prepare the app for production. Your primary guide is the user's detailed prompt (message #377), with a few key modifications.
+- **User's Modifications (MANDATORY)**:
+    1.  **Preserve existing auth flow**.
+    2.  **SKIP Role-Based Access Control (RBAC)**. Do not implement roles. All authenticated users have full permissions.
+    3.  **Simplify Audit Logging**: The goal is to record all actions for tracking, not for permission enforcement.
+- **Your immediate task is to start Step 1: Dockerize the application.** Create the four specified files (, , , ) precisely as defined in the user's prompt. Do not proceed to other steps until containerization is complete and tested locally.
 
 **documents and test reports created in this job**
 - 
 - 
--  (Updated)
+- 
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User**: Requested a major overhaul of the pre-op checklist to be OMFS-specific, including a new 9-item list and a multi-select dropdown for Imaging. (IN PROGRESS, BLOCKED)
-2.  **Agent**: Finished the major refactor of merging Patients and Tasks tabs.
-3.  **User**: Confirmed that the new data format should only apply to new patients and that the old Pre-op status page should be removed. Approved the agent's plan to proceed. (COMPLETED)
-4.  **Agent**: Proposed a detailed plan for the major refactor (merging tabs, enhancing patient creation).
-5.  **User**: Reported a failed to execute json error when trying to add a patient to the Add-on list. (COMPLETED)
-6.  **Agent**: Finished fixing the Pre-Op status error and implementing the orthognathic surgery workflow.
-7.  **User**: Reported an error on the pre-op status tab and requested a new feature for an orthognathic surgery-specific checklist. (COMPLETED)
-8.  **Agent**: Finished implementing the in-app notification system.
-9.  **User**: Replied to agent's plan to implement notification system: Skip email for now and focus on in-app + push notifications first. (COMPLETED)
-10. **Agent**: Proposed a plan to implement the notification system.
+- **User**: Provided a comprehensive, multi-step prompt to productionize the application for AWS with Docker, HIPAA audit logging, and security hardening. (IN PROGRESS)
+- **Agent**: Acknowledged the request and asked for approval on a plan based on the prompt.
+- **User**: Replied with crucial modifications: Preserve the existing auth flow, simplify the audit logging so all users can edit anything, and explicitly stated to **Skip step 4, every provider will have the same role-based access control.** (COMPLETED)
+- **Agent**: Acknowledged the user's final approval and was about to begin the work.
+- **User**: proceed. (COMPLETED)
 
 **Project Health Check:**
-- **Broken**: The core functionality of updating imaging checklists is broken, blocking the current feature development.
-- **Mocked**: None.
+- **Broken**: N/A. The application is stable in its current development environment.
+- **Mocked**: N/A.
 
 **3rd Party Integrations**
-- **MongoDB Atlas**: Primary cloud database.
-- **py-webauthn**: For biometric authentication.
-- **@dnd-kit**: For drag-and-drop.
+- MongoDB Atlas
+- py-webauthn (biometrics)
+- @dnd-kit (drag-and-drop)
+- **To be configured for deployment**: AWS (ECR, ECS, CodeBuild, CloudWatch, Secrets Manager).
 
 **Testing status**
-- **Testing agent used after significant changes**: YES, on the previous Unified Patient View refactor.
-- **Troubleshoot agent used after agent stuck in loop**: NO
-- **Test files created**: None.
-- **Known regressions**: None.
+- The last feature (CPT code overhaul) was successfully validated by the testing agent.
+- No testing has been performed for the current productionization task as implementation has not yet begun.
 
 **Credentials to test flow:**
 - **Admin Email**: 
 - **Admin Password**: 
 
 **What agent forgot to execute**
-The agent is currently blocked on debugging a critical issue. Nothing has been forgotten, but progress is halted until the bug is resolved.</analysis>
+The previous agent was at the starting point of a new, large task. Nothing has been missed, but it is critical for the new agent to adhere strictly to the user's detailed plan and modifications.</analysis>
