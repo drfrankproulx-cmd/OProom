@@ -18,7 +18,8 @@ import {
   Activity,
   X,
   GripVertical,
-  Smartphone
+  Smartphone,
+  Trash2
 } from 'lucide-react';
 import PageLayout from './PageLayout';
 import Settings from './Settings';
@@ -621,6 +622,29 @@ export const AppleDashboard = ({ user, onLogout }) => {
     }
   };
 
+  // Handle deleting an add-on case (removes patient + schedule)
+  const handleDeleteAddOn = async (addOn) => {
+    if (!window.confirm(`Delete ${addOn.patient_name} from the add-on list? This will also remove the patient record.`)) return;
+    try {
+      // Delete schedule entry
+      await fetch(`${API_URL}/api/schedules/${addOn._id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+      });
+      // Delete patient record
+      if (addOn.patient_mrn) {
+        await fetch(`${API_URL}/api/patients/${addOn.patient_mrn}`, {
+          method: 'DELETE',
+          headers: getAuthHeaders(),
+        });
+      }
+      toast.success(`${addOn.patient_name} removed`);
+      fetchData();
+    } catch (error) {
+      toast.error('Failed to delete add-on case');
+    }
+  };
+
   // Handle view full patient record
   const handleViewFullRecord = (patient) => {
     setPatientDetailData(null);
@@ -1006,6 +1030,14 @@ export const AppleDashboard = ({ user, onLogout }) => {
                             </div>
                           )}
                         </div>
+                        <button
+                          data-testid={`addon-delete-btn-${addOn._id}`}
+                          onClick={(e) => { e.stopPropagation(); handleDeleteAddOn(addOn); }}
+                          className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-red-100 transition-all"
+                          title="Remove from add-on list"
+                        >
+                          <Trash2 className="h-3.5 w-3.5 text-red-400 hover:text-red-600" />
+                        </button>
                       </div>
                     </div>
                   );
