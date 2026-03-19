@@ -199,7 +199,7 @@ JWT_ALGORITHM = os.environ.get('JWT_ALGORITHM', 'HS256')
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get('ACCESS_TOKEN_EXPIRE_MINUTES', 43200))  # 30 days
 
 # WebAuthn Configuration - Uses FRONTEND_URL from env for flexibility
-FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://clinic-scheduler-v2.preview.emergentagent.com')
+FRONTEND_URL = os.environ.get('FRONTEND_URL')
 # Extract domain from FRONTEND_URL for RP_ID
 _parsed_url = FRONTEND_URL.replace('https://', '').replace('http://', '').split('/')[0]
 RP_ID = os.environ.get('WEBAUTHN_RP_ID', _parsed_url)
@@ -820,7 +820,7 @@ async def delete_webauthn_credential(current_user: str = Depends(get_current_use
 @app.get("/api/users")
 async def get_all_users(current_user: str = Depends(get_current_user)):
     """Get all registered users for task assignment dropdown"""
-    users = list(users_collection.find({}, {"email": 1, "full_name": 1, "role": 1}))
+    users = list(users_collection.find({}, {"email": 1, "full_name": 1, "role": 1}).limit(500))
     for user in users:
         user["_id"] = str(user["_id"])
     return users
@@ -1034,7 +1034,7 @@ async def create_patient_with_tasks(request_obj: PatientCreateRequest, request: 
 
 @app.get("/api/patients")
 async def get_patients(request: Request, current_user: str = Depends(get_current_user)):
-    patients = list(patients_collection.find())
+    patients = list(patients_collection.find().limit(1000))
     for patient in patients:
         patient["_id"] = str(patient["_id"])
     create_audit_log(current_user, "view_list", "patient", request=request)
@@ -1043,9 +1043,9 @@ async def get_patients(request: Request, current_user: str = Depends(get_current
 @app.get("/api/patients/with-tasks")
 async def get_patients_with_tasks(current_user: str = Depends(get_current_user)):
     """Get all patients with their associated tasks and task counts"""
-    patients = list(patients_collection.find())
-    all_tasks = list(tasks_collection.find())
-    all_schedules = list(schedules_collection.find())
+    patients = list(patients_collection.find().limit(1000))
+    all_tasks = list(tasks_collection.find().limit(5000))
+    all_schedules = list(schedules_collection.find().limit(2000))
     
     # Create lookup maps
     tasks_by_mrn = {}
@@ -1786,7 +1786,7 @@ Scheduled by: {current_user}
 
 @app.get("/api/schedules")
 async def get_schedules(current_user: str = Depends(get_current_user)):
-    schedules = list(schedules_collection.find())
+    schedules = list(schedules_collection.find().limit(2000))
     for schedule in schedules:
         schedule["_id"] = str(schedule["_id"])
     return schedules
@@ -1861,7 +1861,7 @@ Please complete this task to prepare the patient for the operating room.
 
 @app.get("/api/tasks")
 async def get_tasks(current_user: str = Depends(get_current_user)):
-    tasks = list(tasks_collection.find())
+    tasks = list(tasks_collection.find().limit(5000))
     for task in tasks:
         task["_id"] = str(task["_id"])
     return tasks
@@ -2967,11 +2967,11 @@ async def google_oauth_callback(code: str, state: str = None):
         )
         
         # Redirect to frontend with success
-        frontend_url = os.environ.get('FRONTEND_URL', 'https://clinic-scheduler-v2.preview.emergentagent.com')
+        frontend_url = os.environ.get('FRONTEND_URL')
         return RedirectResponse(f"{frontend_url}?google_connected=true")
         
     except Exception as e:
-        frontend_url = os.environ.get('FRONTEND_URL', 'https://clinic-scheduler-v2.preview.emergentagent.com')
+        frontend_url = os.environ.get('FRONTEND_URL')
         return RedirectResponse(f"{frontend_url}?google_error={str(e)}")
 
 
