@@ -549,7 +549,7 @@ async def register(user: UserRegister, request: Request):
     }
 
 @app.post("/api/auth/login")
-@limiter.limit("10/minute")
+@limiter.limit("30/minute")
 async def login(user: UserLogin, request: Request):
     # Find user
     db_user = users_collection.find_one({"email": user.email})
