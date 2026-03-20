@@ -99,7 +99,7 @@ export const AuthPage = ({ onLogin }) => {
         body: JSON.stringify(data),
       });
 
-      const result = await response.json().catch(() => ({ detail: response.status === 429 ? 'Too many login attempts. Please wait a minute and try again.' : 'Authentication failed' }));
+      const result = await response.json();
 
       if (!response.ok) {
         throw new Error(result.detail || 'Authentication failed');
