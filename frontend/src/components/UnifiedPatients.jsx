@@ -36,7 +36,7 @@ import ImagingDropdown from './ImagingDropdown';
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
 // Pre-op checklist item component - handles both regular items and imaging dropdown
-const PreOpChecklistItem = ({ item, onToggle, onImagingChange, disabled }) => {
+const PreOpChecklistItem = ({ item, onToggle, onImagingChange, onDelete, disabled }) => {
   // Special handling for imaging dropdown
   if (item.type === 'dropdown' && item.id === 'imaging') {
     return (
@@ -50,20 +50,33 @@ const PreOpChecklistItem = ({ item, onToggle, onImagingChange, disabled }) => {
     );
   }
 
+  const isCustom = item.default === false;
+
   // Regular checkbox item
   return (
     <div 
-      className={`flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors ${item.checked ? 'bg-green-50' : ''}`}
+      className={`flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors min-h-[44px] ${item.checked ? 'bg-green-50' : ''}`}
       onClick={() => !disabled && onToggle(item.id)}
+      data-testid={`checklist-item-${item.id}`}
     >
       <Checkbox 
         checked={item.checked} 
-        className="h-5 w-5"
+        className="h-5 w-5 shrink-0"
         disabled={disabled}
       />
-      <span className={`text-sm ${item.checked ? 'text-green-700 line-through' : 'text-slate-700'}`}>
+      <span className={`text-sm flex-1 ${item.checked ? 'text-green-700 line-through' : 'text-slate-700'}`}>
         {item.item}
       </span>
+      {isCustom && (
+        <button
+          data-testid={`checklist-delete-${item.id}`}
+          onClick={(e) => { e.stopPropagation(); onDelete(item.id); }}
+          className="shrink-0 w-7 h-7 flex items-center justify-center rounded hover:bg-red-100 text-slate-400 hover:text-red-600 transition-colors"
+          title="Remove item"
+        >
+          <X className="h-3.5 w-3.5" />
+        </button>
+      )}
     </div>
   );
 };
@@ -135,77 +148,87 @@ const TaskItem = ({ task, onToggle, onDelete }) => {
   );
 };
 
-// Add Task Form (inline)
+// Add Task Form (inline) — free-text task name, optional category
 const AddTaskForm = ({ patient, onSubmit, onCancel }) => {
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
   const [taskType, setTaskType] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [urgency, setUrgency] = useState('medium');
+  const [notes, setNotes] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!description.trim()) {
-      toast.error('Task description is required');
+      toast.error('Task name is required');
       return;
     }
     onSubmit({
       patient_mrn: patient.mrn,
       patient_name: patient.patient_name,
       task_description: description,
-      task_category: category,
-      task_type: taskType,
+      task_category: category || 'other',
+      task_type: taskType || description,
       due_date: dueDate || null,
-      urgency
+      urgency,
+      notes: notes || null,
     });
     setDescription('');
     setCategory('');
     setTaskType('');
     setDueDate('');
+    setNotes('');
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-3">
+    <form onSubmit={handleSubmit} className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-3" data-testid="add-task-form">
       <div className="flex items-center gap-2">
         <Plus className="h-4 w-4 text-teal-600" />
         <span className="text-sm font-medium text-slate-700">Add Task for {patient.patient_name}</span>
       </div>
       <Input
-        placeholder="Task description..."
+        data-testid="task-name-input"
+        placeholder="Task name — type anything: Clear with PCP, Order coags, etc."
         value={description}
         onChange={(e) => setDescription(e.target.value)}
-        className="h-10"
+        className="h-11 md:h-10"
+        autoFocus
       />
       <div className="grid grid-cols-2 gap-2">
         <TaskCategorySelect
           value={{ category, taskType }}
-          onChange={({ category, taskType }) => {
-            setCategory(category);
-            setTaskType(taskType);
-            if (!description && taskType) setDescription(taskType);
+          onChange={({ category: c, taskType: t }) => {
+            setCategory(c);
+            setTaskType(t);
           }}
         />
         <Input
           type="date"
           value={dueDate}
           onChange={(e) => setDueDate(e.target.value)}
-          className="h-10"
+          className="h-11 md:h-10"
         />
       </div>
       <div className="flex items-center gap-2">
         <select
           value={urgency}
           onChange={(e) => setUrgency(e.target.value)}
-          className="h-10 px-3 rounded-lg border border-slate-200 text-sm flex-1"
+          className="h-11 md:h-10 px-3 rounded-lg border border-slate-200 text-sm flex-1"
         >
-          <option value="low">Low Priority</option>
-          <option value="medium">Medium Priority</option>
-          <option value="high">High Priority</option>
-          <option value="urgent">Urgent</option>
+          <option value="low">Routine</option>
+          <option value="medium">Medium</option>
+          <option value="high">Urgent</option>
+          <option value="urgent">STAT</option>
         </select>
-        <Button type="button" variant="outline" onClick={onCancel} className="h-10">Cancel</Button>
-        <Button type="submit" className="h-10 bg-teal-500 hover:bg-teal-600 text-white">Add Task</Button>
+        <Button type="button" variant="outline" onClick={onCancel} className="h-11 md:h-10">Cancel</Button>
+        <Button type="submit" className="h-11 md:h-10 bg-teal-500 hover:bg-teal-600 text-white" data-testid="add-task-submit">Add</Button>
       </div>
+      <textarea
+        placeholder="Notes (optional)"
+        value={notes}
+        onChange={(e) => setNotes(e.target.value)}
+        className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm resize-none h-16"
+      />
     </form>
   );
 };
@@ -218,23 +241,33 @@ const PatientExpandedView = ({
   onToggleTask, 
   onDeleteTask, 
   onAddTask,
+  onAddChecklistItem,
+  onDeleteChecklistItem,
   checklistLoading 
 }) => {
   const [showAddTask, setShowAddTask] = useState(false);
+  const [newChecklistItem, setNewChecklistItem] = useState('');
   
-  // Get preop checklist (normalized to 9-item OMFS format)
+  // Get preop checklist
   const preopChecklist = Array.isArray(patient.preop_checklist) 
     ? patient.preop_checklist 
     : [];
   
-  // Calculate progress (always out of 9 items)
+  // Calculate progress dynamically (default + custom items)
   const checkedCount = preopChecklist.filter(item => item.checked).length;
-  const totalCount = 9; // Fixed at 9 for OMFS checklist
+  const totalCount = preopChecklist.length;
   const progressPercent = totalCount > 0 ? Math.round((checkedCount / totalCount) * 100) : 0;
 
   const tasks = patient.tasks || [];
   const pendingTasks = tasks.filter(t => !t.completed);
   const completedTasks = tasks.filter(t => t.completed);
+
+  const handleAddChecklistItem = () => {
+    const text = newChecklistItem.trim();
+    if (!text) return;
+    onAddChecklistItem(patient.mrn, text);
+    setNewChecklistItem('');
+  };
 
   return (
     <div className="bg-slate-50 border-t border-slate-200 p-4 md:p-6 space-y-6">
@@ -304,6 +337,7 @@ const PatientExpandedView = ({
                 item={item}
                 onToggle={onToggleChecklistItem}
                 onImagingChange={(selection) => onUpdateImagingSelection(patient.mrn, selection)}
+                onDelete={(itemId) => onDeleteChecklistItem(patient.mrn, itemId)}
                 disabled={checklistLoading}
               />
             ))}
@@ -313,6 +347,28 @@ const PatientExpandedView = ({
             No checklist items available
           </div>
         )}
+
+        {/* Add custom checklist item */}
+        <div className="flex items-center gap-2 mt-3 pt-3 border-t border-slate-100">
+          <Input
+            data-testid="add-checklist-item-input"
+            placeholder="+ Add checklist item"
+            value={newChecklistItem}
+            onChange={(e) => setNewChecklistItem(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAddChecklistItem(); } }}
+            className="h-11 md:h-9 flex-1 text-sm"
+          />
+          <Button
+            data-testid="add-checklist-item-btn"
+            type="button"
+            size="sm"
+            disabled={!newChecklistItem.trim() || checklistLoading}
+            onClick={handleAddChecklistItem}
+            className="h-11 md:h-9 px-4 bg-teal-500 hover:bg-teal-600 text-white shrink-0"
+          >
+            Add
+          </Button>
+        </div>
       </div>
 
       {/* Tasks Section */}
@@ -422,15 +478,17 @@ const PatientRow = ({
   onToggleTask,
   onDeleteTask,
   onAddTask,
+  onAddChecklistItem,
+  onDeleteChecklistItem,
   checklistLoading
 }) => {
   const tasks = patient.tasks || [];
   const pendingTaskCount = tasks.filter(t => !t.completed).length;
   
-  // Calculate progress (always out of 9 for OMFS checklist)
+  // Calculate progress dynamically
   const preopChecklist = Array.isArray(patient.preop_checklist) ? patient.preop_checklist : [];
   const checkedCount = preopChecklist.filter(item => item.checked).length;
-  const totalCount = 9; // Fixed at 9 for OMFS checklist
+  const totalCount = preopChecklist.length;
   const progressPercent = totalCount > 0 ? Math.round((checkedCount / totalCount) * 100) : 0;
 
   // Get surgery date
@@ -573,6 +631,8 @@ const PatientRow = ({
           onToggleTask={onToggleTask}
           onDeleteTask={onDeleteTask}
           onAddTask={onAddTask}
+          onAddChecklistItem={onAddChecklistItem}
+          onDeleteChecklistItem={onDeleteChecklistItem}
           checklistLoading={checklistLoading}
         />
       )}
@@ -724,6 +784,60 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
       }
     } catch (error) {
       toast.error('Failed to add task');
+    }
+  };
+
+  // Add custom checklist item
+  const handleAddChecklistItem = async (patientMrn, itemText) => {
+    setChecklistLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/api/patients/${patientMrn}/preop-checklist/custom-item`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ item: itemText }),
+      });
+      if (response.ok) {
+        const result = await response.json();
+        setPatients(prev => prev.map(p => {
+          if (p.mrn === patientMrn) {
+            return { ...p, preop_checklist: [...(p.preop_checklist || []), result.item] };
+          }
+          return p;
+        }));
+        toast.success('Checklist item added');
+      } else {
+        toast.error('Failed to add checklist item');
+      }
+    } catch (error) {
+      toast.error('Failed to add checklist item');
+    } finally {
+      setChecklistLoading(false);
+    }
+  };
+
+  // Delete custom checklist item
+  const handleDeleteChecklistItem = async (patientMrn, itemId) => {
+    setChecklistLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/api/patients/${patientMrn}/preop-checklist/custom-item/${itemId}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+      });
+      if (response.ok) {
+        setPatients(prev => prev.map(p => {
+          if (p.mrn === patientMrn) {
+            return { ...p, preop_checklist: (p.preop_checklist || []).filter(i => i.id !== itemId) };
+          }
+          return p;
+        }));
+        toast.success('Checklist item removed');
+      } else {
+        toast.error('Failed to remove checklist item');
+      }
+    } catch (error) {
+      toast.error('Failed to remove checklist item');
+    } finally {
+      setChecklistLoading(false);
     }
   };
 
@@ -981,6 +1095,8 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
                   onToggleTask={handleToggleTask}
                   onDeleteTask={handleDeleteTask}
                   onAddTask={handleAddTask}
+                  onAddChecklistItem={handleAddChecklistItem}
+                  onDeleteChecklistItem={handleDeleteChecklistItem}
                   checklistLoading={checklistLoading}
                 />
               ))

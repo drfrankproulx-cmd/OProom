@@ -833,27 +833,23 @@ IMAGING_OPTIONS = [
     "Lateral Cephalometric"
 ]
 
-# OMFS-specific pre-op checklist (9 items)
+# OMFS-specific pre-op checklist (5 default items)
 DEFAULT_PREOP_CHECKLIST = [
-    {"id": "imaging", "item": "Imaging", "checked": False, "type": "dropdown", "selection": []},
-    {"id": "labs_ordered", "item": "Labs Ordered", "checked": False},
-    {"id": "labs_reviewed", "item": "Labs Reviewed", "checked": False},
-    {"id": "prior_auth", "item": "Prior Authorization Approved", "checked": False},
-    {"id": "vsp_complete", "item": "VSP Complete", "checked": False},
-    {"id": "ortho_approval", "item": "Orthodontist Approval", "checked": False},
-    {"id": "anesthesia_clearance", "item": "Anesthesia Clearance", "checked": False},
-    {"id": "medical_optimization", "item": "Medical Optimization Complete", "checked": False},
-    {"id": "or_scheduled", "item": "OR Scheduled", "checked": False},
+    {"id": "imaging", "item": "Imaging", "checked": False, "type": "dropdown", "selection": [], "default": True},
+    {"id": "prior_auth", "item": "Prior Authorization Approved", "checked": False, "default": True},
+    {"id": "vsp_complete", "item": "VSP Complete", "checked": False, "default": True},
+    {"id": "ortho_approval", "item": "Orthodontist Approval", "checked": False, "default": True},
+    {"id": "or_scheduled", "item": "OR Scheduled", "checked": False, "default": True},
 ]
 
-# Default tasks to auto-generate on patient creation (OMFS-specific)
+# IDs of items removed from the default checklist (for migration)
+REMOVED_CHECKLIST_IDS = {"labs_ordered", "labs_reviewed", "anesthesia_clearance", "medical_optimization"}
+
+# Default tasks to auto-generate on patient creation (3 only)
 DEFAULT_PATIENT_TASKS = [
     {"description": "Prior Authorization", "category": "insurance", "task_type": "Prior Auth"},
-    {"description": "Labs (CBC/BMP)", "category": "labs", "task_type": "Labs"},
-    {"description": "Anesthesia Pre-Op Evaluation", "category": "labs", "task_type": "Anesthesia Eval"},
     {"description": "VSP (Virtual Surgical Planning)", "category": "surgical_planning", "task_type": "VSP"},
     {"description": "Imaging", "category": "imaging", "task_type": "Imaging"},
-    {"description": "Orthodontist Approval", "category": "patient_coordination", "task_type": "Ortho Approval"},
 ]
 
 class PatientCreateRequest(BaseModel):
@@ -909,9 +905,9 @@ async def create_patient(patient: Patient, request: Request, current_user: str =
 async def create_patient_with_tasks(request_obj: PatientCreateRequest, request: Request, current_user: str = Depends(get_current_user)):
     """
     Enhanced patient creation endpoint that:
-    1. Creates patient with new 13-item preop_checklist
+    1. Creates patient with 5-item default preop_checklist
     2. Sets status based on scheduled_date (add-on vs scheduled)
-    3. Auto-generates default tasks if enabled
+    3. Auto-generates 3 default tasks (Prior Auth, VSP, Imaging) if enabled
     4. Creates schedule entry if date provided
     """
     # Get user info for task assignment
@@ -933,12 +929,10 @@ async def create_patient_with_tasks(request_obj: PatientCreateRequest, request: 
         "status": status,
         "scheduled_date": request_obj.scheduled_date,
         "scheduled_time": request_obj.scheduled_time,
-        "preop_checklist": [item.copy() for item in DEFAULT_PREOP_CHECKLIST],  # New 13-item format
+        "preop_checklist": [item.copy() for item in DEFAULT_PREOP_CHECKLIST],  # 5 default items
         "prep_checklist": {  # Keep old format for backward compatibility
             "xrays": False,
-            "lab_tests": False,
-            "insurance_approval": False,
-            "medical_optimization": False
+            "insurance_approval": False
         },
         "comments": [],
         "activity_log": [{
@@ -1080,14 +1074,18 @@ async def get_patients_with_tasks(current_user: str = Depends(get_current_user))
         patient["completed_task_count"] = len(completed_tasks)
         patient["schedule"] = schedules_by_mrn.get(mrn)
         
-        # Normalize preop_checklist to new 9-item OMFS format
+        # Normalize preop_checklist to new 5-item default + custom format
         preop_checklist = patient.get("preop_checklist", [])
         normalized_checklist = normalize_preop_checklist(preop_checklist)
         patient["preop_checklist"] = normalized_checklist
         
-        # Calculate preop progress from normalized checklist (always 9 items now)
+        # Persist migration if checklist changed
+        if normalized_checklist != preop_checklist:
+            patients_collection.update_one({"mrn": mrn}, {"$set": {"preop_checklist": normalized_checklist}})
+        
+        # Calculate preop progress dynamically
         checked = sum(1 for item in normalized_checklist if item.get("checked"))
-        patient["preop_progress"] = {"checked": checked, "total": 9}
+        patient["preop_progress"] = {"checked": checked, "total": len(normalized_checklist)}
         
         result.append(patient)
     
@@ -1262,68 +1260,146 @@ async def toggle_preop_checklist_item(mrn: str, item_id: str, current_user: str 
         "progress": {"checked": checked_count, "total": len(preop_checklist)}
     }
 
+class CustomChecklistItem(BaseModel):
+    item: str
+
+@app.post("/api/patients/{mrn}/preop-checklist/custom-item")
+async def add_custom_checklist_item(mrn: str, body: CustomChecklistItem, request: Request, current_user: str = Depends(get_current_user)):
+    """Add a custom checklist item to a patient's preop checklist."""
+    patient = patients_collection.find_one({"mrn": mrn})
+    if not patient:
+        raise HTTPException(status_code=404, detail="Patient not found")
+
+    item_text = body.item.strip()
+    if not item_text:
+        raise HTTPException(status_code=400, detail="Item text is required")
+
+    import uuid
+    new_item = {
+        "id": f"custom_{uuid.uuid4().hex[:8]}",
+        "item": item_text,
+        "checked": False,
+        "default": False,
+    }
+
+    patients_collection.update_one(
+        {"mrn": mrn},
+        {
+            "$push": {"preop_checklist": new_item},
+            "$set": {"updated_by": current_user, "updated_at": datetime.utcnow()},
+        },
+    )
+    create_audit_log(current_user, "add_checklist_item", "patient", mrn, request, f"Added custom checklist item: {item_text}")
+
+    updated = patients_collection.find_one({"mrn": mrn}, {"_id": 0, "preop_checklist": 1})
+    checklist = updated.get("preop_checklist", [])
+    checked_count = sum(1 for i in checklist if i.get("checked"))
+    return {"item": new_item, "progress": {"checked": checked_count, "total": len(checklist)}}
+
+@app.delete("/api/patients/{mrn}/preop-checklist/custom-item/{item_id}")
+async def delete_custom_checklist_item(mrn: str, item_id: str, request: Request, current_user: str = Depends(get_current_user)):
+    """Delete a custom (non-default) checklist item."""
+    patient = patients_collection.find_one({"mrn": mrn})
+    if not patient:
+        raise HTTPException(status_code=404, detail="Patient not found")
+
+    checklist = patient.get("preop_checklist", [])
+    target = next((i for i in checklist if i.get("id") == item_id), None)
+    if not target:
+        raise HTTPException(status_code=404, detail="Item not found")
+    if target.get("default", True):
+        raise HTTPException(status_code=400, detail="Cannot delete a default checklist item")
+
+    patients_collection.update_one(
+        {"mrn": mrn},
+        {
+            "$pull": {"preop_checklist": {"id": item_id}},
+            "$set": {"updated_by": current_user, "updated_at": datetime.utcnow()},
+        },
+    )
+    create_audit_log(current_user, "delete_checklist_item", "patient", mrn, request, f"Deleted custom checklist item: {target.get('item')}")
+
+    updated = patients_collection.find_one({"mrn": mrn}, {"_id": 0, "preop_checklist": 1})
+    checklist = updated.get("preop_checklist", [])
+    checked_count = sum(1 for i in checklist if i.get("checked"))
+    return {"deleted": item_id, "progress": {"checked": checked_count, "total": len(checklist)}}
+
 def normalize_preop_checklist(checklist):
     """
-    Normalize an old checklist format to the new 9-item OMFS format.
-    Preserves checked states and imaging selections for items that still exist.
-    If the checklist is already in the new format, preserve it as-is.
+    Normalize an old checklist format to the new 5-item default + custom items format.
+    Migration rules:
+    - Keep the 5 default items with default=True flag
+    - Removed items (labs_ordered, labs_reviewed, anesthesia_clearance, medical_optimization):
+      - If checked: keep as a custom item (default=False) so no completed work is lost
+      - If unchecked: drop entirely
+    - Any extra items not in defaults or removed list: keep as custom
     """
     if not isinstance(checklist, list):
         return [item.copy() for item in DEFAULT_PREOP_CHECKLIST]
-    
-    # Check if this is already the new 9-item format (has the expected IDs)
-    new_format_ids = {item["id"] for item in DEFAULT_PREOP_CHECKLIST}
-    current_ids = {item.get("id") for item in checklist if isinstance(item, dict)}
-    
-    # If it's already the new format (same IDs), preserve it exactly
-    if current_ids == new_format_ids and len(checklist) == 9:
-        # Just ensure all required fields exist
+
+    default_ids = {item["id"] for item in DEFAULT_PREOP_CHECKLIST}
+
+    # Check if already migrated (all defaults have "default" key)
+    has_default_flags = all(
+        isinstance(i, dict) and "default" in i for i in checklist if isinstance(i, dict)
+    )
+    current_ids = {i.get("id") for i in checklist if isinstance(i, dict)}
+    if has_default_flags and default_ids.issubset(current_ids):
+        # Already migrated — just ensure imaging fields exist
         normalized = []
         for item in checklist:
-            item_copy = item.copy()
-            # Ensure imaging has selection array
-            if item_copy.get("id") == "imaging":
-                if "selection" not in item_copy:
-                    item_copy["selection"] = []
-                if "type" not in item_copy:
-                    item_copy["type"] = "dropdown"
-            normalized.append(item_copy)
+            c = item.copy()
+            if c.get("id") == "imaging":
+                c.setdefault("selection", [])
+                c.setdefault("type", "dropdown")
+            normalized.append(c)
         return normalized
-    
-    # Otherwise, this is an old format - need to migrate
-    # Map old item IDs to their checked states and imaging selection
+
+    # Build lookup of old states
     old_states = {}
     old_imaging_selection = []
     for item in checklist:
         if isinstance(item, dict):
             item_id = item.get("id", "")
-            old_states[item_id] = item.get("checked", False)
-            # Preserve imaging selection if it exists
+            old_states[item_id] = item
             if item_id == "imaging" and "selection" in item:
                 old_imaging_selection = item.get("selection", [])
-            # Convert old imaging_ordered to imaging
             if item_id == "imaging_ordered" and item.get("checked"):
-                old_states["imaging"] = True
-    
-    # Create new checklist with preserved states
+                old_states["imaging"] = {"checked": True}
+
+    # Build new checklist: defaults first
     new_checklist = []
-    for item in DEFAULT_PREOP_CHECKLIST:
-        new_item = item.copy()
+    for tmpl in DEFAULT_PREOP_CHECKLIST:
+        new_item = tmpl.copy()
         item_id = new_item["id"]
-        
-        # Preserve checked state if item existed before
         if item_id in old_states:
-            new_item["checked"] = old_states[item_id]
-        
-        # For imaging, preserve selection
+            new_item["checked"] = old_states[item_id].get("checked", False)
         if item_id == "imaging":
             new_item["selection"] = old_imaging_selection
-            # Auto-check if there are selections
             if old_imaging_selection:
                 new_item["checked"] = True
-        
         new_checklist.append(new_item)
-    
+
+    # Handle removed items — keep checked ones as custom items
+    for removed_id in REMOVED_CHECKLIST_IDS:
+        if removed_id in old_states and old_states[removed_id].get("checked", False):
+            old_item = old_states[removed_id]
+            new_checklist.append({
+                "id": f"custom_{removed_id}",
+                "item": old_item.get("item", removed_id.replace("_", " ").title()),
+                "checked": True,
+                "default": False,
+            })
+
+    # Keep any extra custom items that were already there
+    for item in checklist:
+        if isinstance(item, dict):
+            item_id = item.get("id", "")
+            if item_id not in default_ids and item_id not in REMOVED_CHECKLIST_IDS and item_id:
+                c = item.copy()
+                c["default"] = c.get("default", False)
+                new_checklist.append(c)
+
     return new_checklist
 
 @app.put("/api/patients/{mrn}")

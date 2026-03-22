@@ -64,8 +64,11 @@ const DraggableAddOn = ({ addOn, patient, onTap, isDragging }) => {
     data: { addOn, patient }
   });
 
-  const checklist = patient?.prep_checklist || {};
-  const completed = Object.values(checklist).filter(Boolean).length;
+  const checklist = patient?.preop_checklist || patient?.prep_checklist || {};
+  const completed = Array.isArray(checklist) 
+    ? checklist.filter(i => i.checked).length 
+    : Object.values(checklist).filter(Boolean).length;
+  const total = Array.isArray(checklist) ? checklist.length : Object.keys(checklist).length;
 
   const style = transform ? {
     transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
@@ -97,7 +100,7 @@ const DraggableAddOn = ({ addOn, patient, onTap, isDragging }) => {
           <div className="text-slate-600 truncate">{addOn.procedure}</div>
           <div className="flex items-center justify-between mt-1">
             <Badge variant="outline" className="bg-white text-xs px-2 py-0">{addOn.priority || 'medium'}</Badge>
-            <span className="text-xs text-slate-500">{completed}/4</span>
+            <span className="text-xs text-slate-500">{completed}/{total}</span>
           </div>
           {/* Mobile: Show tap hint */}
           {isTouchDevice && (
@@ -945,7 +948,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
                   className="h-4 w-4"
                 />
                 <Label htmlFor="auto-generate-tasks" className="text-xs text-slate-600 cursor-pointer">
-                  Auto-generate pre-op tasks
+                  Auto-generate tasks (Prior Auth, VSP, Imaging)
                 </Label>
               </div>
 
@@ -995,8 +998,9 @@ export const AppleDashboard = ({ user, onLogout }) => {
               <div className="space-y-2 max-h-[280px] overflow-y-auto">
                 {addOnCases.map(addOn => {
                   const patient = patients.find(p => p.mrn === addOn.patient_mrn);
-                  const checklist = patient?.prep_checklist || {};
-                  const completed = Object.values(checklist).filter(Boolean).length;
+                  const cl = patient?.preop_checklist || patient?.prep_checklist || {};
+                  const completed = Array.isArray(cl) ? cl.filter(i => i.checked).length : Object.values(cl).filter(Boolean).length;
+                  const total = Array.isArray(cl) ? cl.length : Object.keys(cl).length;
                   const isDragging = draggedAddOn?._id === addOn._id;
                   const isTouchDevice = 'ontouchstart' in window;
                   return (
@@ -1021,7 +1025,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
                           <div className="text-slate-600 truncate">{addOn.procedure}</div>
                           <div className="flex items-center justify-between mt-1">
                             <Badge variant="outline" className="bg-white text-xs px-2 py-0">{addOn.priority || 'medium'}</Badge>
-                            <span className="text-xs text-slate-500">{completed}/4</span>
+                            <span className="text-xs text-slate-500">{completed}/{total}</span>
                           </div>
                           {isTouchDevice && (
                             <div className="mt-1.5 text-[10px] text-orange-600 flex items-center gap-1">
@@ -1162,9 +1166,10 @@ export const AppleDashboard = ({ user, onLogout }) => {
                         <div className="space-y-1 md:space-y-1.5">
                           {daySchedules.map(schedule => {
                             const patient = patients.find(p => p.mrn === schedule.patient_mrn);
-                            const checklist = patient?.prep_checklist || {};
-                            const completed = Object.values(checklist).filter(Boolean).length;
-                            const percentage = (completed / 4) * 100;
+                            const cl = patient?.preop_checklist || patient?.prep_checklist || {};
+                            const completed = Array.isArray(cl) ? cl.filter(i => i.checked).length : Object.values(cl).filter(Boolean).length;
+                            const total = Array.isArray(cl) ? cl.length : Object.keys(cl).length;
+                            const percentage = total > 0 ? (completed / total) * 100 : 0;
                             return (
                               <div 
                                 key={schedule._id} 
@@ -1178,7 +1183,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
                                 <div className="mt-1 md:mt-1.5 pt-1 md:pt-1.5 border-t border-slate-100 hidden md:block">
                                   <div className="flex items-center justify-between mb-1">
                                     <span className="text-[9px] md:text-xs text-slate-400">Prep</span>
-                                    <span className="text-[9px] md:text-xs text-slate-500 font-medium">{completed}/4</span>
+                                    <span className="text-[9px] md:text-xs text-slate-500 font-medium">{completed}/{total}</span>
                                   </div>
                                   <div className="w-full bg-slate-200 rounded-full h-1">
                                     <div className={`h-1 rounded-full transition-all ${percentage === 100 ? 'bg-green-500' : percentage >= 50 ? 'bg-teal-500' : 'bg-orange-500'}`} style={{ width: `${percentage}%` }} />
@@ -1362,12 +1367,13 @@ export const AppleDashboard = ({ user, onLogout }) => {
 
                     <div className="mt-3 pt-3 border-t border-slate-100">
                       {(() => {
-                        const checklist = selectedPatient.prep_checklist || {};
-                        const completed = Object.values(checklist).filter(Boolean).length;
-                        const percentage = (completed / 4) * 100;
+                        const cl = selectedPatient.preop_checklist || selectedPatient.prep_checklist || {};
+                        const completed = Array.isArray(cl) ? cl.filter(i => i.checked).length : Object.values(cl).filter(Boolean).length;
+                        const total = Array.isArray(cl) ? cl.length : Object.keys(cl).length;
+                        const percentage = total > 0 ? (completed / total) * 100 : 0;
                         return (
                           <div>
-                            <div className="flex justify-between text-xs text-slate-500 mb-1"><span>Prep Progress</span><span className="font-medium">{completed}/4</span></div>
+                            <div className="flex justify-between text-xs text-slate-500 mb-1"><span>Prep Progress</span><span className="font-medium">{completed}/{total}</span></div>
                             <div className="w-full bg-slate-200 rounded-full h-2"><div className="bg-teal-500 h-2 rounded-full transition-all duration-300" style={{ width: `${percentage}%` }} /></div>
                           </div>
                         );
