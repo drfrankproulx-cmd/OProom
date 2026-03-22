@@ -25,83 +25,87 @@ Build a web-based operating room scheduling platform for surgical residents feat
 ## Current Navigation
 - **Desktop Sidebar**: Dashboard, Calendar, Patients, Bulk Import, Settings
 - **Mobile Nav**: Home, Calendar, Patients, Settings
-- **Removed**: Tasks tab (merged into Patients), Pre-Op Status tab (removed), Surgery Timeline (removed)
 
 ## Key Pages & Components
-- `AppleDashboard.jsx` - Main dashboard with Quick Add Patient form (preloads CPT codes)
+- `AppleDashboard.jsx` - Main dashboard with Quick Add Patient form
 - `UnifiedPatients.jsx` - Central patient hub (expandable rows, checklist, tasks, imaging dropdown, attending filter)
 - `ImagingDropdown.jsx` - Multi-select imaging studies dropdown
 - `CPTCodeAutocomplete.jsx` - Multi-select CPT autocomplete with category-grouped dropdown
-- `Calendar.jsx` - Full-screen calendar view with Week/Month toggle
+- `Calendar.jsx` - Full-screen calendar view
 - `Settings.jsx` - Residents, Attendings, Google Integration tabs
 - `BulkImport.jsx` - CSV import wizard
-- `Sidebar.jsx` / `MobileNav.jsx` - Navigation components
 - `SessionTimeout.jsx` - 15-min inactivity auto-logout with 3-min warning modal
 
+## Pre-Op Checklist (5 default items + custom)
+**Default items (cannot be deleted):**
+1. Imaging (dropdown: CT Facial, CT Abd/Leg Run-Off, PET Scan, OPG, Lateral Cephalometric)
+2. Prior Authorization Approved
+3. VSP Complete
+4. Orthodontist Approval
+5. OR Scheduled
+
+**Custom items:** Provider can add any custom checklist item per patient via "+ Add checklist item" input. Custom items are deletable.
+
+**Removed items:** Labs Ordered, Labs Reviewed, Anesthesia Clearance, Medical Optimization
+
+## Auto-Generated Tasks (3 only)
+1. Prior Authorization (insurance)
+2. VSP - Virtual Surgical Planning (surgical_planning)
+3. Imaging (imaging)
+
+**Removed auto-tasks:** Labs (CBC/BMP), Anesthesia Pre-Op Evaluation, Orthodontist Approval
+
+Task creation uses **free-text name input** — provider types whatever they want. Category dropdown is optional.
+
 ## CPT Code System (771 codes, 12 categories)
-- **Source**: Optum Current Procedural Coding Expert 2024 (Book2 pages 1-237 + pages 475-808) + Optum OMS Coding Guide (Book1, 784 pages OCR'd) + OMFS clinical expertise
 - **Backend**: `/app/backend/cpt_codes.json` — served via `/api/cpt-codes/*` endpoints
 - **Frontend**: Async-loaded from backend, local search with relevance scoring
-- **Categories**: Dentoalveolar (60), Orthognathic (33), Reconstruction & Free Flaps (97), Oncology & Ablative (113), Pathology (35), TMJ (18), Odontogenic Infections (17), Trauma (91), Complex Case & Supportive (48), Implants & Preprosthetic (18), Cleft & Craniofacial (20), Miscellaneous (221)
-
-## 9-Item OMFS Pre-Op Checklist
-1. Imaging (dropdown: CT Facial, CT Abd/Leg Run-Off, PET Scan, OPG, Lateral Cephalometric)
-2. Labs Ordered
-3. Labs Reviewed
-4. Prior Authorization Approved
-5. VSP Complete
-6. Orthodontist Approval
-7. Anesthesia Clearance
-8. Medical Optimization Complete
-9. OR Scheduled
 
 ## API Endpoints
-- `/api/auth/*` - Authentication (rate-limited login: 10/min)
+- `/api/auth/*` - Authentication (no rate limiting)
 - `/api/patients/*` - Patient CRUD + status transitions (audit-logged)
 - `/api/patients/{mrn}/preop-checklist/imaging` - Update imaging selections
 - `/api/patients/{mrn}/preop-checklist/{item_id}` - Toggle checklist items
-- `/api/cpt-codes/search?query=` - Search CPT codes
-- `/api/cpt-codes/all` - Full categorized CPT JSON
-- `/api/cpt-codes/categories` - Category names with counts
-- `/api/cpt-codes/favorites?diagnosis=` - Diagnosis-filtered favorites
+- `/api/patients/{mrn}/preop-checklist/custom-item` - POST: add custom item, DELETE: remove custom item
+- `/api/cpt-codes/*` - CPT code search/browse
 - `/api/imaging-options` - Imaging study options
 - `/api/schedules/*` - Schedule management
 - `/api/tasks/*` - Task management
 - `/api/notifications/*` - Notification system
 - `/api/google/*` - Google OAuth and Calendar/Gmail
 - `/api/import/*` - Bulk CSV import
-- `/api/usage/*` - Usage tracking
-- `/api/audit-logs` - HIPAA-compliant audit log viewer (supports filters: limit, resource_type, action, user_email)
+- `/api/audit-logs` - HIPAA-compliant audit log viewer
 - `/api/health` - Health check
 
 ## Test Credentials
 - Admin: `proul076@umn.edu` / `59K63i75%(`
 
 ## Completed Work
-- [x] Unified Patients page (merged Patients + Tasks tabs)
-- [x] Quick Add Patient with auto-generated tasks & 9-item OMFS checklist
-- [x] Imaging multi-select dropdown (FIXED route ordering bug)
+- [x] Unified Patients page
+- [x] Quick Add Patient with auto-generated tasks & checklist
+- [x] Imaging multi-select dropdown
 - [x] Quick-filter by attending on Patients page
-- [x] Multi-select CPT codes (removable tags)
-- [x] 771 OMFS CPT/CDT codes from 3 PDFs, categorized, deployed
-- [x] Category-grouped CPT autocomplete dropdown with color coding
+- [x] Multi-select CPT codes
+- [x] 771 OMFS CPT/CDT codes
 - [x] In-app notification system
-- [x] Pre-Op Status tab removed, Surgery Timeline removed
-- [x] Legacy components deleted
-- [x] **Dockerization** — backend/Dockerfile, frontend/Dockerfile, frontend/nginx.conf, docker-compose.yml
-- [x] **Production env config** — .env.example template, fail-fast on missing secrets in production
-- [x] **HIPAA audit logging** — audit_logs collection, all auth+patient actions logged, GET /api/audit-logs endpoint
-- [x] **Session timeout** — 15-min inactivity auto-logout with 3-min warning modal (SessionTimeout.jsx)
-- [x] **Security hardening** — rate limiting (10/min on login via slowapi), security headers middleware (X-Frame-Options, X-Content-Type-Options, HSTS, X-XSS-Protection, Referrer-Policy, Cache-Control, Pragma)
-- [x] **AWS deployment artifacts** — task-definition.json (ECS Fargate), buildspec.yml (CodeBuild CI/CD)
+- [x] Dockerization (backend/frontend Dockerfiles, nginx.conf, docker-compose.yml)
+- [x] Production env config (.env.example, fail-fast)
+- [x] HIPAA audit logging
+- [x] Session timeout (15-min with 3-min warning)
+- [x] Security hardening (security headers middleware)
+- [x] AWS deployment artifacts (task-definition.json, buildspec.yml)
+- [x] Add-on list delete feature
+- [x] **Pre-Op Checklist v2** — 5 defaults + free-form custom items, migration of existing patients
+- [x] **Task System v2** — 3 auto-tasks, free-text task creation, optional category
 
 ## Upcoming Tasks (P1)
-- [ ] Code cleanup: delete remaining legacy components (surgery-timeline/, ClinicalDashboard.jsx, etc.)
+- [ ] Legacy code cleanup (surgery-timeline/, ClinicalDashboard.jsx)
 
 ## Future/Backlog (P2)
 - [ ] Weekly email digest for notifications
 - [ ] Push notification service worker
-- [ ] Additional patient intake fields (insurance, notes)
+- [ ] Audit log viewer UI page
+- [ ] DB query pagination for production scalability
 
 ## Last Updated
-March 14, 2026 - Productionization for AWS complete (Docker, audit logging, session timeout, security hardening, AWS deployment artifacts)
+March 22, 2026 - Pre-Op Checklist v2 and Task System v2 complete
