@@ -1402,6 +1402,139 @@ def normalize_preop_checklist(checklist):
 
     return new_checklist
 
+
+# ============ CALENDAR ACTION ENDPOINT ============
+
+class CalendarAction(BaseModel):
+    action: str  # "schedule", "move_to_addon", "cancel", "reschedule"
+    or_date: Optional[str] = None
+    or_time: Optional[str] = None
+    or_room: Optional[str] = None
+    duration_minutes: Optional[int] = 120
+
+@app.patch("/api/patients/{mrn}/calendar")
+async def calendar_action(mrn: str, body: CalendarAction, request: Request, current_user: str = Depends(get_current_user)):
+    """Handle all calendar operations: schedule, move-to-addon, cancel, reschedule."""
+    patient = patients_collection.find_one({"mrn": mrn})
+    if not patient:
+        raise HTTPException(status_code=404, detail="Patient not found")
+
+    user_doc = users_collection.find_one({"email": current_user})
+    user_name = user_doc.get("full_name", current_user) if user_doc else current_user
+    activity_entry = None
+
+    if body.action == "schedule":
+        if not body.or_date:
+            raise HTTPException(status_code=400, detail="or_date is required for scheduling")
+        # Update patient status
+        patients_collection.update_one({"mrn": mrn}, {"$set": {
+            "status": "scheduled",
+            "scheduled_date": body.or_date,
+            "scheduled_time": body.or_time,
+            "updated_by": current_user,
+            "updated_at": datetime.utcnow(),
+        }})
+        # Update or create schedule entry
+        schedule = schedules_collection.find_one({"patient_mrn": mrn})
+        schedule_update = {
+            "scheduled_date": body.or_date,
+            "scheduled_time": body.or_time,
+            "or_room": body.or_room,
+            "duration_minutes": body.duration_minutes or 120,
+            "is_addon": False,
+            "status": "scheduled",
+        }
+        if schedule:
+            schedules_collection.update_one({"patient_mrn": mrn}, {"$set": schedule_update})
+        else:
+            schedule_update.update({
+                "patient_mrn": mrn,
+                "patient_name": patient.get("patient_name", ""),
+                "procedure": patient.get("procedures", ""),
+                "staff": patient.get("attending", ""),
+                "diagnosis": patient.get("diagnosis", ""),
+                "priority": "medium",
+                "created_by": current_user,
+                "created_at": datetime.utcnow(),
+            })
+            schedules_collection.insert_one(schedule_update)
+        time_str = body.or_time or "TBD"
+        room_str = body.or_room or "TBD"
+        activity_entry = f"Scheduled for {room_str} on {body.or_date} @ {time_str} — {user_name}"
+        create_audit_log(current_user, "schedule", "patient", mrn, request, activity_entry)
+
+    elif body.action == "move_to_addon":
+        patients_collection.update_one({"mrn": mrn}, {"$set": {
+            "status": "add-on",
+            "scheduled_date": None,
+            "scheduled_time": None,
+            "updated_by": current_user,
+            "updated_at": datetime.utcnow(),
+        }})
+        schedules_collection.update_one({"patient_mrn": mrn}, {"$set": {
+            "is_addon": True,
+            "scheduled_date": "",
+            "scheduled_time": "",
+            "or_room": None,
+            "duration_minutes": None,
+            "status": "add-on",
+        }})
+        activity_entry = f"Moved back to Add-On list — {user_name}"
+        create_audit_log(current_user, "move_to_addon", "patient", mrn, request, activity_entry)
+
+    elif body.action == "cancel":
+        patients_collection.update_one({"mrn": mrn}, {"$set": {
+            "status": "cancelled",
+            "updated_by": current_user,
+            "updated_at": datetime.utcnow(),
+        }})
+        schedules_collection.delete_one({"patient_mrn": mrn})
+        activity_entry = f"Case cancelled — {user_name}"
+        create_audit_log(current_user, "cancel", "patient", mrn, request, activity_entry)
+
+    elif body.action == "reschedule":
+        if not body.or_date:
+            raise HTTPException(status_code=400, detail="or_date is required for rescheduling")
+        old_schedule = schedules_collection.find_one({"patient_mrn": mrn})
+        old_date = old_schedule.get("scheduled_date", "unknown") if old_schedule else "unknown"
+        old_time = old_schedule.get("scheduled_time", "") if old_schedule else ""
+
+        patients_collection.update_one({"mrn": mrn}, {"$set": {
+            "scheduled_date": body.or_date,
+            "scheduled_time": body.or_time,
+            "updated_by": current_user,
+            "updated_at": datetime.utcnow(),
+        }})
+        update_fields = {
+            "scheduled_date": body.or_date,
+            "scheduled_time": body.or_time,
+            "status": "scheduled",
+            "is_addon": False,
+        }
+        if body.or_room:
+            update_fields["or_room"] = body.or_room
+        if body.duration_minutes:
+            update_fields["duration_minutes"] = body.duration_minutes
+        schedules_collection.update_one({"patient_mrn": mrn}, {"$set": update_fields})
+
+        time_str = body.or_time or old_time or "TBD"
+        activity_entry = f"Rescheduled from {old_date} to {body.or_date} @ {time_str} — {user_name}"
+        create_audit_log(current_user, "reschedule", "patient", mrn, request, activity_entry)
+    else:
+        raise HTTPException(status_code=400, detail=f"Unknown action: {body.action}")
+
+    # Add activity log entry to patient
+    if activity_entry:
+        patients_collection.update_one({"mrn": mrn}, {"$push": {"activity_log": {
+            "action": body.action,
+            "user": current_user,
+            "timestamp": datetime.utcnow().isoformat(),
+            "details": activity_entry,
+        }}})
+
+    return {"status": "ok", "action": body.action, "mrn": mrn, "message": activity_entry}
+
+
 @app.put("/api/patients/{mrn}")
 async def update_patient(mrn: str, patient: Patient, request: Request, current_user: str = Depends(get_current_user)):
     # Get current patient to compare changes
