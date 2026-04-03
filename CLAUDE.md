@@ -150,13 +150,13 @@ SMTP_PASSWORD=<app-password>
 EMAIL_FROM=<email>
 GOOGLE_CLIENT_ID=<id>
 GOOGLE_CLIENT_SECRET=<secret>
-GOOGLE_REDIRECT_URI=https://clinic-scheduler-v2.preview.emergentagent.com/api/google/callback
+GOOGLE_REDIRECT_URI=https://hipaa-ready-test.preview.emergentagent.com/api/google/callback
 AUTO_ARCHIVE_DELAY_HOURS=48
 ```
 
 ### Frontend
 ```
-REACT_APP_BACKEND_URL=https://clinic-scheduler-v2.preview.emergentagent.com
+REACT_APP_BACKEND_URL=https://hipaa-ready-test.preview.emergentagent.com
 ```
 
 ## API Endpoint Reference (Key Routes)

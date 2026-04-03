@@ -528,8 +528,8 @@ const Calendar = ({ onNavigate, initialFilter, user, onLogout }) => {
         headers: getAuthHeaders(),
         body: JSON.stringify({ action, ...extras }),
       });
-      if (!res.ok) throw new Error((await res.json()).detail || 'Action failed');
       const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || 'Action failed');
       toast.success(data.message);
       await fetchData();
       return data;

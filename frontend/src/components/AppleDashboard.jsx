@@ -269,33 +269,24 @@ export const AppleDashboard = ({ user, onLogout }) => {
 
   const fetchData = async () => {
     try {
+      const headers = getAuthHeaders();
       const [patientsRes, schedulesRes, tasksRes, conferencesRes, residentsRes, attendingsRes] = await Promise.all([
-        fetch(`${API_URL}/api/patients`, { headers: getAuthHeaders() }),
-        fetch(`${API_URL}/api/schedules`, { headers: getAuthHeaders() }),
-        fetch(`${API_URL}/api/tasks`, { headers: getAuthHeaders() }),
-        fetch(`${API_URL}/api/conferences`, { headers: getAuthHeaders() }),
-        fetch(`${API_URL}/api/residents/active`, { headers: getAuthHeaders() }),
-        fetch(`${API_URL}/api/attendings/active`, { headers: getAuthHeaders() }),
+        fetch(`${API_URL}/api/patients`, { headers }).catch(() => null),
+        fetch(`${API_URL}/api/schedules`, { headers }).catch(() => null),
+        fetch(`${API_URL}/api/tasks`, { headers }).catch(() => null),
+        fetch(`${API_URL}/api/conferences`, { headers }).catch(() => null),
+        fetch(`${API_URL}/api/residents/active`, { headers }).catch(() => null),
+        fetch(`${API_URL}/api/attendings/active`, { headers }).catch(() => null),
       ]);
 
-      const [patientsData, schedulesData, tasksData, conferencesData, residentsData, attendingsData] = await Promise.all([
-        patientsRes.json(),
-        schedulesRes.json(),
-        tasksRes.json(),
-        conferencesRes.json(),
-        residentsRes.json(),
-        attendingsRes.json(),
-      ]);
-
-      if (patientsRes.ok) setPatients(patientsData);
-      if (schedulesRes.ok) setSchedules(schedulesData);
-      if (tasksRes.ok) setTasks(tasksData);
-      if (conferencesRes.ok) setConferences(conferencesData);
-      if (residentsRes.ok) setResidents(residentsData);
-      if (attendingsRes.ok) setAttendings(attendingsData);
+      if (patientsRes?.ok) setPatients(await patientsRes.json());
+      if (schedulesRes?.ok) setSchedules(await schedulesRes.json());
+      if (tasksRes?.ok) setTasks(await tasksRes.json());
+      if (conferencesRes?.ok) setConferences(await conferencesRes.json());
+      if (residentsRes?.ok) setResidents(await residentsRes.json());
+      if (attendingsRes?.ok) setAttendings(await attendingsRes.json());
     } catch (error) {
       console.error('Fetch error:', error);
-      toast.error('Failed to load data');
     } finally {
       setLoading(false);
     }
@@ -579,15 +570,14 @@ export const AppleDashboard = ({ user, onLogout }) => {
         })
       });
 
-      if (response.ok) {
-        toast.success(`${addOn.patient_name} scheduled for ${format(parseISO(scheduleDetails.scheduled_date), 'MMMM d, yyyy')} at ${scheduleDetails.scheduled_time}`, {
-          duration: 3000
-        });
-        fetchData();
-      } else {
-        const error = await response.json();
-        throw new Error(error.detail || 'Failed to schedule patient');
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.detail || 'Failed to schedule patient');
       }
+      toast.success(`${addOn.patient_name} scheduled for ${format(parseISO(scheduleDetails.scheduled_date), 'MMMM d, yyyy')} at ${scheduleDetails.scheduled_time}`, {
+        duration: 3000
+      });
+      fetchData();
     } catch (error) {
       console.error('Schedule error:', error);
       toast.error(error.message);
