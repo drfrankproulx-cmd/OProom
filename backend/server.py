@@ -138,9 +138,10 @@ app.add_middleware(
 )
 
 # MongoDB connection
-MONGO_URL = os.environ.get('MONGO_URL', 'mongodb://localhost:27017/or_scheduler')
+MONGO_URL = os.environ.get('MONGO_URL')
+DB_NAME = os.environ.get('DB_NAME', 'or_scheduler')
 client = MongoClient(MONGO_URL)
-db = client.get_database()
+db = client[DB_NAME]
 
 # Collections
 users_collection = db.users
@@ -511,6 +512,10 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
         raise HTTPException(status_code=401, detail="Invalid token")
 
 # Routes
+@app.get("/health")
+async def health_check_root():
+    return {"status": "healthy"}
+
 @app.get("/api/health")
 async def health_check():
     return {"status": "healthy"}
