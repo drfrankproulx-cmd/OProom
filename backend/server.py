@@ -1798,7 +1798,7 @@ async def archive_patient(mrn: str, current_user: str = Depends(get_current_user
     archived_patients_collection.insert_one(patient)
 
     # Also archive related schedules
-    schedules = list(schedules_collection.find({"patient_mrn": mrn}))
+    schedules = list(schedules_collection.find({"patient_mrn": mrn}).limit(100))
     for schedule in schedules:
         schedule["archived_at"] = datetime.utcnow()
         schedule["archived_by"] = current_user
@@ -1820,7 +1820,7 @@ async def archive_patient(mrn: str, current_user: str = Depends(get_current_user
 @app.get("/api/patients/archived")
 async def get_archived_patients(current_user: str = Depends(get_current_user)):
     """Get all archived patients"""
-    archived = list(archived_patients_collection.find().sort("archived_at", -1))
+    archived = list(archived_patients_collection.find().sort("archived_at", -1).limit(500))
     for patient in archived:
         patient["_id"] = str(patient["_id"])
     return archived
@@ -1874,7 +1874,7 @@ async def run_auto_archive(current_user: str = Depends(get_current_user)):
     completed_patients = list(patients_collection.find({
         "status": "completed",
         "completed_at": {"$lt": cutoff_time}
-    }))
+    }).limit(100))
 
     archived_count = 0
     for patient in completed_patients:
@@ -2187,7 +2187,7 @@ Attendees: {', '.join(conference.attendees) if conference.attendees else 'None l
 
 @app.get("/api/conferences")
 async def get_conferences(current_user: str = Depends(get_current_user)):
-    conferences = list(conferences_collection.find())
+    conferences = list(conferences_collection.find().limit(500))
     for conference in conferences:
         conference["_id"] = str(conference["_id"])
     return conferences
@@ -2233,7 +2233,7 @@ async def get_residents(hospital: Optional[str] = None, current_user: str = Depe
     if hospital:
         query["hospital"] = hospital
 
-    residents = list(residents_collection.find(query))
+    residents = list(residents_collection.find(query).limit(500))
     for resident in residents:
         resident["_id"] = str(resident["_id"])
     return residents
@@ -2245,7 +2245,7 @@ async def get_active_residents(hospital: Optional[str] = None, current_user: str
     if hospital:
         query["hospital"] = hospital
 
-    residents = list(residents_collection.find(query))
+    residents = list(residents_collection.find(query).limit(500))
     for resident in residents:
         resident["_id"] = str(resident["_id"])
     return residents
@@ -2289,7 +2289,7 @@ async def get_attendings(hospital: Optional[str] = None, current_user: str = Dep
     if hospital:
         query["hospital"] = hospital
 
-    attendings = list(attendings_collection.find(query))
+    attendings = list(attendings_collection.find(query).limit(500))
     for attending in attendings:
         attending["_id"] = str(attending["_id"])
     return attendings
@@ -2301,7 +2301,7 @@ async def get_active_attendings(hospital: Optional[str] = None, current_user: st
     if hospital:
         query["hospital"] = hospital
 
-    attendings = list(attendings_collection.find(query))
+    attendings = list(attendings_collection.find(query).limit(500))
     for attending in attendings:
         attending["_id"] = str(attending["_id"])
     return attendings

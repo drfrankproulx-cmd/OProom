@@ -1,0 +1,74 @@
+{
+  "summary": "Comprehensive smoke test completed for OR Scheduler after major deployment fixes. All 22 backend API tests passed (100%). Frontend testing verified login, dashboard stat cards, Quick Add Patient form, Calendar views, Patients page, Settings, Bulk Import, and mobile responsiveness. All core features working correctly.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/health (root)", "issue": "Returns frontend HTML instead of JSON - expected behavior in k8s ingress setup. Use /api/health for backend health check."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_smoke_comprehensive.py",
+    "/app/test_reports/pytest/pytest_smoke_comprehensive.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_smoke_comprehensive.py"
+  ],
+  "success_rate": {
+    "backend": "100% (22/22 tests passed)",
+    "frontend": "100% (all features verified)"
+  },
+  "test_credentials": {
+    "email": "proul076@umn.edu",
+    "password": "59K63i75%("
+  },
+  "seed_data_creation": "Test patients created and cleaned up during testing (SMOKE_TEST_ prefix)",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All major features verified working: Auth (login/logout), Dashboard (4 stat cards with numbers, greeting), Quick Add Patient form, Calendar (week/month views, navigation, Add-On list), Patients page (search, filters, pre-op checklist, tasks), Settings (Residents/Attendings tabs), Bulk Import (CSV upload), Mobile responsive (390x844 - no overflow, bottom nav works). Backend APIs all passing including patients CRUD, schedules, tasks, attendings, residents, conferences, CPT codes, imaging options.",
+  "features_tested": {
+    "auth": {
+      "login": "PASS - credentials proul076@umn.edu work correctly",
+      "logout": "PASS - returns to login page",
+      "invalid_credentials": "PASS - returns 401"
+    },
+    "dashboard": {
+      "stat_cards": "PASS - Today's Schedule (0), This Week (1), Pending Cases (5), Tasks Due (0)",
+      "greeting": "PASS - 'Good morning/afternoon/evening, Dr. [Name]' displays",
+      "quick_add_form": "PASS - All fields present (name, ID, DOB, attending, diagnosis, CPT code)"
+    },
+    "calendar": {
+      "week_view": "PASS - Loads with time slots",
+      "month_view": "PASS - Toggle works",
+      "navigation": "PASS - Arrows and Today button work",
+      "add_on_list": "PASS - Shows 5 add-on patients"
+    },
+    "patients": {
+      "list": "PASS - 3 patients displayed",
+      "search": "PASS - Search by name/MRN works",
+      "filters": "PASS - All Attendings, All Status, All Patients, Newest First",
+      "stats": "PASS - Total: 3, Add-On: 3, Scheduled: 0, With Tasks: 3",
+      "pre_op_progress": "PASS - Progress bars visible (4/5, 0/5, 0/6)",
+      "task_counts": "PASS - Task badges visible (4, 5, 6)"
+    },
+    "settings": "PASS - Residents, Attendings, Email & Calendar, Bulk Import tabs",
+    "bulk_import": "PASS - CSV upload, template download, format requirements",
+    "mobile": {
+      "responsive": "PASS - No horizontal overflow at 390x844",
+      "navigation": "PASS - Bottom nav works (Home, Calendar, Patients, Settings)",
+      "forms": "PASS - Form inputs usable on mobile"
+    },
+    "api_health": {
+      "/api/health": "PASS - Returns {status: healthy}",
+      "/api/patients": "PASS - Returns patient data with auth",
+      "/api/schedules": "PASS - Returns schedule data with auth",
+      "/api/tasks": "PASS - Returns task data with auth"
+    }
+  }
+}
