@@ -139,6 +139,8 @@ app.add_middleware(
 
 # MongoDB connection
 MONGO_URL = os.environ.get('MONGO_URL')
+if not MONGO_URL:
+    raise RuntimeError("MONGO_URL environment variable is required")
 DB_NAME = os.environ.get('DB_NAME', 'or_scheduler')
 client = MongoClient(MONGO_URL)
 db = client[DB_NAME]
