@@ -1,0 +1,14 @@
+{
+  "scripts": {
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "cap:sync": "npx cap sync",
+    "cap:sync:ios": "npx cap sync ios",
+    "cap:open:ios": "npx cap open ios",
+    "cap:run:ios": "npx cap run ios",
+    "cap:build": "yarn build && npx cap sync",
+    "cap:build:ios": "yarn build && npx cap sync ios && npx cap open ios",
+    "ios": "yarn build && npx cap sync ios && npx cap open ios"
+  }
+}

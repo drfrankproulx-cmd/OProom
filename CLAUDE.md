@@ -10,6 +10,7 @@ OProom is a full-stack healthcare platform for managing surgical residency progr
 
 | Layer | Technology |
 | --- | --- |
+|-------|-----------|
 | Backend | Python 3.8+ / FastAPI 0.110.1 |
 | Database | MongoDB (pymongo 4.5.0, motor 3.3.1 for async) |
 | Frontend | React 19 / JavaScript (JSX) |
