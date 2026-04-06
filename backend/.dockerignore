@@ -1,0 +1,10 @@
+.env
+.pytest_cache
+__pycache__
+tests
+*.pyc
+cpt_raw_extract.txt
+cpt_raw_extract_book1.txt
+cpt_raw_extract_book2b.txt
+Dockerfile
+.dockerignore
