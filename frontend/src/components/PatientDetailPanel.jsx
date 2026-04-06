@@ -222,6 +222,12 @@ export const PatientDetailPanel = ({
                   <p className="text-slate-900">{patient.dob}</p>
                 </div>
               )}
+              {patient?.orthodontist && (
+                <div>
+                  <span className="text-xs text-slate-500 uppercase">Orthodontist</span>
+                  <p className="text-slate-900 font-medium">{patient.orthodontist}</p>
+                </div>
+              )}
             </div>
           </div>
 

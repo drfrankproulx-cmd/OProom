@@ -196,7 +196,7 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
         )}
 
         {/* Dropdown */}
-        {isOpen && Object.keys(grouped).length > 0 && (
+        {isOpen && (Object.keys(grouped).length > 0 || searchQuery) && (
           <div className="absolute z-[9999] mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-xl max-h-[50vh] md:max-h-96 overflow-y-auto">
             {/* Header hint */}
             {!searchQuery && diagnosis && getRelevantCPTCodes(diagnosis).length > 0 && (
@@ -212,6 +212,24 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
                   <Clock className="h-3 w-3" /> Frequently Used
                 </span>
               </div>
+            )}
+
+            {/* Free-text "Other" option when searching */}
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => {
+                  const customCPT = { code: searchQuery, common_name: searchQuery, description: searchQuery, category: 'Custom' };
+                  handleSelectCPT(customCPT);
+                }}
+                className="w-full text-left px-3 md:px-4 py-2.5 hover:bg-teal-50 active:bg-teal-100 border-b border-gray-200 transition-colors bg-slate-50"
+                data-testid="cpt-use-custom"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-teal-600 bg-teal-100 px-2 py-0.5 rounded-full">Other</span>
+                  <span className="text-sm font-medium text-slate-800">Use "{searchQuery}" as entered</span>
+                </div>
+              </button>
             )}
 
             {Object.entries(grouped).map(([catName, codes]) => (
@@ -249,11 +267,25 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
           </div>
         )}
 
-        {/* No results */}
+        {/* No results — offer free text */}
         {isOpen && searchQuery && Object.keys(grouped).length === 0 && (
-          <div className="absolute z-[9999] mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg p-4">
-            <p className="text-gray-500 text-center text-sm">
-              No CPT codes found for "{searchQuery}"
+          <div className="absolute z-[9999] mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg">
+            <button
+              type="button"
+              onClick={() => {
+                const customCPT = { code: searchQuery, common_name: searchQuery, description: searchQuery, category: 'Custom' };
+                handleSelectCPT(customCPT);
+              }}
+              className="w-full text-left px-3 md:px-4 py-2.5 hover:bg-teal-50 active:bg-teal-100 transition-colors rounded-t-lg"
+              data-testid="cpt-use-custom-noresults"
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold text-teal-600 bg-teal-100 px-2 py-0.5 rounded-full">Other</span>
+                <span className="text-sm font-medium text-slate-800">Use "{searchQuery}" as entered</span>
+              </div>
+            </button>
+            <p className="text-gray-400 text-center text-xs py-2 border-t border-gray-100">
+              No matching CPT codes found
             </p>
           </div>
         )}

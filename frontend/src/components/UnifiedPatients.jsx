@@ -293,6 +293,10 @@ const PatientExpandedView = ({
             <span className="ml-2 font-medium text-slate-900">{patient.attending || 'N/A'}</span>
           </div>
           <div>
+            <span className="text-slate-500">Orthodontist:</span>
+            <span className="ml-2 font-medium text-slate-900">{patient.orthodontist || 'N/A'}</span>
+          </div>
+          <div>
             <span className="text-slate-500">Surgery Date:</span>
             <span className="ml-2 font-medium text-slate-900">
               {patient.scheduled_date ? format(parseISO(patient.scheduled_date), 'MMM d, yyyy') : 

@@ -237,6 +237,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
     dob: '',
     mrn: '',
     attending: '',
+    orthodontist: '',
     diagnosis: '',
     procedures: '',
     procedure_code: '',
@@ -347,6 +348,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
         procedures: intakeForm.procedures || null,
         procedure_code: intakeForm.procedure_code || null,
         attending: intakeForm.attending || null,
+        orthodontist: intakeForm.orthodontist || null,
         scheduled_date: intakeForm.scheduling_type === 'scheduled' ? intakeForm.scheduled_date : null,
         scheduled_time: intakeForm.scheduling_type === 'scheduled' ? intakeForm.scheduled_time : null,
         auto_generate_tasks: intakeForm.auto_generate_tasks
@@ -396,6 +398,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
         dob: '',
         mrn: '',
         attending: '',
+        orthodontist: '',
         diagnosis: '',
         procedures: '',
         procedure_code: '',
@@ -862,8 +865,8 @@ export const AppleDashboard = ({ user, onLogout }) => {
             </div>
           </div>
 
-          {/* Row 2: Attending, Diagnosis, Procedure/CPT - Stack on mobile */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-3 md:mb-4">
+          {/* Row 2: Attending, Orthodontist, Diagnosis, Procedure/CPT - Stack on mobile */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-4 mb-3 md:mb-4">
             <div>
               <Label className="text-xs md:text-sm font-medium text-slate-700 mb-1 block">Attending</Label>
               <Select value={intakeForm.attending} onValueChange={(v) => setIntakeForm({...intakeForm, attending: v})}>
@@ -880,6 +883,16 @@ export const AppleDashboard = ({ user, onLogout }) => {
                   )}
                 </SelectContent>
               </Select>
+            </div>
+            <div>
+              <Label className="text-xs md:text-sm font-medium text-slate-700 mb-1 block">Orthodontist</Label>
+              <Input
+                className="h-11 md:h-10 text-base md:text-sm rounded-lg"
+                value={intakeForm.orthodontist}
+                onChange={(e) => setIntakeForm({...intakeForm, orthodontist: e.target.value})}
+                placeholder="Dr. name"
+                data-testid="orthodontist-input"
+              />
             </div>
             <DiagnosisAutocomplete
               value={intakeForm.diagnosis}

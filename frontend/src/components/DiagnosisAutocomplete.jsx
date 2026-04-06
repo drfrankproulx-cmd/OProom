@@ -158,6 +158,21 @@ export const DiagnosisAutocomplete = ({ value, onChange, label = "Diagnosis", re
               </div>
             )}
 
+            {/* Use as custom option when searching */}
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => handleSelectDiagnosis({ name: searchQuery })}
+                className="w-full text-left px-3 md:px-4 py-3 hover:bg-teal-50 active:bg-teal-100 border-b border-gray-200 transition-colors bg-slate-50"
+                data-testid="diagnosis-use-custom"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-teal-600 bg-teal-100 px-2 py-0.5 rounded-full">Other</span>
+                  <span className="text-sm font-medium text-slate-800">Use "{searchQuery}" as entered</span>
+                </div>
+              </button>
+            )}
+
             {filteredDiagnoses.map((diagnosis, index) => (
               <button
                 key={`${diagnosis.id || diagnosis.name}-${index}`}
@@ -199,11 +214,22 @@ export const DiagnosisAutocomplete = ({ value, onChange, label = "Diagnosis", re
           </div>
         )}
 
-        {/* No results message */}
+        {/* No results message — offer free text */}
         {isOpen && searchQuery && filteredDiagnoses.length === 0 && (
-          <div className="absolute z-[9999] mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg p-4">
-            <p className="text-gray-500 text-center text-sm">
-              No diagnoses found for "{searchQuery}"
+          <div className="absolute z-[9999] mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg">
+            <button
+              type="button"
+              onClick={() => handleSelectDiagnosis({ name: searchQuery })}
+              className="w-full text-left px-3 md:px-4 py-3 hover:bg-teal-50 active:bg-teal-100 transition-colors rounded-t-lg"
+              data-testid="diagnosis-use-custom-noresults"
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold text-teal-600 bg-teal-100 px-2 py-0.5 rounded-full">Other</span>
+                <span className="text-sm font-medium text-slate-800">Use "{searchQuery}" as entered</span>
+              </div>
+            </button>
+            <p className="text-gray-400 text-center text-xs py-2 border-t border-gray-100">
+              No matching diagnoses found
             </p>
           </div>
         )}

@@ -368,6 +368,7 @@ class Patient(BaseModel):
     procedures: Optional[str] = None
     procedure_code: Optional[str] = None
     attending: Optional[str] = None
+    orthodontist: Optional[str] = None
     status: str = "pending"
     prep_checklist: dict = {
         "xrays": False,
@@ -870,6 +871,7 @@ class PatientCreateRequest(BaseModel):
     procedures: Optional[str] = None
     procedure_code: Optional[str] = None
     attending: Optional[str] = None
+    orthodontist: Optional[str] = None
     scheduled_date: Optional[str] = None  # If provided, status = scheduled
     scheduled_time: Optional[str] = None
     auto_generate_tasks: bool = True  # Default: generate pre-op tasks
@@ -935,6 +937,7 @@ async def create_patient_with_tasks(request_obj: PatientCreateRequest, request: 
         "procedures": request_obj.procedures,
         "procedure_code": request_obj.procedure_code,
         "attending": request_obj.attending,
+        "orthodontist": request_obj.orthodontist,
         "status": status,
         "scheduled_date": request_obj.scheduled_date,
         "scheduled_time": request_obj.scheduled_time,
