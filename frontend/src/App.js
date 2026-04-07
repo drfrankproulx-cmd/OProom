@@ -3,12 +3,12 @@ import AuthPage from './components/AuthPage';
 import { AppleDashboard } from './components/AppleDashboard';
 import SessionTimeout from './components/SessionTimeout';
 import { Toaster } from './components/ui/sonner';
+import { getToken, clearAuth } from './utils/auth';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
-// Get token from either localStorage or sessionStorage
 const getStoredToken = () => {
-  return localStorage.getItem('token') || sessionStorage.getItem('token');
+  return getToken();
 };
 
 const getStoredUser = () => {
@@ -50,7 +50,7 @@ function App() {
       if (response.ok) {
         const userData = await response.json();
         // Update stored user data with fresh data from server
-        if (localStorage.getItem('token')) {
+        if (getToken()) {
           localStorage.setItem('user', JSON.stringify(userData));
         } else {
           sessionStorage.setItem('user', JSON.stringify(userData));
@@ -63,7 +63,6 @@ function App() {
         });
       } else if (response.status === 401) {
         // Token is invalid or expired
-        console.log('Token invalid or expired, clearing...');
         clearAuthData();
         setAuthState({
           isAuthenticated: false,
@@ -72,7 +71,6 @@ function App() {
         });
       } else {
         // Other error - still try to use cached data (might be network issue)
-        console.warn('Could not validate token, using cached data');
         setAuthState({
           isAuthenticated: true,
           user: storedUser,
@@ -80,7 +78,6 @@ function App() {
         });
       }
     } catch (error) {
-      console.error('Token validation error:', error);
       // On network error, still try to use stored credentials
       // This allows offline usage with PWA
       setAuthState({
@@ -97,10 +94,9 @@ function App() {
 
   // Clear all auth data from both storages
   const clearAuthData = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    sessionStorage.removeItem('token');
+    clearAuth();
     sessionStorage.removeItem('user');
+    localStorage.removeItem('user');
   };
 
   const handleLogin = (token, userData) => {
@@ -115,9 +111,6 @@ function App() {
 
   const handleLogout = () => {
     clearAuthData();
-    // Also clear webauthn flags on explicit logout
-    localStorage.removeItem('webauthn_registered');
-    localStorage.removeItem('webauthn_email');
     
     setAuthState({
       isAuthenticated: false,

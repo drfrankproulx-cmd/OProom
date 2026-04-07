@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Checkbox } from './ui/checkbox';
 import { toast } from 'sonner';
+import { setToken, getWebAuthnEmail, getWebAuthnRegistered, setWebAuthnEmail, setWebAuthnRegistered } from '../utils/auth';
 import { Activity, Calendar, Stethoscope, Fingerprint, Eye, KeyRound, Loader2 } from 'lucide-react';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
@@ -62,8 +63,8 @@ export const AuthPage = ({ onLogin }) => {
       setHasBiometricSupport(supported);
       
       // Check for saved email with biometric
-      const email = localStorage.getItem('webauthn_email');
-      const hasWebauthn = localStorage.getItem('webauthn_registered') === 'true';
+      const email = getWebAuthnEmail();
+      const hasWebauthn = getWebAuthnRegistered();
       
       if (email && hasWebauthn) {
         setSavedEmail(email);
@@ -107,9 +108,9 @@ export const AuthPage = ({ onLogin }) => {
 
       // Store based on remember me preference
       if (rememberMe) {
-        localStorage.setItem('token', result.access_token);
+        setToken(result.access_token);
         localStorage.setItem('user', JSON.stringify(result.user));
-        localStorage.setItem('webauthn_email', data.email);
+        setWebAuthnEmail(data.email);
       } else {
         sessionStorage.setItem('token', result.access_token);
         sessionStorage.setItem('user', JSON.stringify(result.user));
@@ -118,7 +119,7 @@ export const AuthPage = ({ onLogin }) => {
       toast.success(isRegister ? 'Account created successfully!' : 'Welcome back!');
       
       // After successful login, prompt for biometric enrollment if supported
-      if (!isRegister && hasBiometricSupport && localStorage.getItem('webauthn_registered') !== 'true') {
+      if (!isRegister && hasBiometricSupport && !getWebAuthnRegistered()) {
         // Small delay before prompting
         setTimeout(() => {
           promptBiometricEnrollment(result.access_token, data.email);
@@ -212,12 +213,11 @@ export const AuthPage = ({ onLogin }) => {
       }
 
       // Mark as registered
-      localStorage.setItem('webauthn_registered', 'true');
-      localStorage.setItem('webauthn_email', email);
+      setWebAuthnRegistered(true);
+      setWebAuthnEmail(email);
       
       toast.success('Biometric authentication enabled!');
     } catch (error) {
-      console.error('Biometric enrollment error:', error);
       if (error.name !== 'NotAllowedError') {
         toast.error('Could not enable biometric authentication');
       }
@@ -303,13 +303,12 @@ export const AuthPage = ({ onLogin }) => {
       const result = await loginRes.json();
 
       // Store token
-      localStorage.setItem('token', result.access_token);
+      setToken(result.access_token);
       localStorage.setItem('user', JSON.stringify(result.user));
 
       toast.success('Welcome back!');
       onLogin(result.access_token, result.user);
     } catch (error) {
-      console.error('Biometric login error:', error);
       
       if (error.name === 'NotAllowedError') {
         // User cancelled or biometric failed
@@ -378,8 +377,8 @@ export const AuthPage = ({ onLogin }) => {
             <div className="text-center border-t pt-4 mt-4">
               <button
                 onClick={() => {
-                  localStorage.removeItem('webauthn_email');
-                  localStorage.removeItem('webauthn_registered');
+                  setWebAuthnEmail('');
+                  setWebAuthnRegistered(false);
                   setSavedEmail('');
                   setHasSavedBiometric(false);
                   setShowPasswordForm(true);

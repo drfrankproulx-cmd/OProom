@@ -223,7 +223,7 @@ CALENDAR_SYNC_ENABLED = os.environ.get('CALENDAR_SYNC_ENABLED', 'false').lower()
 AUTO_ARCHIVE_DELAY_HOURS = int(os.environ.get('AUTO_ARCHIVE_DELAY_HOURS', 48))  # Default: 48 hours
 
 # Helper functions for email/calendar
-def create_ical_event(title, description, start_datetime, end_datetime, location="", attendees=[]):
+def create_ical_event(title, description, start_datetime, end_datetime, location="", attendees=None):
     """Create an iCalendar event"""
     cal = Calendar()
     cal.add('prodid', '-//OR Scheduler//umn.edu//')
@@ -245,13 +245,13 @@ def create_ical_event(title, description, start_datetime, end_datetime, location
         event.add('organizer', f'mailto:{EMAIL_FROM}')
     
     # Add attendees
-    for attendee in attendees:
+    for attendee in (attendees or []):
         event.add('attendee', f'mailto:{attendee}', parameters={'ROLE': 'REQ-PARTICIPANT', 'RSVP': 'TRUE'})
     
     cal.add_component(event)
     return cal.to_ical()
 
-def send_calendar_invite(to_email, subject, body, ical_content, cc_emails=[]):
+def send_calendar_invite(to_email, subject, body, ical_content, cc_emails=None):
     """Send email with calendar invite attachment"""
     if not CALENDAR_SYNC_ENABLED or not SMTP_USERNAME or not SMTP_PASSWORD:
         return False
@@ -279,7 +279,7 @@ def send_calendar_invite(to_email, subject, body, ical_content, cc_emails=[]):
         server.starttls()
         server.login(SMTP_USERNAME, SMTP_PASSWORD)
 
-        recipients = [to_email] + cc_emails
+        recipients = [to_email] + (cc_emails or [])
         server.sendmail(EMAIL_FROM or SMTP_USERNAME, recipients, msg.as_string())
         server.quit()
 

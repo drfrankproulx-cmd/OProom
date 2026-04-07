@@ -3,6 +3,7 @@ import { Button } from './ui/button';
 import { Label } from './ui/label';
 import { Badge } from './ui/badge';
 import { toast } from 'sonner';
+import { getAuthHeaders as getAuth } from '../utils/auth';
 import {
   Bell,
   BellRing,
@@ -90,7 +91,7 @@ export const NotificationSettings = ({ onNavigate, user, onLogout }) => {
   const [pushPermission, setPushPermission] = useState('default');
 
   const getAuthHeaders = () => ({
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    ...getAuth(),
     'Content-Type': 'application/json',
   });
 
@@ -109,7 +110,6 @@ export const NotificationSettings = ({ onNavigate, user, onLogout }) => {
         setPreferences(prev => ({ ...prev, ...data }));
       }
     } catch (error) {
-      console.error('Error fetching preferences:', error);
       toast.error('Failed to load notification preferences');
     } finally {
       setLoading(false);
@@ -143,7 +143,6 @@ export const NotificationSettings = ({ onNavigate, user, onLogout }) => {
         setPreferences(prev => ({ ...prev, push_enabled: false }));
       }
     } catch (error) {
-      console.error('Error requesting push permission:', error);
       toast.error('Failed to enable push notifications');
     }
   };
@@ -154,7 +153,6 @@ export const NotificationSettings = ({ onNavigate, user, onLogout }) => {
       // Full push subscription would require VAPID keys and service worker setup
       toast.success('Push notifications configured');
     } catch (error) {
-      console.error('Error subscribing to push:', error);
     }
   };
 
@@ -176,7 +174,6 @@ export const NotificationSettings = ({ onNavigate, user, onLogout }) => {
         throw new Error('Failed to save preferences');
       }
     } catch (error) {
-      console.error('Error saving preferences:', error);
       toast.error('Failed to save notification preferences');
     } finally {
       setSaving(false);

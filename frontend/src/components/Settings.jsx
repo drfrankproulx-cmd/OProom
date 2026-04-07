@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Badge } from './ui/badge';
 import { toast } from 'sonner';
+import { getToken, getAuthHeaders as getAuth, clearToken } from '../utils/auth';
 import {
   Users,
   UserPlus,
@@ -33,7 +34,7 @@ export const Settings = ({ onClose, onSessionExpired, onNavigate, initialTab = '
   const [editingAttending, setEditingAttending] = useState(null);
 
   const handleSessionExpired = () => {
-    localStorage.removeItem('token');
+    clearToken();
     localStorage.removeItem('user');
     toast.error('Your session has expired. Please log in again.');
     if (onSessionExpired) {
@@ -61,19 +62,19 @@ export const Settings = ({ onClose, onSessionExpired, onNavigate, initialTab = '
   });
 
   const getAuthHeaders = () => {
-    const token = localStorage.getItem('token');
+    const token = getToken();
     if (!token) {
-      console.error('No auth token found in localStorage');
+      // No auth token available
     }
     return {
-      'Authorization': `Bearer ${token}`,
+      ...getAuth(),
       'Content-Type': 'application/json',
     };
   };
 
   const fetchResidents = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = getToken();
       if (!token) {
         toast.error('Session expired. Please log in again.');
         return;
@@ -86,7 +87,6 @@ export const Settings = ({ onClose, onSessionExpired, onNavigate, initialTab = '
         setResidents(data);
       }
     } catch (error) {
-      console.error('Failed to fetch residents:', error);
     }
   };
 
@@ -100,7 +100,6 @@ export const Settings = ({ onClose, onSessionExpired, onNavigate, initialTab = '
         setAttendings(data);
       }
     } catch (error) {
-      console.error('Failed to fetch attendings:', error);
     }
   };
 
@@ -116,7 +115,7 @@ export const Settings = ({ onClose, onSessionExpired, onNavigate, initialTab = '
       return;
     }
 
-    const token = localStorage.getItem('token');
+    const token = getToken();
     if (!token) {
       handleSessionExpired();
       return;
@@ -159,7 +158,6 @@ export const Settings = ({ onClose, onSessionExpired, onNavigate, initialTab = '
         toast.error(data.detail || 'Failed to add resident');
       }
     } catch (error) {
-      console.error('Error adding resident:', error);
       toast.error('Failed to add resident. Please try again.');
     }
   };
@@ -220,7 +218,7 @@ export const Settings = ({ onClose, onSessionExpired, onNavigate, initialTab = '
       return;
     }
 
-    const token = localStorage.getItem('token');
+    const token = getToken();
     if (!token) {
       handleSessionExpired();
       return;
@@ -262,7 +260,6 @@ export const Settings = ({ onClose, onSessionExpired, onNavigate, initialTab = '
         toast.error(data.detail || 'Failed to add attending');
       }
     } catch (error) {
-      console.error('Error adding attending:', error);
       toast.error('Failed to add attending. Please try again.');
     }
   };

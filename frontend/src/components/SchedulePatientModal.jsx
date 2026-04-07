@@ -69,7 +69,6 @@ export const SchedulePatientModal = ({
       });
       onClose();
     } catch (error) {
-      console.error('Schedule error:', error);
     } finally {
       setIsSubmitting(false);
     }

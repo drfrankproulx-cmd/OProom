@@ -3,6 +3,7 @@ import { Label } from './ui/label';
 import { Badge } from './ui/badge';
 import { Search, Clock, Sparkles, X, ChevronDown } from 'lucide-react';
 import { loadCPTCodes, searchCPTCodes, getFavoriteCPTCodes, getRelevantCPTCodes, getCPTCodeByCode } from '../data/cptCodes';
+import { getToken } from '../utils/auth';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
@@ -66,7 +67,7 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
 
   const fetchFrequentlyUsed = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = getToken();
       if (!token) return;
       const res = await fetch(`${API_URL}/api/usage/frequently-used-cpt?limit=10`, {
         headers: { Authorization: `Bearer ${token}` },

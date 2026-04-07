@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { toast } from 'sonner';
+import { getAuthHeaders as getAuth } from '../utils/auth';
 import {
   Mail,
   Calendar,
@@ -22,7 +23,7 @@ const GoogleIntegration = () => {
   const [connecting, setConnecting] = useState(false);
 
   const getAuthHeaders = () => ({
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    ...getAuth(),
     'Content-Type': 'application/json',
   });
 
@@ -34,7 +35,6 @@ const GoogleIntegration = () => {
       const data = await response.json();
       setConnectionStatus(data);
     } catch (error) {
-      console.error('Failed to check Google status:', error);
     } finally {
       setLoading(false);
     }

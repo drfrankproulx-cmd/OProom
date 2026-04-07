@@ -5,6 +5,7 @@ import { Badge } from './ui/badge';
 import { Checkbox } from './ui/checkbox';
 import { toast } from 'sonner';
 import { format, parseISO, isPast, isToday, differenceInDays } from 'date-fns';
+import { getAuthHeaders as getAuth } from '../utils/auth';
 import {
   Search,
   Filter,
@@ -657,7 +658,7 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
   const [checklistLoading, setChecklistLoading] = useState(false);
 
   const getAuthHeaders = () => ({
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    ...getAuth(),
     'Content-Type': 'application/json',
   });
 
@@ -673,7 +674,6 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
         toast.error('Failed to load patients');
       }
     } catch (error) {
-      console.error('Fetch error:', error);
       toast.error('Failed to load patients');
     } finally {
       setLoading(false);

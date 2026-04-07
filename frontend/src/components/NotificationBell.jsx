@@ -3,6 +3,7 @@ import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { toast } from 'sonner';
 import { format, parseISO, formatDistanceToNow } from 'date-fns';
+import { getAuthHeaders as getAuth } from '../utils/auth';
 import {
   Bell,
   BellRing,
@@ -69,10 +70,9 @@ const notificationStyles = {
 };
 
 const getAuthHeaders = () => {
-  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
   return {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`
+    ...getAuth()
   };
 };
 
@@ -96,7 +96,6 @@ export const NotificationBell = ({ onNavigate }) => {
         setSummary(data);
       }
     } catch (error) {
-      console.error('Failed to fetch notification summary:', error);
     }
   }, []);
 
@@ -119,7 +118,6 @@ export const NotificationBell = ({ onNavigate }) => {
         setNotifications(data.filter(n => !n.dismissed));
       }
     } catch (error) {
-      console.error('Failed to fetch notifications:', error);
     } finally {
       setLoading(false);
     }
@@ -136,7 +134,6 @@ export const NotificationBell = ({ onNavigate }) => {
         setPreferences(data);
       }
     } catch (error) {
-      console.error('Failed to fetch preferences:', error);
     }
   }, []);
 
@@ -180,7 +177,6 @@ export const NotificationBell = ({ onNavigate }) => {
       );
       fetchSummary();
     } catch (error) {
-      console.error('Failed to mark as read:', error);
     }
   };
 
@@ -195,7 +191,6 @@ export const NotificationBell = ({ onNavigate }) => {
       fetchSummary();
       toast.success('All notifications marked as read');
     } catch (error) {
-      console.error('Failed to mark all as read:', error);
     }
   };
 
@@ -209,7 +204,6 @@ export const NotificationBell = ({ onNavigate }) => {
       setNotifications(prev => prev.filter(n => n._id !== notificationId));
       fetchSummary();
     } catch (error) {
-      console.error('Failed to dismiss notification:', error);
     }
   };
 
@@ -226,7 +220,6 @@ export const NotificationBell = ({ onNavigate }) => {
         toast.success('Notification preferences updated');
       }
     } catch (error) {
-      console.error('Failed to update preferences:', error);
       toast.error('Failed to update preferences');
     }
   };

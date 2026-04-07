@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
+import { getAuthHeaders as getAuth } from '../utils/auth';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
@@ -16,7 +17,7 @@ const ConferenceManager = ({ conferences, onRefresh }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const getAuthHeaders = () => ({
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    ...getAuth(),
     'Content-Type': 'application/json',
   });
 

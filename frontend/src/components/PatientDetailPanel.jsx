@@ -4,6 +4,7 @@ import { Badge } from './ui/badge';
 import { Checkbox } from './ui/checkbox';
 import { toast } from 'sonner';
 import { format, parseISO } from 'date-fns';
+import { getAuthHeaders } from '../utils/auth';
 import {
   X,
   User,
@@ -59,16 +60,14 @@ export const PatientDetailPanel = ({
     const fetchPatientTasks = async () => {
       if (!patient?.mrn) return;
       try {
-        const token = localStorage.getItem('token');
         const res = await fetch(`${API_URL}/api/tasks?patient_mrn=${patient.mrn}`, {
-          headers: { 'Authorization': `Bearer ${token}` }
+          headers: getAuthHeaders()
         });
         if (res.ok) {
           const tasks = await res.json();
           setPatientTasks(tasks.filter(t => t.patient_mrn === patient.mrn));
         }
       } catch (err) {
-        console.error('Failed to fetch patient tasks', err);
       }
     };
     fetchPatientTasks();

@@ -49,7 +49,6 @@ export const isBiometricAvailable = async () => {
     const result = await NativeBiometric.isAvailable();
     return result.isAvailable;
   } catch (error) {
-    console.error('Biometric check error:', error);
     return false;
   }
 };
@@ -93,7 +92,6 @@ export const authenticateWithBiometrics = async (reason = 'Please authenticate t
 
     return { authenticated: result.verified };
   } catch (error) {
-    console.error('Biometric auth error:', error);
     return { authenticated: false, error: error.message };
   }
 };
@@ -114,7 +112,6 @@ export const setSecureValue = async (key, value) => {
     });
     return true;
   } catch (error) {
-    console.error('Secure storage error:', error);
     return false;
   }
 };
@@ -132,7 +129,6 @@ export const getSecureValue = async (key) => {
     }
     return null;
   } catch (error) {
-    console.error('Secure retrieval error:', error);
     return null;
   }
 };
@@ -146,7 +142,6 @@ export const removeSecureValue = async (key) => {
     await Preferences.remove({ key: `oproom_secure_${key}` });
     return true;
   } catch (error) {
-    console.error('Secure removal error:', error);
     return false;
   }
 };
@@ -159,7 +154,6 @@ export const clearSecureStorage = async () => {
     await Preferences.clear();
     return true;
   } catch (error) {
-    console.error('Clear storage error:', error);
     return false;
   }
 };
@@ -173,7 +167,6 @@ export const clearSecureStorage = async () => {
  */
 export const takePhoto = async (options = {}) => {
   if (!isNative()) {
-    console.warn('Camera not available on web platform');
     return null;
   }
 
@@ -191,7 +184,6 @@ export const takePhoto = async (options = {}) => {
 
     return image.dataUrl;
   } catch (error) {
-    console.error('Camera error:', error);
     return null;
   }
 };
@@ -202,7 +194,6 @@ export const takePhoto = async (options = {}) => {
  */
 export const pickPhoto = async () => {
   if (!isNative()) {
-    console.warn('Photo picker not available on web platform');
     return null;
   }
 
@@ -217,7 +208,6 @@ export const pickPhoto = async () => {
 
     return image.dataUrl;
   } catch (error) {
-    console.error('Photo picker error:', error);
     return null;
   }
 };
@@ -235,7 +225,6 @@ export const requestPushPermissions = async () => {
     const permission = await PushNotifications.requestPermissions();
     return permission.receive === 'granted';
   } catch (error) {
-    console.error('Push permission error:', error);
     return false;
   }
 };
@@ -252,7 +241,6 @@ export const setupPushNotifications = async (onTokenReceived, onNotificationRece
     const hasPermission = await requestPushPermissions();
 
     if (!hasPermission) {
-      console.warn('Push notification permission denied');
       return;
     }
 
@@ -260,7 +248,6 @@ export const setupPushNotifications = async (onTokenReceived, onNotificationRece
 
     // Listen for registration token
     PushNotifications.addListener('registration', (token) => {
-      console.log('Push token received:', token.value);
       if (onTokenReceived) {
         onTokenReceived(token.value);
       }
@@ -268,12 +255,10 @@ export const setupPushNotifications = async (onTokenReceived, onNotificationRece
 
     // Listen for registration errors
     PushNotifications.addListener('registrationError', (error) => {
-      console.error('Push registration error:', error);
     });
 
     // Listen for incoming notifications
     PushNotifications.addListener('pushNotificationReceived', (notification) => {
-      console.log('Notification received:', notification);
       if (onNotificationReceived) {
         onNotificationReceived(notification);
       }
@@ -281,13 +266,11 @@ export const setupPushNotifications = async (onTokenReceived, onNotificationRece
 
     // Listen for notification actions
     PushNotifications.addListener('pushNotificationActionPerformed', (notification) => {
-      console.log('Notification action:', notification);
       if (onNotificationReceived) {
         onNotificationReceived(notification.notification);
       }
     });
   } catch (error) {
-    console.error('Push setup error:', error);
   }
 };
 
@@ -316,7 +299,6 @@ export const scheduleLocalNotification = async (options) => {
       ]
     });
   } catch (error) {
-    console.error('Local notification error:', error);
   }
 };
 
@@ -330,7 +312,6 @@ export const cancelLocalNotification = async (id) => {
   try {
     await LocalNotifications.cancel({ notifications: [{ id }] });
   } catch (error) {
-    console.error('Cancel notification error:', error);
   }
 };
 
@@ -352,7 +333,6 @@ export const triggerHaptic = async (intensity = 'medium') => {
 
     await Haptics.impact({ style: styles[intensity] || ImpactStyle.Medium });
   } catch (error) {
-    console.error('Haptic error:', error);
   }
 };
 
@@ -372,7 +352,6 @@ export const triggerNotificationHaptic = async (type = 'success') => {
 
     await Haptics.notification({ type: types[type] || NotificationType.Success });
   } catch (error) {
-    console.error('Notification haptic error:', error);
   }
 };
 
@@ -386,7 +365,6 @@ export const listenToAppState = (onStateChange) => {
   if (!isNative()) return;
 
   App.addListener('appStateChange', (state) => {
-    console.log('App state changed:', state);
     if (onStateChange) {
       onStateChange(state);
     }
@@ -408,7 +386,6 @@ export const getAppInfo = async () => {
       id: info.id
     };
   } catch (error) {
-    console.error('App info error:', error);
     return null;
   }
 };
@@ -424,7 +401,6 @@ export const hideSplashScreen = async () => {
   try {
     await SplashScreen.hide();
   } catch (error) {
-    console.error('Splash screen error:', error);
   }
 };
 
@@ -437,7 +413,6 @@ export const showSplashScreen = async () => {
   try {
     await SplashScreen.show();
   } catch (error) {
-    console.error('Splash screen error:', error);
   }
 };
 
@@ -453,7 +428,6 @@ export const setStatusBarStyle = async (style = 'light') => {
   try {
     await StatusBar.setStyle({ style: style === 'light' ? Style.Light : Style.Dark });
   } catch (error) {
-    console.error('Status bar error:', error);
   }
 };
 
@@ -466,7 +440,6 @@ export const hideStatusBar = async () => {
   try {
     await StatusBar.hide();
   } catch (error) {
-    console.error('Status bar error:', error);
   }
 };
 
@@ -479,7 +452,6 @@ export const showStatusBar = async () => {
   try {
     await StatusBar.show();
   } catch (error) {
-    console.error('Status bar error:', error);
   }
 };
 
@@ -494,11 +466,9 @@ export const showStatusBar = async () => {
  */
 export const initializeHealthcareApp = async (config = {}) => {
   if (!isNative()) {
-    console.warn('Healthcare app initialization skipped - not running natively');
     return;
   }
 
-  console.log('Initializing OProom healthcare app...');
 
   try {
     // Hide splash screen
@@ -509,7 +479,6 @@ export const initializeHealthcareApp = async (config = {}) => {
 
     // Check biometric availability
     const biometricAvailable = await isBiometricAvailable();
-    console.log('Biometric available:', biometricAvailable);
 
     // Set up push notifications if callback provided
     if (config.onPushToken || config.onNotification) {
@@ -521,7 +490,6 @@ export const initializeHealthcareApp = async (config = {}) => {
       listenToAppState(config.onAppStateChange);
     }
 
-    console.log('OProom initialized successfully');
 
     return {
       success: true,
@@ -529,7 +497,6 @@ export const initializeHealthcareApp = async (config = {}) => {
       biometricAvailable
     };
   } catch (error) {
-    console.error('Healthcare app initialization error:', error);
     return {
       success: false,
       error: error.message

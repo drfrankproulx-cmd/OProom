@@ -3,6 +3,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Clock, Search } from 'lucide-react';
 import { DIAGNOSES, searchDiagnoses } from '../data/diagnoses';
+import { getToken } from '../utils/auth';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
@@ -60,7 +61,7 @@ export const DiagnosisAutocomplete = ({ value, onChange, label = "Diagnosis", re
 
   const fetchFrequentlyUsed = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = getToken();
       if (!token) return;
 
       const response = await fetch(`${API_URL}/api/usage/frequently-used-diagnoses?limit=10`, {
@@ -79,7 +80,6 @@ export const DiagnosisAutocomplete = ({ value, onChange, label = "Diagnosis", re
         setFrequentlyUsed(diagnosisObjects);
       }
     } catch (error) {
-      console.error('Failed to fetch frequently used diagnoses:', error);
     }
   };
 

@@ -2,6 +2,7 @@ import React, { useState, useRef, useCallback } from 'react';
 import { Button } from './ui/button';
 import { Checkbox } from './ui/checkbox';
 import { toast } from 'sonner';
+import { getAuthHeaders as getAuth } from '../utils/auth';
 import {
   Upload,
   FileSpreadsheet,
@@ -40,9 +41,7 @@ export const BulkImport = ({ onNavigate, user, onLogout }) => {
   
   const fileInputRef = useRef(null);
 
-  const getAuthHeaders = () => ({
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-  });
+  const getAuthHeaders = () => getAuth();
 
   // Download template
   const handleDownloadTemplate = async () => {
@@ -68,7 +67,6 @@ export const BulkImport = ({ onNavigate, user, onLogout }) => {
       toast.success(`${entityType === 'residents' ? 'Residents' : 'Attendings'} template downloaded`);
     } catch (err) {
       toast.error('Failed to download template');
-      console.error(err);
     }
   };
 
@@ -93,7 +91,7 @@ export const BulkImport = ({ onNavigate, user, onLogout }) => {
       const response = await fetch(`${API_URL}/api/import/preview/${entityType}`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          ...getAuth(),
         },
         body: formData,
       });
@@ -169,7 +167,7 @@ export const BulkImport = ({ onNavigate, user, onLogout }) => {
         {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            ...getAuth(),
           },
           body: formData,
         }

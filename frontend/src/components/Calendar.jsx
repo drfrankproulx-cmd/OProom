@@ -3,6 +3,7 @@ import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Input } from './ui/input';
 import { toast } from 'sonner';
+import { getAuthHeaders as getAuth } from '../utils/auth';
 import {
   format,
   startOfWeek,
@@ -70,7 +71,7 @@ const getInitials = (name) => {
 };
 
 const getAuthHeaders = () => ({
-  Authorization: `Bearer ${localStorage.getItem('token')}`,
+  ...getAuth(),
   'Content-Type': 'application/json',
 });
 

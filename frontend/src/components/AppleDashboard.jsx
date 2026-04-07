@@ -7,6 +7,7 @@ import { Badge } from './ui/badge';
 import { Checkbox } from './ui/checkbox';
 import { toast } from 'sonner';
 import { format, startOfWeek, addDays, parseISO, isToday, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, addMonths, subMonths } from 'date-fns';
+import { getAuthHeaders as getAuth } from '../utils/auth';
 import {
   ChevronLeft,
   ChevronRight,
@@ -264,7 +265,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 
   const getAuthHeaders = () => ({
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    ...getAuth(),
     'Content-Type': 'application/json',
   });
 
@@ -287,7 +288,6 @@ export const AppleDashboard = ({ user, onLogout }) => {
       if (residentsRes?.ok) setResidents(await residentsRes.json());
       if (attendingsRes?.ok) setAttendings(await attendingsRes.json());
     } catch (error) {
-      console.error('Fetch error:', error);
     } finally {
       setLoading(false);
     }
@@ -509,7 +509,6 @@ export const AppleDashboard = ({ user, onLogout }) => {
       }
     } catch (error) {
       toast.error('Failed to update checklist');
-      console.error('Checklist update error:', error);
     }
   };
 
@@ -582,7 +581,6 @@ export const AppleDashboard = ({ user, onLogout }) => {
       });
       fetchData();
     } catch (error) {
-      console.error('Schedule error:', error);
       toast.error(error.message);
     }
   };

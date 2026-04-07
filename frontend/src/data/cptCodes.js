@@ -3,6 +3,8 @@
  * Primary data is loaded from the backend JSON (/api/cpt-codes/all).
  * Falls back to a minimal hardcoded set if the API is unavailable.
  */
+import { getToken } from '../utils/auth';
+
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
@@ -21,7 +23,7 @@ export async function loadCPTCodes() {
 
   _loadPromise = (async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = getToken();
       const res = await fetch(`${API_URL}/api/cpt-codes/all`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
@@ -36,7 +38,6 @@ export async function loadCPTCodes() {
       }
       return _categorizedData;
     } catch (e) {
-      console.warn('Failed to load CPT codes from API, using fallback:', e.message);
       return FALLBACK_DATA;
     }
   })();
