@@ -13,7 +13,7 @@
 - `/app/backend/.dockerignore` — Excludes .env, raw text, caches
 - `/app/frontend/src/utils/auth.js` — Centralized auth token management
 - `/app/frontend/src/components/AppleDashboard.jsx` — Dashboard, Quick Add
-- `/app/frontend/src/components/UnifiedPatients.jsx` — Patients, Checklist, Tasks
+- `/app/frontend/src/components/UnifiedPatients.jsx` — Patients, Checklist, Tasks, Categories
 - `/app/frontend/src/components/Calendar.jsx` — Drag & drop calendar
 - `/app/frontend/src/components/AuthPage.jsx` — Login/Register
 
@@ -27,6 +27,12 @@
   - Fixed 2 mutable default arguments in Python (`attendees=[]`, `cc_emails=[]`)
   - Removed 66 console.log/error/warn statements
   - Deleted 15 dead components + surgery-timeline/ (12,861 lines removed)
+- [x] **Patient Categories (Feb 2026):**
+  - Color-coded categories: Orthognathic, Dentoalveolar, Trauma, Pathology, Implants, TMJ, Cleft/Craniofacial, Other
+  - Category filter pills with counts
+  - Group by Category toggle
+  - Color-coded left borders and avatar gradients per category
+  - Tested: 100% pass rate (9/9 tests) - iteration_18
 
 ## Pending
 - [ ] Fix missing React hook dependencies (SessionTimeout, UnifiedPatients, NotificationBell)
@@ -34,3 +40,6 @@
 - [ ] Split oversized components (AppleDashboard 1245 lines, Settings 768 lines)
 - [ ] Break down server.py into modular routes
 - [ ] Audit Log viewer UI page
+- [ ] Weekly email digest for notifications
+- [ ] Push notification service worker
+- [ ] Database query pagination for scalability
