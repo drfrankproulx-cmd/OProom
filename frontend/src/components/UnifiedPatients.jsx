@@ -36,6 +36,98 @@ import ImagingDropdown from './ImagingDropdown';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
+// Patient category definitions — maps keywords in diagnosis/procedure to categories
+const PATIENT_CATEGORIES = {
+  orthognathic: {
+    label: 'Orthognathic',
+    color: 'bg-violet-500',
+    lightBg: 'bg-violet-50',
+    text: 'text-violet-700',
+    border: 'border-l-violet-500',
+    avatar: 'from-violet-400 to-violet-600',
+    keywords: ['orthognathic', 'le fort', 'bsso', 'mandibular', 'maxillary osteotomy', 'jaw surgery', 'sagittal split'],
+  },
+  dentoalveolar: {
+    label: 'Dentoalveolar',
+    color: 'bg-sky-500',
+    lightBg: 'bg-sky-50',
+    text: 'text-sky-700',
+    border: 'border-l-sky-500',
+    avatar: 'from-sky-400 to-sky-600',
+    keywords: ['extraction', 'wisdom', 'third molar', 'impacted', 'dentoalveolar', 'exodontia', 'tooth removal'],
+  },
+  trauma: {
+    label: 'Trauma',
+    color: 'bg-red-500',
+    lightBg: 'bg-red-50',
+    text: 'text-red-700',
+    border: 'border-l-red-500',
+    avatar: 'from-red-400 to-red-600',
+    keywords: ['fracture', 'trauma', 'orif', 'zygomatic', 'nasal', 'mandible fracture', 'orbital', 'lef ort'],
+  },
+  pathology: {
+    label: 'Pathology',
+    color: 'bg-amber-500',
+    lightBg: 'bg-amber-50',
+    text: 'text-amber-700',
+    border: 'border-l-amber-500',
+    avatar: 'from-amber-400 to-amber-600',
+    keywords: ['biopsy', 'lesion', 'cyst', 'tumor', 'ameloblastoma', 'odontogenic', 'pathology', 'excision', 'resection', 'carcinoma'],
+  },
+  implants: {
+    label: 'Implants',
+    color: 'bg-emerald-500',
+    lightBg: 'bg-emerald-50',
+    text: 'text-emerald-700',
+    border: 'border-l-emerald-500',
+    avatar: 'from-emerald-400 to-emerald-600',
+    keywords: ['implant', 'bone graft', 'sinus lift', 'ridge augmentation', 'alveolar graft'],
+  },
+  tmj: {
+    label: 'TMJ',
+    color: 'bg-pink-500',
+    lightBg: 'bg-pink-50',
+    text: 'text-pink-700',
+    border: 'border-l-pink-500',
+    avatar: 'from-pink-400 to-pink-600',
+    keywords: ['tmj', 'temporomandibular', 'arthroplasty', 'arthroscopy', 'disc'],
+  },
+  cleft: {
+    label: 'Cleft/Craniofacial',
+    color: 'bg-indigo-500',
+    lightBg: 'bg-indigo-50',
+    text: 'text-indigo-700',
+    border: 'border-l-indigo-500',
+    avatar: 'from-indigo-400 to-indigo-600',
+    keywords: ['cleft', 'palate', 'craniofacial', 'craniosynostosis', 'distraction'],
+  },
+  other: {
+    label: 'Other',
+    color: 'bg-slate-400',
+    lightBg: 'bg-slate-50',
+    text: 'text-slate-600',
+    border: 'border-l-slate-400',
+    avatar: 'from-teal-400 to-teal-600',
+    keywords: [],
+  },
+};
+
+function classifyPatient(patient) {
+  const searchText = [
+    patient.diagnosis,
+    patient.procedures,
+    patient.procedure_code,
+  ].filter(Boolean).join(' ').toLowerCase();
+
+  for (const [key, cat] of Object.entries(PATIENT_CATEGORIES)) {
+    if (key === 'other') continue;
+    if (cat.keywords.some(kw => searchText.includes(kw))) {
+      return key;
+    }
+  }
+  return 'other';
+}
+
 // Pre-op checklist item component - handles both regular items and imaging dropdown
 const PreOpChecklistItem = ({ item, onToggle, onImagingChange, onDelete, disabled }) => {
   // Special handling for imaging dropdown
@@ -487,6 +579,8 @@ const PatientRow = ({
   onDeleteChecklistItem,
   checklistLoading
 }) => {
+  const categoryKey = classifyPatient(patient);
+  const catStyle = PATIENT_CATEGORIES[categoryKey];
   const tasks = patient.tasks || [];
   const pendingTaskCount = tasks.filter(t => !t.completed).length;
   
@@ -515,7 +609,7 @@ const PatientRow = ({
   };
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+    <div className={`bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm border-l-4 ${catStyle.border}`}>
       {/* Collapsed Row */}
       <div 
         className="p-4 cursor-pointer hover:bg-slate-50 transition-colors"
@@ -525,7 +619,7 @@ const PatientRow = ({
         <div className="md:hidden space-y-2">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-teal-400 to-teal-600 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm flex-shrink-0">
+              <div className={`w-10 h-10 bg-gradient-to-br ${catStyle.avatar} rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm flex-shrink-0`}>
                 {patient.patient_name?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || '?'}
               </div>
               <div>
@@ -566,7 +660,7 @@ const PatientRow = ({
 
         {/* Desktop Layout */}
         <div className="hidden md:flex items-center gap-4">
-          <div className="w-10 h-10 bg-gradient-to-br from-teal-400 to-teal-600 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm flex-shrink-0">
+          <div className={`w-10 h-10 bg-gradient-to-br ${catStyle.avatar} rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm flex-shrink-0`}>
             {patient.patient_name?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || '?'}
           </div>
           
@@ -653,6 +747,8 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
   const [filterStatus, setFilterStatus] = useState(initialFilter?.status || 'all');
   const [filterTasks, setFilterTasks] = useState(initialFilter?.hasTasks ? 'has-tasks' : 'all');
   const [filterAttending, setFilterAttending] = useState('all');
+  const [filterCategory, setFilterCategory] = useState('all');
+  const [groupByCategory, setGroupByCategory] = useState(false);
   const [sortBy, setSortBy] = useState('created_at');
   const [expandedPatient, setExpandedPatient] = useState(null);
   const [checklistLoading, setChecklistLoading] = useState(false);
@@ -901,6 +997,13 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
   // Unique attendings derived from patient data
   const uniqueAttendings = [...new Set(patients.map(p => p.attending).filter(Boolean))].sort();
 
+  // Category counts
+  const categoryCounts = {};
+  patients.forEach(p => {
+    const cat = classifyPatient(p);
+    categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+  });
+
   // Filter and sort
   const filteredPatients = patients.filter(p => {
     const matchesSearch = 
@@ -923,7 +1026,11 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
       filterAttending === 'all' ||
       p.attending === filterAttending;
 
-    return matchesSearch && matchesStatus && matchesTasks && matchesAttending;
+    const matchesCategory =
+      filterCategory === 'all' ||
+      classifyPatient(p) === filterCategory;
+
+    return matchesSearch && matchesStatus && matchesTasks && matchesAttending && matchesCategory;
   });
 
   const sortedPatients = [...filteredPatients].sort((a, b) => {
@@ -1041,6 +1148,56 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
             </div>
           </div>
 
+          {/* Category Filter Pills */}
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-3">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide mr-1">Category:</span>
+              <button
+                onClick={() => setFilterCategory('all')}
+                data-testid="filter-category-all"
+                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                  filterCategory === 'all'
+                    ? 'bg-slate-800 text-white shadow-sm'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                }`}
+              >
+                All ({patients.length})
+              </button>
+              {Object.entries(PATIENT_CATEGORIES).map(([key, cat]) => {
+                const count = categoryCounts[key] || 0;
+                if (count === 0 && key !== 'other') return null;
+                return (
+                  <button
+                    key={key}
+                    onClick={() => setFilterCategory(key)}
+                    data-testid={`filter-category-${key}`}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 ${
+                      filterCategory === key
+                        ? `${cat.color} text-white shadow-sm`
+                        : `${cat.lightBg} ${cat.text} hover:opacity-80`
+                    }`}
+                  >
+                    <span className={`w-2 h-2 rounded-full ${filterCategory === key ? 'bg-white/60' : cat.color}`} />
+                    {cat.label} ({count})
+                  </button>
+                );
+              })}
+              <div className="ml-auto">
+                <button
+                  onClick={() => setGroupByCategory(!groupByCategory)}
+                  data-testid="toggle-group-by-category"
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                    groupByCategory
+                      ? 'bg-teal-600 text-white shadow-sm'
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  }`}
+                >
+                  {groupByCategory ? 'Grouped' : 'Group by Category'}
+                </button>
+              </div>
+            </div>
+          </div>
+
           {/* Stats */}
           <div className="grid grid-cols-4 gap-2 md:gap-4">
             <div className="bg-white rounded-xl p-3 border border-slate-200 border-l-4 border-l-teal-500">
@@ -1086,6 +1243,40 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
                 <p className="text-lg font-medium text-slate-500">No patients found</p>
                 <p className="text-sm text-slate-400 mt-1">Try adjusting your filters</p>
               </div>
+            ) : groupByCategory ? (
+              // Grouped by category view
+              Object.entries(PATIENT_CATEGORIES).map(([catKey, cat]) => {
+                const catPatients = sortedPatients.filter(p => classifyPatient(p) === catKey);
+                if (catPatients.length === 0) return null;
+                return (
+                  <div key={catKey} className="mb-6">
+                    <div className={`flex items-center gap-2 mb-2 px-1`}>
+                      <span className={`w-3 h-3 rounded-full ${cat.color}`} />
+                      <h3 className={`text-sm font-bold ${cat.text} uppercase tracking-wide`}>{cat.label}</h3>
+                      <span className="text-xs text-slate-400 font-medium">({catPatients.length})</span>
+                    </div>
+                    <div className="space-y-3 md:space-y-0">
+                      {catPatients.map((patient) => (
+                        <PatientRow
+                          key={patient.mrn}
+                          patient={patient}
+                          isExpanded={expandedPatient === patient.mrn}
+                          onToggleExpand={() => setExpandedPatient(expandedPatient === patient.mrn ? null : patient.mrn)}
+                          onDelete={() => handleDeletePatient(patient.mrn, patient.patient_name)}
+                          onToggleChecklistItem={(itemId) => handleToggleChecklistItem(patient.mrn, itemId)}
+                          onUpdateImagingSelection={handleUpdateImagingSelection}
+                          onToggleTask={handleToggleTask}
+                          onDeleteTask={handleDeleteTask}
+                          onAddTask={handleAddTask}
+                          onAddChecklistItem={handleAddChecklistItem}
+                          onDeleteChecklistItem={handleDeleteChecklistItem}
+                          checklistLoading={checklistLoading}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                );
+              })
             ) : (
               sortedPatients.map((patient) => (
                 <PatientRow

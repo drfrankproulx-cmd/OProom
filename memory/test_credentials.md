@@ -5,5 +5,5 @@
 - Password: 59K63i75%(
 
 ### API URL
-- Preview: https://hipaa-ready-test.preview.emergentagent.com
+- Preview: https://or-scheduler-v2.preview.emergentagent.com
 - Health Check: GET /api/health
