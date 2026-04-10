@@ -68,6 +68,7 @@ export const PatientDetailPanel = ({
           setPatientTasks(tasks.filter(t => t.patient_mrn === patient.mrn));
         }
       } catch (err) {
+        // Network error fetching tasks
       }
     };
     fetchPatientTasks();

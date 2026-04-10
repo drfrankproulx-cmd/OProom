@@ -9,15 +9,14 @@ const WEBAUTHN_EMAIL_KEY = 'webauthn_email';
 const WEBAUTHN_REGISTERED_KEY = 'webauthn_registered';
 
 export function getToken() {
-  return localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY) || '';
+  return sessionStorage.getItem(TOKEN_KEY) || '';
 }
 
 export function setToken(token) {
-  localStorage.setItem(TOKEN_KEY, token);
+  sessionStorage.setItem(TOKEN_KEY, token);
 }
 
 export function clearToken() {
-  localStorage.removeItem(TOKEN_KEY);
   sessionStorage.removeItem(TOKEN_KEY);
 }
 
@@ -44,6 +43,6 @@ export function setWebAuthnRegistered(value) {
 
 export function clearAuth() {
   clearToken();
-  localStorage.removeItem(WEBAUTHN_EMAIL_KEY);
-  localStorage.removeItem(WEBAUTHN_REGISTERED_KEY);
+  sessionStorage.removeItem(WEBAUTHN_EMAIL_KEY);
+  sessionStorage.removeItem(WEBAUTHN_REGISTERED_KEY);
 }

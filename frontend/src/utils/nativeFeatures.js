@@ -255,6 +255,7 @@ export const setupPushNotifications = async (onTokenReceived, onNotificationRece
 
     // Listen for registration errors
     PushNotifications.addListener('registrationError', (error) => {
+      // Push notification registration error
     });
 
     // Listen for incoming notifications
@@ -271,6 +272,7 @@ export const setupPushNotifications = async (onTokenReceived, onNotificationRece
       }
     });
   } catch (error) {
+      // Native push notification setup error
   }
 };
 

@@ -1,0 +1,86 @@
+{
+  "summary": "Regression testing for code quality fixes (iteration 20). Found and fixed CRITICAL bug: fetchAttendings function was not defined in Settings.jsx causing runtime error. After fix, all 8 test scenarios passed: sessionStorage auth, Dashboard, Patients (category pills, group by toggle, appointment date fields), Calendar, Settings (residents/attendings), notification bell. No console errors.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "fixed_during_testing": [
+      {
+        "component": "Settings.jsx",
+        "issue": "fetchAttendings function was called but never defined - caused 'ReferenceError: fetchAttendings is not defined' runtime error",
+        "fix": "Separated fetchAttendings into its own function (was previously embedded in fetchResidents)",
+        "priority": "CRITICAL"
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/test_reports/iteration_20.json"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "The code quality fixes introduced a regression bug in Settings.jsx - fetchAttendings was called but not defined. This was fixed during testing by creating a separate fetchAttendings function."
+  ],
+  "updated_files": [
+    "/app/frontend/src/components/Settings.jsx"
+  ],
+  "success_rate": {
+    "backend": "N/A (frontend only testing)",
+    "frontend": "100% (8/8 tests passed after fix)"
+  },
+  "test_credentials": {
+    "email": "proul076@umn.edu",
+    "password": "59K63i75%("
+  },
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Code quality fixes verified. Auth tokens now stored in sessionStorage (not localStorage). Fixed fetchAttendings bug in Settings.jsx. All empty catch blocks have comments. React hooks deps fixed. Array keys fixed. No console errors.",
+  "features_tested": {
+    "auth_sessionStorage": {
+      "login_works": "PASS",
+      "token_in_sessionStorage": "PASS",
+      "token_NOT_in_localStorage": "PASS"
+    },
+    "dashboard": {
+      "loads_correctly": "PASS",
+      "quick_add_visible": "PASS",
+      "stats_visible": "PASS"
+    },
+    "patients_tab": {
+      "patient_list_loads": "PASS",
+      "category_filter_pills": "PASS",
+      "group_by_category_toggle": "PASS",
+      "patient_card_expansion": "PASS",
+      "last_clinic_appointment_field": "PASS",
+      "records_appointment_field": "PASS"
+    },
+    "calendar_tab": {
+      "calendar_loads": "PASS"
+    },
+    "settings_tab": {
+      "residents_tab_loads": "PASS",
+      "attendings_tab_loads": "PASS"
+    },
+    "notification_bell": {
+      "dropdown_opens": "PASS"
+    },
+    "console_errors": {
+      "no_errors": "PASS"
+    }
+  },
+  "rca_of_the_issue": {
+    "bug": "fetchAttendings is not defined",
+    "root_cause": "During code quality fixes, the fetchResidents function was modified to include attendings fetch logic inside it, but the useEffect still called fetchAttendings() separately which was never defined as a standalone function",
+    "reproduction_steps": [
+      "1. Login to the app",
+      "2. Navigate to Settings page",
+      "3. Runtime error overlay appears: 'fetchAttendings is not defined'"
+    ],
+    "fix_applied": "Created separate fetchAttendings async function that fetches from /api/attendings endpoint",
+    "verification": "Settings page now loads without errors, both Residents and Attendings tabs work correctly"
+  }
+}

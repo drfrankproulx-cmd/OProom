@@ -444,7 +444,7 @@ export const BulkImport = ({ onNavigate, user, onLogout }) => {
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {valid_rows.map((row, idx) => (
-                    <tr key={idx} className="hover:bg-gray-50">
+                    <tr key={`${row.name}-${row.email}-${idx}`} className="hover:bg-gray-50">
                       <td className="px-4 py-2 text-gray-900">{row.name}</td>
                       <td className="px-4 py-2 text-gray-600">{row.email}</td>
                       {entityType === 'residents' ? (
@@ -488,7 +488,7 @@ export const BulkImport = ({ onNavigate, user, onLogout }) => {
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {allErrors.map((err, idx) => (
-                    <tr key={idx} className="hover:bg-red-50">
+                    <tr key={`${err.row}-${idx}`} className="hover:bg-red-50">
                       <td className="px-4 py-2 text-gray-900 font-medium">{err.row}</td>
                       <td className="px-4 py-2 text-gray-600 text-xs">
                         {err.data ? JSON.stringify(err.data) : '—'}

@@ -96,6 +96,7 @@ export const NotificationBell = ({ onNavigate }) => {
         setSummary(data);
       }
     } catch (error) {
+      // Network error fetching notification summary
     }
   }, []);
 
@@ -118,6 +119,7 @@ export const NotificationBell = ({ onNavigate }) => {
         setNotifications(data.filter(n => !n.dismissed));
       }
     } catch (error) {
+      // Network error fetching notifications
     } finally {
       setLoading(false);
     }
@@ -134,6 +136,7 @@ export const NotificationBell = ({ onNavigate }) => {
         setPreferences(data);
       }
     } catch (error) {
+      // Network error fetching preferences
     }
   }, []);
 
@@ -177,6 +180,7 @@ export const NotificationBell = ({ onNavigate }) => {
       );
       fetchSummary();
     } catch (error) {
+      // Network error marking as read
     }
   };
 
@@ -191,6 +195,7 @@ export const NotificationBell = ({ onNavigate }) => {
       fetchSummary();
       toast.success('All notifications marked as read');
     } catch (error) {
+      // Network error marking all as read
     }
   };
 
@@ -204,6 +209,7 @@ export const NotificationBell = ({ onNavigate }) => {
       setNotifications(prev => prev.filter(n => n._id !== notificationId));
       fetchSummary();
     } catch (error) {
+      // Network error dismissing notification
     }
   };
 

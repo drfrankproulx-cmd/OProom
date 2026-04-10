@@ -87,6 +87,7 @@ export const Settings = ({ onClose, onSessionExpired, onNavigate, initialTab = '
         setResidents(data);
       }
     } catch (error) {
+      // Network error fetching residents
     }
   };
 
@@ -100,6 +101,7 @@ export const Settings = ({ onClose, onSessionExpired, onNavigate, initialTab = '
         setAttendings(data);
       }
     } catch (error) {
+      // Network error fetching attendings
     }
   };
 

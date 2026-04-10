@@ -152,7 +152,7 @@ const ConferenceManager = ({ conferences, onRefresh }) => {
               <p className="text-xs text-muted-foreground mb-2">Attendees:</p>
               <div className="flex flex-wrap gap-1">
                 {conference.attendees.map((attendee, idx) => (
-                  <Badge key={idx} variant="secondary" className="text-xs">
+                  <Badge key={`${attendee}-${idx}`} variant="secondary" className="text-xs">
                     {attendee}
                   </Badge>
                 ))}

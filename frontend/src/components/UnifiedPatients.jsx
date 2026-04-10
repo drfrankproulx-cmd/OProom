@@ -583,7 +583,7 @@ const PatientExpandedView = ({
           </h4>
           <div className="space-y-2 max-h-40 overflow-y-auto">
             {patient.activity_log.slice(-5).reverse().map((log, idx) => (
-              <div key={idx} className="text-xs text-slate-600 flex items-start gap-2">
+              <div key={`${log.timestamp}-${idx}`} className="text-xs text-slate-600 flex items-start gap-2">
                 <span className="text-slate-400 whitespace-nowrap">
                   {log.timestamp ? format(parseISO(log.timestamp), 'MMM d, h:mm a') : 'N/A'}
                 </span>
@@ -793,7 +793,7 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
     'Content-Type': 'application/json',
   });
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const response = await fetch(`${API_URL}/api/patients/with-tasks`, { 
         headers: getAuthHeaders() 
@@ -809,16 +809,16 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const handleRefresh = useCallback(async () => {
     await fetchData();
     toast.success('Refreshed', { duration: 1500 });
-  }, []);
+  }, [fetchData]);
 
   // Toggle pre-op checklist item
   const handleToggleChecklistItem = async (patientMrn, itemId) => {
