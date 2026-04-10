@@ -369,6 +369,8 @@ class Patient(BaseModel):
     procedure_code: Optional[str] = None
     attending: Optional[str] = None
     orthodontist: Optional[str] = None
+    last_clinic_appointment: Optional[str] = None
+    records_appointment: Optional[str] = None
     status: str = "pending"
     prep_checklist: dict = {
         "xrays": False,
@@ -1563,7 +1565,7 @@ async def update_patient(mrn: str, patient: Patient, request: Request, current_u
         patient_dict["activity_log"] = current_patient.get("activity_log", [])
     
     changes = []
-    for key in ["patient_name", "dob", "diagnosis", "procedures", "attending", "status"]:
+    for key in ["patient_name", "dob", "diagnosis", "procedures", "attending", "status", "last_clinic_appointment", "records_appointment"]:
         if current_patient.get(key) != patient_dict.get(key):
             changes.append(f"{key}: {current_patient.get(key)} → {patient_dict.get(key)}")
     
@@ -1583,6 +1585,48 @@ async def update_patient(mrn: str, patient: Patient, request: Request, current_u
         raise HTTPException(status_code=404, detail="Patient not found")
     create_audit_log(current_user, "update", "patient", mrn, request, "; ".join(changes) if changes else "No field changes")
     return {"message": "Patient updated successfully"}
+
+@app.patch("/api/patients/{mrn}/appointment-dates")
+async def update_patient_appointment_dates(mrn: str, request: Request, current_user: str = Depends(get_current_user)):
+    """Update last_clinic_appointment and/or records_appointment dates for a patient"""
+    body = await request.json()
+    patient = patients_collection.find_one({"mrn": mrn})
+    if not patient:
+        raise HTTPException(status_code=404, detail="Patient not found")
+    
+    update_fields = {}
+    changes = []
+    
+    for field in ["last_clinic_appointment", "records_appointment"]:
+        if field in body:
+            new_val = body[field] if body[field] else None
+            old_val = patient.get(field)
+            if new_val != old_val:
+                update_fields[field] = new_val
+                label = "Last Clinic Appt" if field == "last_clinic_appointment" else "Records Appt"
+                changes.append(f"{label}: {old_val or 'N/A'} → {new_val or 'N/A'}")
+    
+    if not update_fields:
+        return {"message": "No changes"}
+    
+    update_fields["updated_by"] = current_user
+    update_fields["updated_at"] = datetime.utcnow()
+    
+    activity_entry = {
+        "action": "updated",
+        "user": current_user,
+        "timestamp": datetime.utcnow().isoformat(),
+        "details": ", ".join(changes)
+    }
+    
+    patients_collection.update_one(
+        {"mrn": mrn},
+        {"$set": update_fields, "$push": {"activity_log": activity_entry}}
+    )
+    
+    create_audit_log(current_user, "update", "patient", mrn, request, "; ".join(changes))
+    return {"message": "Appointment dates updated", "updates": update_fields}
+
 
 @app.post("/api/patients/{mrn}/comments")
 async def add_patient_comment(mrn: str, comment: PatientComment, current_user: str = Depends(get_current_user)):

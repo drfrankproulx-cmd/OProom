@@ -336,10 +336,13 @@ const PatientExpandedView = ({
   onAddTask,
   onAddChecklistItem,
   onDeleteChecklistItem,
+  onUpdateAppointmentDates,
   checklistLoading 
 }) => {
   const [showAddTask, setShowAddTask] = useState(false);
   const [newChecklistItem, setNewChecklistItem] = useState('');
+  const [lastClinicDate, setLastClinicDate] = useState(patient.last_clinic_appointment || '');
+  const [recordsDate, setRecordsDate] = useState(patient.records_appointment || '');
   
   // Get preop checklist
   const preopChecklist = Array.isArray(patient.preop_checklist) 
@@ -403,6 +406,36 @@ const PatientExpandedView = ({
           <div className="col-span-2">
             <span className="text-slate-500">Procedure:</span>
             <span className="ml-2 font-medium text-slate-900">{patient.procedures || 'N/A'}</span>
+          </div>
+          <div className="col-span-2">
+            <label className="text-slate-500 block mb-1">Last Clinic Appointment:</label>
+            <input
+              type="date"
+              data-testid="last-clinic-appointment"
+              value={lastClinicDate}
+              onChange={(e) => setLastClinicDate(e.target.value)}
+              onBlur={() => {
+                if (lastClinicDate !== (patient.last_clinic_appointment || '')) {
+                  onUpdateAppointmentDates(patient.mrn, { last_clinic_appointment: lastClinicDate || null });
+                }
+              }}
+              className="h-9 px-2 rounded-md border border-slate-200 text-sm text-slate-900 w-full max-w-[200px]"
+            />
+          </div>
+          <div className="col-span-2">
+            <label className="text-slate-500 block mb-1">Records Appointment (VSP):</label>
+            <input
+              type="date"
+              data-testid="records-appointment"
+              value={recordsDate}
+              onChange={(e) => setRecordsDate(e.target.value)}
+              onBlur={() => {
+                if (recordsDate !== (patient.records_appointment || '')) {
+                  onUpdateAppointmentDates(patient.mrn, { records_appointment: recordsDate || null });
+                }
+              }}
+              className="h-9 px-2 rounded-md border border-slate-200 text-sm text-slate-900 w-full max-w-[200px]"
+            />
           </div>
         </div>
       </div>
@@ -577,6 +610,7 @@ const PatientRow = ({
   onAddTask,
   onAddChecklistItem,
   onDeleteChecklistItem,
+  onUpdateAppointmentDates,
   checklistLoading
 }) => {
   const categoryKey = classifyPatient(patient);
@@ -732,6 +766,7 @@ const PatientRow = ({
           onAddTask={onAddTask}
           onAddChecklistItem={onAddChecklistItem}
           onDeleteChecklistItem={onDeleteChecklistItem}
+          onUpdateAppointmentDates={onUpdateAppointmentDates}
           checklistLoading={checklistLoading}
         />
       )}
@@ -957,6 +992,31 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
       toast.error('Failed to delete patient');
     }
   };
+
+  // Update appointment dates
+  const handleUpdateAppointmentDates = async (patientMrn, dateUpdates) => {
+    try {
+      const response = await fetch(`${API_URL}/api/patients/${patientMrn}/appointment-dates`, {
+        method: 'PATCH',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(dateUpdates),
+      });
+      if (response.ok) {
+        setPatients(prev => prev.map(p => {
+          if (p.mrn === patientMrn) {
+            return { ...p, ...dateUpdates };
+          }
+          return p;
+        }));
+        toast.success('Appointment date updated');
+      } else {
+        toast.error('Failed to update appointment date');
+      }
+    } catch (error) {
+      toast.error('Failed to update appointment date');
+    }
+  };
+
 
   // Update imaging selection
   const handleUpdateImagingSelection = async (patientMrn, selection) => {
@@ -1270,6 +1330,7 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
                           onAddTask={handleAddTask}
                           onAddChecklistItem={handleAddChecklistItem}
                           onDeleteChecklistItem={handleDeleteChecklistItem}
+                          onUpdateAppointmentDates={handleUpdateAppointmentDates}
                           checklistLoading={checklistLoading}
                         />
                       ))}
@@ -1292,6 +1353,7 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
                   onAddTask={handleAddTask}
                   onAddChecklistItem={handleAddChecklistItem}
                   onDeleteChecklistItem={handleDeleteChecklistItem}
+                  onUpdateAppointmentDates={handleUpdateAppointmentDates}
                   checklistLoading={checklistLoading}
                 />
               ))
