@@ -82,4 +82,12 @@ frontend/node_modules/.cache/default-development/0.pack
 
 
 # Sensitive files
-memory/test_credentials.md
+memory/test_credentials.md-e 
+# Environment and credential files
+.env
+.env.*
+*.env
+credentials.json
+*.pem
+*.key
+.credentials
