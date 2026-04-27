@@ -5,18 +5,14 @@
 - **Backend:** FastAPI (Python)
 - **Database:** MongoDB Atlas
 - **Auth:** JWT + WebAuthn, centralized via `utils/auth.js` (sessionStorage)
+- **PWA:** Service worker with network-first strategy (sw.js v3)
 
 ## Key Files
 - `/app/backend/server.py` — All backend endpoints
-- `/app/backend/google_integration.py` — Google OAuth/Calendar/Gmail
-- `/app/backend/requirements.txt` — 20 packages (trimmed)
-- `/app/frontend/src/utils/auth.js` — Centralized auth (sessionStorage)
-- `/app/frontend/src/components/AppleDashboard.jsx` — Dashboard, Quick Add
-- `/app/frontend/src/components/UnifiedPatients.jsx` — Patients, Checklist, Tasks, Categories
-- `/app/frontend/src/components/Calendar.jsx` — Drag & drop calendar
+- `/app/frontend/src/components/UnifiedPatients.jsx` — Patients tab with categories, filters
 - `/app/frontend/src/components/Sidebar.jsx` — Collapsible sidebar
 - `/app/frontend/src/components/PageLayout.jsx` — Layout with sidebar state
-- `/app/frontend/src/components/AuthPage.jsx` — Login/Register
+- `/app/frontend/public/sw.js` — Service worker (network-first, v3)
 
 ## What's Been Implemented
 - [x] Dockerization, HIPAA Audit Logging, Deployment Fixes
@@ -25,18 +21,17 @@
 - [x] Patient Categories (color-coded, filter pills, Group by Category)
 - [x] Last Clinic Appointment & Records Appointment (VSP) date fields
 - [x] Code Quality Fixes (security, hooks, catch blocks, array keys)
-- [x] **Collapsible Sidebar (Apr 2026):**
-  - Toggle button (chevrons) to minimize/expand
-  - Collapsed: icons-only, 68px width
-  - Expanded: full 256px with labels
-  - Smooth animation transition
-  - Content area adjusts automatically
+- [x] Collapsible Sidebar (toggle chevrons, icons-only mode)
+- [x] Service Worker Fix (network-first strategy, auto-update)
+- [x] **Severity & Procedure Filters (Apr 2026):**
+  - Severity dropdown: Severe/Malignant, Moderate, Mild/Cosmetic, Unspecified
+  - Procedure dropdown: populated from patient data
+  - Keywords: malignancy/carcinoma/cancer → Severe, fracture/cyst/tumor → Moderate, hypoplasia/asymmetry → Mild
 
 ## Pending
-- [ ] Refactor high-complexity functions (normalize_preop_checklist, calendar_action, parse_csv_file)
-- [ ] Split oversized components (AppleDashboard 1424 lines, Settings 795 lines, AuthPage 628 lines)
-- [ ] Break down server.py into modular routes
 - [ ] Audit Log viewer UI page
+- [ ] Split oversized components (AppleDashboard 1424 lines, Settings 795 lines)
+- [ ] Break down server.py into modular routes
 - [ ] Weekly email digest for notifications
 - [ ] Push notification service worker
 - [ ] Database query pagination for scalability

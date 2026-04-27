@@ -783,6 +783,8 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
   const [filterTasks, setFilterTasks] = useState(initialFilter?.hasTasks ? 'has-tasks' : 'all');
   const [filterAttending, setFilterAttending] = useState('all');
   const [filterCategory, setFilterCategory] = useState('all');
+  const [filterSeverity, setFilterSeverity] = useState('all');
+  const [filterProcedure, setFilterProcedure] = useState('all');
   const [groupByCategory, setGroupByCategory] = useState(false);
   const [sortBy, setSortBy] = useState('created_at');
   const [expandedPatient, setExpandedPatient] = useState(null);
@@ -1057,6 +1059,25 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
   // Unique attendings derived from patient data
   const uniqueAttendings = [...new Set(patients.map(p => p.attending).filter(Boolean))].sort();
 
+  // Unique procedures derived from patient data
+  const uniqueProcedures = [...new Set(patients.map(p => p.procedures).filter(Boolean))].sort();
+
+  // Severity classification based on diagnosis
+  const classifySeverity = (patient) => {
+    const diag = (patient.diagnosis || '').toLowerCase();
+    if (!diag || diag === 'n/a') return 'unspecified';
+    if (/malignancy|malignant|carcinoma|squamous cell|cancer|metastatic|sarcoma|lymphoma/.test(diag)) return 'severe';
+    if (/fracture|trauma|cyst|ameloblastoma|tumor|pathology|osteomyelitis|necrosis|abscess/.test(diag)) return 'moderate';
+    return 'mild';
+  };
+
+  const SEVERITY_LABELS = {
+    severe: { label: 'Severe / Malignant', color: 'text-red-700 bg-red-50' },
+    moderate: { label: 'Moderate', color: 'text-amber-700 bg-amber-50' },
+    mild: { label: 'Mild / Cosmetic', color: 'text-green-700 bg-green-50' },
+    unspecified: { label: 'Unspecified', color: 'text-slate-500 bg-slate-50' },
+  };
+
   // Category counts
   const categoryCounts = {};
   patients.forEach(p => {
@@ -1090,7 +1111,15 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
       filterCategory === 'all' ||
       classifyPatient(p) === filterCategory;
 
-    return matchesSearch && matchesStatus && matchesTasks && matchesAttending && matchesCategory;
+    const matchesSeverity =
+      filterSeverity === 'all' ||
+      classifySeverity(p) === filterSeverity;
+
+    const matchesProcedure =
+      filterProcedure === 'all' ||
+      p.procedures === filterProcedure;
+
+    return matchesSearch && matchesStatus && matchesTasks && matchesAttending && matchesCategory && matchesSeverity && matchesProcedure;
   });
 
   const sortedPatients = [...filteredPatients].sort((a, b) => {
@@ -1192,6 +1221,31 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
                 >
                   <option value="all">All Patients</option>
                   <option value="has-tasks">Has Pending Tasks</option>
+                </select>
+
+                <select
+                  value={filterSeverity}
+                  onChange={(e) => setFilterSeverity(e.target.value)}
+                  data-testid="filter-severity"
+                  className="h-11 px-3 rounded-lg border border-slate-200 text-sm bg-white min-w-[140px]"
+                >
+                  <option value="all">All Severity</option>
+                  <option value="severe">Severe / Malignant</option>
+                  <option value="moderate">Moderate</option>
+                  <option value="mild">Mild / Cosmetic</option>
+                  <option value="unspecified">Unspecified</option>
+                </select>
+
+                <select
+                  value={filterProcedure}
+                  onChange={(e) => setFilterProcedure(e.target.value)}
+                  data-testid="filter-procedure"
+                  className="h-11 px-3 rounded-lg border border-slate-200 text-sm bg-white min-w-[160px]"
+                >
+                  <option value="all">All Procedures</option>
+                  {uniqueProcedures.map(proc => (
+                    <option key={proc} value={proc}>{proc.length > 30 ? proc.substring(0, 30) + '...' : proc}</option>
+                  ))}
                 </select>
                 
                 <select
