@@ -14,6 +14,8 @@
 - `/app/frontend/src/components/AppleDashboard.jsx` — Dashboard, Quick Add
 - `/app/frontend/src/components/UnifiedPatients.jsx` — Patients, Checklist, Tasks, Categories
 - `/app/frontend/src/components/Calendar.jsx` — Drag & drop calendar
+- `/app/frontend/src/components/Sidebar.jsx` — Collapsible sidebar
+- `/app/frontend/src/components/PageLayout.jsx` — Layout with sidebar state
 - `/app/frontend/src/components/AuthPage.jsx` — Login/Register
 
 ## What's Been Implemented
@@ -22,17 +24,17 @@
 - [x] Orthodontist field, Diagnosis/CPT "Other" free text
 - [x] Patient Categories (color-coded, filter pills, Group by Category)
 - [x] Last Clinic Appointment & Records Appointment (VSP) date fields
-- [x] **Code Quality Fixes (Apr 2026 - Round 2):**
-  - Deleted test file with hardcoded secrets (test_appointment_dates.py)
-  - Switched auth token storage from localStorage to sessionStorage (XSS mitigation)
-  - Fixed React hooks missing dependencies (UnifiedPatients, use-toast, PatientDetailPanel)
-  - Fixed 10 empty catch blocks (nativeFeatures, NotificationBell, Settings)
-  - Fixed array-index-as-key in UnifiedPatients, ConferenceManager, BulkImport
-  - Fixed Settings.jsx fetchAttendings regression
+- [x] Code Quality Fixes (security, hooks, catch blocks, array keys)
+- [x] **Collapsible Sidebar (Apr 2026):**
+  - Toggle button (chevrons) to minimize/expand
+  - Collapsed: icons-only, 68px width
+  - Expanded: full 256px with labels
+  - Smooth animation transition
+  - Content area adjusts automatically
 
 ## Pending
 - [ ] Refactor high-complexity functions (normalize_preop_checklist, calendar_action, parse_csv_file)
-- [ ] Split oversized components (AppleDashboard 1242 lines, Settings 795 lines, AuthPage 577 lines)
+- [ ] Split oversized components (AppleDashboard 1424 lines, Settings 795 lines, AuthPage 628 lines)
 - [ ] Break down server.py into modular routes
 - [ ] Audit Log viewer UI page
 - [ ] Weekly email digest for notifications

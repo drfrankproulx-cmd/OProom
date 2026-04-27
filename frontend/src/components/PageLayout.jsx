@@ -13,6 +13,7 @@ export const PageLayout = ({
   headerActions
 }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden">
@@ -27,10 +28,12 @@ export const PageLayout = ({
         onLogout={onLogout}
         isOpen={sidebarOpen}
         onToggle={() => setSidebarOpen(!sidebarOpen)}
+        collapsed={sidebarCollapsed}
+        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
       />
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col md:pl-64 h-full overflow-hidden">
+      <main className={`flex-1 flex flex-col ${sidebarCollapsed ? 'md:pl-[68px]' : 'md:pl-64'} h-full overflow-hidden transition-all duration-300`}>
         {/* Header */}
         {(title || headerActions) && (
           <header className="sticky top-0 z-30 flex items-center justify-between h-14 md:h-16 px-4 md:px-6 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
