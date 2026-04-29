@@ -38,6 +38,24 @@ const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
 // Patient category definitions — maps keywords in diagnosis/procedure to categories
 const PATIENT_CATEGORIES = {
+  oncology: {
+    label: 'Oncology/Free Flaps',
+    color: 'bg-rose-600',
+    lightBg: 'bg-rose-50',
+    text: 'text-rose-700',
+    border: 'border-l-rose-600',
+    avatar: 'from-rose-500 to-rose-700',
+    keywords: ['malignancy', 'malignant', 'carcinoma', 'cancer', 'oncology', 'free flap', 'fibula free', 'radial forearm', 'scapula flap', 'osteocutaneous', 'osteoradionecrosis', 'orn', 'squamous cell', 'metastatic', 'lymphoma', 'sarcoma', 'reconstruction flap'],
+  },
+  feminization: {
+    label: 'Facial Feminization',
+    color: 'bg-fuchsia-500',
+    lightBg: 'bg-fuchsia-50',
+    text: 'text-fuchsia-700',
+    border: 'border-l-fuchsia-500',
+    avatar: 'from-fuchsia-400 to-fuchsia-600',
+    keywords: ['feminization', 'ffs', 'forehead contouring', 'frontal sinus', 'brow bone', 'tracheal shave', 'jaw contouring', 'chin feminization', 'hairline lowering', 'facial feminization'],
+  },
   orthognathic: {
     label: 'Orthognathic',
     color: 'bg-violet-500',
@@ -45,7 +63,7 @@ const PATIENT_CATEGORIES = {
     text: 'text-violet-700',
     border: 'border-l-violet-500',
     avatar: 'from-violet-400 to-violet-600',
-    keywords: ['orthognathic', 'le fort', 'bsso', 'mandibular', 'maxillary osteotomy', 'jaw surgery', 'sagittal split'],
+    keywords: ['orthognathic', 'le fort', 'bsso', 'mandibular', 'maxillary osteotomy', 'jaw surgery', 'sagittal split', 'maxillary hypoplasia', 'mandibular hyperplasia', 'hypoplasia'],
   },
   dentoalveolar: {
     label: 'Dentoalveolar',
@@ -72,7 +90,7 @@ const PATIENT_CATEGORIES = {
     text: 'text-amber-700',
     border: 'border-l-amber-500',
     avatar: 'from-amber-400 to-amber-600',
-    keywords: ['biopsy', 'lesion', 'cyst', 'tumor', 'ameloblastoma', 'odontogenic', 'pathology', 'excision', 'resection', 'carcinoma'],
+    keywords: ['biopsy', 'lesion', 'cyst', 'tumor', 'ameloblastoma', 'odontogenic', 'pathology', 'excision', 'benign'],
   },
   implants: {
     label: 'Implants',
