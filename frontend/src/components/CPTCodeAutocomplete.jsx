@@ -199,6 +199,28 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
         {/* Dropdown */}
         {isOpen && (Object.keys(grouped).length > 0 || searchQuery) && (
           <div className="absolute z-[9999] mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-xl max-h-[50vh] md:max-h-96 overflow-y-auto">
+            {/* Always-visible "Other" free text option */}
+            <button
+              type="button"
+              onClick={() => {
+                if (searchQuery) {
+                  const customCPT = { code: searchQuery, common_name: searchQuery, description: searchQuery, category: 'Custom' };
+                  handleSelectCPT(customCPT);
+                } else {
+                  inputRef.current?.focus();
+                }
+              }}
+              className="w-full text-left px-3 md:px-4 py-2.5 hover:bg-teal-50 active:bg-teal-100 border-b border-gray-200 transition-colors bg-slate-50 sticky top-0 z-20"
+              data-testid="cpt-other-option"
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold text-teal-600 bg-teal-100 px-2 py-0.5 rounded-full">Other</span>
+                <span className="text-sm text-slate-600">
+                  {searchQuery ? `Use "${searchQuery}" as entered` : 'Type a custom procedure above'}
+                </span>
+              </div>
+            </button>
+
             {/* Header hint */}
             {!searchQuery && diagnosis && getRelevantCPTCodes(diagnosis).length > 0 && (
               <div className="px-3 py-1.5 bg-teal-50 border-b border-teal-200 sticky top-0 z-10">
