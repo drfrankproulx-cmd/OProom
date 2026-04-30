@@ -355,12 +355,22 @@ const PatientExpandedView = ({
   onAddChecklistItem,
   onDeleteChecklistItem,
   onUpdateAppointmentDates,
+  onUpdatePatientDetails,
   checklistLoading 
 }) => {
   const [showAddTask, setShowAddTask] = useState(false);
   const [newChecklistItem, setNewChecklistItem] = useState('');
   const [lastClinicDate, setLastClinicDate] = useState(patient.last_clinic_appointment || '');
   const [recordsDate, setRecordsDate] = useState(patient.records_appointment || '');
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState({
+    patient_name: patient.patient_name || '',
+    dob: patient.dob || '',
+    attending: patient.attending || '',
+    orthodontist: patient.orthodontist || '',
+    diagnosis: patient.diagnosis || '',
+    procedures: patient.procedures || '',
+  });
   
   // Get preop checklist
   const preopChecklist = Array.isArray(patient.preop_checklist) 
@@ -387,10 +397,121 @@ const PatientExpandedView = ({
     <div className="bg-slate-50 border-t border-slate-200 p-4 md:p-6 space-y-6">
       {/* Patient Details Section */}
       <div className="bg-white rounded-xl p-4 border border-slate-200">
-        <h4 className="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
-          <User className="h-4 w-4 text-teal-600" />
-          Patient Details
-        </h4>
+        <div className="flex items-center justify-between mb-3">
+          <h4 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+            <User className="h-4 w-4 text-teal-600" />
+            Patient Details
+          </h4>
+          {!isEditing ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsEditing(true)}
+              data-testid="edit-patient-btn"
+              className="h-8 px-3 text-xs text-teal-600 hover:text-teal-700 hover:bg-teal-50"
+            >
+              <Edit2 className="h-3.5 w-3.5 mr-1" />
+              Edit
+            </Button>
+          ) : (
+            <div className="flex gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setIsEditing(false);
+                  setEditForm({
+                    patient_name: patient.patient_name || '',
+                    dob: patient.dob || '',
+                    attending: patient.attending || '',
+                    orthodontist: patient.orthodontist || '',
+                    diagnosis: patient.diagnosis || '',
+                    procedures: patient.procedures || '',
+                  });
+                }}
+                className="h-8 px-3 text-xs text-slate-500 hover:bg-slate-100"
+              >
+                Cancel
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => {
+                  onUpdatePatientDetails(patient.mrn, editForm);
+                  setIsEditing(false);
+                }}
+                data-testid="save-patient-btn"
+                className="h-8 px-3 text-xs bg-teal-500 hover:bg-teal-600 text-white"
+              >
+                Save
+              </Button>
+            </div>
+          )}
+        </div>
+
+        {isEditing ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+            <div>
+              <label className="text-slate-500 text-xs block mb-1">Patient Name</label>
+              <input
+                type="text"
+                value={editForm.patient_name}
+                onChange={(e) => setEditForm({ ...editForm, patient_name: e.target.value })}
+                className="h-9 px-3 rounded-md border border-slate-200 text-sm w-full"
+                data-testid="edit-patient-name"
+              />
+            </div>
+            <div>
+              <label className="text-slate-500 text-xs block mb-1">Date of Birth</label>
+              <input
+                type="date"
+                value={editForm.dob}
+                onChange={(e) => setEditForm({ ...editForm, dob: e.target.value })}
+                className="h-9 px-3 rounded-md border border-slate-200 text-sm w-full"
+                data-testid="edit-patient-dob"
+              />
+            </div>
+            <div>
+              <label className="text-slate-500 text-xs block mb-1">Attending</label>
+              <input
+                type="text"
+                value={editForm.attending}
+                onChange={(e) => setEditForm({ ...editForm, attending: e.target.value })}
+                className="h-9 px-3 rounded-md border border-slate-200 text-sm w-full"
+                data-testid="edit-patient-attending"
+              />
+            </div>
+            <div>
+              <label className="text-slate-500 text-xs block mb-1">Orthodontist</label>
+              <input
+                type="text"
+                value={editForm.orthodontist}
+                onChange={(e) => setEditForm({ ...editForm, orthodontist: e.target.value })}
+                className="h-9 px-3 rounded-md border border-slate-200 text-sm w-full"
+                data-testid="edit-patient-orthodontist"
+              />
+            </div>
+            <div className="md:col-span-2">
+              <label className="text-slate-500 text-xs block mb-1">Diagnosis</label>
+              <input
+                type="text"
+                value={editForm.diagnosis}
+                onChange={(e) => setEditForm({ ...editForm, diagnosis: e.target.value })}
+                className="h-9 px-3 rounded-md border border-slate-200 text-sm w-full"
+                data-testid="edit-patient-diagnosis"
+              />
+            </div>
+            <div className="md:col-span-2">
+              <label className="text-slate-500 text-xs block mb-1">Procedure</label>
+              <input
+                type="text"
+                value={editForm.procedures}
+                onChange={(e) => setEditForm({ ...editForm, procedures: e.target.value })}
+                className="h-9 px-3 rounded-md border border-slate-200 text-sm w-full"
+                data-testid="edit-patient-procedures"
+              />
+            </div>
+          </div>
+        ) : (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
           <div>
             <span className="text-slate-500">MRN:</span>
@@ -456,6 +577,7 @@ const PatientExpandedView = ({
             />
           </div>
         </div>
+        )}
       </div>
 
       {/* Pre-Op Checklist Section */}
@@ -629,6 +751,7 @@ const PatientRow = ({
   onAddChecklistItem,
   onDeleteChecklistItem,
   onUpdateAppointmentDates,
+  onUpdatePatientDetails,
   checklistLoading
 }) => {
   const categoryKey = classifyPatient(patient);
@@ -785,6 +908,7 @@ const PatientRow = ({
           onAddChecklistItem={onAddChecklistItem}
           onDeleteChecklistItem={onDeleteChecklistItem}
           onUpdateAppointmentDates={onUpdateAppointmentDates}
+          onUpdatePatientDetails={onUpdatePatientDetails}
           checklistLoading={checklistLoading}
         />
       )}
@@ -1034,6 +1158,30 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
       }
     } catch (error) {
       toast.error('Failed to update appointment date');
+    }
+  };
+
+  // Update patient details (name, dob, attending, orthodontist, diagnosis, procedures)
+  const handleUpdatePatientDetails = async (patientMrn, updates) => {
+    try {
+      const response = await fetch(`${API_URL}/api/patients/${patientMrn}`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(updates),
+      });
+      if (response.ok) {
+        setPatients(prev => prev.map(p => {
+          if (p.mrn === patientMrn) {
+            return { ...p, ...updates };
+          }
+          return p;
+        }));
+        toast.success('Patient details updated');
+      } else {
+        toast.error('Failed to update patient details');
+      }
+    } catch (error) {
+      toast.error('Failed to update patient details');
     }
   };
 
@@ -1403,6 +1551,7 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
                           onAddChecklistItem={handleAddChecklistItem}
                           onDeleteChecklistItem={handleDeleteChecklistItem}
                           onUpdateAppointmentDates={handleUpdateAppointmentDates}
+                          onUpdatePatientDetails={handleUpdatePatientDetails}
                           checklistLoading={checklistLoading}
                         />
                       ))}
@@ -1426,6 +1575,7 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
                   onAddChecklistItem={handleAddChecklistItem}
                   onDeleteChecklistItem={handleDeleteChecklistItem}
                   onUpdateAppointmentDates={handleUpdateAppointmentDates}
+                  onUpdatePatientDetails={handleUpdatePatientDetails}
                   checklistLoading={checklistLoading}
                 />
               ))
