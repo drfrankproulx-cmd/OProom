@@ -1586,6 +1586,48 @@ async def update_patient(mrn: str, patient: Patient, request: Request, current_u
     create_audit_log(current_user, "update", "patient", mrn, request, "; ".join(changes) if changes else "No field changes")
     return {"message": "Patient updated successfully"}
 
+@app.patch("/api/patients/{mrn}/details")
+async def patch_patient_details(mrn: str, request: Request, current_user: str = Depends(get_current_user)):
+    """Partial update of patient details — only updates provided fields"""
+    body = await request.json()
+    patient = patients_collection.find_one({"mrn": mrn})
+    if not patient:
+        raise HTTPException(status_code=404, detail="Patient not found")
+    
+    allowed_fields = ["patient_name", "dob", "attending", "orthodontist", "diagnosis", "procedures", "status"]
+    update_fields = {}
+    changes = []
+    
+    for field in allowed_fields:
+        if field in body:
+            new_val = body[field] if body[field] else None
+            old_val = patient.get(field)
+            if new_val != old_val:
+                update_fields[field] = new_val
+                changes.append(f"{field}: {old_val or 'N/A'} → {new_val or 'N/A'}")
+    
+    if not update_fields:
+        return {"message": "No changes"}
+    
+    update_fields["updated_by"] = current_user
+    update_fields["updated_at"] = datetime.utcnow()
+    
+    activity_entry = {
+        "action": "updated",
+        "user": current_user,
+        "timestamp": datetime.utcnow().isoformat(),
+        "details": ", ".join(changes)
+    }
+    
+    patients_collection.update_one(
+        {"mrn": mrn},
+        {"$set": update_fields, "$push": {"activity_log": activity_entry}}
+    )
+    
+    create_audit_log(current_user, "update", "patient", mrn, request, "; ".join(changes))
+    return {"message": "Patient details updated", "updates": update_fields}
+
+
 @app.patch("/api/patients/{mrn}/appointment-dates")
 async def update_patient_appointment_dates(mrn: str, request: Request, current_user: str = Depends(get_current_user)):
     """Update last_clinic_appointment and/or records_appointment dates for a patient"""

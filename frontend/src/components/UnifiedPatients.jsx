@@ -1164,8 +1164,8 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
   // Update patient details (name, dob, attending, orthodontist, diagnosis, procedures)
   const handleUpdatePatientDetails = async (patientMrn, updates) => {
     try {
-      const response = await fetch(`${API_URL}/api/patients/${patientMrn}`, {
-        method: 'PUT',
+      const response = await fetch(`${API_URL}/api/patients/${patientMrn}/details`, {
+        method: 'PATCH',
         headers: getAuthHeaders(),
         body: JSON.stringify(updates),
       });
