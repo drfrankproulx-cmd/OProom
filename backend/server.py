@@ -1628,6 +1628,44 @@ async def patch_patient_details(mrn: str, request: Request, current_user: str = 
     return {"message": "Patient details updated", "updates": update_fields}
 
 
+
+@app.patch("/api/patients/{mrn}/checklist-item-details")
+async def update_checklist_item_details(mrn: str, request: Request, current_user: str = Depends(get_current_user)):
+    """Update notes/date on a specific checklist item"""
+    body = await request.json()
+    item_id = body.get("item_id")
+    notes = body.get("notes")
+    date_value = body.get("date")
+    
+    if not item_id:
+        raise HTTPException(status_code=400, detail="item_id required")
+    
+    patient = patients_collection.find_one({"mrn": mrn})
+    if not patient:
+        raise HTTPException(status_code=404, detail="Patient not found")
+    
+    checklist = patient.get("preop_checklist", [])
+    updated = False
+    for item in checklist:
+        if item.get("id") == item_id:
+            if notes is not None:
+                item["notes"] = notes
+            if date_value is not None:
+                item["date"] = date_value
+            updated = True
+            break
+    
+    if not updated:
+        raise HTTPException(status_code=404, detail="Checklist item not found")
+    
+    patients_collection.update_one(
+        {"mrn": mrn},
+        {"$set": {"preop_checklist": checklist, "updated_by": current_user, "updated_at": datetime.utcnow()}}
+    )
+    
+    create_audit_log(current_user, "update", "checklist_detail", mrn, request, f"Updated {item_id}: date={date_value}, notes={notes}")
+    return {"message": "Checklist item updated"}
+
 @app.patch("/api/patients/{mrn}/appointment-dates")
 async def update_patient_appointment_dates(mrn: str, request: Request, current_user: str = Depends(get_current_user)):
     """Update last_clinic_appointment and/or records_appointment dates for a patient"""

@@ -147,46 +147,140 @@ function classifyPatient(patient) {
 }
 
 // Pre-op checklist item component - handles both regular items and imaging dropdown
-const PreOpChecklistItem = ({ item, onToggle, onImagingChange, onDelete, disabled }) => {
+const PreOpChecklistItem = ({ item, onToggle, onImagingChange, onDelete, onUpdateDetails, disabled }) => {
+  const [expanded, setExpanded] = useState(false);
+  const [notes, setNotes] = useState(item.notes || '');
+  const [dateVal, setDateVal] = useState(item.date || '');
+
   // Special handling for imaging dropdown
   if (item.type === 'dropdown' && item.id === 'imaging') {
     return (
-      <div className="rounded-lg bg-slate-50 border border-slate-200">
-        <ImagingDropdown
-          selection={item.selection || []}
-          onSelectionChange={onImagingChange}
-          disabled={disabled}
-        />
+      <div className="space-y-1">
+        <div className="rounded-lg bg-slate-50 border border-slate-200">
+          <ImagingDropdown
+            selection={item.selection || []}
+            onSelectionChange={onImagingChange}
+            disabled={disabled}
+          />
+        </div>
+        <div className="flex items-center gap-2 pl-2">
+          <input
+            type="date"
+            value={dateVal}
+            onChange={(e) => setDateVal(e.target.value)}
+            onBlur={() => {
+              if (dateVal !== (item.date || '')) {
+                onUpdateDetails(item.id, { date: dateVal || null });
+              }
+            }}
+            className="h-8 px-2 rounded border border-slate-200 text-xs text-slate-700 w-[140px]"
+            placeholder="Date taken"
+            title="Date imaging taken"
+          />
+          <input
+            type="text"
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            onBlur={() => {
+              if (notes !== (item.notes || '')) {
+                onUpdateDetails(item.id, { notes });
+              }
+            }}
+            className="h-8 px-2 rounded border border-slate-200 text-xs text-slate-600 flex-1"
+            placeholder="Add notes..."
+          />
+        </div>
       </div>
     );
   }
 
   const isCustom = item.default === false;
 
-  // Regular checkbox item
+  // Date label based on item type
+  const getDatePlaceholder = () => {
+    if (item.id === 'prior_auth') return 'Approval/expiry date';
+    if (item.id === 'or_scheduled') return 'Scheduled date';
+    if (item.id === 'vsp_complete') return 'Completion date';
+    if (item.id === 'ortho_approval') return 'Approval date';
+    return 'Date';
+  };
+
+  // Regular checkbox item with expandable details
   return (
-    <div 
-      className={`flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors min-h-[44px] ${item.checked ? 'bg-green-50' : ''}`}
-      onClick={() => !disabled && onToggle(item.id)}
-      data-testid={`checklist-item-${item.id}`}
-    >
-      <Checkbox 
-        checked={item.checked} 
-        className="h-5 w-5 shrink-0"
-        disabled={disabled}
-      />
-      <span className={`text-sm flex-1 ${item.checked ? 'text-green-700 line-through' : 'text-slate-700'}`}>
-        {item.item}
-      </span>
-      {isCustom && (
-        <button
-          data-testid={`checklist-delete-${item.id}`}
-          onClick={(e) => { e.stopPropagation(); onDelete(item.id); }}
-          className="shrink-0 w-7 h-7 flex items-center justify-center rounded hover:bg-red-100 text-slate-400 hover:text-red-600 transition-colors"
-          title="Remove item"
+    <div className="rounded-lg hover:bg-slate-50 transition-colors">
+      <div 
+        className={`flex items-center gap-3 p-2 cursor-pointer min-h-[44px] ${item.checked ? 'bg-green-50 rounded-lg' : ''}`}
+        data-testid={`checklist-item-${item.id}`}
+      >
+        <div onClick={(e) => { e.stopPropagation(); !disabled && onToggle(item.id); }}>
+          <Checkbox 
+            checked={item.checked} 
+            className="h-5 w-5 shrink-0"
+            disabled={disabled}
+          />
+        </div>
+        <span 
+          className={`text-sm flex-1 ${item.checked ? 'text-green-700 line-through' : 'text-slate-700'}`}
+          onClick={() => setExpanded(!expanded)}
         >
-          <X className="h-3.5 w-3.5" />
+          {item.item}
+        </span>
+        {(item.date || item.notes) && !expanded && (
+          <span className="text-xs text-slate-400 truncate max-w-[200px]">
+            {item.date && format(parseISO(item.date), 'MM/dd/yy')}
+            {item.date && item.notes && ' • '}
+            {item.notes}
+          </span>
+        )}
+        <button
+          onClick={(e) => { e.stopPropagation(); setExpanded(!expanded); }}
+          className="shrink-0 w-7 h-7 flex items-center justify-center rounded hover:bg-slate-200 text-slate-400 transition-colors"
+          title="Edit details"
+          data-testid={`checklist-expand-${item.id}`}
+        >
+          {expanded ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
         </button>
+        {isCustom && (
+          <button
+            data-testid={`checklist-delete-${item.id}`}
+            onClick={(e) => { e.stopPropagation(); onDelete(item.id); }}
+            className="shrink-0 w-7 h-7 flex items-center justify-center rounded hover:bg-red-100 text-slate-400 hover:text-red-600 transition-colors"
+            title="Remove item"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        )}
+      </div>
+      {expanded && (
+        <div className="flex items-center gap-2 px-2 pb-2 pt-1 ml-8">
+          <input
+            type="date"
+            value={dateVal}
+            onChange={(e) => setDateVal(e.target.value)}
+            onBlur={() => {
+              if (dateVal !== (item.date || '')) {
+                onUpdateDetails(item.id, { date: dateVal || null });
+              }
+            }}
+            className="h-8 px-2 rounded border border-slate-200 text-xs text-slate-700 w-[140px]"
+            placeholder={getDatePlaceholder()}
+            title={getDatePlaceholder()}
+            data-testid={`checklist-date-${item.id}`}
+          />
+          <input
+            type="text"
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            onBlur={() => {
+              if (notes !== (item.notes || '')) {
+                onUpdateDetails(item.id, { notes });
+              }
+            }}
+            className="h-8 px-2 rounded border border-slate-200 text-xs text-slate-600 flex-1"
+            placeholder="Add notes..."
+            data-testid={`checklist-notes-${item.id}`}
+          />
+        </div>
       )}
     </div>
   );
@@ -356,6 +450,7 @@ const PatientExpandedView = ({
   onDeleteChecklistItem,
   onUpdateAppointmentDates,
   onUpdatePatientDetails,
+  onUpdateChecklistDetails,
   checklistLoading 
 }) => {
   const [showAddTask, setShowAddTask] = useState(false);
@@ -608,6 +703,7 @@ const PatientExpandedView = ({
                 onToggle={onToggleChecklistItem}
                 onImagingChange={(selection) => onUpdateImagingSelection(patient.mrn, selection)}
                 onDelete={(itemId) => onDeleteChecklistItem(patient.mrn, itemId)}
+                onUpdateDetails={(itemId, updates) => onUpdateChecklistDetails(patient.mrn, itemId, updates)}
                 disabled={checklistLoading}
               />
             ))}
@@ -752,6 +848,7 @@ const PatientRow = ({
   onDeleteChecklistItem,
   onUpdateAppointmentDates,
   onUpdatePatientDetails,
+  onUpdateChecklistDetails,
   checklistLoading
 }) => {
   const categoryKey = classifyPatient(patient);
@@ -909,6 +1006,7 @@ const PatientRow = ({
           onDeleteChecklistItem={onDeleteChecklistItem}
           onUpdateAppointmentDates={onUpdateAppointmentDates}
           onUpdatePatientDetails={onUpdatePatientDetails}
+          onUpdateChecklistDetails={onUpdateChecklistDetails}
           checklistLoading={checklistLoading}
         />
       )}
@@ -1182,6 +1280,36 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
       }
     } catch (error) {
       toast.error('Failed to update patient details');
+    }
+  };
+
+  // Update checklist item details (date, notes)
+  const handleUpdateChecklistDetails = async (patientMrn, itemId, updates) => {
+    try {
+      const response = await fetch(`${API_URL}/api/patients/${patientMrn}/checklist-item-details`, {
+        method: 'PATCH',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ item_id: itemId, ...updates }),
+      });
+      if (response.ok) {
+        setPatients(prev => prev.map(p => {
+          if (p.mrn === patientMrn) {
+            const updatedChecklist = (p.preop_checklist || []).map(item => {
+              if (item.id === itemId) {
+                return { ...item, ...updates };
+              }
+              return item;
+            });
+            return { ...p, preop_checklist: updatedChecklist };
+          }
+          return p;
+        }));
+        toast.success('Checklist details updated', { duration: 1500 });
+      } else {
+        toast.error('Failed to update checklist details');
+      }
+    } catch (error) {
+      toast.error('Failed to update checklist details');
     }
   };
 
@@ -1552,6 +1680,7 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
                           onDeleteChecklistItem={handleDeleteChecklistItem}
                           onUpdateAppointmentDates={handleUpdateAppointmentDates}
                           onUpdatePatientDetails={handleUpdatePatientDetails}
+                          onUpdateChecklistDetails={handleUpdateChecklistDetails}
                           checklistLoading={checklistLoading}
                         />
                       ))}
@@ -1576,6 +1705,7 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
                   onDeleteChecklistItem={handleDeleteChecklistItem}
                   onUpdateAppointmentDates={handleUpdateAppointmentDates}
                   onUpdatePatientDetails={handleUpdatePatientDetails}
+                  onUpdateChecklistDetails={handleUpdateChecklistDetails}
                   checklistLoading={checklistLoading}
                 />
               ))
