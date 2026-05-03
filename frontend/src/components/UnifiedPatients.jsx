@@ -6,6 +6,8 @@ import { Checkbox } from './ui/checkbox';
 import { toast } from 'sonner';
 import { format, parseISO, isPast, isToday, differenceInDays } from 'date-fns';
 import { getAuthHeaders as getAuth } from '../utils/auth';
+import DiagnosisAutocomplete from './DiagnosisAutocomplete';
+import CPTCodeAutocomplete from './CPTCodeAutocomplete';
 import {
   Search,
   Filter,
@@ -451,6 +453,7 @@ const PatientExpandedView = ({
   onUpdateAppointmentDates,
   onUpdatePatientDetails,
   onUpdateChecklistDetails,
+  onScheduleOR,
   checklistLoading 
 }) => {
   const [showAddTask, setShowAddTask] = useState(false);
@@ -585,23 +588,20 @@ const PatientExpandedView = ({
                 data-testid="edit-patient-orthodontist"
               />
             </div>
-            <div className="md:col-span-2">
+            <div className="md:col-span-2 relative z-30">
               <label className="text-slate-500 text-xs block mb-1">Diagnosis</label>
-              <input
-                type="text"
+              <DiagnosisAutocomplete
                 value={editForm.diagnosis}
-                onChange={(e) => setEditForm({ ...editForm, diagnosis: e.target.value })}
-                className="h-9 px-3 rounded-md border border-slate-200 text-sm w-full"
+                onChange={(diagObj) => setEditForm({ ...editForm, diagnosis: typeof diagObj === 'string' ? diagObj : (diagObj?.name || '') })}
                 data-testid="edit-patient-diagnosis"
               />
             </div>
-            <div className="md:col-span-2">
-              <label className="text-slate-500 text-xs block mb-1">Procedure</label>
-              <input
-                type="text"
+            <div className="md:col-span-2 relative z-20">
+              <label className="text-slate-500 text-xs block mb-1">Procedure / CPT Code</label>
+              <CPTCodeAutocomplete
                 value={editForm.procedures}
-                onChange={(e) => setEditForm({ ...editForm, procedures: e.target.value })}
-                className="h-9 px-3 rounded-md border border-slate-200 text-sm w-full"
+                onChange={(code, description) => setEditForm({ ...editForm, procedures: description || code || '' })}
+                diagnosis={editForm.diagnosis}
                 data-testid="edit-patient-procedures"
               />
             </div>
@@ -632,6 +632,22 @@ const PatientExpandedView = ({
               {patient.scheduled_date ? format(parseISO(patient.scheduled_date), 'MMM d, yyyy') : 
                patient.schedule?.scheduled_date ? format(parseISO(patient.schedule.scheduled_date), 'MMM d, yyyy') : 'Not scheduled'}
             </span>
+          </div>
+          <div className="col-span-2 md:col-span-3">
+            <label className="text-slate-500 block mb-1">OR Date (linked to Calendar):</label>
+            <div className="flex items-center gap-2">
+              <input
+                type="date"
+                data-testid="or-date-picker"
+                value={patient.scheduled_date || patient.schedule?.scheduled_date || ''}
+                onChange={(e) => {
+                  onScheduleOR(patient.mrn, patient.patient_name, e.target.value, patient.procedures);
+                }}
+                className="h-9 px-2 rounded-md border border-slate-200 text-sm text-slate-900 w-[180px]"
+              />
+              <CalendarIcon className="h-4 w-4 text-teal-500" />
+              <span className="text-xs text-slate-400">Sets date on Calendar</span>
+            </div>
           </div>
           <div className="col-span-2">
             <span className="text-slate-500">Diagnosis:</span>
@@ -849,6 +865,7 @@ const PatientRow = ({
   onUpdateAppointmentDates,
   onUpdatePatientDetails,
   onUpdateChecklistDetails,
+  onScheduleOR,
   checklistLoading
 }) => {
   const categoryKey = classifyPatient(patient);
@@ -1007,6 +1024,7 @@ const PatientRow = ({
           onUpdateAppointmentDates={onUpdateAppointmentDates}
           onUpdatePatientDetails={onUpdatePatientDetails}
           onUpdateChecklistDetails={onUpdateChecklistDetails}
+          onScheduleOR={onScheduleOR}
           checklistLoading={checklistLoading}
         />
       )}
@@ -1310,6 +1328,47 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
       }
     } catch (error) {
       toast.error('Failed to update checklist details');
+    }
+  };
+
+  // Schedule OR — creates/updates a calendar schedule entry and updates patient
+  const handleScheduleOR = async (patientMrn, patientName, orDate, procedure) => {
+    if (!orDate) return;
+    try {
+      // Create schedule entry linked to calendar
+      const scheduleRes = await fetch(`${API_URL}/api/schedules`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({
+          patient_mrn: patientMrn,
+          patient_name: patientName,
+          scheduled_date: orDate,
+          procedure_description: procedure || '',
+          or_number: '',
+          status: 'scheduled',
+        }),
+      });
+      
+      // Also update the patient's scheduled_date
+      await fetch(`${API_URL}/api/patients/${patientMrn}/details`, {
+        method: 'PATCH',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ scheduled_date: orDate }),
+      });
+
+      if (scheduleRes.ok) {
+        setPatients(prev => prev.map(p => {
+          if (p.mrn === patientMrn) {
+            return { ...p, scheduled_date: orDate };
+          }
+          return p;
+        }));
+        toast.success(`OR scheduled for ${format(parseISO(orDate), 'MMM d, yyyy')}`);
+      } else {
+        toast.error('Failed to schedule OR');
+      }
+    } catch (error) {
+      toast.error('Failed to schedule OR');
     }
   };
 
@@ -1681,6 +1740,7 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
                           onUpdateAppointmentDates={handleUpdateAppointmentDates}
                           onUpdatePatientDetails={handleUpdatePatientDetails}
                           onUpdateChecklistDetails={handleUpdateChecklistDetails}
+                          onScheduleOR={handleScheduleOR}
                           checklistLoading={checklistLoading}
                         />
                       ))}
@@ -1706,6 +1766,7 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
                   onUpdateAppointmentDates={handleUpdateAppointmentDates}
                   onUpdatePatientDetails={handleUpdatePatientDetails}
                   onUpdateChecklistDetails={handleUpdateChecklistDetails}
+                  onScheduleOR={handleScheduleOR}
                   checklistLoading={checklistLoading}
                 />
               ))
