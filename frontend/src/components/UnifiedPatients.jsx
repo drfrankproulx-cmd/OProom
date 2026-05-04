@@ -598,9 +598,46 @@ const PatientExpandedView = ({
             </div>
             <div className="md:col-span-2 relative z-20">
               <label className="text-slate-500 text-xs block mb-1">Procedure / CPT Code</label>
+              {/* Show existing procedures as editable list */}
+              {editForm.procedures && (
+                <div className="flex flex-wrap gap-1 mb-2">
+                  {editForm.procedures.split(';').map((proc, idx) => {
+                    const trimmed = proc.trim();
+                    if (!trimmed) return null;
+                    return (
+                      <span key={`${trimmed}-${idx}`} className="inline-flex items-center gap-1 px-2 py-1 bg-teal-50 text-teal-700 text-xs rounded-full border border-teal-200">
+                        {trimmed}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const procs = editForm.procedures.split(';').map(p => p.trim()).filter(p => p);
+                            procs.splice(idx, 1);
+                            setEditForm({ ...editForm, procedures: procs.join('; ') });
+                          }}
+                          className="ml-0.5 w-4 h-4 flex items-center justify-center rounded-full hover:bg-teal-200 text-teal-600"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    );
+                  })}
+                </div>
+              )}
               <CPTCodeAutocomplete
-                value={editForm.procedures}
-                onChange={(code, description) => setEditForm({ ...editForm, procedures: description || code || '' })}
+                value=""
+                onChange={(code, description) => {
+                  const newProc = description || code || '';
+                  if (!newProc) return;
+                  const existing = editForm.procedures;
+                  if (existing) {
+                    const procs = existing.split(';').map(p => p.trim()).filter(p => p);
+                    if (!procs.includes(newProc)) {
+                      setEditForm({ ...editForm, procedures: [...procs, newProc].join('; ') });
+                    }
+                  } else {
+                    setEditForm({ ...editForm, procedures: newProc });
+                  }
+                }}
                 diagnosis={editForm.diagnosis}
                 data-testid="edit-patient-procedures"
               />
