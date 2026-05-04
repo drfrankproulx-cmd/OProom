@@ -996,7 +996,7 @@ const PatientRow = ({
               <div className="text-xs text-slate-500">MRN: {patient.mrn}</div>
             </div>
             
-            <div className="col-span-3 text-sm text-slate-600 truncate" title={patient.diagnosis}>
+            <div className="col-span-2 text-sm text-slate-600 truncate" title={patient.diagnosis}>
               {patient.diagnosis || 'N/A'}
             </div>
             
@@ -1008,16 +1008,24 @@ const PatientRow = ({
               {getStatusBadge()}
             </div>
             
-            <div className="col-span-2">
-              <div className="flex items-center gap-2">
+            <div className="col-span-1">
+              <div className="flex items-center gap-1">
                 <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
                   <div 
                     className={`h-full transition-all ${progressPercent === 100 ? 'bg-green-500' : progressPercent >= 50 ? 'bg-teal-500' : 'bg-orange-500'}`}
                     style={{ width: `${progressPercent}%` }}
                   />
                 </div>
-                <span className="text-xs text-slate-600 w-10">{checkedCount}/{totalCount}</span>
+                <span className="text-xs text-slate-600">{checkedCount}/{totalCount}</span>
               </div>
+            </div>
+
+            <div className="col-span-1 text-xs text-slate-600">
+              {patient.last_clinic_appointment ? format(parseISO(patient.last_clinic_appointment), 'MM/dd') : '—'}
+            </div>
+
+            <div className="col-span-1 text-xs text-slate-600">
+              {patient.records_appointment ? format(parseISO(patient.records_appointment), 'MM/dd') : '—'}
             </div>
             
             <div className="col-span-1 text-center">
@@ -1728,10 +1736,12 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
               <div className="w-10" /> {/* Avatar spacer */}
               <div className="flex-1 grid grid-cols-12 gap-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                 <div className="col-span-2">Patient</div>
-                <div className="col-span-3">Diagnosis</div>
+                <div className="col-span-2">Diagnosis</div>
                 <div className="col-span-2">Procedure</div>
                 <div className="col-span-1">Status</div>
-                <div className="col-span-2">Pre-Op</div>
+                <div className="col-span-1">Pre-Op</div>
+                <div className="col-span-1">Last Apt</div>
+                <div className="col-span-1">Records</div>
                 <div className="col-span-1 text-center">Tasks</div>
                 <div className="col-span-1">Surgery</div>
               </div>
