@@ -1594,7 +1594,7 @@ async def patch_patient_details(mrn: str, request: Request, current_user: str = 
     if not patient:
         raise HTTPException(status_code=404, detail="Patient not found")
     
-    allowed_fields = ["patient_name", "dob", "attending", "orthodontist", "diagnosis", "procedures", "status", "scheduled_date"]
+    allowed_fields = ["patient_name", "dob", "attending", "orthodontist", "diagnosis", "procedures", "status", "scheduled_date", "phone_number"]
     update_fields = {}
     changes = []
     

@@ -466,6 +466,7 @@ const PatientExpandedView = ({
     dob: patient.dob || '',
     attending: patient.attending || '',
     orthodontist: patient.orthodontist || '',
+    phone_number: patient.phone_number || '',
     diagnosis: patient.diagnosis || '',
     procedures: patient.procedures || '',
   });
@@ -523,6 +524,7 @@ const PatientExpandedView = ({
                     dob: patient.dob || '',
                     attending: patient.attending || '',
                     orthodontist: patient.orthodontist || '',
+                    phone_number: patient.phone_number || '',
                     diagnosis: patient.diagnosis || '',
                     procedures: patient.procedures || '',
                   });
@@ -586,6 +588,17 @@ const PatientExpandedView = ({
                 onChange={(e) => setEditForm({ ...editForm, orthodontist: e.target.value })}
                 className="h-9 px-3 rounded-md border border-slate-200 text-sm w-full"
                 data-testid="edit-patient-orthodontist"
+              />
+            </div>
+            <div>
+              <label className="text-slate-500 text-xs block mb-1">Phone Number</label>
+              <input
+                type="tel"
+                value={editForm.phone_number}
+                onChange={(e) => setEditForm({ ...editForm, phone_number: e.target.value })}
+                className="h-9 px-3 rounded-md border border-slate-200 text-sm w-full"
+                placeholder="(555) 123-4567"
+                data-testid="edit-patient-phone"
               />
             </div>
             <div className="md:col-span-2 relative z-30">
@@ -662,6 +675,10 @@ const PatientExpandedView = ({
           <div>
             <span className="text-slate-500">Orthodontist:</span>
             <span className="ml-2 font-medium text-slate-900">{patient.orthodontist || 'N/A'}</span>
+          </div>
+          <div>
+            <span className="text-slate-500">Phone:</span>
+            <span className="ml-2 font-medium text-slate-900">{patient.phone_number || 'N/A'}</span>
           </div>
           <div>
             <span className="text-slate-500">Surgery Date:</span>
