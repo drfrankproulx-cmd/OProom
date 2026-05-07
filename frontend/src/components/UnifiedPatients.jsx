@@ -242,16 +242,14 @@ const PreOpChecklistItem = ({ item, onToggle, onImagingChange, onDelete, onUpdat
         >
           {expanded ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
         </button>
-        {isCustom && (
-          <button
-            data-testid={`checklist-delete-${item.id}`}
-            onClick={(e) => { e.stopPropagation(); onDelete(item.id); }}
-            className="shrink-0 w-7 h-7 flex items-center justify-center rounded hover:bg-red-100 text-slate-400 hover:text-red-600 transition-colors"
-            title="Remove item"
-          >
-            <X className="h-3.5 w-3.5" />
-          </button>
-        )}
+        <button
+          data-testid={`checklist-delete-${item.id}`}
+          onClick={(e) => { e.stopPropagation(); onDelete(item.id); }}
+          className="shrink-0 w-7 h-7 flex items-center justify-center rounded hover:bg-red-100 text-slate-400 hover:text-red-600 transition-colors"
+          title="Remove item"
+        >
+          <X className="h-3.5 w-3.5" />
+        </button>
       </div>
       {expanded && (
         <div className="flex items-center gap-2 px-2 pb-2 pt-1 ml-8">
