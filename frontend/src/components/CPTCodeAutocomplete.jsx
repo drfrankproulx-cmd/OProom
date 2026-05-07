@@ -185,10 +185,10 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
         {selectedCPTs.length > 0 && !isOpen && (
           <div className="mt-1.5 space-y-1">
             {selectedCPTs.map(cpt => (
-              <div key={cpt.code} className="flex items-center gap-2 px-2 py-1 bg-slate-50 rounded-md text-xs text-slate-600">
-                <span className="font-mono font-semibold text-teal-700">{cpt.code}</span>
-                <span className="truncate">{cpt.common_name || cpt.description}</span>
-                <span className={`ml-auto px-1.5 py-0.5 rounded text-[10px] font-medium ${CATEGORY_COLORS[cpt.category] || 'text-gray-600 bg-gray-50'}`}>
+              <div key={cpt.code} className="flex items-start gap-2 px-2 py-1.5 bg-slate-50 rounded-md text-xs text-slate-600" title={`${cpt.code} — ${cpt.description}`}>
+                <span className="font-mono font-semibold text-teal-700 shrink-0">{cpt.code}</span>
+                <span className="flex-1">{cpt.common_name || cpt.description}</span>
+                <span className={`shrink-0 ml-auto px-1.5 py-0.5 rounded text-[10px] font-medium ${CATEGORY_COLORS[cpt.category] || 'text-gray-600 bg-gray-50'}`}>
                   {cpt.category}
                 </span>
               </div>
@@ -266,15 +266,16 @@ export const CPTCodeAutocomplete = ({ value, onChange, label = "Procedure / CPT 
                     key={cpt.code}
                     type="button"
                     onClick={() => handleSelectCPT(cpt)}
+                    title={`${cpt.code} — ${cpt.common_name || ''}${cpt.description ? ': ' + cpt.description : ''}`}
                     className="w-full text-left px-3 md:px-4 py-2.5 hover:bg-blue-50 active:bg-blue-100 border-b border-gray-50 last:border-b-0 transition-colors"
                     data-testid={`cpt-option-${cpt.code}`}
                   >
                     <div className="flex items-start gap-2">
                       <span className="font-mono font-bold text-blue-600 text-sm min-w-[52px]">{cpt.code}</span>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 truncate">{cpt.common_name || cpt.description}</p>
+                        <p className="text-sm font-medium text-gray-900">{cpt.common_name || cpt.description}</p>
                         {cpt.common_name && (
-                          <p className="text-xs text-gray-500 truncate mt-0.5">{cpt.description}</p>
+                          <p className="text-xs text-gray-500 mt-0.5">{cpt.description}</p>
                         )}
                       </div>
                       {cpt.subcategory && (

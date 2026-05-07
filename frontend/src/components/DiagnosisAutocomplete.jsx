@@ -201,6 +201,7 @@ export const DiagnosisAutocomplete = ({ value, onChange, label = "Diagnosis", re
                 key={`${diagnosis.id || diagnosis.name}-${index}`}
                 type="button"
                 onClick={() => handleSelectDiagnosis(diagnosis)}
+                title={`${diagnosis.name}${diagnosis.icdCode ? ' (' + diagnosis.icdCode + ')' : ''}`}
                 className={`w-full text-left px-3 md:px-4 py-3 md:py-3 hover:bg-blue-50 active:bg-blue-100 border-b border-gray-100 last:border-b-0 transition-colors ${
                   index === 0 ? 'rounded-t-lg' : ''
                 } ${index === filteredDiagnoses.length - 1 ? 'rounded-b-lg' : ''}`}
@@ -212,7 +213,7 @@ export const DiagnosisAutocomplete = ({ value, onChange, label = "Diagnosis", re
                       {diagnosis.category === 'Frequently Used' && (
                         <Clock className="h-3 w-3 text-purple-500 flex-shrink-0" />
                       )}
-                      <span className="font-medium text-gray-900 text-sm truncate">
+                      <span className="font-medium text-gray-900 text-sm">
                         {diagnosis.name}
                       </span>
                       {diagnosis.icdCode && (

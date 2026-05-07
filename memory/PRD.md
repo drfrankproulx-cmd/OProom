@@ -27,6 +27,14 @@
   - Severity dropdown: Severe/Malignant, Moderate, Mild/Cosmetic, Unspecified
   - Procedure dropdown: populated from patient data
   - Keywords: malignancy/carcinoma/cancer → Severe, fracture/cyst/tumor → Moderate, hypoplasia/asymmetry → Mild
+- [x] **Inline Patient Editing & Dropdown UX (Feb 2026):**
+  - PATCH `/api/patients/{mrn}/details` for partial updates
+  - Inline edit form with autocomplete diagnosis/procedure
+  - Editable & deletable Pre-Op checklist items (dates, notes)
+  - Phone Number field, OR Date picker linked to calendar
+  - "Last Apt" / "Records" columns on table
+  - New patient categories: Oncology/Free Flaps, Facial Feminization
+  - Removed truncation on CPT/Diagnosis dropdowns — full descriptions wrap and display cleanly (verified screenshot)
 
 ## Pending
 - [ ] Audit Log viewer UI page
