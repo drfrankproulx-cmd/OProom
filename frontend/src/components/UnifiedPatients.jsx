@@ -693,7 +693,7 @@ const PatientExpandedView = ({
                 data-testid="or-date-picker"
                 value={patient.scheduled_date || patient.schedule?.scheduled_date || ''}
                 onChange={(e) => {
-                  onScheduleOR(patient.mrn, patient.patient_name, e.target.value, patient.procedures);
+                  onScheduleOR(patient.mrn, patient.patient_name, e.target.value, patient.procedures, patient.attending);
                 }}
                 className="h-9 px-2 rounded-md border border-slate-200 text-sm text-slate-900 w-[180px]"
               />
@@ -1319,23 +1319,36 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
   };
 
   // Schedule OR — creates/updates a calendar schedule entry and updates patient
-  const handleScheduleOR = async (patientMrn, patientName, orDate, procedure) => {
+  const handleScheduleOR = async (patientMrn, patientName, orDate, procedure, staff) => {
     if (!orDate) return;
     try {
-      // Create schedule entry linked to calendar
-      const scheduleRes = await fetch(`${API_URL}/api/schedules`, {
-        method: 'POST',
-        headers: getAuthHeaders(),
-        body: JSON.stringify({
-          patient_mrn: patientMrn,
-          patient_name: patientName,
-          scheduled_date: orDate,
-          procedure_description: procedure || '',
-          or_number: '',
-          status: 'scheduled',
-        }),
-      });
-      
+      // Check if a schedule already exists for this patient (avoid duplicate inserts)
+      const existing = patients.find(p => p.mrn === patientMrn)?.schedule;
+      const existingId = existing && (existing._id || existing.id);
+      const payload = {
+        patient_mrn: patientMrn,
+        patient_name: patientName,
+        procedure: procedure || 'TBD',
+        staff: staff || 'TBD',
+        scheduled_date: orDate,
+        status: 'scheduled',
+      };
+
+      let scheduleRes;
+      if (existingId) {
+        scheduleRes = await fetch(`${API_URL}/api/schedules/${existingId}`, {
+          method: 'PUT',
+          headers: getAuthHeaders(),
+          body: JSON.stringify(payload),
+        });
+      } else {
+        scheduleRes = await fetch(`${API_URL}/api/schedules`, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify(payload),
+        });
+      }
+
       // Also update the patient's scheduled_date
       await fetch(`${API_URL}/api/patients/${patientMrn}/details`, {
         method: 'PATCH',
@@ -1344,9 +1357,14 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
       });
 
       if (scheduleRes.ok) {
+        const savedSchedule = await scheduleRes.json().catch(() => null);
         setPatients(prev => prev.map(p => {
           if (p.mrn === patientMrn) {
-            return { ...p, scheduled_date: orDate };
+            return {
+              ...p,
+              scheduled_date: orDate,
+              schedule: savedSchedule || { ...(p.schedule || {}), scheduled_date: orDate },
+            };
           }
           return p;
         }));
