@@ -371,6 +371,7 @@ class Patient(BaseModel):
     orthodontist: Optional[str] = None
     last_clinic_appointment: Optional[str] = None
     records_appointment: Optional[str] = None
+    note: Optional[str] = None
     status: str = "pending"
     prep_checklist: dict = {
         "xrays": False,
@@ -1594,7 +1595,7 @@ async def patch_patient_details(mrn: str, request: Request, current_user: str = 
     if not patient:
         raise HTTPException(status_code=404, detail="Patient not found")
     
-    allowed_fields = ["patient_name", "dob", "attending", "orthodontist", "diagnosis", "procedures", "status", "scheduled_date", "phone_number"]
+    allowed_fields = ["patient_name", "dob", "attending", "orthodontist", "diagnosis", "procedures", "status", "scheduled_date", "phone_number", "note"]
     update_fields = {}
     changes = []
     

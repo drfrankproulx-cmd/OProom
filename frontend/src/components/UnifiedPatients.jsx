@@ -851,6 +851,15 @@ const PatientRow = ({
   const catStyle = PATIENT_CATEGORIES[categoryKey];
   const tasks = patient.tasks || [];
   const pendingTaskCount = tasks.filter(t => !t.completed).length;
+
+  // Inline note editing
+  const [noteDraft, setNoteDraft] = useState(patient.note || '');
+  useEffect(() => { setNoteDraft(patient.note || ''); }, [patient.note]);
+  const saveNote = () => {
+    const trimmed = noteDraft.trim();
+    if (trimmed === (patient.note || '')) return;
+    onUpdatePatientDetails(patient.mrn, { note: trimmed || null });
+  };
   
   // Calculate progress dynamically
   const preopChecklist = Array.isArray(patient.preop_checklist) ? patient.preop_checklist : [];
@@ -913,8 +922,10 @@ const PatientRow = ({
                 </div>
                 <span className="text-slate-600">{checkedCount}/{totalCount}</span>
               </div>
-              {pendingTaskCount > 0 && (
-                <Badge className="bg-orange-100 text-orange-700 text-[10px] px-1.5">{pendingTaskCount} tasks</Badge>
+              {patient.note && (
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 max-w-[140px] truncate" title={patient.note}>
+                  {patient.note}
+                </span>
               )}
             </div>
             <div className="flex items-center gap-2">
@@ -970,12 +981,22 @@ const PatientRow = ({
               {patient.records_appointment ? format(parseISO(patient.records_appointment), 'MM/dd') : '—'}
             </div>
             
-            <div className="col-span-1 text-center">
-              {pendingTaskCount > 0 ? (
-                <Badge className="bg-orange-100 text-orange-700 text-xs">{pendingTaskCount}</Badge>
-              ) : (
-                <span className="text-xs text-slate-400">—</span>
-              )}
+            <div className="col-span-1 text-center" onClick={(e) => e.stopPropagation()}>
+              <input
+                type="text"
+                value={noteDraft}
+                onChange={(e) => setNoteDraft(e.target.value)}
+                onBlur={saveNote}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') { e.preventDefault(); e.target.blur(); }
+                  if (e.key === 'Escape') { setNoteDraft(patient.note || ''); e.target.blur(); }
+                }}
+                placeholder="Add note…"
+                title={noteDraft || 'Add a one-liner note'}
+                maxLength={120}
+                data-testid={`patient-note-${patient.mrn}`}
+                className="w-full text-xs text-slate-700 bg-transparent rounded px-1.5 py-1 border border-transparent hover:border-slate-200 focus:border-teal-400 focus:bg-white focus:outline-none transition-colors text-left placeholder:text-slate-300"
+              />
             </div>
             
             <div className="col-span-1 text-sm text-slate-600">
@@ -1702,7 +1723,7 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
                 <div className="col-span-1">Pre-Op</div>
                 <div className="col-span-1">Last Apt</div>
                 <div className="col-span-1">Records</div>
-                <div className="col-span-1 text-center">Tasks</div>
+                <div className="col-span-1 text-center">Note</div>
                 <div className="col-span-1">Surgery</div>
               </div>
               <div className="w-20" /> {/* Actions spacer */}
