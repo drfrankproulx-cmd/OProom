@@ -3,6 +3,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Badge } from './ui/badge';
 import { Checkbox } from './ui/checkbox';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { toast } from 'sonner';
 import { format, parseISO, isPast, isToday, differenceInDays } from 'date-fns';
 import { getAuthHeaders as getAuth } from '../utils/auth';
@@ -982,21 +983,35 @@ const PatientRow = ({
             </div>
             
             <div className="col-span-1 text-center" onClick={(e) => e.stopPropagation()}>
-              <input
-                type="text"
-                value={noteDraft}
-                onChange={(e) => setNoteDraft(e.target.value)}
-                onBlur={saveNote}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') { e.preventDefault(); e.target.blur(); }
-                  if (e.key === 'Escape') { setNoteDraft(patient.note || ''); e.target.blur(); }
-                }}
-                placeholder="Add note…"
-                title={noteDraft || 'Add a one-liner note'}
-                maxLength={120}
-                data-testid={`patient-note-${patient.mrn}`}
-                className="w-full text-xs text-slate-700 bg-transparent rounded px-1.5 py-1 border border-transparent hover:border-slate-200 focus:border-teal-400 focus:bg-white focus:outline-none transition-colors text-left placeholder:text-slate-300"
-              />
+              <TooltipProvider delayDuration={200}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <input
+                      type="text"
+                      value={noteDraft}
+                      onChange={(e) => setNoteDraft(e.target.value)}
+                      onBlur={saveNote}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') { e.preventDefault(); e.target.blur(); }
+                        if (e.key === 'Escape') { setNoteDraft(patient.note || ''); e.target.blur(); }
+                      }}
+                      placeholder="Add note…"
+                      maxLength={120}
+                      data-testid={`patient-note-${patient.mrn}`}
+                      className="w-full text-xs text-slate-700 bg-transparent rounded px-1.5 py-1 border border-transparent hover:border-slate-200 focus:border-teal-400 focus:bg-white focus:outline-none transition-colors text-left placeholder:text-slate-300 truncate"
+                    />
+                  </TooltipTrigger>
+                  {patient.note && (
+                    <TooltipContent
+                      side="top"
+                      className="max-w-xs whitespace-normal break-words bg-slate-900 text-white text-xs leading-relaxed px-3 py-2 shadow-lg"
+                      data-testid={`patient-note-tooltip-${patient.mrn}`}
+                    >
+                      {patient.note}
+                    </TooltipContent>
+                  )}
+                </Tooltip>
+              </TooltipProvider>
             </div>
             
             <div className="col-span-1 text-sm text-slate-600">
