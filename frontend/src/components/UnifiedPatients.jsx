@@ -39,6 +39,16 @@ import ImagingDropdown from './ImagingDropdown';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
+// Guard against partial year typing in <input type="date"> — yyyy-mm-dd with year < 1900 is almost certainly mistyped
+// (e.g., user typed "2026" digit-by-digit and the browser fired onChange when value was "0002-...").
+const isValidDate = (s) => {
+  if (!s) return false;
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
+  if (!m) return false;
+  const y = parseInt(m[1], 10);
+  return y >= 1900 && y <= 2200;
+};
+
 // Patient category definitions — maps keywords in diagnosis/procedure to categories
 const PATIENT_CATEGORIES = {
   oncology: {
@@ -459,6 +469,10 @@ const PatientExpandedView = ({
   const [newChecklistItem, setNewChecklistItem] = useState('');
   const [lastClinicDate, setLastClinicDate] = useState(patient.last_clinic_appointment || '');
   const [recordsDate, setRecordsDate] = useState(patient.records_appointment || '');
+  const [orDateDraft, setOrDateDraft] = useState(patient.scheduled_date || patient.schedule?.scheduled_date || '');
+  useEffect(() => {
+    setOrDateDraft(patient.scheduled_date || patient.schedule?.scheduled_date || '');
+  }, [patient.scheduled_date, patient.schedule?.scheduled_date]);
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     patient_name: patient.patient_name || '',
@@ -692,10 +706,23 @@ const PatientExpandedView = ({
               <input
                 type="date"
                 data-testid="or-date-picker"
-                value={patient.scheduled_date || patient.schedule?.scheduled_date || ''}
-                onChange={(e) => {
-                  onScheduleOR(patient.mrn, patient.patient_name, e.target.value, patient.procedures, patient.attending);
+                min="2020-01-01"
+                max="2100-12-31"
+                value={orDateDraft}
+                onChange={(e) => setOrDateDraft(e.target.value)}
+                onBlur={() => {
+                  // Only save when year is in a sane range — prevents partial-typing bug
+                  // where browsers fire onChange with year "0002" while user types "2026".
+                  const current = patient.scheduled_date || patient.schedule?.scheduled_date || '';
+                  if (orDateDraft === current) return;
+                  if (orDateDraft && !isValidDate(orDateDraft)) {
+                    toast.error('Please enter a complete date (YYYY ≥ 2020)');
+                    setOrDateDraft(current);
+                    return;
+                  }
+                  onScheduleOR(patient.mrn, patient.patient_name, orDateDraft, patient.procedures, patient.attending);
                 }}
+                onKeyDown={(e) => { if (e.key === 'Enter') e.target.blur(); }}
                 className="h-9 px-2 rounded-md border border-slate-200 text-sm text-slate-900 w-[180px]"
               />
               <CalendarIcon className="h-4 w-4 text-teal-500" />
@@ -715,10 +742,17 @@ const PatientExpandedView = ({
             <input
               type="date"
               data-testid="last-clinic-appointment"
+              min="2020-01-01"
+              max="2100-12-31"
               value={lastClinicDate}
               onChange={(e) => setLastClinicDate(e.target.value)}
               onBlur={() => {
                 if (lastClinicDate !== (patient.last_clinic_appointment || '')) {
+                  if (lastClinicDate && !isValidDate(lastClinicDate)) {
+                    toast.error('Please enter a complete date (YYYY ≥ 2020)');
+                    setLastClinicDate(patient.last_clinic_appointment || '');
+                    return;
+                  }
                   onUpdateAppointmentDates(patient.mrn, { last_clinic_appointment: lastClinicDate || null });
                 }
               }}
@@ -730,10 +764,17 @@ const PatientExpandedView = ({
             <input
               type="date"
               data-testid="records-appointment"
+              min="2020-01-01"
+              max="2100-12-31"
               value={recordsDate}
               onChange={(e) => setRecordsDate(e.target.value)}
               onBlur={() => {
                 if (recordsDate !== (patient.records_appointment || '')) {
+                  if (recordsDate && !isValidDate(recordsDate)) {
+                    toast.error('Please enter a complete date (YYYY ≥ 2020)');
+                    setRecordsDate(patient.records_appointment || '');
+                    return;
+                  }
                   onUpdateAppointmentDates(patient.mrn, { records_appointment: recordsDate || null });
                 }
               }}

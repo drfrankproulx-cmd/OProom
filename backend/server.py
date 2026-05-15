@@ -164,6 +164,54 @@ push_subscriptions = db.push_subscriptions  # For web push notification subscrip
 notification_preferences = db.notification_preferences  # User notification settings
 audit_logs_collection = db.audit_logs  # HIPAA-compliant audit logging
 
+# ============ ONE-TIME DATA REPAIR: malformed year dates ============
+# Fixes records where a user accidentally saved a date like "0026-06-01" because
+# the HTML5 <input type="date"> fires onChange while the year is being typed
+# digit-by-digit. We convert any 4-digit year < 100 to (year + 2000) — so
+# "0026" → "2026", "0002" → "2002". Idempotent: rerunning is safe.
+def _repair_malformed_dates():
+    import re
+    pat = re.compile(r"^(\d{4})-(\d{2})-(\d{2})$")
+
+    def _fix(value):
+        if not isinstance(value, str):
+            return None
+        m = pat.match(value)
+        if not m:
+            return None
+        y = int(m.group(1))
+        if y < 1900:
+            new_y = y + 2000 if y < 100 else 2000  # tiny years → add 2000
+            return f"{new_y:04d}-{m.group(2)}-{m.group(3)}"
+        return None
+
+    repaired = 0
+    # Patients: scheduled_date, last_clinic_appointment, records_appointment
+    for p in patients_collection.find({}, {"_id": 1, "scheduled_date": 1,
+                                            "last_clinic_appointment": 1,
+                                            "records_appointment": 1}):
+        updates = {}
+        for field in ("scheduled_date", "last_clinic_appointment", "records_appointment"):
+            fixed = _fix(p.get(field))
+            if fixed:
+                updates[field] = fixed
+        if updates:
+            patients_collection.update_one({"_id": p["_id"]}, {"$set": updates})
+            repaired += 1
+    # Schedules: scheduled_date
+    for s in schedules_collection.find({}, {"_id": 1, "scheduled_date": 1}):
+        fixed = _fix(s.get("scheduled_date"))
+        if fixed:
+            schedules_collection.update_one({"_id": s["_id"]}, {"$set": {"scheduled_date": fixed}})
+            repaired += 1
+    if repaired:
+        print(f"[startup] Repaired {repaired} malformed date records")
+
+try:
+    _repair_malformed_dates()
+except Exception as e:
+    print(f"[startup] Date repair migration failed (non-fatal): {e}")
+
 # ============ FAIL-FAST CONFIG CHECK (production only) ============
 if os.environ.get("ENVIRONMENT") == "production":
     _required = ["MONGO_URL", "JWT_SECRET"]
