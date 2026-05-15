@@ -36,8 +36,11 @@ export const PageLayout = ({
       <main className={`flex-1 flex flex-col ${sidebarCollapsed ? 'md:pl-[68px]' : 'md:pl-64'} h-full overflow-hidden transition-all duration-300`}>
         {/* Header */}
         {(title || headerActions) && (
-          <header className="sticky top-0 z-30 flex items-center justify-between h-14 md:h-16 px-4 md:px-6 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
-            <div className="flex items-center gap-3 pl-10 md:pl-0">
+          <header
+            className="sticky top-0 z-30 flex items-center justify-between px-4 md:px-6 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm"
+            style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
+          >
+            <div className="flex items-center gap-3 pl-10 md:pl-0 h-14 md:h-16">
               <div>
                 {title && (
                   <h1 className="text-lg md:text-xl font-semibold text-slate-900 tracking-tight">
@@ -50,15 +53,18 @@ export const PageLayout = ({
               </div>
             </div>
             {headerActions && (
-              <div className="flex items-center gap-2 md:gap-3">
+              <div className="flex items-center gap-2 md:gap-3 h-14 md:h-16">
                 {headerActions}
               </div>
             )}
           </header>
         )}
 
-        {/* Page Content - Add bottom padding for mobile nav */}
-        <div className="flex-1 overflow-y-auto pb-20 md:pb-0">
+        {/* Page Content - Bottom padding clears mobile tab bar + iPhone home indicator */}
+        <div
+          className="flex-1 overflow-y-auto md:pb-0"
+          style={{ paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }}
+        >
           {children}
         </div>
       </main>

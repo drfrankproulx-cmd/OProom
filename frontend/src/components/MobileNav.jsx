@@ -15,7 +15,10 @@ const MOBILE_NAV_ITEMS = [
 
 export const MobileNav = ({ currentView, onNavigate }) => {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 safe-area-bottom md:hidden">
+    <nav
+      className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 md:hidden"
+      style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+    >
       <div className="flex items-center justify-around h-16 px-2">
         {MOBILE_NAV_ITEMS.map((item) => {
           const isActive = currentView === item.id || 

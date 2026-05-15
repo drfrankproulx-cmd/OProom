@@ -180,7 +180,8 @@ export const Sidebar = ({ currentView, onNavigate, user, onLogout, isOpen, onTog
       {/* Mobile menu button */}
       <button
         onClick={onToggle}
-        className="fixed top-4 left-4 z-30 p-2 rounded-xl bg-white shadow-md border border-slate-200 md:hidden"
+        className="fixed left-4 z-30 p-2 rounded-xl bg-white shadow-md border border-slate-200 md:hidden"
+        style={{ top: 'calc(env(safe-area-inset-top, 0px) + 0.75rem)' }}
         data-testid="mobile-menu-btn"
       >
         <Menu className="h-5 w-5 text-slate-600" />

@@ -701,12 +701,12 @@ const Calendar = ({ onNavigate, initialFilter, user, onLogout }) => {
         : format(currentDate, 'MMMM yyyy')
       }
       headerActions={
-        <div className="flex items-center gap-2 flex-wrap">
-          <div className="flex bg-slate-100 rounded-lg p-1" data-testid="calendar-view-toggle">
-            <button onClick={() => setViewMode('week')} className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${viewMode === 'week' ? 'bg-white shadow text-slate-900' : 'text-slate-500'}`} data-testid="calendar-toggle-week">Week</button>
-            <button onClick={() => setViewMode('month')} className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${viewMode === 'month' ? 'bg-white shadow text-slate-900' : 'text-slate-500'}`} data-testid="calendar-toggle-month">Month</button>
+        <div className="flex items-center gap-1 md:gap-2 flex-nowrap">
+          <div className="flex bg-slate-100 rounded-lg p-0.5 md:p-1" data-testid="calendar-view-toggle">
+            <button onClick={() => setViewMode('week')} className={`px-2 md:px-3 py-1 md:py-1.5 rounded-md text-[11px] md:text-xs font-medium transition-colors ${viewMode === 'week' ? 'bg-white shadow text-slate-900' : 'text-slate-500'}`} data-testid="calendar-toggle-week">Week</button>
+            <button onClick={() => setViewMode('month')} className={`px-2 md:px-3 py-1 md:py-1.5 rounded-md text-[11px] md:text-xs font-medium transition-colors ${viewMode === 'month' ? 'bg-white shadow text-slate-900' : 'text-slate-500'}`} data-testid="calendar-toggle-month">Month</button>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0.5 md:gap-1">
             <Button variant="outline" onClick={navigatePrev} className="rounded-lg w-9 h-9 p-0"><ChevronLeft className="h-4 w-4" /></Button>
             <Button variant="outline" onClick={() => setCurrentDate(new Date())} className="rounded-lg px-3 h-9 text-xs hidden sm:flex">Today</Button>
             <Button variant="outline" onClick={navigateNext} className="rounded-lg w-9 h-9 p-0"><ChevronRight className="h-4 w-4" /></Button>
@@ -717,11 +717,11 @@ const Calendar = ({ onNavigate, initialFilter, user, onLogout }) => {
       <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
         <PullToRefresh onRefresh={fetchData}>
           <div className="p-3 md:p-6">
-            {/* Stats row */}
-            <div className="grid grid-cols-3 gap-2 md:gap-4 mb-4">
-              <div className="bg-white rounded-xl p-3 shadow-sm"><div className="text-xl font-bold text-blue-600">{scheduledCases.length}</div><div className="text-slate-500 text-xs">Scheduled</div></div>
-              <div className="bg-white rounded-xl p-3 shadow-sm"><div className="text-xl font-bold text-green-600">{getSchedulesForDate(new Date()).length}</div><div className="text-slate-500 text-xs">Today</div></div>
-              <div className="bg-white rounded-xl p-3 shadow-sm"><div className="text-xl font-bold text-orange-600">{addOnCases.length}</div><div className="text-slate-500 text-xs">Add-Ons</div></div>
+            {/* Stats row — compact on mobile */}
+            <div className="grid grid-cols-3 gap-2 md:gap-4 mb-3 md:mb-4">
+              <div className="bg-white rounded-xl p-2 md:p-3 shadow-sm"><div className="text-base md:text-xl font-bold text-blue-600 leading-tight">{scheduledCases.length}</div><div className="text-slate-500 text-[10px] md:text-xs">Scheduled</div></div>
+              <div className="bg-white rounded-xl p-2 md:p-3 shadow-sm"><div className="text-base md:text-xl font-bold text-green-600 leading-tight">{getSchedulesForDate(new Date()).length}</div><div className="text-slate-500 text-[10px] md:text-xs">Today</div></div>
+              <div className="bg-white rounded-xl p-2 md:p-3 shadow-sm"><div className="text-base md:text-xl font-bold text-orange-600 leading-tight">{addOnCases.length}</div><div className="text-slate-500 text-[10px] md:text-xs">Add-Ons</div></div>
             </div>
 
             <div className="flex gap-4">
@@ -747,7 +747,7 @@ const Calendar = ({ onNavigate, initialFilter, user, onLogout }) => {
               {/* ─── Mobile Add-On Toggle ─── */}
               <button
                 onClick={() => setAddonOpen(!addonOpen)}
-                className="md:hidden fixed bottom-20 right-4 z-40 bg-orange-500 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg"
+                className="md:hidden fixed right-4 z-40 bg-orange-500 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg mobile-fab-offset"
                 data-testid="addon-toggle-mobile"
               >
                 <span className="text-xs font-bold">{addOnCases.length}</span>
@@ -790,30 +790,33 @@ const Calendar = ({ onNavigate, initialFilter, user, onLogout }) => {
                 <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
                   {viewMode === 'week' ? (
                     /* ─── WEEK VIEW ─── */
-                    <div className="overflow-x-auto">
-                      <div className="min-w-[800px]">
+                    <div className="md:overflow-x-auto">
+                      <div className="md:min-w-[800px]">
                         {/* Header */}
-                        <div className="grid grid-cols-[60px_repeat(7,1fr)] border-b border-slate-200 bg-slate-50">
-                          <div className="p-2 text-xs text-slate-400 text-center">Time</div>
+                        <div className="grid grid-cols-[40px_repeat(7,minmax(0,1fr))] md:grid-cols-[60px_repeat(7,1fr)] border-b border-slate-200 bg-slate-50">
+                          <div className="p-1 md:p-2 text-[10px] md:text-xs text-slate-400 text-center">Time</div>
                           {weekDays.map(day => {
                             const dayCount = getSchedulesForDate(day).length;
                             const today = isToday(day);
                             return (
-                              <div key={day.toISOString()} className={`p-2 text-center border-l border-slate-200 ${today ? 'bg-blue-50' : ''}`}>
-                                <div className="text-xs text-slate-500">{format(day, 'EEE')}</div>
-                                <div className={`text-lg font-bold ${today ? 'text-blue-600' : 'text-slate-900'}`}>{format(day, 'd')}</div>
-                                {dayCount > 0 && <Badge className="bg-blue-100 text-blue-700 text-[10px] mt-0.5">{dayCount}</Badge>}
+                              <div key={day.toISOString()} className={`p-1 md:p-2 text-center border-l border-slate-200 ${today ? 'bg-blue-50' : ''}`}>
+                                <div className="text-[10px] md:text-xs text-slate-500">
+                                  <span className="md:hidden">{format(day, 'EEEEE')}</span>
+                                  <span className="hidden md:inline">{format(day, 'EEE')}</span>
+                                </div>
+                                <div className={`text-sm md:text-lg font-bold ${today ? 'text-blue-600' : 'text-slate-900'}`}>{format(day, 'd')}</div>
+                                {dayCount > 0 && <Badge className="bg-blue-100 text-blue-700 text-[9px] md:text-[10px] mt-0.5 px-1">{dayCount}</Badge>}
                               </div>
                             );
                           })}
                         </div>
                         {/* Time grid */}
-                        <div className="grid grid-cols-[60px_repeat(7,1fr)]">
+                        <div className="grid grid-cols-[40px_repeat(7,minmax(0,1fr))] md:grid-cols-[60px_repeat(7,1fr)]">
                           {/* Time labels */}
                           <div>
                             {HOURS.map(h => (
                               <div key={h} className="h-20 border-b border-slate-100 flex items-start justify-center pt-1">
-                                <span className="text-[10px] text-slate-400">{h > 12 ? h - 12 : h} {h >= 12 ? 'PM' : 'AM'}</span>
+                                <span className="text-[9px] md:text-[10px] text-slate-400 leading-tight text-center">{h > 12 ? h - 12 : h}<span className="hidden md:inline"> </span><span className="md:hidden"><br/></span>{h >= 12 ? 'PM' : 'AM'}</span>
                               </div>
                             ))}
                           </div>
