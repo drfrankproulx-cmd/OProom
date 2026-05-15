@@ -183,7 +183,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
   const [viewFilter, setViewFilter] = useState(null); // For drill-down filtering
   const [currentDate, setCurrentDate] = useState(new Date());
   const [monthViewDate, setMonthViewDate] = useState(new Date());
-  const [calendarViewMode, setCalendarViewMode] = useState('week'); // 'week' or 'month' toggle
+  const [calendarViewMode, setCalendarViewMode] = useState('month'); // 'week' or 'month' toggle
   const [patients, setPatients] = useState([]);
   const [schedules, setSchedules] = useState([]);
   const [tasks, setTasks] = useState([]);
