@@ -470,9 +470,11 @@ const PatientExpandedView = ({
   const [lastClinicDate, setLastClinicDate] = useState(patient.last_clinic_appointment || '');
   const [recordsDate, setRecordsDate] = useState(patient.records_appointment || '');
   const [orDateDraft, setOrDateDraft] = useState(patient.scheduled_date || patient.schedule?.scheduled_date || '');
+  const [orTimeDraft, setOrTimeDraft] = useState(patient.scheduled_time || patient.schedule?.scheduled_time || '');
   useEffect(() => {
     setOrDateDraft(patient.scheduled_date || patient.schedule?.scheduled_date || '');
-  }, [patient.scheduled_date, patient.schedule?.scheduled_date]);
+    setOrTimeDraft(patient.scheduled_time || patient.schedule?.scheduled_time || '');
+  }, [patient.scheduled_date, patient.scheduled_time, patient.schedule?.scheduled_date, patient.schedule?.scheduled_time]);
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     patient_name: patient.patient_name || '',
@@ -701,8 +703,8 @@ const PatientExpandedView = ({
             </span>
           </div>
           <div className="col-span-2 md:col-span-3">
-            <label className="text-slate-500 block mb-1">OR Date (linked to Calendar):</label>
-            <div className="flex items-center gap-2">
+            <label className="text-slate-500 block mb-1">OR Date &amp; Time (linked to Calendar):</label>
+            <div className="flex items-center gap-2 flex-wrap">
               <input
                 type="date"
                 data-testid="or-date-picker"
@@ -720,13 +722,33 @@ const PatientExpandedView = ({
                     setOrDateDraft(current);
                     return;
                   }
-                  onScheduleOR(patient.mrn, patient.patient_name, orDateDraft, patient.procedures, patient.attending);
+                  onScheduleOR(patient.mrn, patient.patient_name, orDateDraft, patient.procedures, patient.attending, orTimeDraft);
                 }}
                 onKeyDown={(e) => { if (e.key === 'Enter') e.target.blur(); }}
                 className="h-9 px-2 rounded-md border border-slate-200 text-sm text-slate-900 w-[180px]"
               />
+              <input
+                type="time"
+                data-testid="or-time-picker"
+                value={orTimeDraft}
+                onChange={(e) => setOrTimeDraft(e.target.value)}
+                onBlur={() => {
+                  const currentTime = patient.scheduled_time || patient.schedule?.scheduled_time || '';
+                  const currentDate = patient.scheduled_date || patient.schedule?.scheduled_date || '';
+                  if (orTimeDraft === currentTime) return;
+                  // Only persist time if a valid date exists
+                  if (orDateDraft && isValidDate(orDateDraft)) {
+                    onScheduleOR(patient.mrn, patient.patient_name, orDateDraft, patient.procedures, patient.attending, orTimeDraft);
+                  } else if (!currentDate) {
+                    toast.error('Please set an OR date first');
+                    setOrTimeDraft('');
+                  }
+                }}
+                onKeyDown={(e) => { if (e.key === 'Enter') e.target.blur(); }}
+                className="h-9 px-2 rounded-md border border-slate-200 text-sm text-slate-900 w-[120px]"
+              />
               <CalendarIcon className="h-4 w-4 text-teal-500" />
-              <span className="text-xs text-slate-400">Sets date on Calendar</span>
+              <span className="text-xs text-slate-400">Sets date &amp; time on Calendar</span>
             </div>
           </div>
           <div className="col-span-2">
@@ -1396,7 +1418,7 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
   };
 
   // Schedule OR — creates/updates a calendar schedule entry and updates patient
-  const handleScheduleOR = async (patientMrn, patientName, orDate, procedure, staff) => {
+  const handleScheduleOR = async (patientMrn, patientName, orDate, procedure, staff, orTime) => {
     if (!orDate) return;
     try {
       // Check if a schedule already exists for this patient (avoid duplicate inserts)
@@ -1408,6 +1430,7 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
         procedure: procedure || 'TBD',
         staff: staff || 'TBD',
         scheduled_date: orDate,
+        scheduled_time: orTime || null,
         status: 'scheduled',
       };
 
@@ -1426,11 +1449,11 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
         });
       }
 
-      // Also update the patient's scheduled_date
+      // Also update the patient's scheduled_date and scheduled_time
       await fetch(`${API_URL}/api/patients/${patientMrn}/details`, {
         method: 'PATCH',
         headers: getAuthHeaders(),
-        body: JSON.stringify({ scheduled_date: orDate }),
+        body: JSON.stringify({ scheduled_date: orDate, scheduled_time: orTime || null }),
       });
 
       if (scheduleRes.ok) {
@@ -1440,12 +1463,14 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
             return {
               ...p,
               scheduled_date: orDate,
-              schedule: savedSchedule || { ...(p.schedule || {}), scheduled_date: orDate },
+              scheduled_time: orTime || null,
+              schedule: savedSchedule || { ...(p.schedule || {}), scheduled_date: orDate, scheduled_time: orTime || null },
             };
           }
           return p;
         }));
-        toast.success(`OR scheduled for ${format(parseISO(orDate), 'MMM d, yyyy')}`);
+        const when = orTime ? `${format(parseISO(orDate), 'MMM d, yyyy')} @ ${orTime}` : format(parseISO(orDate), 'MMM d, yyyy');
+        toast.success(`OR scheduled for ${when}`);
       } else {
         toast.error('Failed to schedule OR');
       }

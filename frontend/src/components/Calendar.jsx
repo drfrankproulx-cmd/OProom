@@ -165,6 +165,30 @@ const DraggableScheduleBlock = ({ schedule, patient, onClick, onContextMenu, sty
   );
 };
 
+// ─── Draggable Month Chip (small chip in month-view day cell) ───────
+const DraggableMonthChip = ({ schedule, patient, onClick, onContextMenu }) => {
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+    id: `sched-${schedule._id}`,
+    data: { type: 'scheduled', schedule, patient },
+  });
+  return (
+    <div
+      ref={setNodeRef}
+      {...listeners}
+      {...attributes}
+      data-testid={`month-chip-${schedule._id}`}
+      className={`text-[10px] px-1 py-0.5 bg-blue-50 text-blue-700 rounded truncate cursor-grab active:cursor-grabbing hover:bg-blue-100 ${
+        isDragging ? 'opacity-40' : ''
+      }`}
+      onClick={(e) => { e.stopPropagation(); onClick(schedule, patient); }}
+      onContextMenu={(e) => onContextMenu(e, schedule, patient)}
+    >
+      {schedule.patient_name?.split(',')[0] || 'Patient'}
+      {schedule.scheduled_time && <span className="ml-1 opacity-70">{schedule.scheduled_time}</span>}
+    </div>
+  );
+};
+
 // ─── Droppable Time Slot (Week View) ────────────────────────────────
 const DroppableTimeSlot = ({ id, day, hour, halfHour, children, onClick }) => {
   const { setNodeRef, isOver } = useDroppable({ id });
@@ -865,14 +889,13 @@ const Calendar = ({ onNavigate, initialFilter, user, onLogout }) => {
                                   <div key={c._id} className="text-[10px] px-1 py-0.5 bg-purple-100 text-purple-700 rounded truncate">{c.title}</div>
                                 ))}
                                 {daySchedules.slice(0, 2).map(s => (
-                                  <div
+                                  <DraggableMonthChip
                                     key={s._id}
-                                    className="text-[10px] px-1 py-0.5 bg-blue-50 text-blue-700 rounded truncate cursor-pointer hover:bg-blue-100"
-                                    onClick={e => { e.stopPropagation(); handleEventClick(s, patients.find(p => p.mrn === s.patient_mrn)); }}
-                                    onContextMenu={e => handleContextMenu(e, s, patients.find(p => p.mrn === s.patient_mrn))}
-                                  >
-                                    {s.patient_name?.split(',')[0] || 'Patient'}
-                                  </div>
+                                    schedule={s}
+                                    patient={patients.find(p => p.mrn === s.patient_mrn)}
+                                    onClick={handleEventClick}
+                                    onContextMenu={handleContextMenu}
+                                  />
                                 ))}
                                 {(daySchedules.length + dayConferences.length) > 3 && (
                                   <div className="text-[9px] text-slate-400 text-center">+{daySchedules.length + dayConferences.length - 3} more</div>
