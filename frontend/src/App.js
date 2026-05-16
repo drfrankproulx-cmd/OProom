@@ -3,18 +3,9 @@ import AuthPage from './components/AuthPage';
 import { AppleDashboard } from './components/AppleDashboard';
 import SessionTimeout from './components/SessionTimeout';
 import { Toaster } from './components/ui/sonner';
-import { getToken, clearAuth } from './utils/auth';
+import { getToken, getUser, setUser, clearAuth, isPersistentSession } from './utils/auth';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
-
-const getStoredToken = () => {
-  return getToken();
-};
-
-const getStoredUser = () => {
-  const user = localStorage.getItem('user') || sessionStorage.getItem('user');
-  return user ? JSON.parse(user) : null;
-};
 
 function App() {
   // Start with null to indicate "checking" state - prevents flash
@@ -26,8 +17,8 @@ function App() {
 
   // Validate token with backend
   const validateToken = useCallback(async () => {
-    const token = getStoredToken();
-    const storedUser = getStoredUser();
+    const token = getToken();
+    const storedUser = getUser();
 
     if (!token || !storedUser) {
       setAuthState({
@@ -49,13 +40,9 @@ function App() {
 
       if (response.ok) {
         const userData = await response.json();
-        // Update stored user data with fresh data from server
-        if (getToken()) {
-          localStorage.setItem('user', JSON.stringify(userData));
-        } else {
-          sessionStorage.setItem('user', JSON.stringify(userData));
-        }
-        
+        // Refresh cached user in the same storage tier (persistent vs session)
+        setUser(userData, isPersistentSession());
+
         setAuthState({
           isAuthenticated: true,
           user: userData,
@@ -63,7 +50,7 @@ function App() {
         });
       } else if (response.status === 401) {
         // Token is invalid or expired
-        clearAuthData();
+        clearAuth();
         setAuthState({
           isAuthenticated: false,
           user: null,
@@ -92,16 +79,8 @@ function App() {
     validateToken();
   }, [validateToken]);
 
-  // Clear all auth data from both storages
-  const clearAuthData = () => {
-    clearAuth();
-    sessionStorage.removeItem('user');
-    localStorage.removeItem('user');
-  };
-
   const handleLogin = (token, userData) => {
-    // Token storage is already handled in AuthPage based on rememberMe
-    // Just update the state
+    // Token + user storage is handled in AuthPage based on rememberMe
     setAuthState({
       isAuthenticated: true,
       user: userData,
@@ -110,8 +89,7 @@ function App() {
   };
 
   const handleLogout = () => {
-    clearAuthData();
-    
+    clearAuth();
     setAuthState({
       isAuthenticated: false,
       user: null,

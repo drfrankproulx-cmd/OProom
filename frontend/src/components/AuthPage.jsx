@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Checkbox } from './ui/checkbox';
 import { toast } from 'sonner';
-import { setToken, getWebAuthnEmail, getWebAuthnRegistered, setWebAuthnEmail, setWebAuthnRegistered } from '../utils/auth';
+import { setToken, setUser, getWebAuthnEmail, getWebAuthnRegistered, setWebAuthnEmail, setWebAuthnRegistered } from '../utils/auth';
 import { Activity, Calendar, Stethoscope, Fingerprint, Eye, KeyRound, Loader2 } from 'lucide-react';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
@@ -106,14 +106,11 @@ export const AuthPage = ({ onLogin }) => {
         throw new Error(result.detail || 'Authentication failed');
       }
 
-      // Store based on remember me preference
+      // Store based on remember me preference (persistent → localStorage, otherwise sessionStorage)
+      setToken(result.access_token, rememberMe);
+      setUser(result.user, rememberMe);
       if (rememberMe) {
-        setToken(result.access_token);
-        localStorage.setItem('user', JSON.stringify(result.user));
         setWebAuthnEmail(data.email);
-      } else {
-        sessionStorage.setItem('token', result.access_token);
-        sessionStorage.setItem('user', JSON.stringify(result.user));
       }
 
       toast.success(isRegister ? 'Account created successfully!' : 'Welcome back!');
@@ -302,9 +299,9 @@ export const AuthPage = ({ onLogin }) => {
 
       const result = await loginRes.json();
 
-      // Store token
-      setToken(result.access_token);
-      localStorage.setItem('user', JSON.stringify(result.user));
+      // Store token persistently — biometric sign-in always implies "trusted device"
+      setToken(result.access_token, true);
+      setUser(result.user, true);
 
       toast.success('Welcome back!');
       onLogin(result.access_token, result.user);
