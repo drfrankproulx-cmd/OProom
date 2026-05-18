@@ -8,6 +8,7 @@ import { Checkbox } from './ui/checkbox';
 import { toast } from 'sonner';
 import { format, startOfWeek, addDays, parseISO, isToday, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, addMonths, subMonths } from 'date-fns';
 import { getAuthHeaders as getAuth } from '../utils/auth';
+import DateInputMDY from './DateInputMDY';
 import {
   ChevronLeft,
   ChevronRight,
@@ -854,11 +855,10 @@ export const AppleDashboard = ({ user, onLogout }) => {
             </div>
             <div>
               <Label className="text-xs md:text-sm font-medium text-slate-700 mb-1 block">Date of Birth</Label>
-              <Input
-                type="date"
-                className="h-11 md:h-10 text-base md:text-sm rounded-lg"
+              <DateInputMDY
+                className="w-full"
                 value={intakeForm.dob}
-                onChange={(e) => setIntakeForm({...intakeForm, dob: e.target.value})}
+                onChange={(iso) => setIntakeForm({...intakeForm, dob: iso})}
               />
             </div>
           </div>
@@ -931,7 +931,7 @@ export const AppleDashboard = ({ user, onLogout }) => {
                 <>
                   <div>
                     <Label className="text-xs md:text-sm font-medium text-slate-700 mb-1 block">Scheduled Date</Label>
-                    <Input type="date" className="h-11 md:h-10 text-base md:text-sm rounded-lg" value={intakeForm.scheduled_date} onChange={(e) => setIntakeForm({...intakeForm, scheduled_date: e.target.value})} />
+                    <DateInputMDY className="w-full" value={intakeForm.scheduled_date} onChange={(iso) => setIntakeForm({...intakeForm, scheduled_date: iso})} />
                   </div>
                   <div>
                     <Label className="text-xs md:text-sm font-medium text-slate-700 mb-1 block">Scheduled Time</Label>
