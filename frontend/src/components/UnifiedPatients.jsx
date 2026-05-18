@@ -4,6 +4,7 @@ import { Input } from './ui/input';
 import { Badge } from './ui/badge';
 import { Checkbox } from './ui/checkbox';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
+import DateInputMDY from './DateInputMDY';
 import { toast } from 'sonner';
 import { format, parseISO, isPast, isToday, differenceInDays } from 'date-fns';
 import { getAuthHeaders as getAuth } from '../utils/auth';
@@ -177,17 +178,16 @@ const PreOpChecklistItem = ({ item, onToggle, onImagingChange, onDelete, onUpdat
           />
         </div>
         <div className="flex items-center gap-2 pl-2">
-          <input
-            type="date"
+          <DateInputMDY
             value={dateVal}
-            onChange={(e) => setDateVal(e.target.value)}
+            onChange={(iso) => setDateVal(iso)}
             onBlur={() => {
               if (dateVal !== (item.date || '')) {
                 onUpdateDetails(item.id, { date: dateVal || null });
               }
             }}
-            className="h-8 px-2 rounded border border-slate-200 text-xs text-slate-700 w-[140px]"
-            placeholder="Date taken"
+            className="w-[140px]"
+            placeholder="MM/DD/YYYY"
             title="Date imaging taken"
           />
           <input
@@ -264,16 +264,15 @@ const PreOpChecklistItem = ({ item, onToggle, onImagingChange, onDelete, onUpdat
       </div>
       {expanded && (
         <div className="flex items-center gap-2 px-2 pb-2 pt-1 ml-8">
-          <input
-            type="date"
+          <DateInputMDY
             value={dateVal}
-            onChange={(e) => setDateVal(e.target.value)}
+            onChange={(iso) => setDateVal(iso)}
             onBlur={() => {
               if (dateVal !== (item.date || '')) {
                 onUpdateDetails(item.id, { date: dateVal || null });
               }
             }}
-            className="h-8 px-2 rounded border border-slate-200 text-xs text-slate-700 w-[140px]"
+            className="w-[140px]"
             placeholder={getDatePlaceholder()}
             title={getDatePlaceholder()}
             data-testid={`checklist-date-${item.id}`}
@@ -418,10 +417,9 @@ const AddTaskForm = ({ patient, onSubmit, onCancel }) => {
             setTaskType(t);
           }}
         />
-        <Input
-          type="date"
+        <DateInputMDY
           value={dueDate}
-          onChange={(e) => setDueDate(e.target.value)}
+          onChange={(iso) => setDueDate(iso)}
           className="h-11 md:h-10"
         />
       </div>
@@ -577,11 +575,10 @@ const PatientExpandedView = ({
             </div>
             <div>
               <label className="text-slate-500 text-xs block mb-1">Date of Birth</label>
-              <input
-                type="date"
+              <DateInputMDY
                 value={editForm.dob}
-                onChange={(e) => setEditForm({ ...editForm, dob: e.target.value })}
-                className="h-9 px-3 rounded-md border border-slate-200 text-sm w-full"
+                onChange={(iso) => setEditForm({ ...editForm, dob: iso })}
+                className="w-full"
                 data-testid="edit-patient-dob"
               />
             </div>
@@ -705,16 +702,14 @@ const PatientExpandedView = ({
           <div className="col-span-2 md:col-span-3">
             <label className="text-slate-500 block mb-1">OR Date &amp; Time (linked to Calendar):</label>
             <div className="flex items-center gap-2 flex-wrap">
-              <input
-                type="date"
+              <DateInputMDY
                 data-testid="or-date-picker"
                 min="2020-01-01"
                 max="2100-12-31"
                 value={orDateDraft}
-                onChange={(e) => setOrDateDraft(e.target.value)}
+                onChange={(iso) => setOrDateDraft(iso)}
                 onBlur={() => {
                   // Only save when year is in a sane range — prevents partial-typing bug
-                  // where browsers fire onChange with year "0002" while user types "2026".
                   const current = patient.scheduled_date || patient.schedule?.scheduled_date || '';
                   if (orDateDraft === current) return;
                   if (orDateDraft && !isValidDate(orDateDraft)) {
@@ -724,8 +719,7 @@ const PatientExpandedView = ({
                   }
                   onScheduleOR(patient.mrn, patient.patient_name, orDateDraft, patient.procedures, patient.attending, orTimeDraft);
                 }}
-                onKeyDown={(e) => { if (e.key === 'Enter') e.target.blur(); }}
-                className="h-9 px-2 rounded-md border border-slate-200 text-sm text-slate-900 w-[180px]"
+                className="w-[180px]"
               />
               <input
                 type="time"
@@ -761,13 +755,12 @@ const PatientExpandedView = ({
           </div>
           <div className="col-span-2">
             <label className="text-slate-500 block mb-1">Last Clinic Appointment:</label>
-            <input
-              type="date"
+            <DateInputMDY
               data-testid="last-clinic-appointment"
               min="2020-01-01"
               max="2100-12-31"
               value={lastClinicDate}
-              onChange={(e) => setLastClinicDate(e.target.value)}
+              onChange={(iso) => setLastClinicDate(iso)}
               onBlur={() => {
                 if (lastClinicDate !== (patient.last_clinic_appointment || '')) {
                   if (lastClinicDate && !isValidDate(lastClinicDate)) {
@@ -778,18 +771,17 @@ const PatientExpandedView = ({
                   onUpdateAppointmentDates(patient.mrn, { last_clinic_appointment: lastClinicDate || null });
                 }
               }}
-              className="h-9 px-2 rounded-md border border-slate-200 text-sm text-slate-900 w-full max-w-[200px]"
+              className="w-full max-w-[200px]"
             />
           </div>
           <div className="col-span-2">
             <label className="text-slate-500 block mb-1">Records Appointment (VSP):</label>
-            <input
-              type="date"
+            <DateInputMDY
               data-testid="records-appointment"
               min="2020-01-01"
               max="2100-12-31"
               value={recordsDate}
-              onChange={(e) => setRecordsDate(e.target.value)}
+              onChange={(iso) => setRecordsDate(iso)}
               onBlur={() => {
                 if (recordsDate !== (patient.records_appointment || '')) {
                   if (recordsDate && !isValidDate(recordsDate)) {
@@ -800,7 +792,7 @@ const PatientExpandedView = ({
                   onUpdateAppointmentDates(patient.mrn, { records_appointment: recordsDate || null });
                 }
               }}
-              className="h-9 px-2 rounded-md border border-slate-200 text-sm text-slate-900 w-full max-w-[200px]"
+              className="w-full max-w-[200px]"
             />
           </div>
         </div>
