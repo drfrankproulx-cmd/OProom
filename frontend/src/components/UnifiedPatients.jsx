@@ -1441,11 +1441,16 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
         });
       }
 
-      // Also update the patient's scheduled_date and scheduled_time
+      // Also update the patient's scheduled_date, time, AND flip status to "scheduled"
+      // so the row's category badge moves from Add-On → Scheduled
       await fetch(`${API_URL}/api/patients/${patientMrn}/details`, {
         method: 'PATCH',
         headers: getAuthHeaders(),
-        body: JSON.stringify({ scheduled_date: orDate, scheduled_time: orTime || null }),
+        body: JSON.stringify({
+          scheduled_date: orDate,
+          scheduled_time: orTime || null,
+          status: 'scheduled',
+        }),
       });
 
       if (scheduleRes.ok) {
@@ -1456,6 +1461,7 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
               ...p,
               scheduled_date: orDate,
               scheduled_time: orTime || null,
+              status: 'scheduled',
               schedule: savedSchedule || { ...(p.schedule || {}), scheduled_date: orDate, scheduled_time: orTime || null },
             };
           }
