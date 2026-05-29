@@ -181,9 +181,9 @@ const PreOpChecklistItem = ({ item, onToggle, onImagingChange, onDelete, onUpdat
           <DateInputMDY
             value={dateVal}
             onChange={(iso) => setDateVal(iso)}
-            onBlur={() => {
-              if (dateVal !== (item.date || '')) {
-                onUpdateDetails(item.id, { date: dateVal || null });
+            onBlur={(latestIso) => {
+              if (latestIso !== (item.date || '')) {
+                onUpdateDetails(item.id, { date: latestIso || null });
               }
             }}
             className="w-[140px]"
@@ -267,9 +267,9 @@ const PreOpChecklistItem = ({ item, onToggle, onImagingChange, onDelete, onUpdat
           <DateInputMDY
             value={dateVal}
             onChange={(iso) => setDateVal(iso)}
-            onBlur={() => {
-              if (dateVal !== (item.date || '')) {
-                onUpdateDetails(item.id, { date: dateVal || null });
+            onBlur={(latestIso) => {
+              if (latestIso !== (item.date || '')) {
+                onUpdateDetails(item.id, { date: latestIso || null });
               }
             }}
             className="w-[140px]"
@@ -708,16 +708,16 @@ const PatientExpandedView = ({
                 max="2100-12-31"
                 value={orDateDraft}
                 onChange={(iso) => setOrDateDraft(iso)}
-                onBlur={() => {
-                  // Only save when year is in a sane range — prevents partial-typing bug
+                onBlur={(latestIso) => {
+                  // Use the iso passed directly from DateInputMDY (avoids stale state).
                   const current = patient.scheduled_date || patient.schedule?.scheduled_date || '';
-                  if (orDateDraft === current) return;
-                  if (orDateDraft && !isValidDate(orDateDraft)) {
+                  if (latestIso === current) return;
+                  if (latestIso && !isValidDate(latestIso)) {
                     toast.error('Please enter a complete date (YYYY ≥ 2020)');
                     setOrDateDraft(current);
                     return;
                   }
-                  onScheduleOR(patient.mrn, patient.patient_name, orDateDraft, patient.procedures, patient.attending, orTimeDraft);
+                  onScheduleOR(patient.mrn, patient.patient_name, latestIso, patient.procedures, patient.attending, orTimeDraft);
                 }}
                 className="w-[180px]"
               />
@@ -761,14 +761,14 @@ const PatientExpandedView = ({
               max="2100-12-31"
               value={lastClinicDate}
               onChange={(iso) => setLastClinicDate(iso)}
-              onBlur={() => {
-                if (lastClinicDate !== (patient.last_clinic_appointment || '')) {
-                  if (lastClinicDate && !isValidDate(lastClinicDate)) {
+              onBlur={(latestIso) => {
+                if (latestIso !== (patient.last_clinic_appointment || '')) {
+                  if (latestIso && !isValidDate(latestIso)) {
                     toast.error('Please enter a complete date (YYYY ≥ 2020)');
                     setLastClinicDate(patient.last_clinic_appointment || '');
                     return;
                   }
-                  onUpdateAppointmentDates(patient.mrn, { last_clinic_appointment: lastClinicDate || null });
+                  onUpdateAppointmentDates(patient.mrn, { last_clinic_appointment: latestIso || null });
                 }
               }}
               className="w-full max-w-[200px]"
@@ -782,14 +782,14 @@ const PatientExpandedView = ({
               max="2100-12-31"
               value={recordsDate}
               onChange={(iso) => setRecordsDate(iso)}
-              onBlur={() => {
-                if (recordsDate !== (patient.records_appointment || '')) {
-                  if (recordsDate && !isValidDate(recordsDate)) {
+              onBlur={(latestIso) => {
+                if (latestIso !== (patient.records_appointment || '')) {
+                  if (latestIso && !isValidDate(latestIso)) {
                     toast.error('Please enter a complete date (YYYY ≥ 2020)');
                     setRecordsDate(patient.records_appointment || '');
                     return;
                   }
-                  onUpdateAppointmentDates(patient.mrn, { records_appointment: recordsDate || null });
+                  onUpdateAppointmentDates(patient.mrn, { records_appointment: latestIso || null });
                 }
               }}
               className="w-full max-w-[200px]"

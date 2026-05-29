@@ -125,6 +125,19 @@ const DateInputMDY = ({
     emit(onlyDigits);
   };
 
+  const getCurrentIso = (d) => {
+    if (d.length === 8) {
+      return `${d.slice(4, 8)}-${d.slice(0, 2)}-${d.slice(2, 4)}`;
+    }
+    return '';
+  };
+
+  const handleBlurInternal = (e) => {
+    // Pass the current ISO directly so callers don't have to rely on
+    // potentially stale React state from the parent's last render.
+    if (onBlur) onBlur(getCurrentIso(digits), e);
+  };
+
   // Calendar icon → open native picker for those who prefer click
   const handleCalendarClick = () => {
     if (nativeRef.current?.showPicker) {
@@ -150,7 +163,7 @@ const DateInputMDY = ({
         onChange={() => { /* controlled by keyDown/paste */ }}
         onKeyDown={handleKeyDown}
         onPaste={handlePaste}
-        onBlur={onBlur}
+        onBlur={handleBlurInternal}
         placeholder={placeholder}
         className="w-full pr-7 px-2 h-9 rounded-md border border-slate-200 text-sm text-slate-900 bg-white focus:outline-none focus:border-teal-400 placeholder:text-slate-300"
         style={{ fontVariantNumeric: 'tabular-nums' }}
