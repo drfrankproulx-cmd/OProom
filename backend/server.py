@@ -212,6 +212,61 @@ try:
 except Exception as e:
     print(f"[startup] Date repair migration failed (non-fatal): {e}")
 
+# ─── BACKFILL: ensure every patient with a scheduled_date has a calendar entry ───
+# Reconciles any patient whose scheduled_date is set but doesn't have a matching
+# row in the schedules collection (caused by older code paths that skipped the
+# schedules write). Also flips status add-on → scheduled and creates the schedule
+# entry so the case appears on the Calendar. Idempotent — safe to rerun.
+def _reconcile_patient_schedules():
+    try:
+        created = 0
+        flipped = 0
+        scheduled_patients = list(patients_collection.find(
+            {"scheduled_date": {"$nin": [None, ""]}},
+            {"_id": 1, "mrn": 1, "patient_name": 1, "procedures": 1,
+             "attending": 1, "scheduled_date": 1, "scheduled_time": 1,
+             "status": 1, "diagnosis": 1}
+        ))
+        for p in scheduled_patients:
+            mrn = p.get("mrn")
+            if not mrn:
+                continue
+            # Flip status if still add-on
+            if p.get("status") not in ("scheduled", "completed", "cancelled"):
+                patients_collection.update_one(
+                    {"_id": p["_id"]},
+                    {"$set": {"status": "scheduled"}}
+                )
+                flipped += 1
+            # Create schedule if missing
+            existing = schedules_collection.find_one({"patient_mrn": mrn})
+            if not existing:
+                schedules_collection.insert_one({
+                    "patient_mrn": mrn,
+                    "patient_name": p.get("patient_name", ""),
+                    "procedure": p.get("procedures") or "TBD",
+                    "staff": p.get("attending") or "TBD",
+                    "scheduled_date": p.get("scheduled_date"),
+                    "scheduled_time": p.get("scheduled_time"),
+                    "status": "scheduled",
+                    "is_addon": False,
+                    "priority": "medium",
+                    "diagnosis": p.get("diagnosis"),
+                    "created_by": "system_backfill",
+                    "created_at": datetime.utcnow().isoformat(),
+                })
+                created += 1
+        if created or flipped:
+            print(f"[startup] Calendar reconciliation: created {created} missing "
+                  f"schedule entries, flipped {flipped} statuses to 'scheduled'")
+    except Exception as e:
+        print(f"[startup] Calendar reconciliation failed (non-fatal): {e}")
+
+try:
+    _reconcile_patient_schedules()
+except Exception as e:
+    print(f"[startup] Calendar reconciliation wrapper failed: {e}")
+
 # ============ FAIL-FAST CONFIG CHECK (production only) ============
 if os.environ.get("ENVIRONMENT") == "production":
     _required = ["MONGO_URL", "JWT_SECRET"]
@@ -419,6 +474,7 @@ class Patient(BaseModel):
     orthodontist: Optional[str] = None
     last_clinic_appointment: Optional[str] = None
     records_appointment: Optional[str] = None
+    scheduled_date: Optional[str] = None
     scheduled_time: Optional[str] = None
     note: Optional[str] = None
     status: str = "pending"
@@ -953,6 +1009,34 @@ async def create_patient(patient: Patient, request: Request, current_user: str =
 
     result = patients_collection.insert_one(patient_dict)
     patient_dict["_id"] = str(result.inserted_id)
+    
+    # Auto-sync calendar if patient was created with a scheduled_date
+    if patient_dict.get("scheduled_date"):
+        sched_doc = {
+            "patient_mrn": patient.mrn,
+            "patient_name": patient_dict.get("patient_name", ""),
+            "procedure": patient_dict.get("procedures") or "TBD",
+            "staff": patient_dict.get("attending") or "TBD",
+            "scheduled_date": patient_dict["scheduled_date"],
+            "scheduled_time": patient_dict.get("scheduled_time"),
+            "status": "scheduled",
+            "is_addon": False,
+            "priority": "medium",
+            "diagnosis": patient_dict.get("diagnosis"),
+            "created_by": current_user,
+            "created_at": datetime.utcnow().isoformat(),
+        }
+        existing = schedules_collection.find_one({"patient_mrn": patient.mrn})
+        if existing:
+            schedules_collection.update_one({"_id": existing["_id"]}, {"$set": sched_doc})
+        else:
+            schedules_collection.insert_one(sched_doc)
+        # Ensure status reflects scheduled
+        if patient_dict.get("status") in (None, "", "add-on"):
+            patients_collection.update_one(
+                {"mrn": patient.mrn},
+                {"$set": {"status": "scheduled"}}
+            )
     
     # Track usage for intelligent suggestions
     if patient_dict.get("diagnosis"):
