@@ -1000,8 +1000,8 @@ const PatientRow = ({
           </div>
           
           <div className="flex-1 min-w-0 grid grid-cols-12 gap-4 items-center">
-            <div className="col-span-2">
-              <div className="font-semibold text-slate-900 truncate">{patient.patient_name}</div>
+            <div className="col-span-2 min-w-0">
+              <div className="font-semibold text-slate-900 leading-tight break-words" title={patient.patient_name}>{patient.patient_name}</div>
               <div className="text-xs text-slate-500">MRN: {patient.mrn}</div>
             </div>
             

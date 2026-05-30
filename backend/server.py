@@ -1627,6 +1627,31 @@ async def update_patient(mrn: str, patient: Patient, request: Request, current_u
             "details": ", ".join(changes)
         })
     
+    # ─── Auto-sync calendar (same logic as PATCH /details) ──────────────
+    new_date = patient_dict.get("scheduled_date")
+    if new_date:
+        if patient_dict.get("status") in (None, "", "add-on"):
+            patient_dict["status"] = "scheduled"
+        sched_doc = {
+            "patient_mrn": mrn,
+            "patient_name": patient_dict.get("patient_name") or current_patient.get("patient_name", ""),
+            "procedure": patient_dict.get("procedures") or "TBD",
+            "staff": patient_dict.get("attending") or "TBD",
+            "scheduled_date": new_date,
+            "scheduled_time": patient_dict.get("scheduled_time"),
+            "status": "scheduled",
+            "updated_at": datetime.utcnow().isoformat(),
+        }
+        existing = schedules_collection.find_one({"patient_mrn": mrn})
+        if existing:
+            schedules_collection.update_one({"_id": existing["_id"]}, {"$set": sched_doc})
+        else:
+            sched_doc["created_at"] = datetime.utcnow().isoformat()
+            schedules_collection.insert_one(sched_doc)
+    elif "scheduled_date" in patient_dict:
+        # Date cleared on full PUT → remove the schedule
+        schedules_collection.delete_many({"patient_mrn": mrn})
+    
     result = patients_collection.update_one(
         {"mrn": mrn},
         {"$set": patient_dict}
@@ -1658,6 +1683,38 @@ async def patch_patient_details(mrn: str, request: Request, current_user: str = 
     
     if not update_fields:
         return {"message": "No changes"}
+    
+    # ─── Auto-sync calendar when a scheduled_date is set ────────────────
+    # Whenever scheduled_date is added/updated on the patient, ensure:
+    #  1) status flips to "scheduled" (if not explicitly set otherwise)
+    #  2) a matching entry exists in the schedules collection (upsert)
+    # so the Calendar reflects the change automatically.
+    if "scheduled_date" in update_fields and update_fields["scheduled_date"]:
+        if "status" not in update_fields:
+            update_fields["status"] = "scheduled"
+        new_date = update_fields["scheduled_date"]
+        new_time = update_fields.get("scheduled_time") or patient.get("scheduled_time") or None
+        sched_doc = {
+            "patient_mrn": mrn,
+            "patient_name": update_fields.get("patient_name") or patient.get("patient_name", ""),
+            "procedure": patient.get("procedures") or "TBD",
+            "staff": patient.get("attending") or "TBD",
+            "scheduled_date": new_date,
+            "scheduled_time": new_time,
+            "status": "scheduled",
+            "updated_at": datetime.utcnow().isoformat(),
+        }
+        existing = schedules_collection.find_one({"patient_mrn": mrn})
+        if existing:
+            schedules_collection.update_one({"_id": existing["_id"]}, {"$set": sched_doc})
+        else:
+            sched_doc["created_at"] = datetime.utcnow().isoformat()
+            schedules_collection.insert_one(sched_doc)
+    elif "scheduled_date" in update_fields and not update_fields["scheduled_date"]:
+        # Date cleared → remove schedule and flip status back to add-on
+        schedules_collection.delete_many({"patient_mrn": mrn})
+        if "status" not in update_fields:
+            update_fields["status"] = "add-on"
     
     update_fields["updated_by"] = current_user
     update_fields["updated_at"] = datetime.utcnow()
