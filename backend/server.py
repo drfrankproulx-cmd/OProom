@@ -222,7 +222,7 @@ def _reconcile_patient_schedules():
         created = 0
         flipped = 0
         scheduled_patients = list(patients_collection.find(
-            {"scheduled_date": {"$nin": [None, ""]}},
+            {"scheduled_date": {"$exists": True, "$nin": [None, ""]}},
             {"_id": 1, "mrn": 1, "patient_name": 1, "procedures": 1,
              "attending": 1, "scheduled_date": 1, "scheduled_time": 1,
              "status": 1, "diagnosis": 1}
@@ -983,6 +983,72 @@ class PatientCreateRequest(BaseModel):
     scheduled_date: Optional[str] = None  # If provided, status = scheduled
     scheduled_time: Optional[str] = None
     auto_generate_tasks: bool = True  # Default: generate pre-op tasks
+
+# ─── Admin: calendar sync diagnostics & manual reconciliation ───────
+@app.get("/api/admin/sync-health")
+async def admin_sync_health(current_user: str = Depends(get_current_user)):
+    """Diagnostic: returns counts of patients vs schedules and lists any stranded patients."""
+    patients_with_date = list(patients_collection.find(
+        {"scheduled_date": {"$exists": True, "$nin": [None, ""]}},
+        {"_id": 0, "mrn": 1, "patient_name": 1, "scheduled_date": 1,
+         "scheduled_time": 1, "status": 1}
+    ))
+    all_schedules = list(schedules_collection.find({}, {"_id": 0, "patient_mrn": 1, "scheduled_date": 1}))
+    sched_mrns = {s.get("patient_mrn") for s in all_schedules if s.get("patient_mrn")}
+    stranded = [p for p in patients_with_date if p.get("mrn") not in sched_mrns]
+    return {
+        "patients_with_scheduled_date": len(patients_with_date),
+        "total_schedule_entries": len(all_schedules),
+        "stranded_count": len(stranded),
+        "stranded_patients": stranded,
+    }
+
+@app.post("/api/admin/reconcile-schedules")
+async def admin_reconcile_schedules(current_user: str = Depends(get_current_user)):
+    """Manually trigger the same reconciliation that runs at backend startup."""
+    user_doc = users_collection.find_one({"email": current_user})
+    if not user_doc or user_doc.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin only")
+
+    created = 0
+    flipped = 0
+    fixed_mrns = []
+    scheduled_patients = list(patients_collection.find(
+        {"scheduled_date": {"$exists": True, "$nin": [None, ""]}},
+        {"_id": 1, "mrn": 1, "patient_name": 1, "procedures": 1,
+         "attending": 1, "scheduled_date": 1, "scheduled_time": 1,
+         "status": 1, "diagnosis": 1}
+    ))
+    for p in scheduled_patients:
+        mrn = p.get("mrn")
+        if not mrn:
+            continue
+        if p.get("status") not in ("scheduled", "completed", "cancelled"):
+            patients_collection.update_one({"_id": p["_id"]}, {"$set": {"status": "scheduled"}})
+            flipped += 1
+        if not schedules_collection.find_one({"patient_mrn": mrn}):
+            schedules_collection.insert_one({
+                "patient_mrn": mrn,
+                "patient_name": p.get("patient_name", ""),
+                "procedure": p.get("procedures") or "TBD",
+                "staff": p.get("attending") or "TBD",
+                "scheduled_date": p.get("scheduled_date"),
+                "scheduled_time": p.get("scheduled_time"),
+                "status": "scheduled",
+                "is_addon": False,
+                "priority": "medium",
+                "diagnosis": p.get("diagnosis"),
+                "created_by": "admin_reconcile",
+                "created_at": datetime.utcnow().isoformat(),
+            })
+            created += 1
+            fixed_mrns.append(mrn)
+    return {
+        "created_schedule_entries": created,
+        "flipped_statuses": flipped,
+        "fixed_patient_mrns": fixed_mrns,
+        "message": f"Reconciled {created} stranded patients, flipped {flipped} statuses",
+    }
 
 # Patient routes
 @app.post("/api/patients")
