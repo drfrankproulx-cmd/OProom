@@ -1790,6 +1790,9 @@ async def update_patient(mrn: str, patient: Patient, request: Request, current_u
             "scheduled_date": new_date,
             "scheduled_time": patient_dict.get("scheduled_time"),
             "status": "scheduled",
+            "is_addon": False,
+            "priority": "medium",
+            "diagnosis": patient_dict.get("diagnosis"),
             "updated_at": datetime.utcnow().isoformat(),
         }
         existing = schedules_collection.find_one({"patient_mrn": mrn})
@@ -1852,6 +1855,9 @@ async def patch_patient_details(mrn: str, request: Request, current_user: str = 
             "scheduled_date": new_date,
             "scheduled_time": new_time,
             "status": "scheduled",
+            "is_addon": False,
+            "priority": "medium",
+            "diagnosis": patient.get("diagnosis"),
             "updated_at": datetime.utcnow().isoformat(),
         }
         existing = schedules_collection.find_one({"patient_mrn": mrn})

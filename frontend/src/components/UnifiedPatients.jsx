@@ -1413,37 +1413,9 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
   const handleScheduleOR = async (patientMrn, patientName, orDate, procedure, staff, orTime) => {
     if (!orDate) return;
     try {
-      // Check if a schedule already exists for this patient (avoid duplicate inserts)
-      const existing = patients.find(p => p.mrn === patientMrn)?.schedule;
-      const existingId = existing && (existing._id || existing.id);
-      const payload = {
-        patient_mrn: patientMrn,
-        patient_name: patientName,
-        procedure: procedure || 'TBD',
-        staff: staff || 'TBD',
-        scheduled_date: orDate,
-        scheduled_time: orTime || null,
-        status: 'scheduled',
-      };
-
-      let scheduleRes;
-      if (existingId) {
-        scheduleRes = await fetch(`${API_URL}/api/schedules/${existingId}`, {
-          method: 'PUT',
-          headers: getAuthHeaders(),
-          body: JSON.stringify(payload),
-        });
-      } else {
-        scheduleRes = await fetch(`${API_URL}/api/schedules`, {
-          method: 'POST',
-          headers: getAuthHeaders(),
-          body: JSON.stringify(payload),
-        });
-      }
-
-      // Also update the patient's scheduled_date, time, AND flip status to "scheduled"
-      // so the row's category badge moves from Add-On → Scheduled
-      await fetch(`${API_URL}/api/patients/${patientMrn}/details`, {
+      // Single source of truth: PATCH the patient details. The backend's auto-sync
+      // logic creates/updates the matching schedule entry in the same transaction.
+      const res = await fetch(`${API_URL}/api/patients/${patientMrn}/details`, {
         method: 'PATCH',
         headers: getAuthHeaders(),
         body: JSON.stringify({
@@ -1453,27 +1425,39 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
         }),
       });
 
-      if (scheduleRes.ok) {
-        const savedSchedule = await scheduleRes.json().catch(() => null);
-        setPatients(prev => prev.map(p => {
-          if (p.mrn === patientMrn) {
-            return {
-              ...p,
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        toast.error(`Failed to schedule OR: ${err.detail || res.status}`);
+        return;
+      }
+
+      // Update local state so the row reflects the new state instantly
+      setPatients(prev => prev.map(p => {
+        if (p.mrn === patientMrn) {
+          return {
+            ...p,
+            scheduled_date: orDate,
+            scheduled_time: orTime || null,
+            status: 'scheduled',
+            schedule: {
+              ...(p.schedule || {}),
+              patient_mrn: patientMrn,
+              patient_name: patientName,
               scheduled_date: orDate,
               scheduled_time: orTime || null,
               status: 'scheduled',
-              schedule: savedSchedule || { ...(p.schedule || {}), scheduled_date: orDate, scheduled_time: orTime || null },
-            };
-          }
-          return p;
-        }));
-        const when = orTime ? `${format(parseISO(orDate), 'MMM d, yyyy')} @ ${orTime}` : format(parseISO(orDate), 'MMM d, yyyy');
-        toast.success(`OR scheduled for ${when}`);
-      } else {
-        toast.error('Failed to schedule OR');
-      }
+            },
+          };
+        }
+        return p;
+      }));
+
+      const when = orTime
+        ? `${format(parseISO(orDate), 'MMM d, yyyy')} @ ${orTime}`
+        : format(parseISO(orDate), 'MMM d, yyyy');
+      toast.success(`OR scheduled for ${when}`);
     } catch (error) {
-      toast.error('Failed to schedule OR');
+      toast.error(`Failed to schedule OR: ${error.message || 'network error'}`);
     }
   };
 
