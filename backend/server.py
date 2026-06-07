@@ -259,6 +259,15 @@ def _reconcile_patient_schedules():
         if created or flipped:
             print(f"[startup] Calendar reconciliation: created {created} missing "
                   f"schedule entries, flipped {flipped} statuses to 'scheduled'")
+        # Auto-correct any schedule that has a date but is mis-flagged is_addon=true
+        # (this contradiction hides the case from the main calendar grid)
+        misflag_result = schedules_collection.update_many(
+            {"scheduled_date": {"$exists": True, "$nin": [None, ""]}, "is_addon": True},
+            {"$set": {"is_addon": False, "status": "scheduled"}}
+        )
+        if misflag_result.modified_count:
+            print(f"[startup] Calendar reconciliation: corrected "
+                  f"{misflag_result.modified_count} mis-flagged add-on schedules")
     except Exception as e:
         print(f"[startup] Calendar reconciliation failed (non-fatal): {e}")
 
@@ -993,25 +1002,36 @@ async def admin_sync_health(current_user: str = Depends(get_current_user)):
         {"_id": 0, "mrn": 1, "patient_name": 1, "scheduled_date": 1,
          "scheduled_time": 1, "status": 1}
     ))
-    all_schedules = list(schedules_collection.find({}, {"_id": 0, "patient_mrn": 1, "scheduled_date": 1}))
+    all_schedules = list(schedules_collection.find({}, {"_id": 0, "patient_mrn": 1, "scheduled_date": 1, "is_addon": 1}))
     sched_mrns = {s.get("patient_mrn") for s in all_schedules if s.get("patient_mrn")}
     stranded = [p for p in patients_with_date if p.get("mrn") not in sched_mrns]
+    # Schedules that have a date but are still flagged as add-on (the contradiction
+    # that hides them from the main calendar grid)
+    misflagged = [s for s in all_schedules
+                  if s.get("scheduled_date") and s.get("is_addon") is True]
     return {
         "patients_with_scheduled_date": len(patients_with_date),
         "total_schedule_entries": len(all_schedules),
         "stranded_count": len(stranded),
         "stranded_patients": stranded,
+        "misflagged_addon_count": len(misflagged),
+        "misflagged_addon_schedules": [
+            {"patient_mrn": s.get("patient_mrn"), "scheduled_date": s.get("scheduled_date")}
+            for s in misflagged
+        ],
     }
 
 @app.post("/api/admin/reconcile-schedules")
 async def admin_reconcile_schedules(current_user: str = Depends(get_current_user)):
-    """Manually trigger the same reconciliation that runs at backend startup."""
+    """Manually trigger the same reconciliation that runs at backend startup.
+    Also corrects any schedule that has a date but is mis-flagged is_addon=true."""
     user_doc = users_collection.find_one({"email": current_user})
     if not user_doc or user_doc.get("role") != "admin":
         raise HTTPException(status_code=403, detail="Admin only")
 
     created = 0
     flipped = 0
+    unflagged_addons = 0
     fixed_mrns = []
     scheduled_patients = list(patients_collection.find(
         {"scheduled_date": {"$exists": True, "$nin": [None, ""]}},
@@ -1043,11 +1063,21 @@ async def admin_reconcile_schedules(current_user: str = Depends(get_current_user
             })
             created += 1
             fixed_mrns.append(mrn)
+    # Fix any schedule that has a date but is still flagged is_addon=true
+    res = schedules_collection.update_many(
+        {"scheduled_date": {"$exists": True, "$nin": [None, ""]}, "is_addon": True},
+        {"$set": {"is_addon": False, "status": "scheduled"}}
+    )
+    unflagged_addons = res.modified_count
     return {
         "created_schedule_entries": created,
         "flipped_statuses": flipped,
+        "unflagged_misflagged_addons": unflagged_addons,
         "fixed_patient_mrns": fixed_mrns,
-        "message": f"Reconciled {created} stranded patients, flipped {flipped} statuses",
+        "message": (
+            f"Reconciled {created} stranded patients, flipped {flipped} statuses, "
+            f"corrected {unflagged_addons} mis-flagged add-on schedules"
+        ),
     }
 
 # Patient routes
