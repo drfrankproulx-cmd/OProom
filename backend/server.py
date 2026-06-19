@@ -38,7 +38,7 @@ with SuppressBcryptWarning():
     _ctx = CryptContext(schemes=["bcrypt"], deprecated="auto")
     _ctx.hash("test")
 
-from fastapi import FastAPI, HTTPException, Depends, status, Query, Request, Response
+from fastapi import FastAPI, HTTPException, Depends, status, Query, Request, Response, File, UploadFile
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
@@ -47,6 +47,7 @@ from typing import Optional, List
 from datetime import datetime, timedelta, timezone
 from pymongo import MongoClient
 from bson import ObjectId
+import gridfs
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
@@ -151,6 +152,9 @@ db = client[DB_NAME]
 users_collection = db.users
 patients_collection = db.patients
 archived_patients_collection = db.archived_patients
+
+# GridFS for VSP PDF storage (HIPAA-safe, stays in MongoDB Atlas with encryption-at-rest)
+fs = gridfs.GridFS(db, collection="vsp_files")
 schedules_collection = db.schedules
 tasks_collection = db.tasks
 conferences_collection = db.conferences
@@ -2038,6 +2042,117 @@ async def add_patient_comment(mrn: str, comment: PatientComment, current_user: s
         raise HTTPException(status_code=404, detail="Patient not found")
     
     return comment_dict
+
+# ─── VSP (Virtual Surgical Plan) PDF Upload ─────────────────────────
+from fastapi.responses import StreamingResponse  # noqa: E402
+
+VSP_MAX_BYTES = 25 * 1024 * 1024  # 25 MB
+
+@app.post("/api/patients/{mrn}/vsp")
+async def upload_vsp(mrn: str, file: UploadFile = File(...), current_user: str = Depends(get_current_user)):
+    """Upload a VSP PDF for a patient. Replaces any existing VSP."""
+    patient = patients_collection.find_one({"mrn": mrn})
+    if not patient:
+        raise HTTPException(status_code=404, detail="Patient not found")
+    if not file.filename.lower().endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Only PDF files are allowed")
+    if file.content_type and file.content_type != "application/pdf":
+        raise HTTPException(status_code=400, detail="File must be application/pdf")
+
+    contents = await file.read()
+    if len(contents) > VSP_MAX_BYTES:
+        raise HTTPException(status_code=413, detail=f"File exceeds 25 MB limit")
+    if not contents:
+        raise HTTPException(status_code=400, detail="Empty file")
+
+    # Remove any previous VSP file for this patient
+    old_id = patient.get("vsp_file_id")
+    if old_id:
+        try:
+            fs.delete(ObjectId(old_id))
+        except Exception:
+            pass
+
+    file_id = fs.put(
+        contents,
+        filename=file.filename,
+        contentType="application/pdf",
+        patient_mrn=mrn,
+        uploaded_by=current_user,
+        uploaded_at=datetime.utcnow().isoformat(),
+    )
+
+    patients_collection.update_one(
+        {"mrn": mrn},
+        {"$set": {
+            "vsp_file_id": str(file_id),
+            "vsp_filename": file.filename,
+            "vsp_uploaded_at": datetime.utcnow().isoformat(),
+            "vsp_uploaded_by": current_user,
+            "vsp_size_bytes": len(contents),
+        }, "$push": {"activity_log": {
+            "action": "vsp_uploaded",
+            "user": current_user,
+            "timestamp": datetime.utcnow().isoformat(),
+            "details": f"VSP uploaded: {file.filename} ({len(contents)} bytes)",
+        }}}
+    )
+    return {
+        "file_id": str(file_id),
+        "filename": file.filename,
+        "size_bytes": len(contents),
+    }
+
+@app.get("/api/patients/{mrn}/vsp")
+async def download_vsp(mrn: str, current_user: str = Depends(get_current_user)):
+    """Stream the patient's VSP PDF inline so it can preview in the browser."""
+    patient = patients_collection.find_one({"mrn": mrn})
+    if not patient or not patient.get("vsp_file_id"):
+        raise HTTPException(status_code=404, detail="No VSP attached")
+    try:
+        grid_file = fs.get(ObjectId(patient["vsp_file_id"]))
+    except Exception:
+        raise HTTPException(status_code=404, detail="VSP file not found in storage")
+
+    def streamer():
+        chunk = grid_file.read(8192)
+        while chunk:
+            yield chunk
+            chunk = grid_file.read(8192)
+
+    filename = patient.get("vsp_filename") or "vsp.pdf"
+    return StreamingResponse(
+        streamer(),
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'inline; filename="{filename}"'},
+    )
+
+@app.delete("/api/patients/{mrn}/vsp")
+async def delete_vsp(mrn: str, current_user: str = Depends(get_current_user)):
+    """Delete the patient's VSP PDF."""
+    patient = patients_collection.find_one({"mrn": mrn})
+    if not patient or not patient.get("vsp_file_id"):
+        raise HTTPException(status_code=404, detail="No VSP attached")
+    try:
+        fs.delete(ObjectId(patient["vsp_file_id"]))
+    except Exception:
+        pass
+    patients_collection.update_one(
+        {"mrn": mrn},
+        {"$unset": {
+            "vsp_file_id": "",
+            "vsp_filename": "",
+            "vsp_uploaded_at": "",
+            "vsp_uploaded_by": "",
+            "vsp_size_bytes": "",
+        }, "$push": {"activity_log": {
+            "action": "vsp_deleted",
+            "user": current_user,
+            "timestamp": datetime.utcnow().isoformat(),
+            "details": "VSP file deleted",
+        }}}
+    )
+    return {"message": "VSP deleted"}
 
 @app.delete("/api/patients/{mrn}")
 async def delete_patient(mrn: str, request: Request, current_user: str = Depends(get_current_user)):

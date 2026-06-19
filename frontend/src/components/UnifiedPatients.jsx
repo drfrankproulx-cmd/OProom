@@ -5,6 +5,7 @@ import { Badge } from './ui/badge';
 import { Checkbox } from './ui/checkbox';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import DateInputMDY from './DateInputMDY';
+import VSPUploader from './VSPUploader';
 import { toast } from 'sonner';
 import { format, parseISO, isPast, isToday, differenceInDays } from 'date-fns';
 import { getAuthHeaders as getAuth } from '../utils/auth';
@@ -799,6 +800,12 @@ const PatientExpandedView = ({
         )}
       </div>
 
+      {/* VSP (Virtual Surgical Plan) — PDF Upload */}
+      <VSPUploader
+        patient={patient}
+        onChange={(updates) => onUpdatePatientDetails(patient.mrn, updates, { skipApiCall: true })}
+      />
+
       {/* Pre-Op Checklist Section */}
       <div className="bg-white rounded-xl p-4 border border-slate-200">
         <div className="flex items-center justify-between mb-3">
@@ -1356,7 +1363,16 @@ export const UnifiedPatients = ({ onNavigate, initialFilter, user, onLogout }) =
   };
 
   // Update patient details (name, dob, attending, orthodontist, diagnosis, procedures)
-  const handleUpdatePatientDetails = async (patientMrn, updates) => {
+  const handleUpdatePatientDetails = async (patientMrn, updates, opts = {}) => {
+    // skipApiCall=true means the caller already persisted the change via its own endpoint
+    // (e.g. VSP upload endpoint). We just update local React state.
+    if (opts.skipApiCall) {
+      setPatients(prev => prev.map(p => {
+        if (p.mrn === patientMrn) return { ...p, ...updates };
+        return p;
+      }));
+      return;
+    }
     try {
       const response = await fetch(`${API_URL}/api/patients/${patientMrn}/details`, {
         method: 'PATCH',
